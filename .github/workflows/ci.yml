@@ -1,0 +1,71 @@
+name: CI with Kover
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  run-tests:
+    name: Execute Tests & Generate Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Run tests & enforce coverage
+        run: ./gradlew clean check
+
+      - name: Generate XML coverage report
+        run: ./gradlew koverXmlReport
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kover-coverage-report
+          path: build/reports/kover/
+          retention-days: 1
+
+  analyze-pr:
+    name: Comment Coverage Summary
+    needs: run-tests
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: kover-coverage-report
+          path: build/reports/kover/
+
+      - name: Comment on PR with coverage
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: build/reports/kover/xml/report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          update-comment: true
+          title: Code Coverage Summary
+          pass-emoji: '✅'
+          fail-emoji: '❌'
