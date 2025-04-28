@@ -4,6 +4,6 @@ import com.berlin.model.State
 
 interface StateRepository {
     fun createState(state: State):Boolean
-    fun getStatesByProjectId(projectId:Int):List<State>
-    fun deleteState(stateId:Int):Boolean
+    fun getStatesByProjectId(projectId:String):List<State>
+    fun deleteState(stateId:String):Boolean
 }

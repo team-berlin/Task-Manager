@@ -4,8 +4,8 @@ import com.berlin.model.Project
 
 interface ProjectRepository {
     fun createProject(project:Project):Boolean
-    fun getProjectById(projectId:Int):Project?
+    fun getProjectById(projectId:String):Project?
     fun getAllProjects():List<Project>
     fun updateProject(project: Project):Boolean
-    fun deleteProject(projectId: Int):Boolean
+    fun deleteProject(projectId: String):Boolean
 }

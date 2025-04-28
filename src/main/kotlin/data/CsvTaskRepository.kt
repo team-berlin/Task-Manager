@@ -4,15 +4,15 @@ import com.berlin.logic.repositories.TaskRepository
 import com.berlin.model.Task
 
 class CsvTaskRepository:TaskRepository {
-    override fun createTask(projectId: Int, task: Task): Boolean {
+    override fun createTask(task: Task): Boolean {
         return false
     }
 
-    override fun getTaskById(taskId: Int): Task? {
+    override fun getTaskById(taskId: String): Task? {
         return null
     }
 
-    override fun getTasksByProjectId(projectId: Int): List<Task> {
+    override fun getTasksByProjectId(projectId: String): List<Task> {
         return emptyList()
     }
 
@@ -20,7 +20,7 @@ class CsvTaskRepository:TaskRepository {
         return false
     }
 
-    override fun deleteTask(task: Task): Boolean {
+    override fun deleteTaskById(taskId: String): Boolean {
         return false
     }
 }

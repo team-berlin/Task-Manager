@@ -8,11 +8,11 @@ class CsvAuditRepository:AuditRepository {
         return false
     }
 
-    override fun getAuditLogsByProjectId(projectId: Int): List<AuditLog> {
+    override fun getAuditLogsByProjectId(projectId: String): List<AuditLog> {
         return emptyList()
     }
 
-    override fun getAuditLogsByTaskId(taskId: Int): List<AuditLog> {
+    override fun getAuditLogsByTaskId(taskId: String): List<AuditLog> {
         return emptyList()
     }
 }

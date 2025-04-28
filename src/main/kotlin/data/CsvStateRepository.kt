@@ -8,11 +8,11 @@ class CsvStateRepository:StateRepository {
         return false
     }
 
-    override fun getStatesByProjectId(projectId: Int): List<State> {
+    override fun getStatesByProjectId(projectId: String): List<State> {
         return emptyList()
     }
 
-    override fun deleteState(stateId: Int):Boolean {
+    override fun deleteState(stateId: String):Boolean {
         return false
     }
 }

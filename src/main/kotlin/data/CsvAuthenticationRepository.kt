@@ -8,7 +8,7 @@ class CsvAuthenticationRepository:AuthenticationRepository {
         return false
     }
 
-    override fun getUserById(userId: Int): User? {
+    override fun getUserById(userId: String): User? {
         return null
     }
 

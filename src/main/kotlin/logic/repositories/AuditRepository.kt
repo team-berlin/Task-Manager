@@ -4,7 +4,7 @@ import com.berlin.model.AuditLog
 
 interface AuditRepository {
     fun addAuditLog(auditLog: AuditLog):Boolean
-    fun getAuditLogsByProjectId(projectId:Int):List<AuditLog>
-    fun getAuditLogsByTaskId(taskId:Int):List<AuditLog>
+    fun getAuditLogsByProjectId(projectId:String):List<AuditLog>
+    fun getAuditLogsByTaskId(taskId:String):List<AuditLog>
 
 }

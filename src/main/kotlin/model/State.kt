@@ -1,7 +1,7 @@
 package com.berlin.model
 
 data class State(
-    val stateId:Int,
+    val stateId:String,
     val name:String,
-    val projectId:Int,
+    val projectId:String,
 )

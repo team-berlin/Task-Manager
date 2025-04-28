@@ -8,7 +8,7 @@ class CsvProjectRepository:ProjectRepository {
         return false
     }
 
-    override fun getProjectById(projectId: Int): Project? {
+    override fun getProjectById(projectId: String): Project? {
         return null
     }
 
@@ -20,7 +20,7 @@ class CsvProjectRepository:ProjectRepository {
         return false
     }
 
-    override fun deleteProject(projectId: Int): Boolean {
+    override fun deleteProject(projectId: String): Boolean {
         return false
     }
 }
