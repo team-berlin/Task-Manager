@@ -1,5 +1,5 @@
 package com.berlin.model
 
-enum class AuditSearchType {
+enum class EntityType {
     PROJECT,TASK
 }

@@ -15,4 +15,8 @@ class CsvAuditRepository:AuditRepository {
     override fun getAuditLogsByTaskId(taskId: String): List<AuditLog> {
         return emptyList()
     }
+
+    override fun getAuditLogsByUserId(userId: String): List<AuditLog> {
+        return emptyList()
+    }
 }

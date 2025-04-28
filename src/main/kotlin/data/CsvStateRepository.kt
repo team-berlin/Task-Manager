@@ -15,4 +15,12 @@ class CsvStateRepository:StateRepository {
     override fun deleteState(stateId: String):Boolean {
         return false
     }
+
+    override fun updateState(state: State): Boolean {
+        return false
+    }
+
+    override fun getStateByTaskId(taskId: String): State? {
+        return null
+    }
 }

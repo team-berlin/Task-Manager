@@ -2,6 +2,7 @@ package com.berlin.data
 
 import com.berlin.logic.repositories.TaskRepository
 import com.berlin.model.Task
+import com.berlin.model.User
 
 class CsvTaskRepository:TaskRepository {
     override fun createTask(task: Task): Boolean {
@@ -22,5 +23,9 @@ class CsvTaskRepository:TaskRepository {
 
     override fun deleteTaskById(taskId: String): Boolean {
         return false
+    }
+
+    override fun getAssignedUserByTaskId(taskId: String): User? {
+        return null
     }
 }

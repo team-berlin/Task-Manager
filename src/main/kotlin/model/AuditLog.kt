@@ -7,6 +7,6 @@ data class AuditLog(
     val createdBy:User,
     val auditAction:AuditAction,
     val changesDescription:String,
-    val auditForType:AuditSearchType,
-    val idForAuditType:String
+    val entityType:EntityType,
+    val entityId:String
 )
