@@ -18,13 +18,13 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `getAllUsers should return one user who is admin when there is no user created yet`() {
+    fun `getAllUsers should return empty list when there is no user created yet`() {
         //Given
-        every { authService.getAllUsers() } returns listOf(dummyAdminIsFirstUser)
+        every { authService.getAllUsers() } returns emptyList()
         //when
         val result = authService.getAllUsers()
         // then
-        assertThat(result).isEqualTo(dummyAdminIsFirstUser)
+        assertThat(result).isEmpty()
 
     }
 
