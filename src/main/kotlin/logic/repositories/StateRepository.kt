@@ -1,6 +1,7 @@
 package com.berlin.logic.repositories
 
 import com.berlin.model.State
+import com.berlin.model.Task
 
 interface StateRepository {
     fun addState(state: State): Result<String>
@@ -8,4 +9,6 @@ interface StateRepository {
     fun deleteState(stateId: String): Result<String>
     fun updateState(state: State): Result<String>
     fun getStateByTaskId(taskId: String): State?
+    fun getTaskByStateId(stateId: String): List<Task>?
+    fun getStateById(stateId: String): Boolean
 }

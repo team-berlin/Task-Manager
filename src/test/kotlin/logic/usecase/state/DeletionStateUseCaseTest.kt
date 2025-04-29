@@ -1,11 +1,13 @@
 package com.berlin.logic.usecase.state
 
+import com.berlin.helper.stateHelper
 import com.berlin.logic.repositories.StateRepository
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class DeletionStateUseCaseTest {
 
@@ -24,7 +26,7 @@ class DeletionStateUseCaseTest {
         // When
         val result = deletionStateUseCase.deleteState("1")
         // Then
-        Truth.assertThat(result).isEqualTo("Deleted Success")
+        assertThat(result).isEqualTo("Deleted Successfully")
     }
 
     @Test
@@ -34,7 +36,19 @@ class DeletionStateUseCaseTest {
         // When
         val result = deletionStateUseCase.deleteState("1")
         // Then
-        Truth.assertThat(result).isEqualTo("Deleted Success")
+        assertThat(result).isEqualTo("Deletion Failed")
     }
 
-}
+
+
+    @Test
+    fun `deleteState should throw exception when state is not exist`() {
+        // Given
+        every { stateRepository.deleteState(any()) } returns Result.failure(Exception())
+        // When && Then
+        assertThrows<NoSuchElementException> {
+            deletionStateUseCase.deleteState("1")
+        }
+    }
+
+    }

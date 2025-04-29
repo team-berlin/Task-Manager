@@ -9,8 +9,8 @@ class CreationStateUseCase(
     fun createNewState(state: State) {
         val result = stateRepository.addState(state)
         when {
-            result.isSuccess -> Result.success("Created Success")
-            result.isFailure -> Result.success("Created Failed")
+            result.isSuccess -> Result.success("Created Successfully")
+            result.isFailure -> Result.failure(Exception("Creation Failed"))
         }
     }
 }
