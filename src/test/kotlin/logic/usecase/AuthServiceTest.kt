@@ -1,13 +1,12 @@
 package logic.usecase
 
+import com.berlin.TestData
 import com.berlin.logic.usecase.AuthService
-import com.berlin.model.UserRole
-import com.berlin.userDummyData
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import com.google.common.truth.Truth.assertThat
 
 class AuthServiceTest {
     private lateinit var authService: AuthService
@@ -17,23 +16,42 @@ class AuthServiceTest {
         authService = AuthService()
     }
 
-
     @Test
-    fun `login should return true when user input valid data`(){
-        every { authService.login("fatma", "5454897984") } returns true
+    fun `login should return user when user input valid data`() {
+        //Given
+        every { authService.login("fatma", "5454897984") } returns TestData.allFieldsCorrect
+        //When
         val result = authService.login("fatma", "5454897984")
-        assertThat(result).isTrue()
+        //Then
+        assertThat(result).isEqualTo(TestData.allFieldsCorrect)
     }
 
     @Test
-    fun `login should return false when user input empty data`(){
-        every { authService.login("", "") } returns false
-        val result = authService.login("", "")
-        assertThat(result).isFalse()
+    fun `login should return false when user is not logged in`() {
+        //Given
+        every { authService.login("", "") } throws Exception()
+        //When & Then
+        assertThrows<Exception> {
+            authService.login("", "")
+        }
     }
+
+    //check
     @Test
-    fun `login should return null when user input invalid data`(){
-        val result = authService.login("fatma","1546896464")
+    fun `login should return null when user input empty data`() {
+        //Given
+        every { authService.login("", "") } returns null
+        //When
+        val result = authService.login("", "")
+        //Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `login should return null when user input invalid data`() {
+        //When
+        val result = authService.login("fatma", "1546896464")
+        //Then
         assertThat(result).isNull()
 
     }
@@ -50,11 +68,31 @@ class AuthServiceTest {
     }
 
     @Test
+    fun `createUser should return false when user id is empty`() {
+        //Given
+        every { authService.createMate(TestData.userIdIsEmpty) } returns false
+        //when
+        val result = authService.createMate(TestData.userIdIsEmpty)
+        //Then
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun `createUser should return false when user id is duplicated`() {
+        //Given
+        every { authService.createMate(TestData.userIdIsRedundunt) } returns false
+        //when
+        val result = authService.createMate(TestData.userIdIsRedundunt)
+        //Then
+        assertThat(result).isFalse()
+    }
+
+    @Test
     fun `createUser should return false when user name is empty`() {
         //Given
-        every { authService.createUser(dummyUserNameEmpty) } returns false
+        every { authService.createMate(TestData.userNameIsEmpty) } returns false
         //when
-        val result = authService.createUser(dummyUserNameEmpty)
+        val result = authService.createMate(TestData.userPasswordEmpty)
         //Then
         assertThat(result).isFalse()
     }
@@ -62,9 +100,9 @@ class AuthServiceTest {
     @Test
     fun `createUser should return false when user password is empty`() {
         //Given
-        every { authService.createUser(dummyUserPasswordEmpty) } returns false
+        every { authService.createMate(TestData.userPasswordEmpty) } returns false
         //when
-        val result = authService.createUser(dummyUserPasswordEmpty)
+        val result = authService.createMate(TestData.userNameIsEmpty)
         //Then
         assertThat(result).isFalse()
     }
@@ -72,31 +110,31 @@ class AuthServiceTest {
     @Test
     fun `createUser should return IllegalArgumentException when password less then 8 numbers`() {
         //Given
-        val dummy = dummyPasswordLessThan8
+        val dummy = TestData.passwordLessThanEight
         //when & Then
         assertThrows<IllegalArgumentException> {
-            authService.createUser(dummy)
+            authService.createMate(dummy)
         }
     }
 
     @Test
     fun `createUser should return IllegalArgumentException when all fields empty`() {
         //Given
-        every { authService.createUser(dummyAllFieldsEmpty) } throws IllegalArgumentException("fields shouldn't empty")
+        every { authService.createMate(TestData.allFieldsAreEmpty) } throws IllegalArgumentException(
+            "fields shouldn't empty"
+        )
         //When & Then
         assertThrows<IllegalArgumentException> {
-            authService.createUser(dummyAllFieldsEmpty)
+            authService.createMate(TestData.allFieldsAreEmpty)
         }
     }
 
     @Test
     fun `createUser should return true when all fields is correct`() {
         //Given
-        every { authService.createUser(dummyAllFieldsCorrect) } returns true
-
+        every { authService.createMate(TestData.allFieldsCorrect) } returns true
         //when
-        val result = authService.createUser(dummyAllFieldsCorrect)
-
+        val result = authService.createMate(TestData.allFieldsCorrect)
         //Then
         assertThat(result).isTrue()
 
@@ -105,52 +143,31 @@ class AuthServiceTest {
     @Test
     fun `getUserById should return null when id isn't exist`() {
         //Given
-        every { authService.getUserById(idNotExist) } returns null
-
+        every { authService.getUserById(TestData.idNotExist) } returns null
         //when
         val result = authService.getUserById("6")
-
         //Then
         assertThat(result).isNull()
     }
 
     @Test
     fun `getUserById should return null when id is empty`() {
-
         //Given
-        every { authService.getUserById(idEmpty) } returns null
+        every { authService.getUserById(TestData.idEmpty) } returns null
         //when
         val result = authService.getUserById("6")
-
         //Then
         assertThat(result).isNull()
     }
 
     @Test
     fun `getUserById should return user of given id`() {
-
         //Given
-        every { authService.getUserById(idExist) } returns existingUser
+        every { authService.getUserById(TestData.idExist) } returns TestData.existingUser
         //when
         val result = authService.getUserById("13")
-
         //Then
-        assertThat(result).isEqualTo(existingUser)
+        assertThat(result).isEqualTo(TestData.existingUser)
     }
 
-
-
-
-    private companion object {
-        val dummyUserNameEmpty = userDummyData("1", "", password = "12356497")
-        val dummyAllFieldsCorrect = userDummyData("1", "Ahmed", "12345678")
-        val dummyAdminIsFirstUser = userDummyData("0", "Ahmed", "12345678")
-        val dummyPasswordLessThan8 = userDummyData("1", "Ahmed", "1234567")
-        val dummyUserPasswordEmpty = userDummyData("1", "Ahmed", "")
-        val dummyAllFieldsEmpty = userDummyData("", "", "")
-        val idEmpty = ""
-        val idNotExist = "6"
-        val idExist = "13"
-        val existingUser = userDummyData("13", "Menna", "1234", UserRole.ADMIN)
-    }
 }
