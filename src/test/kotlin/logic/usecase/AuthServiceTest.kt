@@ -17,6 +17,27 @@ class AuthServiceTest {
         authService = AuthService()
     }
 
+
+    @Test
+    fun `login should return true when user input valid data`(){
+        every { authService.login("fatma", "5454897984") } returns true
+        val result = authService.login("fatma", "5454897984")
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `login should return false when user input empty data`(){
+        every { authService.login("", "") } returns false
+        val result = authService.login("", "")
+        assertThat(result).isFalse()
+    }
+    @Test
+    fun `login should return null when user input invalid data`(){
+        val result = authService.login("fatma","1546896464")
+        assertThat(result).isNull()
+
+    }
+
     @Test
     fun `getAllUsers should return empty list when there is no user created yet`() {
         //Given
@@ -116,6 +137,8 @@ class AuthServiceTest {
         //Then
         assertThat(result).isEqualTo(existingUser)
     }
+
+
 
 
     private companion object {
