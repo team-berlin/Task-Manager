@@ -8,15 +8,15 @@ class UserSchema(
     override val header: List<String>
 ) : BaseSchema<User> {
     override fun toRow(entity: User): List<String> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
-    override fun fromRow(row:List<String>): User {
-        TODO("Not yet implemented")
+    override fun fromRow(row:List<String>): User? {
+        return null
     }
 
     override fun getId(entity: User): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
 }

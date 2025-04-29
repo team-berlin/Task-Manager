@@ -8,15 +8,15 @@ class StateSchema(
     override val header: List<String>
 ) : BaseSchema<State> {
     override fun toRow(entity: State): List<String> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
-    override fun fromRow(row:List<String>): State {
-        TODO("Not yet implemented")
+    override fun fromRow(row:List<String>): State? {
+        return null
     }
 
     override fun getId(entity: State): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
 }

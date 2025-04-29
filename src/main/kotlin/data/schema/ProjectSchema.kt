@@ -8,15 +8,15 @@ class ProjectSchema (
     override val header: List<String>
 ) : BaseSchema<Project> {
     override fun toRow(entity: Project): List<String> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
-    override fun fromRow(row:List<String>): Project {
-        TODO("Not yet implemented")
+    override fun fromRow(row:List<String>): Project? {
+        return null
     }
 
     override fun getId(entity: Project): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
 }

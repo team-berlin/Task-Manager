@@ -5,6 +5,6 @@ interface BaseSchema<T> {
     val header: List<String>
 
     fun toRow(entity: T): List<String>
-    fun fromRow(row: List<String>): T
+    fun fromRow(row: List<String>): T?
     fun getId(entity: T): String
 }

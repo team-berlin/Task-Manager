@@ -8,15 +8,15 @@ class AuditSchema(
     override val header: List<String>
 ) :BaseSchema<AuditLog> {
     override fun toRow(entity: AuditLog): List<String> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
-    override fun fromRow(row:List<String>): AuditLog {
-        TODO("Not yet implemented")
+    override fun fromRow(row:List<String>): AuditLog? {
+        return null
     }
 
     override fun getId(entity: AuditLog): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
 }
