@@ -1,8 +1,7 @@
-package logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.AuthServiceTestData
 import com.berlin.logic.repositories.AuthenticationRepository
-import com.berlin.logic.usecase.FetchAllUsersUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -11,12 +10,12 @@ import org.junit.jupiter.api.Test
 
 class FetchAllUsersUseCaseTest {
     private lateinit var repository: AuthenticationRepository
-    private lateinit var fetchAllUsersUseCase :FetchAllUsersUseCase
+    private lateinit var fetchAllUsersUseCase : FetchAllUsersUseCase
 
     @BeforeEach
     fun setup() {
         repository = mockk()
-        fetchAllUsersUseCase=FetchAllUsersUseCase(repository)
+        fetchAllUsersUseCase= FetchAllUsersUseCase(repository)
     }
 
     @Test

@@ -9,7 +9,6 @@ object AuthServiceTestData {
     val allFieldsAreEmpty = userDummyData("", "", "")
     val userIdIsRedundunt =  userDummyData("1", "", "")
     val userIdIsEmpty = userDummyData("", "fatma", "")
-    val idEmpty = ""
     val idNotExist = "6"
     val idExist = "13"
     val existingUser = userDummyData("13", "Menna", "12345678")

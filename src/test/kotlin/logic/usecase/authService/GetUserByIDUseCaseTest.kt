@@ -1,8 +1,7 @@
-package logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.AuthServiceTestData
 import com.berlin.logic.repositories.AuthenticationRepository
-import com.berlin.logic.usecase.GetUserByIDUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

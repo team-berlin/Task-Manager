@@ -1,12 +1,12 @@
-package com.berlin.logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.logic.repositories.AuthenticationRepository
 import com.berlin.model.User
 
-class GettingUsersLoggedInUseCase(
+class FetchAllUsersUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getCurrentUser():List<User>?{
-        return repository.getCurrentUser()
+    fun getAllUsers():List<User>{
+        return repository.getAllUsers()
     }
 }

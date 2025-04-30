@@ -1,7 +1,6 @@
-package logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.AuthServiceTestData
-import com.berlin.logic.usecase.AuthenticationService
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
