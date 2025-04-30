@@ -4,15 +4,15 @@ import com.berlin.data.BaseSchema
 import com.berlin.model.User
 import com.berlin.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import com.opencsv.CSVWriterBuilder
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import java.io.FileWriter
+import java.io.FileNotFoundException
 import java.nio.file.Path
 
 class CsvDataSourceTest {
@@ -66,14 +66,11 @@ class CsvDataSourceTest {
     //region getAll tests
 
     @Test
-    fun `getAll should return empty list when file does not exist`() {
+    fun `getAll should throw FileNotFoundException when file does not exist`() {
         // Given: CSV file does not exist
 
-        // When: getAll is called
-        val result = csvDataSource.getAll()
-
-        // Then: an empty list should be returned
-        assertThat(result).isEmpty()
+        // When // Then: getAll is called
+        assertThrows<FileNotFoundException> { csvDataSource.getAll() }
     }
 
     @Test

@@ -8,8 +8,7 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 
 class CsvDataSource<T>(
-    private val rootDirectory: String,
-    private val schema: BaseSchema<T>
+    private val rootDirectory: String, private val schema: BaseSchema<T>
 ) : BaseDataSource<T> {
 
     private val csvFile: File
@@ -26,11 +25,12 @@ class CsvDataSource<T>(
                 .use { csvReader ->
                     csvReader
                         .asSequence()
-                        .filter { row->row.isNotEmpty() }
+                        .filter { row -> row.isNotEmpty() }
                         .mapNotNull { row -> schema.fromRow(row.toList()) }
                         .toList()
                 }
         }
+
     }
 
     override fun getById(id: String): T? {

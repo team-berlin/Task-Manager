@@ -184,18 +184,14 @@ class AuditSchemaTest {
 
  private companion object {
 
-  val testUser = User(
-   id = "u1",
-   userName = "user1",
-   password = "pass1",
-   role = UserRole.MATE
-  )
+  val testUserId = "u1"
+
 
   //region Some AuditLogs
   val validAuditLog = AuditLog(
    id = "a1",
    timestamp = 1000L,
-   createdBy = testUser,
+   createdByUserId = testUserId,
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,
@@ -204,7 +200,7 @@ class AuditSchemaTest {
   val validAuditLogEmptyChangesDescription = AuditLog(
    id = "a1",
    timestamp = 1000L,
-   createdBy = testUser,
+   createdByUserId = testUserId,
    auditAction = AuditAction.CREATE,
    changesDescription = null,
    entityType = EntityType.TASK,
@@ -213,7 +209,7 @@ class AuditSchemaTest {
   val invalidAuditLogEmptyId = AuditLog(
    id = "",
    timestamp = 1000L,
-   createdBy = testUser,
+   createdByUserId = testUserId,
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,
@@ -222,7 +218,7 @@ class AuditSchemaTest {
   val invalidAuditLogZeroTimestamp = AuditLog(
    id = "a1",
    timestamp = 0L,
-   createdBy = testUser,
+   createdByUserId = testUserId,
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,
@@ -231,7 +227,7 @@ class AuditSchemaTest {
   val invalidAuditLogEmptyCreatedBy = AuditLog(
    id = "a1",
    timestamp = 1000L,
-   createdBy = User("", "user", "pass", UserRole.MATE),
+   createdByUserId = "",
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,
@@ -240,7 +236,7 @@ class AuditSchemaTest {
   val invalidAuditLogEmptyEntityId = AuditLog(
    id = "a1",
    timestamp = 1000L,
-   createdBy = testUser,
+   createdByUserId = testUserId,
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,

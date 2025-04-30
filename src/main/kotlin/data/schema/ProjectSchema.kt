@@ -28,8 +28,12 @@ class ProjectSchema(
             id = row[ProjectIndex.ID],
             name = row[ProjectIndex.NAME],
             description = row[ProjectIndex.DESCRIPTION].ifEmpty { null },
-            statesId = row[ProjectIndex.STATES_ID].removeSurrounding("[", "]").takeIf { it.isNotEmpty() }?.split(",")?: emptyList(),
-            tasksId = row[ProjectIndex.TASKS_ID].removeSurrounding("[", "]").takeIf { it.isNotEmpty() }?.split(",")?: emptyList()
+            statesId = row[ProjectIndex.STATES_ID]
+                .removeSurrounding("[", "]")
+                .takeIf { it.isNotEmpty() }?.split(",")?: emptyList(),
+            tasksId = row[ProjectIndex.TASKS_ID]
+                .removeSurrounding("[", "]")
+                .takeIf { it.isNotEmpty() }?.split(",")?: emptyList()
         )
     }
 
