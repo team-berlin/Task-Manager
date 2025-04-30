@@ -45,7 +45,7 @@ class UserSchemaTest {
         //when
         val result=userSchema.toRow(validUser)
         //then
-        assertThat(result).isEqualTo(validRow)
+        assertThat(result).isEqualTo(validRowAdmin)
     }
 
     @Test
@@ -77,17 +77,25 @@ class UserSchemaTest {
     //region fromRow
 
     @Test
-    fun `fromRow should return user when valid row passed`() {
+    fun `fromRow should return user when valid row admin passed`() {
         //when
-        val result=userSchema.fromRow(validRow)
+        val result=userSchema.fromRow(validRowAdmin)
         //then
         assertThat(result).isEqualTo(validUser)
     }
 
     @Test
+    fun `fromRow should return user when valid row mate passed`() {
+        //when
+        val result=userSchema.fromRow(validRowMate)
+        //then
+        assertThat(result).isEqualTo(validUserMate)
+    }
+
+    @Test
     fun `fromRow should return null when invalid row passed miss id column`() {
         //when
-        val result=userSchema.fromRow(validRow)
+        val result=userSchema.fromRow(invalidRowEmptyId)
         //then
         assertThat(result).isNull()
     }
@@ -95,7 +103,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss userName column`() {
         //when
-        val result=userSchema.fromRow(validRow)
+        val result=userSchema.fromRow(invalidRowEmptyUserName)
         //then
         assertThat(result).isNull()
     }
@@ -103,7 +111,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss password column`() {
         //when
-        val result=userSchema.fromRow(validRow)
+        val result=userSchema.fromRow(invalidRowEmptyPass)
         //then
         assertThat(result).isNull()
     }
@@ -111,7 +119,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss role column`() {
         //when
-        val result=userSchema.fromRow(validRow)
+        val result=userSchema.fromRow(invalidRowEmptyRole)
         //then
         assertThat(result).isNull()
     }
@@ -143,6 +151,9 @@ class UserSchemaTest {
     private companion object {
         //region Some Users
 
+        val validUserMate = User(
+            id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.MATE
+        )
         val validUser = User(
             id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.ADMIN
         )
@@ -160,8 +171,11 @@ class UserSchemaTest {
 
         //region Some Rows
 
-        val validRow = listOf(
+        val validRowAdmin = listOf(
             "abcs123", "marwanMahmoud", "ui76654898", UserRole.ADMIN.toString()
+        )
+        val validRowMate = listOf(
+            "abcs123", "marwanMahmoud", "ui76654898", UserRole.MATE.toString()
         )
         val invalidRowEmptyId = listOf(
             "", "marwanMahmoud", "ui76654898", UserRole.ADMIN.toString()
