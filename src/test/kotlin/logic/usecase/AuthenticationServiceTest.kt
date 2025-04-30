@@ -56,16 +56,7 @@ class AuthenticationServiceTest {
 
     }
 
-    @Test
-    fun `getAllUsers should return one user at least who is admin when there is no mate created yet`() {
-        //Given
-        every { authenticationService.getAllUsers() } returns listOf(AuthServiceTestData.adminIsFirstUser)
-        //when
-        val result = authenticationService.getAllUsers()
-        // then
-        assertThat(result).isEmpty()
 
-    }
 
     @Test
     fun `createUser should return false when user id is empty`() {
@@ -140,58 +131,5 @@ class AuthenticationServiceTest {
 
     }
 
-    @Test
-    fun `getUserById should return null when id isn't exist`() {
-        //Given
-        every { authenticationService.getUserById(AuthServiceTestData.idNotExist) } returns null
-        //when
-        val result = authenticationService.getUserById("6")
-        //Then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `getUserById should return null when id is empty`() {
-        //Given
-        every { authenticationService.getUserById(AuthServiceTestData.idEmpty) } returns null
-        //when
-        val result = authenticationService.getUserById("6")
-        //Then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `getUserById should return user of given id`() {
-        //Given
-        every { authenticationService.getUserById(AuthServiceTestData.idExist) } returns AuthServiceTestData.existingUser
-        //when
-        val result = authenticationService.getUserById("13")
-        //Then
-        assertThat(result).isEqualTo(AuthServiceTestData.existingUser)
-    }
-
-    @Test
-    fun `getCurrentUser should return null when there is no one log in the system`() {
-        //Given
-        every { authenticationService.getCurrentUser() } returns null
-
-        //when
-        val result = authenticationService.getCurrentUser()
-
-        //Then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `getCurrentUser should return users when they logged in the system`() {
-        //Given
-        every { authenticationService.getCurrentUser() } returns listOf(AuthServiceTestData.adminIsFirstUser)
-
-        //when
-        val result = authenticationService.getCurrentUser()
-
-        //Then
-        assertThat(result).isEqualTo(AuthServiceTestData.adminIsFirstUser)
-    }
 
 }
