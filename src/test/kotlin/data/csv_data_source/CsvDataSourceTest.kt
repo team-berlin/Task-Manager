@@ -4,6 +4,7 @@ import com.berlin.data.BaseSchema
 import com.berlin.model.User
 import com.berlin.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import com.opencsv.CSVWriterBuilder
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import java.io.FileWriter
 import java.nio.file.Path
 
 class CsvDataSourceTest {
@@ -123,7 +125,7 @@ class CsvDataSourceTest {
         // Given: CSV file exists with test data
         createCsvWithTestData()
         every { mockSchema.fromRow(any()) } returnsMany testUsers
-
+        every { mockSchema.getId(testUser) } returns testUser.id
         // When: getById is called with an existing id
         val result = csvDataSource.getById("u1")
 
