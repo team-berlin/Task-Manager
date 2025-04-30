@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -17,6 +18,7 @@ class AssignTaskUseCaseTest {
     private val creator = mockk<User>(relaxed = true)
     private val oldAssignee = mockk<User>(relaxed = true)
     private val newAssignee = mockk<User>(relaxed = true)
+    private val newAnotherAssignee = User("U2", "bob", "pw", UserRole.MATE)
 
     private val stored = Task(
         id = "1",
@@ -24,9 +26,8 @@ class AssignTaskUseCaseTest {
         title = "Demo",
         description = null,
         stateId = "TODO",
-        assignedTo = oldAssignee,
-        createBy = creator,
-        auditLogs = emptyList()
+        assignedToUserId = oldAssignee.id,
+        createByUserId = creator.id
     )
 
     @BeforeEach
@@ -45,9 +46,9 @@ class AssignTaskUseCaseTest {
     @Test
     fun `repository update is called with new assignee`() {
         stubHappyPath()
-        useCase("1", newAssignee)
+        useCase("1", newAnotherAssignee)
         verify(exactly = 1) {
-            taskRepository.update(match { it.id == "1" && it.assignedTo == newAssignee })
+            taskRepository.update(match { it.id == "1" && it.assignedToUserId == newAnotherAssignee.id })
         }
     }
 

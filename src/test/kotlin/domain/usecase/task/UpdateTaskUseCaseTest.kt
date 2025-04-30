@@ -23,9 +23,8 @@ class UpdateTaskUseCaseTest {
         title = "Old title",
         description = "Old description",
         stateId = "TODO",
-        assignedTo = assignee,
-        createBy = creator,
-        auditLogs = emptyList()
+        assignedToUserId = assignee.id,
+        createByUserId = creator.id
     )
 
     @BeforeEach

@@ -9,6 +9,6 @@ class AssignTaskUseCase(
 ) {
     operator fun invoke(taskId: String, newAssignee: User): Result<Task> =
         taskRepository.findById(taskId).mapCatching { original ->
-            taskRepository.update(original.copy(assignedTo = newAssignee)).getOrThrow()
+            taskRepository.update(original.copy(assignedToUserId = newAssignee.id)).getOrThrow()
         }
 }

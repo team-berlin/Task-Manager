@@ -20,10 +20,12 @@ class CreateTaskUseCase(private val taskRepository: TaskRepository) {
             title = title,
             description = description,
             stateId = stateId,
-            assignedTo = assignee,
-            createBy = creator,
-            auditLogs = emptyList()
+            assignedToUserId = assignee.id,
+            createByUserId = creator.id
         )
+
+        // Todo: save audio log
+
         return taskRepository.create(task)
     }
 }

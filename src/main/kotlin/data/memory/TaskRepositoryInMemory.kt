@@ -3,13 +3,12 @@ package com.berlin.data.memory
 import com.berlin.domain.exception.*
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
+import org.berlin.data.DummyData.tasks
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlin.runCatching
 
 class TaskRepositoryInMemory : TaskRepository {
-
-    private val tasks = mutableListOf<Task>()
 
     override fun create(task: Task): Result<Task> = runCatching {
         if (tasks.any { it.id == task.id }) {

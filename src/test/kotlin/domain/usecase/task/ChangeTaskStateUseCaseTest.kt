@@ -23,9 +23,8 @@ class ChangeTaskStateUseCaseTest {
         title       = "Demo",
         description = null,
         stateId     = "TODO",
-        assignedTo  = assignee,
-        createBy    = creator,
-        auditLogs   = emptyList()
+        assignedToUserId  = assignee.id,
+        createByUserId    = creator.id
     )
 
     @BeforeEach

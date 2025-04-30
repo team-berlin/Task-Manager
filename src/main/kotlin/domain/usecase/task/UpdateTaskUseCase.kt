@@ -22,8 +22,7 @@ class UpdateTaskUseCase(
 
         val updated = original.copy(
             title       = title       ?: original.title,
-            description = description ?: original.description,
-            assignedTo  = assignee    ?: original.assignedTo
+            description = description ?: original.description
         )
 
         return taskRepository.update(updated)
