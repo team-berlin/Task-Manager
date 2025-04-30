@@ -1,4 +1,4 @@
-package com.berlin.logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.logic.InvalidCredentialsException
 import com.berlin.logic.repositories.AuthenticationRepository
