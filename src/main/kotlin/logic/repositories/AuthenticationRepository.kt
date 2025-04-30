@@ -3,9 +3,10 @@ package com.berlin.logic.repositories
 import com.berlin.model.User
 
 interface AuthenticationRepository {
-    fun login(userName: String, password: String): User?
-    fun createMate(user:User):Boolean
-    fun getUserById(userId:String):User?
-    fun getAllUsers():List<User>
+    fun login(userName: String, password: String): Result<User>
+    fun createMate(userName: String, password: String): Result<User>
+    fun getUserById(userId: String): User?
+    fun getAllUsers(): List<User>
     fun getCurrentUser(): List<User>?
+
 }

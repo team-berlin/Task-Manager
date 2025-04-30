@@ -4,7 +4,7 @@ import com.berlin.model.User
 import com.berlin.model.UserRole
 
 fun userDummyData(
-    id: String,
+    id: String = "1",
     userName: String,
     password: String ,
     role: UserRole = UserRole.MATE
