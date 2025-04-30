@@ -1,3 +1,0 @@
-package logic.usecase
-
-class GetUserByIDUseCaseTest

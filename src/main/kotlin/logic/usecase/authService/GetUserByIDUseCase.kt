@@ -1,5 +1,6 @@
 package com.berlin.logic.usecase.authService
 
+import com.berlin.logic.InvalidCredentialsException
 import com.berlin.logic.repositories.AuthenticationRepository
 import com.berlin.model.User
 
@@ -8,7 +9,7 @@ class GetUserByIDUseCase(
 ) {
     fun getUserById(id:String): User? {
         if (id.isEmpty())
-            throw IllegalArgumentException("User ID must not be blank.")
+            throw InvalidCredentialsException("User ID must not be blank.")
 
         return repository.getUserById(id)
     }

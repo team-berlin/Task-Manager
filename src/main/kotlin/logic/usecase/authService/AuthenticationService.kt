@@ -1,17 +1,15 @@
-package com.berlin.logic.usecase
+package com.berlin.logic.usecase.authService
 
 import com.berlin.logic.repositories.AuthenticationRepository
 import com.berlin.model.User
 
 class AuthenticationService: AuthenticationRepository {
-    override fun login(userName: String, password: String): User? {
+    override fun login(userName: String, password: String): Result<User> {
         TODO("Not yet implemented")
     }
-
-    override fun createMate(user: User): Boolean {
+    override fun createMate(userName: String, password: String): Result<User> {
         TODO("Not yet implemented")
     }
-
     override fun getUserById(userId: String): User? {
         TODO("Not yet implemented")
     }
@@ -20,7 +18,7 @@ class AuthenticationService: AuthenticationRepository {
         TODO("Not yet implemented")
     }
 
-    override fun getCurrentUser(): List<User>? {
+    override fun getCurrentUser(): User? {
         TODO("Not yet implemented")
     }
 }

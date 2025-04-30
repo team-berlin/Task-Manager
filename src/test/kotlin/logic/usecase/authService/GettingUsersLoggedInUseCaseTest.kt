@@ -31,7 +31,7 @@ class GettingUsersLoggedInUseCaseTest{
   @Test
   fun `getCurrentUser should return users when they logged in the system`() {
    //Given
-   every { repository.getCurrentUser() } returns listOf(AuthServiceTestData.adminIsFirstUser)
+   every { repository.getCurrentUser() } returns AuthServiceTestData.adminIsFirstUser
 
    //when
    val result = gettingUsersLoggedInUseCase.getCurrentUser()

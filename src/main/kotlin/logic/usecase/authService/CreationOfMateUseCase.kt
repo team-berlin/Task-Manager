@@ -11,7 +11,9 @@ class CreationOfMateUseCase(
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("Username and password must not be empty"))
         }
-
+        if (password.length < 8) {
+            return Result.failure(InvalidCredentialsException("Password less than 8 characters"))
+        }
         if (repository.getAllUsers().any { it.userName == userName }) {
             return Result.failure(InvalidCredentialsException("Username already exists"))
         }

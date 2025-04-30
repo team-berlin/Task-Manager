@@ -28,15 +28,17 @@ class AuthRepositoryImp : AuthenticationRepository {
     }
 
     override fun getUserById(userId: String): User? {
-        TODO("Not yet implemented")
+       if (userId.isEmpty()) return null
+         val user = listOfUser.find { it.id == userId }
+        return user
     }
 
     override fun getAllUsers(): List<User> {
-        TODO("Not yet implemented")
+       return listOfUser
     }
 
-    override fun getCurrentUser(): List<User>? {
-        TODO("Not yet implemented")
+    override fun getCurrentUser(): User? {
+       return UserCache.currentUser
     }
 
 

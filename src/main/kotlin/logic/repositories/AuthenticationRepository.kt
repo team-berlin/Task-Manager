@@ -7,6 +7,6 @@ interface AuthenticationRepository {
     fun createMate(userName: String, password: String): Result<User>
     fun getUserById(userId: String): User?
     fun getAllUsers(): List<User>
-    fun getCurrentUser(): List<User>?
+    fun getCurrentUser(): User?
 
 }

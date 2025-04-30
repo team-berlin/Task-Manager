@@ -6,7 +6,7 @@ import com.berlin.model.User
 class GettingUsersLoggedInUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getCurrentUser():List<User>?{
+    fun getCurrentUser(): User?{
         return repository.getCurrentUser()
     }
 }
