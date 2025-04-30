@@ -151,11 +151,11 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `getId should return id empty when project passed have empty id`() {
+ fun `getId should return null when project passed have empty id`() {
   //when
   val result = projectSchema.getId(invalidProjectEmptyId)
   //then
-  assertThat(result).isEqualTo("")
+  assertThat(result).isNull()
  }
 
  //endregion

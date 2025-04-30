@@ -119,11 +119,11 @@ class StateSchemaTest {
  }
 
  @Test
- fun `getId should return id empty when state passed have empty id`() {
+ fun `getId should return null when state passed have empty id`() {
   //when
   val result = stateSchema.getId(invalidStateEmptyId)
   //then
-  assertThat(result).isEqualTo("")
+  assertThat(result).isNull()
  }
 
  //endregion
