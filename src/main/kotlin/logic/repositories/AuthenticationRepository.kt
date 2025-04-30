@@ -7,5 +7,5 @@ interface AuthenticationRepository {
     fun createMate(user:User):Boolean
     fun getUserById(userId:String):User?
     fun getAllUsers():List<User>
-    fun getCurrentUser(): User?
+    fun getCurrentUser(): List<User>?
 }

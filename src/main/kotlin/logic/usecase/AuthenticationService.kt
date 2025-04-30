@@ -3,7 +3,7 @@ package com.berlin.logic.usecase
 import com.berlin.logic.repositories.AuthenticationRepository
 import com.berlin.model.User
 
-class AuthService: AuthenticationRepository {
+class AuthenticationService: AuthenticationRepository {
     override fun login(userName: String, password: String): User? {
         TODO("Not yet implemented")
     }
@@ -20,7 +20,7 @@ class AuthService: AuthenticationRepository {
         TODO("Not yet implemented")
     }
 
-    override fun getCurrentUser(): User? {
+    override fun getCurrentUser(): List<User>? {
         TODO("Not yet implemented")
     }
 }
