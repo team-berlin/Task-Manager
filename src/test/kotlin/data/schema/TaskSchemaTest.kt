@@ -180,33 +180,10 @@ class TaskSchemaTest {
 
     private companion object {
         //region Some Users
-        val sampleUser = User(
-            id = "u1", userName = "user1", password = "pass1", role = UserRole.MATE
-        )
-        val sampleUser2 = User(
-            id = "u2", userName = "user2", password = "pass2", role = UserRole.ADMIN
-        )
-        //endregion
+        val testUserId ="u1"
 
-        //region Some AuditLogs
-        val testAuditLog1 = AuditLog(
-            id = "a1",
-            timestamp = 1000L,
-            createdBy = sampleUser,
-            auditAction = AuditAction.CREATE,
-            changesDescription = "create",
-            entityType = EntityType.TASK,
-            entityId = "t1"
-        )
-        val testAuditLog2 = AuditLog(
-            id = "a2",
-            timestamp = 2000L,
-            createdBy = sampleUser2,
-            auditAction = AuditAction.UPDATE,
-            changesDescription = null,
-            entityType = EntityType.TASK,
-            entityId = "t1"
-        )
+        val testUserId2 ="u2"
+
         //endregion
 
         //region Some Tasks
@@ -216,9 +193,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2
         )
         val validTaskEmptyDescription = Task(
             id = "t1",
@@ -226,9 +202,8 @@ class TaskSchemaTest {
             title = "task1",
             description = null,
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val validTaskEmptyAuditLogs = Task(
             id = "t1",
@@ -236,9 +211,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = emptyList()
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyId = Task(
             id = "",
@@ -246,9 +220,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyProjectId = Task(
             id = "t1",
@@ -256,9 +229,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyTitle = Task(
             id = "t1",
@@ -266,9 +238,8 @@ class TaskSchemaTest {
             title = "",
             description = "desc",
             stateId = "s1",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyStateId = Task(
             id = "t1",
@@ -276,9 +247,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "",
-            assignedTo = sampleUser,
-            createBy = sampleUser2,
-            auditLogs = listOf(testAuditLog1, testAuditLog2)
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
 
         //endregion
@@ -286,25 +256,25 @@ class TaskSchemaTest {
         //region Some Rows
 
         val validRow = listOf(
-            "t1", "p1", "task1", "desc", "s1", "u1", "u2", "a1,a2"
+            "t1", "p1", "task1", "desc", "s1", "u1", "u2"
         )
         val validRowEmptyDescription = listOf(
-            "t1", "p1", "task1", "", "s1", "u1", "u2", "a1,a2"
+            "t1", "p1", "task1", "", "s1", "u1", "u2"
         )
         val validRowEmptyAuditLogs = listOf(
-            "t1", "p1", "task1", "desc", "s1", "u1", "u2", ""
+            "t1", "p1", "task1", "desc", "s1", "u1", "u2"
         )
         val invalidRowEmptyId = listOf(
-            "", "p1", "task1", "desc", "s1", "u1", "u2", "a1,a2"
+            "", "p1", "task1", "desc", "s1", "u1", "u2"
         )
         val invalidRowEmptyProjectId = listOf(
-            "t1", "", "task1", "desc", "s1", "u1", "u2", "a1,a2"
+            "t1", "", "task1", "desc", "s1", "u1", "u2"
         )
         val invalidRowEmptyTitle = listOf(
-            "t1", "p1", "", "desc", "s1", "u1", "u2", "a1,a2"
+            "t1", "p1", "", "desc", "s1", "u1", "u2"
         )
         val invalidRowEmptyStateId = listOf(
-            "t1", "p1", "task1", "desc", "", "u1", "u2", "a1,a2"
+            "t1", "p1", "task1", "desc", "", "u1", "u2"
         )
 
         //endregion
