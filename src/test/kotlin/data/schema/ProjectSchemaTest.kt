@@ -55,6 +55,14 @@ class ProjectSchemaTest {
  }
 
  @Test
+ fun `toRow should return list of valid project attributes when project with empty description passed`() {
+  //when
+  val result = projectSchema.toRow(validProjectEmptyDescription)
+  //then
+  assertThat(result).isEqualTo(validRowEmptyDescription)
+ }
+
+ @Test
  fun `toRow should return list of valid project attributes when project with empty tasksId passed`() {
   //when
   val result = projectSchema.toRow(validProjectEmptyTasksId)
@@ -208,43 +216,43 @@ class ProjectSchemaTest {
    "proj123",
    "SampleProject",
    "A sample project",
-   "state1,state2",
-   "task1,task2"
+   "[state1,state2]",
+   "[task1,task2]"
   )
   val validRowEmptyDescription = listOf(
    "proj123",
    "SampleProject",
    "",
-   "state1,state2",
-   "task1,task2"
+   "[state1,state2]",
+   "[task1,task2]"
   )
   val validRowEmptyStatesId = listOf(
    "proj123",
    "SampleProject",
    "A sample project",
-   "",
-   "task1,task2"
+   "[]",
+   "[task1,task2]"
   )
   val validRowEmptyTasksId = listOf(
    "proj123",
    "SampleProject",
    "A sample project",
-   "state1,state2",
-   ""
+   "[state1,state2]",
+   "[]"
   )
   val invalidRowEmptyId = listOf(
    "",
    "SampleProject",
    "A sample project",
-   "state1,state2",
-   "task1,task2"
+   "[state1,state2]",
+   "[task1,task2]"
   )
   val invalidRowEmptyName = listOf(
    "proj123",
    "",
    "A sample project",
-   "state1,state2",
-   "task1,task2"
+   "[state1,state2]",
+   "[task1,task2]"
   )
 
   //endregion
