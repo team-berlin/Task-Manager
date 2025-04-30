@@ -6,19 +6,16 @@ import com.berlin.model.State
 class UpdateStateUseCase(
     private val stateRepository: StateRepository
 ) {
-    fun updateState(state: State) {
-        if (checkStateExisted(state.id)) {
-            val result = stateRepository.updateState(state)
-            when {
-                result.isSuccess -> Result.success("Updated Successfully")
-                result.isFailure -> Result.failure(Exception("Update Failed"))
-            }
-        } else {
-            throw Exception("State does not exist")
-        }
+    fun updateState(state: State): Result<String> {
+        if(!validateStateName(state.name))
+            throw Exception("State Name must not be empty or blank")
+
+        return stateRepository.updateState(state)
+            .map { "Updated Successfully" }
+            .recover { "Update Failed" }
     }
 
-    private fun checkStateExisted(stateId: String): Boolean {
-        return stateRepository.getStateById(stateId)
-    }
+
+    private fun validateStateName(stateName: String): Boolean =
+        stateName.isNotBlank() && !(stateName.all { it.isDigit() })
 }

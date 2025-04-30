@@ -8,47 +8,92 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
-class DeletionStateUseCaseTest {
+class DeleteStateUseCaseTest {
 
-    private lateinit var deletionStateUseCase: DeletionStateUseCase
+    private lateinit var deleteStateUseCase: DeletionStateUseCase
     private val stateRepository: StateRepository = mockk(relaxed = true)
 
     @BeforeEach
-    fun setup(){
-        deletionStateUseCase = DeletionStateUseCase(stateRepository)
+    fun setup() {
+        deleteStateUseCase = DeletionStateUseCase(stateRepository)
     }
 
     @Test
-    fun `deleteState should return true when state Deletion succeeds`(){
+    fun `should return success when state deleted successfully`() {
         // Given
-        every { stateRepository.deleteState(any()) } returns Result.success(" ")
+        every { stateRepository.deleteState(any()) } returns Result.success("")
+
         // When
-        val result = deletionStateUseCase.deleteState("1")
+        val result = deleteStateUseCase.deleteState("state_1")
+
         // Then
         assertThat(result).isEqualTo("Deleted Successfully")
     }
 
     @Test
-    fun `deleteState should return false when state Deletion fails`(){
+    fun `should return failure when state deletion fails`() {
         // Given
         every { stateRepository.deleteState(any()) } returns Result.failure(Exception())
+
         // When
-        val result = deletionStateUseCase.deleteState("1")
+        val result = deleteStateUseCase.deleteState("1")
+
         // Then
-        assertThat(result).isEqualTo("Deletion Failed")
+        assertThat(result).isEqualTo(Exception("Deletion Failed"))
+    }
+
+    @Test
+    fun `should return null value when state does not exist`() {
+        // Given
+        val input = "state_1"
+        every { stateRepository.getStateById(any()) } returns null
+
+        // When
+        val exception = assertThrows<Exception> { deleteStateUseCase.deleteState("S2") }
+
+        // Then
+        assertThat(exception.message).isEqualTo(
+            "State with ID $input does not exist")
+    }
+
+    @Test
+    fun `should return true when state exists`() {
+        // Given
+        every { stateRepository.getStateById(any()) } returns mockk()
+
+        // When
+        val result = deleteStateUseCase.deleteState("S2")
+
+        // Then
+        assertThat(result).isEqualTo(true)
     }
 
 
-
-    @Test
-    fun `deleteState should throw exception when state is not exist`() {
+    @ParameterizedTest
+    @CsvSource("", " ", "123")
+    fun `should throw exception when state ID is invalid`(stateId: String) {
         // Given
-        every { stateRepository.deleteState(any()) } returns Result.failure(Exception())
+        val input = stateId
+
         // When && Then
-        assertThrows<NoSuchElementException> {
-            deletionStateUseCase.deleteState("1")
+        assertThrows<IllegalArgumentException> {
+            deleteStateUseCase.deleteState(input)
         }
     }
 
+    @Test
+    fun `should return true when state id is valid`() {
+        // Given
+        val stateInput =  "state_1"
+
+        // When
+        val result = deleteStateUseCase.deleteState(stateInput)
+
+        // Then
+        assertThat(result).isEqualTo(true)
     }
+
+}

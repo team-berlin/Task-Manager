@@ -5,20 +5,25 @@ import com.berlin.logic.repositories.StateRepository
 class DeletionStateUseCase(
     private val stateRepository: StateRepository
 ) {
+    fun deleteState(stateId: String): Result<String> {
 
-    fun deleteState(stateId: String) {
-        if (checkStateExisted(stateId)) {
-            val result = stateRepository.deleteState(stateId)
-            when {
-                result.isSuccess -> Result.success("Deleted Successfully")
-                result.isFailure -> Result.failure(Exception("Deletion Failed"))
-            }
-        } else {
-            throw Exception("State does not exist")
+        if(!validateStateId(stateId))
+            throw Exception("State ID must not be empty or blank")
+
+        if (!checkStateExists(stateId)) {
+            return Result.failure(
+                Exception("State with ID $stateId does not exist")
+            )
         }
+
+        return stateRepository.deleteState(stateId)
+            .map { "Deleted Successfully" }
+            .recover { "Deletion Failed" }
     }
 
-    private fun checkStateExisted(stateId: String): Boolean {
-        return stateRepository.getStateById(stateId)
-    }
+    private fun validateStateId(stateId: String): Boolean =
+        stateId.isNotBlank() && !(stateId.all { it.isDigit() })
+
+    fun checkStateExists(stateId: String): Boolean =
+        stateRepository.getStateById(stateId) != null
 }

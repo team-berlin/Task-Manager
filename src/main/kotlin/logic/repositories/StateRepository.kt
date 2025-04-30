@@ -5,10 +5,10 @@ import com.berlin.model.Task
 
 interface StateRepository {
     fun addState(state: State): Result<String>
-    fun getStatesByProjectId(projectId: String):List<State>
+    fun getStatesByProjectId(projectId: String):List<State>?
     fun deleteState(stateId: String): Result<String>
     fun updateState(state: State): Result<String>
     fun getStateByTaskId(taskId: String): State?
     fun getTaskByStateId(stateId: String): List<Task>?
-    fun getStateById(stateId: String): Boolean
+    fun getStateById(stateId: String): State?
 }
