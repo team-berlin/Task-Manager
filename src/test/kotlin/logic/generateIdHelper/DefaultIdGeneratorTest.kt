@@ -7,11 +7,12 @@ import kotlin.test.Test
 
 class DefaultIdGeneratorTest {
 
-    private lateinit var defaultIdGenerator: DefaultIdGenerator
+    private lateinit var idGeneratorImplementation:
+            IdGeneratorImplementation
 
     @BeforeEach
     fun setup() {
-        defaultIdGenerator = DefaultIdGenerator()
+        idGeneratorImplementation = IdGeneratorImplementation()
     }
 
     @Test
@@ -22,7 +23,7 @@ class DefaultIdGeneratorTest {
         val padCharLength = 8
 
         // When
-        val generatedId = defaultIdGenerator.generateId(input, padChar, padCharLength)
+        val generatedId = idGeneratorImplementation.generateId(input, padChar, padCharLength)
 
         // Then
         assertThat(generatedId.startsWith("TestXXXX_")).isTrue()
@@ -36,7 +37,7 @@ class DefaultIdGeneratorTest {
 
         // When & Then
         val exception = assertThrows<IllegalArgumentException> {
-            defaultIdGenerator.generateId(emptyInput, 'X', 8)
+            idGeneratorImplementation.generateId(emptyInput, 'X', 8)
         }
         assertThat(exception.message).isEqualTo("String must not be empty")
     }
@@ -49,7 +50,7 @@ class DefaultIdGeneratorTest {
         val padCharLength = 6
 
         // When
-        val generatedId = defaultIdGenerator.generateId(input, padChar, padCharLength)
+        val generatedId = idGeneratorImplementation.generateId(input, padChar, padCharLength)
 
         // Then
         assertThat(generatedId.startsWith("ABYYYY_")).isTrue()
@@ -63,7 +64,7 @@ class DefaultIdGeneratorTest {
         val padCharLength = 9 // One extra padding
 
         // When
-        val generatedId = defaultIdGenerator.generateId(input, padChar, padCharLength)
+        val generatedId = idGeneratorImplementation.generateId(input, padChar, padCharLength)
 
         // Then
         assertThat(generatedId.startsWith("ValidStrZ_")).isTrue()

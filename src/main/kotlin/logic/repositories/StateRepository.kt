@@ -10,6 +10,5 @@ interface StateRepository {
     fun deleteState(stateId: String): Result<String>
     fun updateState(state: State): Result<String>
     fun getStateByTaskId(taskId: String): State?
-    fun getTaskByStateId(stateId: String): List<Task>?
     fun getStateById(stateId: String): State?
 }
