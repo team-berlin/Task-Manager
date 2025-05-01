@@ -7,10 +7,10 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.test.Test
 
 class GetAllStatesByProjectIdUseCaseTest {
 
@@ -20,7 +20,8 @@ class GetAllStatesByProjectIdUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        getAllStatesByProjectIdUseCase = GetAllStatesByProjectIdUseCase(stateRepository, projectRepository)
+        getAllStatesByProjectIdUseCase = GetAllStatesByProjectIdUseCase(stateRepository,
+            projectRepository)
     }
 
     @Test
@@ -30,6 +31,7 @@ class GetAllStatesByProjectIdUseCaseTest {
             State(id = "S1", name = "Active", projectId = "P1"),
             State(id = "S2", name = "Inactive", projectId = "P1")
         )
+        every { projectRepository.getProjectById("P1") } returns mockk()
         every { stateRepository.getStatesByProjectId("P1") } returns expectedStates
 
         // When
@@ -40,15 +42,14 @@ class GetAllStatesByProjectIdUseCaseTest {
     }
 
     @Test
-    fun `should return true when project id exists`() {
+    fun `should throw exception when no states are found for the project`() {
         // Given
-        every { projectRepository.getProjectById("T1") } returns mockk()
+        every { projectRepository.getProjectById("P1") } returns mockk()
+        every { stateRepository.getStatesByProjectId("P3") } returns null
 
-        // When
-        val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("T1")
-
-        // Then
-        assertThat(result).isEqualTo(mockk())
+        // When & Then
+        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
+        assertThat(exception.message).isEqualTo("No tasks found for state ID P3")
     }
 
     @Test
@@ -58,40 +59,16 @@ class GetAllStatesByProjectIdUseCaseTest {
 
         // When & Then
         val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2") }
-        assertThat(exception.message).isEqualTo("State with ID P2 does not exist")
+        assertThat(exception.message).isEqualTo("Project with ID P2 does not exist")
     }
 
     @ParameterizedTest
-    @CsvSource("", " ", "123")
+    @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when project id is invalid`(projectId: String) {
-        // Given
-        val input = projectId
-
         // When && Then
-        assertThrows<IllegalArgumentException> {
-            getAllStatesByProjectIdUseCase.getAllStatesByProjectId(input)
+        assertThrows<Exception> {
+            getAllStatesByProjectIdUseCase.getAllStatesByProjectId(projectId)
         }
     }
 
-    @Test
-    fun `should return true when project id is valid`() {
-        // Given
-        val taskId =  "state_1"
-
-        // When
-        val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(taskId)
-
-        // Then
-        assertThat(result).isEqualTo(true)
-    }
-
-    @Test
-    fun `should throw exception when no states are found for the project`() {
-        // Given
-        every { stateRepository.getStatesByProjectId("P3") } returns null
-
-        // When & Then
-        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
-        assertThat(exception.message).isEqualTo("No tasks found for state ID P3")
-    }
 }

@@ -6,10 +6,10 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.test.Test
 
 class GetStateByIdUseCaseTest {
 
@@ -48,26 +48,12 @@ class GetStateByIdUseCaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource("", " ", "123")
+    @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when state id is invalid`(stateId: String) {
-        // Given
-        val input = stateId
-
         // When && Then
-        assertThrows<IllegalArgumentException> {
-            getStateByIdUseCase.getStateById(input)
+        assertThrows<Exception> {
+            getStateByIdUseCase.getStateById(stateId)
         }
     }
 
-    @Test
-    fun `should return true when state id is valid`() {
-        // Given
-        val stateInput =  "state_1"
-
-        // When
-        val result = getStateByIdUseCase.getStateById(stateInput)
-
-        // Then
-        assertThat(result).isEqualTo(true)
-    }
 }

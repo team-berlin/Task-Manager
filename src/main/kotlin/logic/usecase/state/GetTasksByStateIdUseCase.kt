@@ -1,19 +1,17 @@
 package com.berlin.logic.usecase.state
 
 import com.berlin.logic.repositories.StateRepository
-import com.berlin.logic.repositories.TaskRepository
 import com.berlin.model.Task
 
 class GetTasksByStateIdUseCase (
-    private val stateRepository: StateRepository,
-    private val taskRepository: TaskRepository
+    private val stateRepository: StateRepository
 ) {
 
-    fun getTasksByStateId(stateId: String): List<Task>? {
-        if (!validateTaskId(stateId)) throw Exception("Task ID must not be empty or blank")
+    fun getAllTasksByStateId(stateId: String): List<Task>? {
+        if (!validateStateId(stateId)) throw Exception("State ID must not be empty or blank")
 
         if (checkStateExists(stateId)) {
-            return stateRepository.getTaskByStateId(stateId)?.takeIf { it.isNotEmpty() }
+            return stateRepository.getTasksByStateId(stateId)
                 ?: throw Exception("No tasks found for state ID $stateId")
         } else {
             throw Exception("State with ID $stateId does not exist")
@@ -21,7 +19,7 @@ class GetTasksByStateIdUseCase (
     }
 
 
-    private fun checkStateExists(stateId: String): Boolean = taskRepository.getTaskById(stateId) != null
+    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
 
-    private fun validateTaskId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
+    private fun validateStateId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

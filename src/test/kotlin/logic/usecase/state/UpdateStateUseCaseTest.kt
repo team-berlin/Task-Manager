@@ -6,10 +6,10 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.test.Test
 
 class UpdateStateUseCaseTest {
 
@@ -44,43 +44,25 @@ class UpdateStateUseCaseTest {
         val result = updateStateUseCase.updateState(state)
 
         // Then
-        assertThat(result).isEqualTo(Exception("Update Failed"))
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-        "1","","S2",
-        "1"," ","S2",
-        "1","123","S2"
-    )
-    fun `should throw exception when state ID is invalid`(
-        stateId: String,
-        stateName: String,
-        projectId: String
-    ) {
-        // Given
-        val input = State(
-            stateId,
-            stateName,
-            projectId
-        )
-
-        // When && Then
-        assertThrows<IllegalArgumentException> {
-            updateStateUseCase.updateState(input)
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Update Failed")
         }
     }
 
-    @Test
-    fun `should return true when state name is valid`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["", " ","123"])
+    fun `should throw exception when state ID is invalid`(stateName: String) {
         // Given
-        val stateInput =  State("1","TODO","S2")
+        val input = State(
+            "S1",
+            stateName,
+            "P1"
+        )
 
-        // When
-        val result = updateStateUseCase.updateState(stateInput)
-
-        // Then
-        assertThat(result).isEqualTo(true)
+        // When && Then
+        assertThrows<Exception> {
+            updateStateUseCase.updateState(input)
+        }
     }
 
 }

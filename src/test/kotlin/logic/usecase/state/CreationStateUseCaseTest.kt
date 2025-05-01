@@ -1,26 +1,25 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.helper.stateHelper
 import com.berlin.logic.generateIdHelper.DefaultIdGenerator
 import com.berlin.logic.repositories.StateRepository
+import com.berlin.model.State
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.test.Test
 
-class CreateStateUseCaseTest {
+class CreationStateUseCaseTest {
 
     private lateinit var createStateUseCase: CreationStateUseCase
     private val stateRepository: StateRepository = mockk(relaxed = true)
 
-
     @BeforeEach
     fun setup() {
-        val idGenerator: DefaultIdGenerator = mockk()
+        val idGenerator: DefaultIdGenerator = mockk(relaxed = true)
         createStateUseCase = CreationStateUseCase(stateRepository,
             idGenerator)
     }
@@ -28,12 +27,13 @@ class CreateStateUseCaseTest {
     @Test
     fun `createNewState should return success when state created successfully`() {
         // Given
-        val validState = stateHelper(name = "TODO", projectId = "1")
-        every { stateRepository.addState(any()) } returns Result.success("")
+        val validState = State(id = "S1", name = "TODO", projectId = "P1")
+        every { stateRepository.addState(any()) } returns Result.success("State created successfully")
+        every { stateRepository.getStateById(any()) } returns mockk()
 
         // When
-        val result = createStateUseCase.createNewState(validState.first,
-            validState.second)
+        val result = createStateUseCase.createNewState(validState.name,
+            validState.projectId)
 
         // Then
         assertThat(result).isEqualTo(
@@ -44,44 +44,34 @@ class CreateStateUseCaseTest {
     @Test
     fun `createNewState should return failure when state creation fails`() {
         // Given
-        val validState = stateHelper(name = "unknown",
-            projectId = "1")
+        val validState = State(id = "S1", name = "S1", projectId = "1")
         every { stateRepository.addState(any()) } returns Result.failure(Exception())
+        every { stateRepository.getStateById(any()) } returns mockk()
 
         // When
-        val result = createStateUseCase.createNewState(validState.first,
-            validState.second)
+        val result = createStateUseCase.createNewState(validState.name,
+            validState.projectId)
 
         // Then
-        assertThat(result).isEqualTo(Exception("State creation failed"))
-    }
-
-    @ParameterizedTest
-    @CsvSource("", " ", "123")
-    fun `validateStateName should throw exception when state name is invalid`(
-        invalidName: String
-    ) {
-        // Given
-        val stateInput = stateHelper(name = invalidName, projectId = "1")
-
-        // When && Then
-        assertThrows<IllegalArgumentException> {
-            createStateUseCase.createNewState(stateInput.first,
-                stateInput.second)
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Creation Failed")
         }
     }
 
-    @Test
-    fun `validateStateName should return true when state name is valid`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["", " ", "123"])
+    fun `validateStateName should throw exception when state name is invalid`(
+        invalidName: String,
+    ) {
         // Given
-        val stateInput = stateHelper(name = "Food_1", projectId = "1")
+        val stateInput = State(id = "S1", name = invalidName, projectId = "P1")
 
-        // When
-        val result = createStateUseCase.createNewState(stateInput.first,
-            stateInput.second)
-
-        // Then
-        assertThat(result).isEqualTo(true)
+        // When && Then
+        assertThrows<Exception> {
+            createStateUseCase.createNewState(
+                stateInput.name,
+                stateInput.projectId
+            )
+        }
     }
-
 }

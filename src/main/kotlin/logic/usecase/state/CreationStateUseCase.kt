@@ -18,7 +18,7 @@ class CreationStateUseCase(
                 projectId = projectId
             )
             return stateRepository.addState(newState)
-                .map { "Creation Successfully" }
+                .map { "State created successfully" }
                 .recover { "Creation Failed" }
         } else {
             throw Exception("State Name must not be empty or blank")

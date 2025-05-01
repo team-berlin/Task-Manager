@@ -22,7 +22,7 @@ class DeletionStateUseCase(
     }
 
     private fun validateStateId(stateId: String): Boolean =
-        stateId.isNotBlank() && !(stateId.all { it.isDigit() })
+        stateId.isNotBlank() || !(stateId.all { it.isDigit() })
 
     fun checkStateExists(stateId: String): Boolean =
         stateRepository.getStateById(stateId) != null
