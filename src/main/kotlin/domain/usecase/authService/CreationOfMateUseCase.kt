@@ -1,8 +1,8 @@
-package logic.usecase.authService
-import com.berlin.domain.logic.InvalidCredentialsException
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+package com.berlin.domain.usecase.authService
+import com.berlin.domain.exception.InvalidCredentialsException
+import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.model.User
-import logic.hashPassword.HashingPassword
 
 class CreationOfMateUseCase(
     private val repository: AuthenticationRepository,

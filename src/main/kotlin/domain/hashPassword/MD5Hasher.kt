@@ -1,4 +1,4 @@
-package logic.hashPassword
+package com.berlin.domain.hashPassword
 
 import java.security.MessageDigest
 

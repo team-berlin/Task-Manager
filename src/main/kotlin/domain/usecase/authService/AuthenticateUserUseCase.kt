@@ -1,11 +1,11 @@
 package domain.usecase.authService
 
-import com.berlin.domain.logic.InvalidCredentialsException
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+import com.berlin.domain.exception.InvalidCredentialsException
+import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.permission.assignPermissions
+import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.model.User
-import com.berlin.logic.permission.assignPermissions
 import data.UserCache
-import logic.hashPassword.HashingPassword
 
 class AuthenticateUserUseCase(
     private val repository: AuthenticationRepository,

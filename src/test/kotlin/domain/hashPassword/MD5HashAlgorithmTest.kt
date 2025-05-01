@@ -1,5 +1,7 @@
-package logic.hashPassword
+package com.berlin.domain.hashPassword
 
+import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.hashPassword.MD5Hasher
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test

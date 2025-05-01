@@ -1,9 +1,9 @@
-package logic.usecase.authService
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+package com.berlin.domain.usecase.authService
+import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import com.berlin.helper.AuthServiceTestData
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

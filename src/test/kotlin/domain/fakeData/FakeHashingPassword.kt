@@ -1,6 +1,6 @@
-package com.berlin.fakeData
+package com.berlin.domain.fakeData
 
-import logic.hashPassword.HashingPassword
+import com.berlin.domain.hashPassword.HashingPassword
 
 class FakeHashingPassword : HashingPassword {
     override fun hashPassword(password: String): String = "$password-hashed"

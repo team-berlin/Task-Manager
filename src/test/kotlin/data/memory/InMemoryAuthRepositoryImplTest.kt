@@ -1,8 +1,9 @@
-package data
+package com.berlin.data.memory
 
-import com.berlin.model.UserRole
-import com.berlin.helper.AuthServiceTestData
+import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import data.UserCache
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 

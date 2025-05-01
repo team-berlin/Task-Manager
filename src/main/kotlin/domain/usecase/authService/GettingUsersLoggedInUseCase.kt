@@ -1,5 +1,5 @@
-package logic.usecase.authService
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+package com.berlin.domain.usecase.authService
+import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.model.User
 
 class GettingUsersLoggedInUseCase(

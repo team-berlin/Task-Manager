@@ -1,6 +1,6 @@
-package logic.usecase.authService
+package com.berlin.domain.usecase.authService
 
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.model.User
 
 class GetUserByIDUseCase(

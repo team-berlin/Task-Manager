@@ -1,13 +1,13 @@
 package domain.logic.usecase.authService
 
-import com.berlin.helper.AuthServiceTestData
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.authService.CreationOfMateUseCase
+import com.berlin.domain.fakeData.FakeHashingPassword
+import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import com.berlin.fakeData.FakeHashingPassword
-import logic.hashPassword.HashingPassword
-import logic.usecase.authService.CreationOfMateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 

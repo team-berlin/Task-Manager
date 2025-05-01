@@ -1,11 +1,15 @@
-package data
-import com.berlin.domain.logic.repositories.AuthenticationRepository
+package com.berlin.data.memory
+import com.berlin.domain.model.UserRole
+import com.berlin.domain.permission.assignPermissions
+import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.logic.generateIdHelper.IdGenerator
+import com.berlin.logic.generateIdHelper.IdGeneratorImplementation
 import com.berlin.model.User
-import com.berlin.model.UserRole
-import com.berlin.logic.permission.assignPermissions
+import data.UserCache
 
 class InMemoryAuthRepositoryImpl : AuthenticationRepository {
     private val listOfUser = mutableListOf<User>()
+    private val userId: IdGenerator = IdGeneratorImplementation()
 
     override fun login(userName: String, password: String): Result<User> {
         val user = listOfUser.find { it.userName == userName && it.password == password }
@@ -18,7 +22,7 @@ class InMemoryAuthRepositoryImpl : AuthenticationRepository {
 
     override fun createMate(userName: String, password: String): Result<User> {
         val newUser = User(
-          id = (listOfUser.size + 1).toString(),
+          id = userId.generateId(""),
             userName = userName,
             password =  password,
             permission = assignPermissions(UserRole.MATE),
