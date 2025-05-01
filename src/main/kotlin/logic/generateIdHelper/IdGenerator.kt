@@ -6,6 +6,6 @@ interface IdGenerator {
     fun generateId(
         prefix: String,
         padChar: Char = prefix[prefix.length / 2],
-        padCharLength: Int  = prefix.length + Random.Default.nextInt(1, 5)
-        ): String
+        padCharLength: Int  = prefix.length + Random.nextInt(1, 5)
+    ): String
 }
