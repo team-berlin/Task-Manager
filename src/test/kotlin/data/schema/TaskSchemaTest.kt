@@ -47,14 +47,6 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return list of valid task attributes when task with empty auditLogs passed`() {
-        //when
-        val result = taskSchema.toRow(validTaskEmptyAuditLogs)
-        //then
-        assertThat(result).isEqualTo(validRowEmptyAuditLogs)
-    }
-
-    @Test
     fun `toRow should return list of valid task attributes when task with empty description passed`() {
         //when
         val result = taskSchema.toRow(validTaskEmptyDescription)
@@ -94,6 +86,22 @@ class TaskSchemaTest {
         assertThat(result).isEmpty()
     }
 
+    @Test
+    fun `toRow should return empty list when invalid task passed miss assign to attribute`() {
+        //when
+        val result = taskSchema.toRow(invalidTaskEmptyAssignTo)
+        //then
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `toRow should return empty list when invalid task passed miss create by attribute`() {
+        //when
+        val result = taskSchema.toRow(invalidTaskEmptyCreateBy)
+        //then
+        assertThat(result).isEmpty()
+    }
+
     //endregion
 
     //region fromRow
@@ -112,14 +120,6 @@ class TaskSchemaTest {
         val result = taskSchema.fromRow(validRowEmptyDescription)
         //then
         assertThat(result).isEqualTo(validTaskEmptyDescription)
-    }
-
-    @Test
-    fun `fromRow should return task when valid row empty auditLogs passed`() {
-        //when
-        val result = taskSchema.fromRow(validRowEmptyAuditLogs)
-        //then
-        assertThat(result).isEqualTo(validTaskEmptyAuditLogs)
     }
 
     @Test
@@ -154,6 +154,22 @@ class TaskSchemaTest {
         assertThat(result).isNull()
     }
 
+    @Test
+    fun `fromRow should return null when invalid row passed miss assign to column`() {
+        //when
+        val result = taskSchema.fromRow(invalidRowEmptyAssignTo)
+        //then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `fromRow should return null when invalid row passed miss create by column`() {
+        //when
+        val result = taskSchema.fromRow(invalidRowEmptyCreateBy)
+        //then
+        assertThat(result).isNull()
+    }
+
     //endregion
 
     //region getId
@@ -167,19 +183,20 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `getId should return id empty when task passed have empty id`() {
+    fun `getId should return null when task passed have empty id`() {
         //when
         val result = taskSchema.getId(invalidTaskEmptyId)
         //then
-        assertThat(result).isEqualTo("")
+        assertThat(result).isNull()
     }
 
     //endregion
 
-    private fun fakeTaskSchema() = TaskSchema("test.csv", listOf("a", "b", "c", "d", "e", "f", "g", "h"))
+    private fun fakeTaskSchema() = TaskSchema("test.csv", listOf("a", "b", "c", "d", "e", "f", "g"))
 
     private companion object {
-        //region Some Users
+
+        //region Some Users id
         val testUserId ="u1"
 
         val testUserId2 ="u2"
@@ -201,15 +218,6 @@ class TaskSchemaTest {
             projectId = "p1",
             title = "task1",
             description = null,
-            stateId = "s1",
-            assignedToUserId = testUserId,
-            createByUserId = testUserId2,
-        )
-        val validTaskEmptyAuditLogs = Task(
-            id = "t1",
-            projectId = "p1",
-            title = "task1",
-            description = "desc",
             stateId = "s1",
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
@@ -250,6 +258,24 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
+        val invalidTaskEmptyAssignTo = Task(
+            id = "t1",
+            projectId = "p1",
+            title = "task1",
+            description = "desc",
+            stateId = "s1",
+            assignedToUserId = "",
+            createByUserId = testUserId2,
+        )
+        val invalidTaskEmptyCreateBy = Task(
+            id = "t1",
+            projectId = "p1",
+            title = "task1",
+            description = "desc",
+            stateId = "s1",
+            assignedToUserId = testUserId,
+            createByUserId = "",
+        )
 
         //endregion
 
@@ -260,9 +286,6 @@ class TaskSchemaTest {
         )
         val validRowEmptyDescription = listOf(
             "t1", "p1", "task1", "", "s1", "u1", "u2"
-        )
-        val validRowEmptyAuditLogs = listOf(
-            "t1", "p1", "task1", "desc", "s1", "u1", "u2"
         )
         val invalidRowEmptyId = listOf(
             "", "p1", "task1", "desc", "s1", "u1", "u2"
@@ -275,6 +298,12 @@ class TaskSchemaTest {
         )
         val invalidRowEmptyStateId = listOf(
             "t1", "p1", "task1", "desc", "", "u1", "u2"
+        )
+        val invalidRowEmptyAssignTo = listOf(
+            "t1", "p1", "task1", "desc", "s1", "", "u2"
+        )
+        val invalidRowEmptyCreateBy = listOf(
+            "t1", "p1", "task1", "desc", "s1", "u1", ""
         )
 
         //endregion

@@ -49,6 +49,14 @@ class UserSchemaTest {
     }
 
     @Test
+    fun `toRow should return list of valid user attributes when valid user mate passed`() {
+        //when
+        val result=userSchema.toRow(validUserMate)
+        //then
+        assertThat(result).isEqualTo(validRowMate)
+    }
+
+    @Test
     fun `toRow should return empty list when invalid user passed miss id attribute`() {
         //when
         val result=userSchema.toRow(invalidUserEmptyId)
@@ -137,11 +145,11 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `getId should return id empty when user passed have empty id`() {
+    fun `getId should return null when user passed have empty id`() {
         //when
         val result=userSchema.getId(invalidUserEmptyId)
         //then
-        assertThat(result).isEqualTo("")
+        assertThat(result).isNull()
     }
 
     //endregion
@@ -149,6 +157,7 @@ class UserSchemaTest {
     private fun fakeUserSchema() = UserSchema("test.csv", listOf("a", "b", "c", "d"))
 
     private companion object {
+
         //region Some Users
 
         val validUserMate = User(

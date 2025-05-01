@@ -2,8 +2,6 @@ package data.schema
 
 import com.berlin.data.schema.AuditSchema
 import com.berlin.model.AuditLog
-import com.berlin.model.User
-import com.berlin.model.UserRole
 import com.berlin.model.AuditAction
 import com.berlin.model.EntityType
 import com.google.common.truth.Truth.assertThat
@@ -95,11 +93,19 @@ class AuditSchemaTest {
  //region fromRow
 
  @Test
- fun `fromRow should return audit log when valid row full passed`() {
+ fun `fromRow should return audit log when valid row task full passed`() {
   //when
   val result = auditSchema.fromRow(validRow)
   //then
   assertThat(result).isEqualTo(validAuditLog)
+ }
+
+ @Test
+ fun `fromRow should return audit log when valid row project full passed`() {
+  //when
+  val result = auditSchema.fromRow(validRowProject)
+  //then
+  assertThat(result).isEqualTo(validAuditLogProject)
  }
 
  @Test
@@ -143,6 +149,14 @@ class AuditSchemaTest {
  }
 
  @Test
+ fun `fromRow should return null when invalid row passed wrong auditAction column`() {
+  //when
+  val result = auditSchema.fromRow(invalidRowWrongAuditAction)
+  //then
+  assertThat(result).isNull()
+ }
+
+ @Test
  fun `fromRow should return null when invalid row passed miss entityType column`() {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyEntityType)
@@ -171,11 +185,11 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `getId should return id empty when audit log passed have empty id`() {
+ fun `getId should return null when audit log passed have empty id`() {
   //when
   val result = auditSchema.getId(invalidAuditLogEmptyId)
   //then
-  assertThat(result).isEqualTo("")
+  assertThat(result).isNull()
  }
 
  //endregion
@@ -186,8 +200,8 @@ class AuditSchemaTest {
 
   val testUserId = "u1"
 
-
   //region Some AuditLogs
+
   val validAuditLog = AuditLog(
    id = "a1",
    timestamp = 1000L,
@@ -195,6 +209,15 @@ class AuditSchemaTest {
    auditAction = AuditAction.CREATE,
    changesDescription = "create",
    entityType = EntityType.TASK,
+   entityId = "e1"
+  )
+  val validAuditLogProject = AuditLog(
+   id = "a1",
+   timestamp = 1000L,
+   createdByUserId = testUserId,
+   auditAction = AuditAction.DELETE,
+   changesDescription = "create",
+   entityType = EntityType.PROJECT,
    entityId = "e1"
   )
   val validAuditLogEmptyChangesDescription = AuditLog(
@@ -246,6 +269,7 @@ class AuditSchemaTest {
   //endregion
 
   //region Some Rows
+
   val validRow = listOf(
    "a1",
    "1000",
@@ -253,6 +277,15 @@ class AuditSchemaTest {
    "CREATE",
    "create",
    "TASK",
+   "e1"
+  )
+  val validRowProject = listOf(
+   "a1",
+   "1000",
+   "u1",
+   "DELETE",
+   "create",
+   "PROJECT",
    "e1"
   )
   val validRowEmptyChangesDescription = listOf(
@@ -296,6 +329,15 @@ class AuditSchemaTest {
    "1000",
    "u1",
    "",
+   "create",
+   "TASK",
+   "e1"
+  )
+  val invalidRowWrongAuditAction = listOf(
+   "a1",
+   "1000",
+   "u1",
+   "jgj444h",
    "create",
    "TASK",
    "e1"

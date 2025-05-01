@@ -6,5 +6,5 @@ interface BaseSchema<T> {
 
     fun toRow(entity: T): List<String>
     fun fromRow(row: List<String>): T?
-    fun getId(entity: T): String
+    fun getId(entity: T): String?
 }
