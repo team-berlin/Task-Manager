@@ -1,6 +1,6 @@
 package com.berlin.domain.logic.repositories
 
-import com.berlin.domain.model.User
+import com.berlin.model.User
 
 interface AuthenticationRepository {
     fun login(userName: String, password: String): Result<User>

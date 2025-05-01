@@ -1,6 +1,6 @@
 package data
 
-import com.berlin.domain.model.UserRole
+import com.berlin.model.UserRole
 import com.berlin.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach

@@ -1,7 +1,7 @@
 package logic.usecase.authService
 import com.berlin.domain.logic.InvalidCredentialsException
 import com.berlin.domain.logic.repositories.AuthenticationRepository
-import com.berlin.domain.model.User
+import com.berlin.model.User
 import logic.hashPassword.HashingPassword
 
 class CreationOfMateUseCase(

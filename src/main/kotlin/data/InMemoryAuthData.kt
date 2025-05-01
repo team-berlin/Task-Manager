@@ -1,7 +1,7 @@
 package data
 import com.berlin.domain.logic.repositories.AuthenticationRepository
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.model.User
+import com.berlin.model.UserRole
 import com.berlin.logic.permission.assignPermissions
 
 class InMemoryAuthRepositoryImpl : AuthenticationRepository {

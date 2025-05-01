@@ -1,7 +1,7 @@
 package com.berlin.logic.permission
 
-import com.berlin.domain.model.UserRole
-import domain.model.Permission
+import com.berlin.model.UserRole
+import com.berlin.model.Permission
 
 fun assignPermissions(role: UserRole): Permission {
     return when(role){

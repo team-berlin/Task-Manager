@@ -1,4 +1,4 @@
-package domain.model
+package com.berlin.model
 
 data class Permission(
     val createProject: Boolean = false,

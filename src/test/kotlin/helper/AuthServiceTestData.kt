@@ -1,8 +1,8 @@
 package com.berlin.helper
 
-import com.berlin.domain.model.UserRole
+import com.berlin.model.UserRole
 import com.berlin.logic.helper.userDummyData
-import domain.model.Permission
+import com.berlin.model.Permission
 
 object AuthServiceTestData {
     val adminIsFirstUser= userDummyData("55","Menna","12345678",  permission = Permission(viewAuditLogs = true))
@@ -28,6 +28,7 @@ object AuthServiceTestData {
         editTask = true,
         deleteTask= true,
         viewAuditLogs= true
-    ))
+    )
+    )
 
 }

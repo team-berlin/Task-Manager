@@ -1,7 +1,7 @@
 package logic.usecase.authService
 
 import com.berlin.domain.logic.repositories.AuthenticationRepository
-import com.berlin.domain.model.User
+import com.berlin.model.User
 
 class GetUserByIDUseCase(
     private val repository: AuthenticationRepository

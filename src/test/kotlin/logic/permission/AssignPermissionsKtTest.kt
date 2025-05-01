@@ -1,6 +1,6 @@
 package logic.permission
 
-import com.berlin.domain.model.UserRole
+import com.berlin.model.UserRole
 import com.berlin.logic.permission.assignPermissions
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test

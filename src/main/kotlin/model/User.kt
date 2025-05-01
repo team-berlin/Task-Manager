@@ -1,6 +1,4 @@
-package com.berlin.domain.model
-
-import domain.model.Permission
+package com.berlin.model
 
 
 data class User(
