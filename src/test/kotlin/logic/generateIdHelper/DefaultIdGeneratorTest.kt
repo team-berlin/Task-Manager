@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
-class DefaultIdGeneratorTest {
+class IdGeneratorImplementationTest {
 
     private lateinit var idGeneratorImplementation:
             IdGeneratorImplementation
