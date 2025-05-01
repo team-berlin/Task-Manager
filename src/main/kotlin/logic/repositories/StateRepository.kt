@@ -1,6 +1,6 @@
 package com.berlin.logic.repositories
 
-import com.berlin.model.State
+import com.berlin.domain.model.State
 import com.berlin.model.Task
 
 interface StateRepository {

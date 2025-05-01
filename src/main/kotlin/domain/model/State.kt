@@ -1,4 +1,4 @@
-package com.berlin.model
+package com.berlin.domain.model
 
 data class State(
     val id: String,
