@@ -1,6 +1,6 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.logic.generateIdHelper.DefaultIdGenerator
+import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.repositories.StateRepository
 import com.berlin.model.State
 import com.google.common.truth.Truth.assertThat
@@ -19,7 +19,7 @@ class CreationStateUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        val idGenerator: DefaultIdGenerator = mockk(relaxed = true)
+        val idGenerator: IdGenerator = mockk(relaxed = true)
         createStateUseCase = CreationStateUseCase(stateRepository,
             idGenerator)
     }

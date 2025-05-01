@@ -1,19 +1,17 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.logic.generateIdHelper.DefaultIdGenerator
-import com.berlin.logic.repositories.AuditRepository
+import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.AuditLog
 import com.berlin.model.State
 
 class CreationStateUseCase(
     private val stateRepository: StateRepository,
-    private val defaultIdGenerator: DefaultIdGenerator,
+    private val idGenerator: IdGenerator,
 ) {
     fun createNewState(stateName: String, projectId: String): Result<String> {
         if (validateStateName(stateName)) {
             val newState = State(
-                id = defaultIdGenerator.generateId(stateName),
+                id = idGenerator.generateId(stateName),
                 name = stateName,
                 projectId = projectId
             )

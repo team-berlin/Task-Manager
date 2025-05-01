@@ -1,9 +1,9 @@
 package com.berlin.logic.generateIdHelper
 
-class DefaultIdGenerator : IdGenerator {
+class IdGeneratorImplementation : IdGenerator {
     override fun generateId(
-        input: String, padChar: Char, padCharLength: Int): String {
-        val cleanedInput = input.trim().replace(" ", "")
+        prefix: String, padChar: Char, padCharLength: Int): String {
+        val cleanedInput = prefix.trim().replace(" ", "")
             .ifEmpty { throw IllegalArgumentException("String must not be empty") }
 
         val paddedNumber = cleanedInput.padEnd(padCharLength, padChar)
