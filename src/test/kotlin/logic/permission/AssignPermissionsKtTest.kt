@@ -15,8 +15,6 @@ class AssignPermissionsKtTest {
         assertThat(permissions.editTask).isTrue()
         assertThat(permissions.deleteTask).isTrue()
         assertThat(permissions.viewAuditLogs).isTrue()
-
-        // Permissions that should be false for MATE
         assertThat(permissions.createProject).isFalse()
         assertThat(permissions.editProject).isFalse()
         assertThat(permissions.deleteProject).isFalse()
