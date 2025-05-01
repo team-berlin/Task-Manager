@@ -1,4 +1,4 @@
-package com.berlin.domain.logic.repositories
+package com.berlin.logic.repositories
 
 import com.berlin.model.User
 

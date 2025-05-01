@@ -1,5 +1,7 @@
-package com.berlin.logic.generateIdHelper
+package domain.helper
 
+
+import com.berlin.domain.helper.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
@@ -7,8 +9,7 @@ import kotlin.test.Test
 
 class IdGeneratorImplementationTest {
 
-    private lateinit var idGeneratorImplementation:
-            IdGeneratorImplementation
+    private lateinit var idGeneratorImplementation: IdGeneratorImplementation
 
     @BeforeEach
     fun setup() {
