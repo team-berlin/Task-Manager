@@ -1,7 +1,7 @@
 package com.berlin
 
-import com.berlin.model.User
-import com.berlin.model.UserRole
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 
 fun userDummyData(
     id: String = "1",
