@@ -2,7 +2,7 @@ package com.berlin.logic.usecase.state
 
 import com.berlin.logic.repositories.ProjectRepository
 import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.State
+import com.berlin.domain.model.State
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

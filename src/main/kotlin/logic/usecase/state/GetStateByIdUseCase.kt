@@ -1,7 +1,7 @@
 package com.berlin.logic.usecase.state
 
 import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.State
+import com.berlin.domain.model.State
 
 class GetStateByIdUseCase(
     private val stateRepository: StateRepository

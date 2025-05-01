@@ -1,9 +1,10 @@
 package com.berlin.logic.repositories
 
-import com.berlin.model.Project
+import com.berlin.domain.model.Project
+
 
 interface ProjectRepository {
-    fun createProject(project:Project):Boolean
+    fun createProject(project: Project):Boolean
     fun getProjectById(projectId:String): Project?
     fun getAllProjects():List<Project>
     fun updateProject(project: Project):Boolean

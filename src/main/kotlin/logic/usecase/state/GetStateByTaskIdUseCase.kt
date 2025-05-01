@@ -2,7 +2,7 @@ package com.berlin.logic.usecase.state
 
 import com.berlin.logic.repositories.StateRepository
 import com.berlin.logic.repositories.TaskRepository
-import com.berlin.model.State
+import com.berlin.domain.model.State
 
 class GetStateByTaskIdUseCase(
     private val stateRepository: StateRepository,
