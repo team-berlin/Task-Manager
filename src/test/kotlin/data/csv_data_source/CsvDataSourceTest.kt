@@ -328,7 +328,6 @@ class CsvDataSourceTest {
 
     //endregion
 
-    // Helper method to create test CSV file
     private fun createCsvWithTestData() {
         val csvFile = File(tempDir.toFile(), mockSchema.fileName)
         csvFile.createNewFile()
