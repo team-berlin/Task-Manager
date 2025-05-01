@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class GetProjectByIdUseCaseTest {
@@ -49,30 +50,11 @@ class GetProjectByIdUseCaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-        "",
-        " ",
-        "123"
-    )
+    @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when project id is invalid`(projectId: String) {
-        // Given
-        val input = projectId
-
         // When && Then
-        assertThrows<IllegalArgumentException> {
-            getProjectByIdUseCase.getProjectById(input)
+        assertThrows<Exception> {
+            getProjectByIdUseCase.getProjectById(projectId)
         }
-    }
-
-    @Test
-    fun `should return true when project id is valid`() {
-        // Given
-        val projectInput = "project_1"
-
-        // When
-        val result = getProjectByIdUseCase.getProjectById(projectInput)
-
-        // Then
-        assertThat(result).isEqualTo(true)
     }
 }

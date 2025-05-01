@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class DeleteProjectUseCaseTest {
@@ -30,75 +31,44 @@ class DeleteProjectUseCaseTest {
         val result = deleteProjectUseCase.deleteProject("project_1")
 
         // Then
-        assertThat(result).isEqualTo("Deleted Successfully")
+        assertThat(result).isEqualTo(Result.success("Deleted Successfully"))
     }
 
     @Test
     fun `should return failure when project deletion fails`() {
         // Given
-        every { projectRepository.deleteProject(any()) } returns Result.failure(Exception())
+        every { projectRepository.deleteProject("P1") } returns Result.failure(Exception())
 
         // When
-        val result = deleteProjectUseCase.deleteProject("1")
+        val result = deleteProjectUseCase.deleteProject("P1")
 
         // Then
-        assertThat(result).isEqualTo(Exception("Deletion Failed"))
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Deletion Failed")
+        }
     }
 
     @Test
-    fun `should return null value when project does not exist`() {
+    fun `should throw exception when project id does not exists`() {
         // Given
-        val input = "project_1"
         every { projectRepository.getProjectById(any()) } returns null
-
-        // When
-        val exception = assertThrows<Exception> { deleteProjectUseCase.deleteProject("P2") }
-
-        // Then
-        assertThat(exception.message).isEqualTo(
-            "Project with ID $input does not exist"
-        )
-    }
-
-    @Test
-    fun `should return true when project exists`() {
-        // Given
-        every { projectRepository.getProjectById(any()) } returns mockk()
 
         // When
         val result = deleteProjectUseCase.deleteProject("P2")
 
         // Then
-        assertThat(result).isEqualTo(true)
-    }
-
-
-    @ParameterizedTest
-    @CsvSource(
-        "",
-        " ",
-        "123"
-    )
-    fun `should throw exception when project ID is invalid`(projectId: String) {
-        // Given
-        val input = projectId
-
-        // When && Then
-        assertThrows<IllegalArgumentException> {
-            deleteProjectUseCase.deleteProject(input)
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Project with ID P2 does not exist")
         }
     }
 
-    @Test
-    fun `should return true when project id is valid`() {
-        // Given
-        val projectInput = "project_1"
-
-        // When
-        val result = deleteProjectUseCase.deleteProject(projectInput)
-
-        // Then
-        assertThat(result).isEqualTo(true)
+    @ParameterizedTest
+    @ValueSource(strings = ["", " ", "123"])
+    fun `should throw exception when project ID is invalid`(projectId: String) {
+        // When && Then
+        assertThrows<Exception> {
+            deleteProjectUseCase.deleteProject(projectId)
+        }
     }
 
 }

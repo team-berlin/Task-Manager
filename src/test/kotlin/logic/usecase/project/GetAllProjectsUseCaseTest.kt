@@ -1,14 +1,14 @@
-package logic.usecase.project;
+package com.berlin.logic.usecase.project
 
 import com.berlin.helper.projectHelper
 import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.logic.usecase.project.GetAllProjectsUseCase;
+import com.berlin.model.Project
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.Test
 
 class GetAllProjectsUseCaseTest {
 
@@ -21,28 +21,28 @@ class GetAllProjectsUseCaseTest {
     }
 
     @Test
-    fun `should return list of projects when valid projects exists`() {
+    fun `should return list of projects when projects exist`() {
         // Given
-        val expectedProjectsList = listOf(projectHelper(),projectHelper(),projectHelper())
-        every { projectRepository.getAllProjects() } returns expectedProjectsList
+        val expectedProjects = listOf(
+            projectHelper(),
+            projectHelper()
+        )
+        every { projectRepository.getAllProjects() } returns expectedProjects
 
         // When
         val result = getAllProjectsUseCase.getAllProjects()
 
         // Then
-        assertThat(result).isEqualTo(expectedProjectsList)
+        assertThat(result).isEqualTo(expectedProjects)
     }
 
     @Test
-    fun `should throw exception when there is no project exist`() {
+    fun `should throw exception when no projects are found`() {
         // Given
-        every { projectRepository.getAllProjects() } returns emptyList()
+        every { projectRepository.getAllProjects() } returns null
 
-        // When
+        // When & Then
         val exception = assertThrows<Exception> { getAllProjectsUseCase.getAllProjects() }
-
-        // Then
         assertThat(exception.message).isEqualTo("No projects found")
     }
-    
 }

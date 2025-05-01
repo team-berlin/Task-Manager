@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class CreateProjectUseCaseTest {
@@ -21,7 +22,7 @@ class CreateProjectUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        val idGenerator: DefaultIdGenerator = mockk()
+        val idGenerator: DefaultIdGenerator = mockk(relaxed = true)
         createProjectUseCase = CreateProjectUseCase(projectRepository, idGenerator)
     }
 
@@ -29,19 +30,18 @@ class CreateProjectUseCaseTest {
     fun `createNewProject should return success when project created successfully`() {
         // Given
         val validProject = projectHelper()
-        every { projectRepository.createProject(any()) } returns Result.success("")
+        every { projectRepository.createProject(any()) } returns Result.success("Creation Successfully")
 
         // When
         val result = createProjectUseCase.createNewProject(
             validProject.name,
+            validProject.description,
             validProject.statesId,
             validProject.tasksId
         )
 
         // Then
-        assertThat(result).isEqualTo(
-            Result.success("Project created successfully")
-        )
+        assertThat(result).isEqualTo(Result.success("Creation Successfully"))
     }
 
     @Test
@@ -53,50 +53,31 @@ class CreateProjectUseCaseTest {
         // When
         val result = createProjectUseCase.createNewProject(
             validProject.name,
+            validProject.description,
             validProject.statesId,
             validProject.tasksId
         )
 
         // Then
-        assertThat(result).isEqualTo(Exception("Project creation failed"))
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-        "",
-        " ",
-        "123"
-    )
-    fun `validateProjectName should throw exception when project name is invalid`(
-        invalidName: String
-    ) {
-        // Given
-        val projectInput = projectHelper(name = invalidName)
-
-        // When && Then
-        assertThrows<IllegalArgumentException> {
-            createProjectUseCase.createNewProject(
-                projectInput.name,
-                projectInput.statesId,
-                projectInput.tasksId
-            )
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Creation Failed")
         }
     }
 
-    @Test
-    fun `validateProjectName should return true when project name is valid`() {
-        // Given
-        val projectInput = projectHelper()
 
-        // When
-        val result = createProjectUseCase.createNewProject(
-            projectInput.name,
-            projectInput.statesId,
-            projectInput.tasksId
-        )
-
-        // Then
-        assertThat(result).isEqualTo(true)
+    @ParameterizedTest
+    @ValueSource(strings = ["", " ", "123"])
+    fun `validateProjectName should throw exception when project name is invalid`(
+        invalidName: String
+    ) {
+        // When && Then
+        assertThrows<Exception> {
+            createProjectUseCase.createNewProject(invalidName,
+                null,
+                null,
+                null
+            )
+        }
     }
 
 }

@@ -6,8 +6,8 @@ fun projectHelper(
     id: String = "123",
     name: String = "TODO",
     description:String? = null,
-    statesId:List<String> = listOf("1","2"),
-    tasksId:List<String> = listOf("3","4")
+    statesId:List<String>? = listOf("1","2"),
+    tasksId:List<String>? = listOf("3","4")
 ): Project {
     return Project(
         id = id,
