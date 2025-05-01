@@ -5,5 +5,6 @@ data class User(
     val id:String,
     val userName:String,
     val password:String,
-    val role:UserRole
+    val permission: Permission,
+    val role: UserRole
 )
