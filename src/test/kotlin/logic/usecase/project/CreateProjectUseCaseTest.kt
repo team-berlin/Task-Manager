@@ -1,7 +1,7 @@
 package logic.usecase.project;
 
 import com.berlin.helper.projectHelper
-import com.berlin.logic.generateIdHelper.DefaultIdGenerator
+import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.repositories.ProjectRepository
 import com.berlin.logic.usecase.project.CreateProjectUseCase
 import com.google.common.truth.Truth.assertThat
@@ -10,7 +10,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
@@ -22,7 +21,7 @@ class CreateProjectUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        val idGenerator: DefaultIdGenerator = mockk(relaxed = true)
+        val idGenerator: IdGenerator = mockk(relaxed = true)
         createProjectUseCase = CreateProjectUseCase(projectRepository, idGenerator)
     }
 
