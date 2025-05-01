@@ -1,26 +1,27 @@
-package presentation.task
+package com.berlin.presentation.task
 
+import com.berlin.data.DummyData
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.*
-import com.berlin.presentation.task.GetTasksByProjectIdUI
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
-import org.berlin.data.DummyData
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class GetTasksByProjectIdUITest {
 
     private val printed = mutableListOf<String>()
-
     private val viewer: Viewer = mockk(relaxed = true) {
         every { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
-
+    private lateinit var useCase: GetTasksByProjectUseCase
     private lateinit var ui: GetTasksByProjectIdUI
 
-    private val projectP1 = Project("P1", "Core", null, emptyList(), emptyList())
+    private val projectP1 = Project("P1", "Core", null, listOf("S1"), emptyList())
     private val stateTodo = State("S1", "TODO", "P1")
     private val alice = User("U1", "alice", "pw", UserRole.MATE)
 
@@ -33,9 +34,9 @@ class GetTasksByProjectIdUITest {
 
         DummyData.projects += projectP1
         DummyData.states += stateTodo
-        DummyData.users
 
-        ui = GetTasksByProjectIdUI(viewer, reader)
+        useCase = mockk()
+        ui = GetTasksByProjectIdUI(useCase, viewer, reader)
     }
 
     @Test
@@ -49,9 +50,8 @@ class GetTasksByProjectIdUITest {
             assignedToUserId = alice.id,
             createByUserId = alice.id
         )
-        DummyData.tasks += task
-
         every { reader.read() } returns "1"
+        every { useCase.invoke("P1") } returns Result.success(listOf(task))
 
         ui.run()
 
@@ -59,15 +59,25 @@ class GetTasksByProjectIdUITest {
         assertThat(printed).contains("- T1: Feature  → ${alice.id}")
     }
 
-
     @Test
     fun `prints no states message`() {
         DummyData.states.clear()
         every { reader.read() } returns "1"
+        every { useCase.invoke("P1") } returns Result.success(emptyList())
 
         ui.run()
 
         assertThat(printed.last()).contains("No states found")
+    }
+
+    @Test
+    fun `state with zero tasks prints placeholder`() {
+        every { reader.read() } returns "1"
+        every { useCase.invoke("P1") } returns Result.success(emptyList())
+
+        ui.run()
+
+        assertThat(printed).contains("  (no tasks)")
     }
 
     @Test
@@ -76,26 +86,39 @@ class GetTasksByProjectIdUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Cancelled")
+        assertThat(printed.last()).contains("Cancelled.")
+        verify(exactly = 0) { useCase.invoke(any()) }
     }
 
     @Test
-    fun `invalid choice prints placeholder text`() {
+    fun `invalid choice prints error message`() {
         every { reader.read() } returns "99"
 
         ui.run()
 
-        assertThat(printed.last()).contains("{ex.message}")
+        assertThat(printed.last()).contains("Invalid selection")
+        verify(exactly = 0) { useCase.invoke(any()) }
     }
 
-
     @Test
-    fun `state with zero tasks prints placeholder`() {
+    fun `onFailure from use case is shown to the user`() {
         every { reader.read() } returns "1"
+        every { useCase.invoke("P1") } returns Result.failure(RuntimeException("boom"))
 
         ui.run()
 
-        assertThat(printed).contains("  (no tasks)")
+        assertThat(printed.last()).contains("boom")
+        verify(exactly = 1) { useCase.invoke("P1") }
     }
 
+    @Test
+    fun `throws InvalidProjectIdException and shows invalid project id`() {
+        every { reader.read() } returns "1"
+        every { useCase.invoke("P1") } throws InvalidProjectIdException("bad id")
+
+        ui.run()
+
+        assertThat(printed.last()).contains("invalid project id")
+        verify(exactly = 1) { useCase.invoke("P1") }
+    }
 }

@@ -1,4 +1,4 @@
-package org.berlin.presentation.input_output
+package com.berlin.presentation.io
 
 class ConsoleReader: Reader {
     override fun read(): String? {

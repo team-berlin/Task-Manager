@@ -1,12 +1,9 @@
 package com.berlin.di
 
 import com.berlin.domain.model.User
-import com.berlin.presentation.task.AssignTaskUI
-import com.berlin.presentation.task.DeleteTaskUI
-import com.berlin.presentation.task.GetTasksByProjectIdUI
-import org.berlin.data.DummyData
-import org.berlin.presentation.MainMenuUI
-import org.berlin.presentation.task.CreateTaskUI
+import com.berlin.data.DummyData
+import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -17,7 +14,10 @@ val uiModule = module {
     single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
     single { AssignTaskUI(get(), get(), get()) }
     single { DeleteTaskUI(get(), get(), get()) }
-    single { GetTasksByProjectIdUI(get(), get()) }
+    single { GetTasksByProjectIdUI(get(), get(), get()) }
+    single { UpdateTaskUI(get(), get(), get()) }
+    single { ChangeTaskStateUI(get(), get(), get()) }
+    single { GetTaskByIdUI(get(), get(), get()) }
 
     /* aggregated main menu */
     single {
@@ -26,7 +26,10 @@ val uiModule = module {
                 get<CreateTaskUI>(),
                 get<AssignTaskUI>(),
                 get<DeleteTaskUI>(),
-                get<GetTasksByProjectIdUI>()
+                get<GetTasksByProjectIdUI>(),
+                get<UpdateTaskUI>(),
+                get<ChangeTaskStateUI>(),
+                get<GetTaskByIdUI>()
             ),
             viewer = get(),
             reader = get()

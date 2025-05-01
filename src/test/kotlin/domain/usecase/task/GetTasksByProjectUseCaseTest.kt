@@ -1,13 +1,16 @@
 package com.berlin.domain.usecase.task
 
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetTasksByProjectUseCaseTest {
 
@@ -29,7 +32,7 @@ class GetTasksByProjectUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        taskRepository= mockk()
+        taskRepository = mockk()
         useCase = GetTasksByProjectUseCase(taskRepository)
     }
 
@@ -58,5 +61,23 @@ class GetTasksByProjectUseCaseTest {
         val result = useCase("P1")
 
         assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
+    fun `throws InvalidProjectIdException when projectId is blank`() {
+        assertThrows<InvalidProjectIdException> {
+            useCase("   ")
+        }
+
+        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
+    }
+
+    @Test
+    fun `throws InvalidProjectIdException when projectId is numeric-only`() {
+        assertThrows<InvalidProjectIdException> {
+            useCase("12345")
+        }
+
+        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
     }
 }

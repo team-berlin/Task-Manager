@@ -1,4 +1,4 @@
-package org.berlin.presentation.input_output
+package com.berlin.presentation.io
 
 class ConsoleViewer : Viewer {
     override fun show(message: String) {

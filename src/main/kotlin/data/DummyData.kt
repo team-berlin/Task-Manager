@@ -1,4 +1,4 @@
-package org.berlin.data
+package com.berlin.data
 
 import com.berlin.domain.model.*
 import java.util.*

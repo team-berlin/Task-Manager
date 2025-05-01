@@ -1,38 +1,41 @@
 package com.berlin.domain.usecase.task
 
-import com.berlin.data.memory.TaskRepositoryInMemory
+import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
+import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class ChangeTaskStateUseCaseTest {
 
-    private lateinit var taskRepository: TaskRepositoryInMemory
+    private lateinit var taskRepository: TaskRepository
     private lateinit var useCase: ChangeTaskStateUseCase
 
-    private val creator  = mockk<User>(relaxed = true)
+    private val creator = mockk<User>(relaxed = true)
     private val assignee = mockk<User>(relaxed = true)
 
     private val existingTask = Task(
-        id          = "1",
-        projectId   = "P1",
-        title       = "Demo",
+        id = "1",
+        projectId = "P1",
+        title = "Demo",
         description = null,
-        stateId     = "TODO",
-        assignedToUserId  = assignee.id,
-        createByUserId    = creator.id
+        stateId = "TODO",
+        assignedToUserId = assignee.id,
+        createByUserId = creator.id
     )
 
     @BeforeEach
     fun setUp() {
-        taskRepository   = mockk()
+        taskRepository = mockk()
         useCase = ChangeTaskStateUseCase(taskRepository)
     }
-
 
     @Test
     fun `result is success when state changes`() {
@@ -42,20 +45,10 @@ class ChangeTaskStateUseCaseTest {
         val result = useCase("1", "DONE")
 
         assertThat(result.isSuccess).isTrue()
-    }
-
-    @Test
-    fun `repository update is called with the new state id`() {
-        every { taskRepository.findById("1") } returns Result.success(existingTask)
-        every { taskRepository.update(any()) } answers { Result.success(firstArg()) }
-
-        useCase("1", "DONE")
-
         verify(exactly = 1) {
             taskRepository.update(match { it.id == "1" && it.stateId == "DONE" })
         }
     }
-
 
     @Test
     fun `result is failure when task is not found`() {
@@ -64,8 +57,8 @@ class ChangeTaskStateUseCaseTest {
         val result = useCase("1", "DONE")
 
         assertThat(result.isFailure).isTrue()
+        verify(exactly = 0) { taskRepository.update(any()) }
     }
-
 
     @Test
     fun `result is failure when repository update returns unexpected error`() {
@@ -75,5 +68,27 @@ class ChangeTaskStateUseCaseTest {
         val result = useCase("1", "DONE")
 
         assertThat(result.isFailure).isTrue()
+        verify(exactly = 1) { taskRepository.update(any()) }
+    }
+
+    @Test
+    fun `throws InvalidTaskStateException when new state id is blank`() {
+        every { taskRepository.findById("1") } returns Result.success(existingTask)
+
+        assertThrows<InvalidTaskStateException> {
+            useCase("1", "   ")
+        }
+        // no update should be attempted after validation fails
+        verify(exactly = 0) { taskRepository.update(any()) }
+    }
+
+    @Test
+    fun `throws InvalidTaskStateException when new state id is numeric-only`() {
+        every { taskRepository.findById("1") } returns Result.success(existingTask)
+
+        assertThrows<InvalidTaskStateException> {
+            useCase("1", "1234")
+        }
+        verify(exactly = 0) { taskRepository.update(any()) }
     }
 }

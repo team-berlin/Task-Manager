@@ -1,4 +1,4 @@
-package org.berlin.presentation
+package com.berlin.presentation
 
 interface UiRunner {
     val id: Int

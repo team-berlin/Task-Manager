@@ -1,5 +1,4 @@
-package org.berlin.presentation.input_output
-
+package com.berlin.presentation.io
 
 interface Viewer {
     fun show(message: String)

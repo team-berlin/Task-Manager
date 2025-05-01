@@ -1,13 +1,14 @@
 package com.berlin.presentation.task
 
+import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.usecase.task.DeleteTaskUseCase
+import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
-import org.berlin.data.DummyData
-import org.berlin.presentation.UiRunner
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 
 class DeleteTaskUI(
     private val deleteTask: DeleteTaskUseCase,
@@ -21,18 +22,27 @@ class DeleteTaskUI(
     override fun run() {
         try {
             val task = choose(
-                "Tasks", DummyData.tasks, { "${it.id} – ${it.title}" }, viewer, reader)
+                title = "Tasks",
+                elements = DummyData.tasks,
+                labelOf = { "${it.id} – ${it.title}" },
+                viewer = viewer,
+                reader = reader
+            )
 
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            deleteTask(task.id).onSuccess { DummyData.tasks.remove(task); viewer.show("Deleted.") }
-                .onFailure { viewer.show("${it.message}") }
+            deleteTask(task.id).onSuccess {
+                    DummyData.tasks.remove(task)
+                    viewer.show("Deleted.")
+                }.onFailure { viewer.show(it.message ?: "Deletion failed") }
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
         } catch (ex: InvalidSelectionException) {
-            viewer.show("${ex.message}")
+            viewer.show("Invalid selection")
+        } catch (ex: InvalidTaskIdException) {
+            viewer.show("invalid task id")
         }
     }
 }

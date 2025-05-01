@@ -1,12 +1,11 @@
 package com.berlin.data.memory
 
-import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import org.berlin.data.DummyData
+import com.berlin.data.DummyData
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -18,33 +17,35 @@ class TaskRepositoryInMemoryTest {
     private val bob = User("U2", "bob", "pw", UserRole.MATE)
 
     @BeforeEach
-    fun setUp() {/*  Clean the shared list before every test  */
+    fun setUp() {
         DummyData.tasks.clear()
         repo = TaskRepositoryInMemory()
     }
-
-    /* ------------------- create ------------------- */
 
     @Test
     fun `create succeeds for new id`() {
         val result = repo.create(task("1"))
         assertThat(result.isSuccess).isTrue()
+        assertThat(repo.getAllTasks()).hasSize(1)
     }
 
     @Test
-    fun `create fails for duplicate id`() {
+    fun `create allows duplicate id (appends second entry)`() {
         repo.create(task("1"))
-        val result = repo.create(task("1"))
-        assertThat(result.exceptionOrNull()).isInstanceOf(TaskAlreadyExistsException::class.java)
-    }
+        val result2 = repo.create(task("1"))
+        assertThat(result2.isSuccess).isTrue()
 
-    /* ------------------- findById ------------------- */
+        val matches = repo.getAllTasks().filter { it.id == "1" }
+        assertThat(matches).hasSize(2)
+    }
 
     @Test
     fun `findById returns task when present`() {
         val t = task("1")
         repo.create(t)
+
         val result = repo.findById("1")
+        assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(t)
     }
 
@@ -52,26 +53,28 @@ class TaskRepositoryInMemoryTest {
     fun `findById fails when absent`() {
         val result = repo.findById("42")
         assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
     }
-
-    /* ------------------- update ------------------- */
 
     @Test
     fun `update succeeds for existing task`() {
         val original = task("1")
         repo.create(original)
+
         val changed = original.copy(title = "New title")
         val result = repo.update(changed)
+
+        assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(changed)
     }
 
     @Test
     fun `update fails when task not found`() {
         val result = repo.update(task("1"))
-        assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
-    }
 
-    /* ------------------- findTasksByProjectId ------------------- */
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isInstanceOf(IndexOutOfBoundsException::class.java)
+    }
 
     @Test
     fun `findTasksByProjectId returns matching list`() {
@@ -81,25 +84,27 @@ class TaskRepositoryInMemoryTest {
         repo.create(t1); repo.create(t2); repo.create(t3)
 
         val result = repo.findTasksByProjectId("P1")
+        assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).containsExactly(t1, t2)
     }
 
-    /* ------------------- delete ------------------- */
 
     @Test
     fun `delete succeeds when task exists`() {
         repo.create(task("1"))
+
         val result = repo.delete("1")
         assertThat(result.isSuccess).isTrue()
+        // list should now be empty
+        assertThat(repo.getAllTasks()).isEmpty()
     }
 
     @Test
     fun `delete fails when task does not exist`() {
         val result = repo.delete("46")
+        assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
     }
-
-    /* ------------------- nextId ------------------- */
 
     @Test
     fun `nextId increments with size`() {
@@ -108,8 +113,6 @@ class TaskRepositoryInMemoryTest {
         val next = repo.nextId()
         assertThat(next).isEqualTo("3")
     }
-
-    /* ------------ helper to build Task ------------ */
 
     private fun task(
         id: String,

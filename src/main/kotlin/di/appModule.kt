@@ -1,13 +1,14 @@
-package org.berlin.di
+package com.berlin.di
 
 import com.berlin.data.memory.TaskRepositoryInMemory
+import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.model.*
 import com.berlin.domain.repository.TaskRepository
-import org.berlin.data.DummyData
-import org.berlin.presentation.input_output.ConsoleReader
-import org.berlin.presentation.input_output.ConsoleViewer
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
+import com.berlin.data.DummyData
+import com.berlin.presentation.io.ConsoleReader
+import com.berlin.presentation.io.ConsoleViewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import org.koin.dsl.module
 
 val appModule = module {
@@ -16,4 +17,5 @@ val appModule = module {
     single<TaskRepository> { TaskRepositoryInMemory() }
     single<Viewer> { ConsoleViewer() }
     single<Reader> { ConsoleReader() }
+    single<IdGeneratorImplementation> { IdGeneratorImplementation() }
 }

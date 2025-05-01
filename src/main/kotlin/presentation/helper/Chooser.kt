@@ -2,8 +2,8 @@ package com.berlin.presentation.helper
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 
 fun <T> choose(
     title    : String,

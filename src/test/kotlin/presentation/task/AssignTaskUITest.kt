@@ -1,26 +1,26 @@
-package presentation.task
+package com.berlin.presentation.task
 
-import com.berlin.domain.model.*
+import com.berlin.data.DummyData
+import com.berlin.domain.exception.InvalidAssigneeException
+import com.berlin.domain.model.Task
+import com.berlin.domain.model.User
 import com.berlin.domain.usecase.task.AssignTaskUseCase
-import com.berlin.presentation.task.AssignTaskUI
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
-import org.berlin.data.DummyData
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
-import org.junit.jupiter.api.*
-
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class AssignTaskUITest {
 
     private val printed = mutableListOf<String>()
-
     private val viewer: Viewer = mockk(relaxed = true) {
         every { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
-
     private val assignTaskUC: AssignTaskUseCase = mockk()
+
     private lateinit var task: Task
     private lateinit var newAssignee: User
 
@@ -44,12 +44,13 @@ class AssignTaskUITest {
     @Test
     fun `repository update is called with new assignee`() {
         every { reader.read() } returnsMany listOf("1", "2")
-
-        every { assignTaskUC.invoke(task.id, newAssignee) } returns Result.success(task.copy(assignedToUserId = newAssignee.id))
+        every {
+            assignTaskUC.invoke(task.id, newAssignee.id)
+        } returns Result.success(task.copy(assignedToUserId = newAssignee.id))
 
         AssignTaskUI(assignTaskUC, viewer, reader).run()
 
-        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee) }
+        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed).contains("Assigned to ${newAssignee.userName}")
     }
 
@@ -59,20 +60,32 @@ class AssignTaskUITest {
 
         AssignTaskUI(assignTaskUC, viewer, reader).run()
 
-        verify { assignTaskUC wasNot Called }
-        assertThat(printed.last()).contains("Cancelled")
+        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
+        assertThat(printed.last()).contains("Cancelled.")
+    }
+
+    @Test
+    fun `user cancels in second chooser`() {
+        // valid task pick, then cancel at assignee chooser
+        every { reader.read() } returnsMany listOf("1", "X")
+
+        AssignTaskUI(assignTaskUC, viewer, reader).run()
+
+        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
+        assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
     fun `error from use case is shown to the user`() {
         every { reader.read() } returnsMany listOf("1", "2")
-
         val boom = IllegalStateException("cant assign")
-        every { assignTaskUC.invoke(task.id, newAssignee) } returns Result.failure(boom)
+        every {
+            assignTaskUC.invoke(task.id, newAssignee.id)
+        } returns Result.failure(boom)
 
         AssignTaskUI(assignTaskUC, viewer, reader).run()
 
-        verify { assignTaskUC.invoke(task.id, newAssignee) }
+        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).contains("cant assign")
     }
 
@@ -82,8 +95,20 @@ class AssignTaskUITest {
 
         AssignTaskUI(assignTaskUC, viewer, reader).run()
 
-        verify { assignTaskUC wasNot Called }
-        assertThat(printed.last().lowercase()).contains("out of range")
+        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
+        assertThat(printed.last()).contains("Invalid selection")
     }
 
+    @Test
+    fun `throws and shows InvalidAssigneeException`() {
+        every { reader.read() } returnsMany listOf("1", "2")
+        every {
+            assignTaskUC.invoke(task.id, newAssignee.id)
+        } throws InvalidAssigneeException("nope")
+
+        AssignTaskUI(assignTaskUC, viewer, reader).run()
+
+        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
+        assertThat(printed.last()).contains("Invalid assignee")
+    }
 }

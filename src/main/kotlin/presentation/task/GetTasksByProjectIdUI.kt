@@ -1,15 +1,19 @@
+// src/main/kotlin/com/berlin/presentation/task/GetTasksByProjectIdUI.kt
 package com.berlin.presentation.task
 
+import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Task
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
+import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
-import org.berlin.data.DummyData
-import org.berlin.presentation.UiRunner
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 
 class GetTasksByProjectIdUI(
+    private val getTasks: GetTasksByProjectUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
@@ -19,42 +23,45 @@ class GetTasksByProjectIdUI(
 
     override fun run() {
         try {
-            val project = chooseProject()
-            showSwimLaneFor(project.id)
+            val project = choose(
+                title = "Projects",
+                elements = DummyData.projects,
+                labelOf = { it.name },
+                viewer = viewer,
+                reader = reader
+            )
+
+            getTasks(project.id).onSuccess { tasks -> showSwimLaneFor(project.id, tasks) }
+                .onFailure { viewer.show(it.message ?: "Failed to load tasks") }
+
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
         } catch (ex: InvalidSelectionException) {
-            viewer.show("{ex.message}")
+            viewer.show("Invalid selection")
+        } catch (ex: InvalidProjectIdException) {
+            viewer.show("invalid project id")
         }
     }
 
-    private fun chooseProject() = choose(
-        title = "Projects",
-        elements = DummyData.projects,
-        labelOf = { it.name },
-        viewer = viewer,
-        reader = reader
-    )
-
-    private fun showSwimLaneFor(projectId: String) {
+    private fun showSwimLaneFor(projectId: String, tasks: List<Task>) {
         val states = DummyData.states.filter { it.projectId == projectId }
         if (states.isEmpty()) {
             viewer.show("No states found for that project.")
             return
         }
 
-        val tasks = DummyData.tasks.filter { it.projectId == projectId }
-
         viewer.show("\n=== Tasks for project $projectId ===")
         states.forEach { state ->
             viewer.show("\n[${state.name}]")
-            tasksInState(tasks, state.id).forEach { line -> viewer.show(line) }
+            tasksInState(tasks, state.id).forEach { line ->
+                viewer.show(line)
+            }
         }
     }
 
     private fun tasksInState(all: List<Task>, stateId: String): List<String> {
-        val tasksHere = all.filter { it.stateId == stateId }
-        if (tasksHere.isEmpty()) return listOf("  (no tasks)")
-        return tasksHere.map { "- ${it.id}: ${it.title}  → ${it.assignedToUserId}" }
+        val here = all.filter { it.stateId == stateId }
+        if (here.isEmpty()) return listOf("  (no tasks)")
+        return here.map { "- ${it.id}: ${it.title}  → ${it.assignedToUserId}" }
     }
 }

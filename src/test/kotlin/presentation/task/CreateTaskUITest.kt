@@ -1,31 +1,27 @@
-package presentation.task
+package com.berlin.presentation.task
 
+import com.berlin.data.DummyData
+import com.berlin.domain.exception.InvalidTaskTitle
+import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.task.CreateTaskUseCase
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
-import org.berlin.data.DummyData
-import org.berlin.presentation.input_output.Reader
-import org.berlin.presentation.input_output.Viewer
-import org.berlin.presentation.task.CreateTaskUI
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 
 class CreateTaskUITest {
 
     private val printed = mutableListOf<String>()
-
     private val viewer: Viewer = mockk(relaxed = true) {
         every { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
-
     private val createUC: CreateTaskUseCase = mockk()
-
-    private val currentUser = DummyData.users.first()
-
+    private val currentUser: User = DummyData.users.first()
     private lateinit var ui: CreateTaskUI
 
     @BeforeEach
@@ -35,29 +31,19 @@ class CreateTaskUITest {
         ui = CreateTaskUI(createUC, currentUser, viewer, reader)
     }
 
-
     @Test
     fun `creates task and prints success`() {
         every { reader.read() } returnsMany listOf("1", "1", "1", "Feature X", "")
-
         every { createUC.invoke(any(), any(), any(), any(), any(), any()) } answers {
-            // arguments = 0:projectId 1:title 2:desc 3:stateId 4:creator 5:assignee
-            val projectId = firstArg<String>()
-            val title = secondArg<String>()
-            val desc = arg<String?>(2)
-            val stateId = arg<String>(3)
-            val creator = arg<User>(4)
-            val assignee = arg<User>(5)
-
             Result.success(
                 Task(
                     id = "T42",
-                    projectId = projectId,
-                    title = title,
-                    description = desc,
-                    stateId = stateId,
-                    assignedToUserId = assignee.id,
-                    createByUserId = creator.id,
+                    projectId = firstArg(),
+                    title = secondArg(),
+                    description = arg(2),
+                    stateId = arg(3),
+                    assignedToUserId = arg(5),
+                    createByUserId = arg(4)
                 )
             )
         }
@@ -65,7 +51,8 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last()).contains("Task created")
+        // exact ID shown in the success message
+        assertThat(printed.last()).contains("Task created: id=T42")
     }
 
     @Test
@@ -74,39 +61,45 @@ class CreateTaskUITest {
 
         ui.run()
 
-        verify { createUC wasNot Called }
-        assertThat(printed.last()).contains("Cancelled")
+        verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
-    fun `empty title shows validation message`() {
+    fun `empty title shows invalid selection message`() {
+        // project, state, user selected; then blank title
         every { reader.read() } returnsMany listOf("1", "1", "1", "")
+
         ui.run()
 
-        verify { createUC wasNot Called }
-        assertThat(printed.last()).contains("Title cannot be empty")
+        verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last()).contains("Invalid selection")
     }
 
     @Test
     fun `failure from use case is printed`() {
         every { reader.read() } returnsMany listOf("1", "1", "1", "Bug fix", "")
-        every { createUC.invoke(any(), any(), any(), any(), any(), any()) } returns
-                Result.failure(IllegalStateException("db down"))
+        every {
+            createUC.invoke(
+                any(), any(), any(), any(), any(), any()
+            )
+        } returns Result.failure(IllegalStateException("db down"))
 
         ui.run()
 
-        verify { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last()).contains("{it.message}")
+        verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last()).contains("db down")
     }
 
     @Test
     fun `invalid user index prints error message`() {
+        // project=1, state=1, then bad user index=99
         every { reader.read() } returnsMany listOf("1", "1", "99")
 
         ui.run()
 
-        verify { createUC wasNot Called }
-        assertThat(printed.last().lowercase()).contains("out of range")
+        verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last().lowercase()).contains("invalid selection")
     }
 
     @Test
@@ -115,8 +108,8 @@ class CreateTaskUITest {
 
         ui.run()
 
-        verify { createUC wasNot Called }
-        assertThat(printed.last().lowercase()).contains("out of range")
+        verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last().lowercase()).contains("invalid selection")
     }
 
     @Test
@@ -125,38 +118,14 @@ class CreateTaskUITest {
 
         ui.run()
 
-        verify { createUC wasNot Called }
-        assertThat(printed.last().lowercase()).contains("out of range")
-    }
-
-
-    @Test
-    fun `null description covers last missing branches`() {
-        every { reader.read() } returnsMany listOf("1", "1", "1", "Doc", null)
-
-        every { createUC.invoke(any(), any(), null, any(), any(), any()) } returns Result.success(
-            Task(
-                id = "T99",
-                projectId = "P1",
-                title = "Doc",
-                description = null,
-                stateId = "S1",
-                assignedToUserId = DummyData.users[1].id,
-                createByUserId = currentUser.id
-            )
-        )
-
-        ui.run()
-
-        verify { createUC.invoke(any(), any(), null, any(), any(), any()) }
-        assertThat(printed.last()).contains("Task created")
+        verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+        assertThat(printed.last().lowercase()).contains("invalid selection")
     }
 
     @Test
     fun `null description still creates task`() {
         every { reader.read() } returnsMany listOf("1", "1", "1", "Doc title", null)
-
-        every { createUC.invoke(any(), any(), (null), any(), any(), any()) } returns Result.success(
+        every { createUC.invoke(any(), any(), null, any(), any(), any()) } returns Result.success(
             Task(
                 id = "T99",
                 projectId = "P1",
@@ -170,8 +139,50 @@ class CreateTaskUITest {
 
         ui.run()
 
-        verify { createUC.invoke(any(), any(), (null), any(), any(), any()) }
-        assertThat(printed.last()).contains("Task created")
+        verify { createUC.invoke(any(), any(), null, any(), any(), any()) }
+        assertThat(printed.last()).contains("Task created: id=T99")
+    }
+
+    @Test
+    fun `shows InvalidTaskTitle when use case throws that exception`() {
+        every { reader.read() } returnsMany listOf("1", "1", "1", "BadTitle", "")
+
+        every {
+            createUC.invoke(any(), any(), any(), any(), any(), any())
+        } throws InvalidTaskTitle("title ruled invalid")
+
+        ui.run()
+
+        assertThat(printed.last()).contains("Invalid task title")
+        verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `shows TaskAlreadyExistsException when use case returns failure`() {
+        every { reader.read() } returnsMany listOf("1", "1", "1", "MyTask", "")
+        every { createUC.invoke(any(), any(), any(), any(), any(), any()) } returns Result.failure(
+            TaskAlreadyExistsException("the task already existed")
+        )
+
+        ui.run()
+
+        assertThat(printed.last()).contains("the task already existed")
+        verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `use case throwing TaskAlreadyExistsException is caught and shows existed message`() {
+        every { reader.read() } returnsMany listOf("1", "1", "1", "MyTitle", "")
+
+        every {
+            createUC.invoke(any(), any(), any(), any(), any(), any())
+        } throws TaskAlreadyExistsException("already there")
+
+        ui.run()
+
+        verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
+
+        assertThat(printed.last()).contains("the task already existed")
     }
 
 }
