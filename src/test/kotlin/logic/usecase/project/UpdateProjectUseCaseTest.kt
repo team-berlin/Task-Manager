@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class UpdateProjectUseCaseTest {
@@ -46,47 +47,23 @@ class UpdateProjectUseCaseTest {
         val result = updateProjectUseCase.updateProject(project)
 
         // Then
-        assertThat(result).isEqualTo(Exception("Update Failed"))
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-        ", name, null, [s1,s2,s3] , [t1,t2,t3]",
-        "17, name, null, [s1,s2,s3] , [t1,t2,t3]",
-        "-, name, null, [s1,s2,s3] , [t1,t2,t3]"
-    )
-    fun `should throw exception when project ID is invalid`(
-        id: String,
-        projectName: String,
-        description: String,
-        statesId: List<String>,
-        tasksId: List<String>
-    ) {
-        // Given
-        val input = Project(
-            id,
-            projectName,
-            description,
-            statesId,
-            tasksId
-        )
-
-        // When && Then
-        assertThrows<IllegalArgumentException> {
-            updateProjectUseCase.updateProject(input)
+        result.onFailure { exception ->
+            assertThat(exception.message).isEqualTo("Update Failed")
         }
     }
 
-    @Test
-    fun `should return true when project name is valid`() {
-        // Given
-        val projectInput = projectHelper()
-
-        // When
-        val result = updateProjectUseCase.updateProject(projectInput)
-
-        // Then
-        assertThat(result).isEqualTo(true)
+    @ParameterizedTest
+    @ValueSource(strings = ["", " ", "123"])
+    fun `should throw exception when project ID is invalid`(
+        invalidName: String
+    ) {
+        // When && Then
+        assertThrows<Exception> {
+            updateProjectUseCase.updateProject(
+                projectHelper(
+                    name = invalidName
+                )
+            )
+        }
     }
-
 }

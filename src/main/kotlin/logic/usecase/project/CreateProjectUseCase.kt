@@ -3,17 +3,19 @@ package com.berlin.logic.usecase.project
 import com.berlin.logic.generateIdHelper.DefaultIdGenerator
 import com.berlin.logic.repositories.ProjectRepository
 import com.berlin.model.Project
+import jdk.jfr.Description
 
 class CreateProjectUseCase(
     private val projectRepository: ProjectRepository,
     private val defaultIdGenerator: DefaultIdGenerator,
     ) {
-        fun createNewProject(projectName: String, stateId: List<String>, taskId: List<String>): Result<String> {
+        fun createNewProject(projectName: String, description: String?, stateId: List<String>?, taskId: List<String>?):
+                Result<String> {
             if (validateProjectName(projectName)) {
                 val newProject = Project(
                     id = defaultIdGenerator.generateId(projectName),
                     name = projectName,
-                    description = null,
+                    description = description,
                     statesId = stateId,
                     tasksId = taskId
                 )
