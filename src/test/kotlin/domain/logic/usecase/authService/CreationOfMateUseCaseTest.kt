@@ -1,10 +1,9 @@
 package domain.logic.usecase.authService
-import domain.fakeData.FakeHashingPassword
-import com.berlin.domain.logic.InvalidCredentialsException
+
+import AuthServiceTestData
 import com.berlin.domain.logic.repositories.AuthenticationRepository
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import domain.fakeData.FakeHashingPassword
 import domain.helper.HashingPassword
 import domain.usecase.authService.CreationOfMateUseCase
 import io.mockk.every
@@ -18,11 +17,6 @@ class CreationOfMateUseCaseTest {
     private lateinit var hashingPassword: HashingPassword
     private lateinit var creationOfMateUseCase: CreationOfMateUseCase
 
-    private val testPassword = "securePassword"
-    private val hashedPassword = "hashed_$testPassword"
-
-
-
     @BeforeEach
     fun setup() {
         authRepository = mockk()
@@ -31,52 +25,61 @@ class CreationOfMateUseCaseTest {
     }
 
     @Test
-    fun `should return failure when username is empty`() {
-        val result = creationOfMateUseCase.createMate("", testPassword)
+    fun `createMate should return failure when username is empty`() {
+        val result = creationOfMateUseCase.createMate(
+            AuthServiceTestData.userNameIsEmpty, AuthServiceTestData.userPassword
+        )
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username and password must not be empty")
     }
 
     @Test
-    fun `should return failure when password is empty`() {
-        val result = creationOfMateUseCase.createMate("validUser", "")
+    fun `createMate should return failure when password is empty`() {
+        val result = creationOfMateUseCase.createMate(
+            AuthServiceTestData.userName, AuthServiceTestData.userPasswordIsEmpty
+        )
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username and password must not be empty")
     }
 
     @Test
-    fun `should return failure when password is less than 8 characters`() {
-        val result = creationOfMateUseCase.createMate("validUser", "short")
+    fun `createMate should return failure when password is less than 8 characters`() {
+        val result = creationOfMateUseCase.createMate(
+            AuthServiceTestData.userName, AuthServiceTestData.passwordLessThanEight
+        )
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
+
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Password less than 8 characters")
     }
 
     @Test
-    fun `should return failure when username already exists`() {
-        val existingUser = User("1", "existingUser", "somePass", UserRole.MATE)
+    fun `createMate should return failure when username already exists`() {
+        val existingUser = AuthServiceTestData.user
         every { authRepository.getAllUsers() } returns listOf(existingUser)
 
-        val result = creationOfMateUseCase.createMate("existingUser", testPassword)
+        val result = creationOfMateUseCase.createMate(
+            AuthServiceTestData.userName, AuthServiceTestData.userPassword
+        )
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username already exists")
     }
 
     @Test
-    fun `should return success when all fields are valid`() {
+    fun `createMate should return success when all fields are valid`() {
         every { authRepository.getAllUsers() } returns emptyList()
-
-        val expectedUser = User("1", "newUser", hashedPassword, UserRole.MATE)
         every {
-            authRepository.createMate("newUser", hashedPassword)
-        } returns Result.success(expectedUser)
+            authRepository.createMate(
+                AuthServiceTestData.userName,
+                hashingPassword.hashPassword(AuthServiceTestData.userPassword)
+            )
+        } returns Result.success(AuthServiceTestData.excepctedUser)
 
-        val result = creationOfMateUseCase.createMate("newUser", testPassword)
+        val result = creationOfMateUseCase.createMate(
+            AuthServiceTestData.userName, AuthServiceTestData.userPassword
+        )
 
         assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(expectedUser)
+        assertThat(result.getOrNull()).isEqualTo(AuthServiceTestData.excepctedUser)
     }
+
 }

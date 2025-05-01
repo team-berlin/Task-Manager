@@ -2,8 +2,9 @@ package data
 import com.berlin.domain.logic.repositories.AuthenticationRepository
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.berlin.logic.permission.assignPermissions
 
- class InMemoryAuthData : AuthenticationRepository {
+class InMemoryAuthRepositoryImpl : AuthenticationRepository {
     private val listOfUser = mutableListOf<User>()
 
     override fun login(userName: String, password: String): Result<User> {
@@ -16,7 +17,13 @@ import com.berlin.domain.model.UserRole
     }
 
     override fun createMate(userName: String, password: String): Result<User> {
-        val newUser = User((listOfUser.size + 1).toString(), userName, password, UserRole.MATE)
+        val newUser = User(
+          id = (listOfUser.size + 1).toString(),
+            userName = userName,
+            password =  password,
+            permission = assignPermissions(UserRole.MATE),
+            role = UserRole.MATE
+        )
         listOfUser.add(newUser)
         return Result.success(newUser)
     }

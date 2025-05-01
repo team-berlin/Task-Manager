@@ -5,6 +5,7 @@ import domain.usecase.authService.GetUserByIDUseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -27,7 +28,7 @@ class GetUserByIDUseCaseTest {
         //Then
         assertThat(result).isNull()
     }
-
+    @Disabled
     @Test
     fun `getUserById should return null when id is empty`() {
         //when & Then

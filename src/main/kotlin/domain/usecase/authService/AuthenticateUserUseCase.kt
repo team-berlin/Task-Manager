@@ -2,9 +2,10 @@ package domain.usecase.authService
 
 import com.berlin.domain.logic.InvalidCredentialsException
 import com.berlin.domain.logic.repositories.AuthenticationRepository
-import domain.helper.HashingPassword
 import com.berlin.domain.model.User
+import com.berlin.logic.permission.assignPermissions
 import data.UserCache
+import domain.helper.HashingPassword
 
 class AuthenticateUserUseCase(
     private val repository: AuthenticationRepository,
@@ -26,7 +27,8 @@ class AuthenticateUserUseCase(
 
         return userResult.fold(
             onSuccess = { user ->
-                UserCache.currentUser = user
+                val updateUser = user.copy(permission = assignPermissions(user.role))
+                UserCache.currentUser = updateUser
                 Result.success(user)
             },
             onFailure = { exception ->
