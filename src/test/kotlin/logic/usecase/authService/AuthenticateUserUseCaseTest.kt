@@ -152,4 +152,106 @@ class AuthenticateUserUseCaseTest {
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isEqualTo(expectedException)
     }
+    @Test
+    fun `login should return cached user even if password is wrong`() {
+        val cachedUser = AuthServiceTestData.user
+        every { authRepository.getAllUsers() } returns listOf(cachedUser)
+        UserCache.currentUser = cachedUser
+
+        val result = authenticateUserUseCase.login(
+            cachedUser.userName,
+            "wrong_password"
+        )
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(cachedUser)
+    }
+
+    @Test
+    fun `login should return failure if login fails with unknown exception`() {
+        val user = AuthServiceTestData.user
+        val hashedPassword = hashingPassword.hashPassword(AuthServiceTestData.userPassword)
+
+        every { authRepository.getAllUsers() } returns listOf(user)
+        every {
+            authRepository.login(user.userName, hashedPassword)
+        } returns Result.failure(RuntimeException("Unexpected error"))
+
+        UserCache.currentUser = null
+
+        val result = authenticateUserUseCase.login(
+            user.userName,
+            AuthServiceTestData.userPassword
+        )
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
+        assertThat(result.exceptionOrNull()?.message).isEqualTo("Unexpected error")
+    }
+
+    @Test
+    fun `login should not update UserCache if login fails`() {
+        val user = AuthServiceTestData.user
+        val hashedPassword = hashingPassword.hashPassword(AuthServiceTestData.userPassword)
+
+        every { authRepository.getAllUsers() } returns listOf(user)
+        every {
+            authRepository.login(user.userName, hashedPassword)
+        } returns Result.failure(InvalidCredentialsException("Wrong credentials"))
+
+        UserCache.currentUser = null
+
+        val result = authenticateUserUseCase.login(
+            user.userName,
+            AuthServiceTestData.userPassword
+        )
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(UserCache.currentUser).isNull()
+    }
+    @Test
+    fun `login should return user without changing permissions if already cached`() {
+        val user = AuthServiceTestData.excepctedUser
+        UserCache.currentUser = user
+        every { authRepository.getAllUsers() } returns listOf(user)
+
+        val result = authenticateUserUseCase.login(user.userName, "any_password")
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()?.permission).isEqualTo(user.permission)
+    }
+    @Test
+    fun `login should ignore cache if different username and proceed with login`() {
+        val cachedUser = AuthServiceTestData.user.copy(userName = "otherUser")
+        val expectedUser = AuthServiceTestData.user
+        val password = AuthServiceTestData.userPassword
+        val hashedPassword = hashingPassword.hashPassword(password)
+
+        UserCache.currentUser = cachedUser
+        every { authRepository.getAllUsers() } returns listOf(expectedUser)
+        every { authRepository.login(expectedUser.userName, hashedPassword) } returns Result.success(expectedUser)
+
+        val result = authenticateUserUseCase.login(expectedUser.userName, password)
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(expectedUser)
+        assertThat(UserCache.currentUser).isEqualTo(expectedUser)
+    }
+    @Test
+    fun `login should fail if password is incorrect and no cached user`() {
+        val user = AuthServiceTestData.user
+        val wrongPassword = "wrongPassword"
+        val hashedWrongPassword = hashingPassword.hashPassword(wrongPassword)
+
+        UserCache.currentUser = null
+        every { authRepository.getAllUsers() } returns listOf(user)
+        every { authRepository.login(user.userName, hashedWrongPassword) } returns Result.failure(InvalidCredentialsException("Wrong password"))
+
+        val result = authenticateUserUseCase.login(user.userName, wrongPassword)
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
+    }
+
+
 }
