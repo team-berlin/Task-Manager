@@ -1,6 +1,4 @@
-package com.berlin.model
-
-import com.berlin.domain.model.UserRole
+package com.berlin.domain.model
 
 data class User(
     val id:String,
