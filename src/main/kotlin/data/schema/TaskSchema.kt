@@ -34,8 +34,8 @@ class TaskSchema(
             task.title,
             task.description ?: "",
             task.stateId,
-            task.assignedToUserId,
-            task.createByUserId
+            task.assignedTo,
+            task.createBy
         )
     }
 
@@ -46,8 +46,8 @@ class TaskSchema(
             title = row[TaskIndex.TITLE],
             description = row[TaskIndex.DESCRIPTION].ifEmpty { null },
             stateId = row[TaskIndex.STATE_ID],
-            assignedToUserId = row[TaskIndex.ASSIGNED_TO],
-            createByUserId = row[TaskIndex.CREATE_BY]
+            assignedTo = row[TaskIndex.ASSIGNED_TO],
+            createBy = row[TaskIndex.CREATE_BY]
         )
     }
 
@@ -65,8 +65,8 @@ class TaskSchema(
                 task.projectId.isEmpty() ||
                 task.title.isEmpty() ||
                 task.stateId.isEmpty() ||
-                task.assignedToUserId.isEmpty() ||
-                task.createByUserId.isEmpty())
+                task.assignedTo.isEmpty() ||
+                task.createBy.isEmpty())
     }
 
     private companion object {

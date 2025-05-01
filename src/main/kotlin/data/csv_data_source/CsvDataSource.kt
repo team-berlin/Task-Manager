@@ -3,9 +3,11 @@ package com.berlin.data.csv_data_source
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.opencsv.CSVReaderBuilder
+import com.opencsv.CSVWriter
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.io.FileWriter
 
 class CsvDataSource<T>(
     private val rootDirectory: String, private val schema: BaseSchema<T>
@@ -44,7 +46,35 @@ class CsvDataSource<T>(
     }
 
     override fun update(id: String, entity: T): Boolean {
-        return false
+        if (!csvFile.exists()) return false
+
+        val rowToWrite = schema.toRow(entity)
+        if (rowToWrite.isEmpty()) return false
+
+        return try {
+            val entities = getAll()
+            val entityIndex = entities.indexOfFirst { schema.getId(it) == id }
+
+            if (entityIndex == -1) return false
+
+            val updatedEntities = entities.mapIndexed { index, currentEntity ->
+                if (index == entityIndex) entity else currentEntity
+            }
+
+            FileWriter(csvFile).use { writer ->
+                CSVWriter(writer).use { csvWriter ->
+                    csvWriter.writeNext(schema.header.toTypedArray())
+                    updatedEntities
+                        .map { schema.toRow(it) }
+                        .filter { it.isNotEmpty() }
+                        .forEach { csvWriter.writeNext(it.toTypedArray()) }
+                }
+            }
+
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun delete(id: String): Boolean {
