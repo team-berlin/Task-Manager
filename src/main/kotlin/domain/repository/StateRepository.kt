@@ -1,7 +1,7 @@
-package com.berlin.logic.repositories
+package com.berlin.domain.repository
 
 import com.berlin.domain.model.State
-import com.berlin.model.Task
+import com.berlin.domain.model.Task
 
 interface StateRepository {
     fun addState(state: State): Result<String>

@@ -1,7 +1,7 @@
-package com.berlin.logic.usecase.project
+package com.berlin.domain.usecase.project
 
-import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.model.Project
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.model.Project
 
 class UpdateProjectUseCase (
     private val projectRepository: ProjectRepository
