@@ -19,30 +19,38 @@ class GetUserByIDUseCaseTest {
     }
 
     @Test
-    fun `getUserById should return null when id isn't exist`() {
-        //Given
-        every { repository.getUserById(AuthServiceTestData.idNotExist) } returns null
-        //when
-        val result = getUserByIDUseCase.getUserById("6")
-        //Then
+    fun `getUserById returns null when ID does not exist`() {
+        // Given
+        val nonExistentId = AuthServiceTestData.idNotExist
+        every { repository.getUserById(nonExistentId) } returns null
+
+        // When
+        val result = getUserByIDUseCase.getUserById(nonExistentId)
+
+        // Then
         assertThat(result).isNull()
     }
 
     @Test
-    fun `getUserById should return null when id is empty`() {
-        //when & Then
+    fun `getUserById throws IllegalArgumentException when ID is empty`() {
+        // When & Then
         assertThrows<IllegalArgumentException> {
             getUserByIDUseCase.getUserById("")
         }
     }
 
     @Test
-    fun `getUserById should return user of given id`() {
-        //Given
-        every { repository.getUserById(AuthServiceTestData.idExist) } returns AuthServiceTestData.existingUser
-        //when
-        val result = getUserByIDUseCase.getUserById("13")
-        //Then
-        assertThat(result).isEqualTo(AuthServiceTestData.existingUser)
+    fun `getUserById returns user when ID exists`() {
+        // Given
+        val existingId = AuthServiceTestData.idExist
+        val expectedUser = AuthServiceTestData.existingUser
+        every { repository.getUserById(existingId) } returns expectedUser
+
+        // When
+        val result = getUserByIDUseCase.getUserById(existingId)
+
+        // Then
+        assertThat(result).isEqualTo(expectedUser)
     }
+
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class FetchAllUsersUseCaseTest {
+
     private lateinit var repository: AuthenticationRepository
     private lateinit var fetchAllUsersUseCase: FetchAllUsersUseCase
 
@@ -19,13 +20,15 @@ class FetchAllUsersUseCaseTest {
     }
 
     @Test
-    fun `getAllUsers should return one user at least who is admin when there is no mate created yet`() {
-        //Given
-        every { repository.getAllUsers() } returns listOf(AuthServiceTestData.adminIsFirstUser)
-        //when
-        val result = fetchAllUsersUseCase.getAllUsers()
-        // then
-        assertThat(result).isEqualTo(listOf(AuthServiceTestData.adminIsFirstUser))
+    fun `getAllUsers returns admin as first user when no mates exist`() {
+        // Given
+        val expectedAdminUser = AuthServiceTestData.adminIsFirstUser
+        every { repository.getAllUsers() } returns listOf(expectedAdminUser)
 
+        // When
+        val result = fetchAllUsersUseCase.getAllUsers()
+
+        // Then
+        assertThat(result).isEqualTo(listOf(expectedAdminUser))
     }
 }

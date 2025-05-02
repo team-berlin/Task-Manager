@@ -1,8 +1,6 @@
 package com.berlin.domain.permission
 
 import com.berlin.domain.model.UserRole
-import com.berlin.model.UserRole
-import com.berlin.domain.permission.assignPermissions
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test
 

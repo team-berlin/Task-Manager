@@ -22,7 +22,7 @@ class InMemoryAuthRepositoryImpl : AuthenticationRepository {
 
     override fun createMate(userName: String, password: String): Result<User> {
         val newUser = User(
-          id = userId.generateId(""),
+          id = userId.generateId(userName),
             userName = userName,
             password =  password,
             permission = assignPermissions(UserRole.MATE),

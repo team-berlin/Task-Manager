@@ -8,6 +8,7 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
+import com.berlin.model.Permission
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.task.UpdateTaskUI
@@ -33,8 +34,8 @@ class UpdateTaskUITest {
         DummyData.tasks.clear()
         DummyData.users.clear()
         // add two users
-        DummyData.users += User("U1", "alice", "pw", UserRole.MATE)
-        DummyData.users += User("U2", "bob", "pw", UserRole.MATE)
+        DummyData.users += User("U1", "alice", "pw",permission = Permission(), UserRole.MATE)
+        DummyData.users += User("U2", "bob", "pw",permission = Permission(), UserRole.MATE)
 
         // add one existing task
         existing = Task(

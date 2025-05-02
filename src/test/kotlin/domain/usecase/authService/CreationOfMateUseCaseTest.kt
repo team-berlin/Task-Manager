@@ -25,59 +25,81 @@ class CreationOfMateUseCaseTest {
     }
 
     @Test
-    fun `createMate should return failure when username is empty`() {
-        val result = creationOfMateUseCase.createMate(
-            AuthServiceTestData.userNameIsEmpty, AuthServiceTestData.userPassword
-        )
+    fun `createMate fails when username is empty`() {
+        // Given
+        val emptyUsername = AuthServiceTestData.userNameIsEmpty
+        val password = AuthServiceTestData.userPassword
+
+        // When
+        val result = creationOfMateUseCase.createMate(emptyUsername, password)
+
+        // Then
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username and password must not be empty")
     }
 
     @Test
-    fun `createMate should return failure when password is empty`() {
-        val result = creationOfMateUseCase.createMate(
-            AuthServiceTestData.userName, AuthServiceTestData.userPasswordIsEmpty
-        )
+    fun `createMate fails when password is empty`() {
+        // Given
+        val username = AuthServiceTestData.userName
+        val emptyPassword = AuthServiceTestData.userPasswordIsEmpty
+
+        // When
+        val result = creationOfMateUseCase.createMate(username, emptyPassword)
+
+        // Then
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username and password must not be empty")
     }
 
     @Test
-    fun `createMate should return failure when password is less than 8 characters`() {
-        val result = creationOfMateUseCase.createMate(
-            AuthServiceTestData.userName, AuthServiceTestData.passwordLessThanEight
-        )
-        assertThat(result.isFailure).isTrue()
+    fun `createMate fails when password length is less than 8 characters`() {
+        // Given
+        val username = AuthServiceTestData.userName
+        val shortPassword = AuthServiceTestData.passwordLessThanEight
 
+        // When
+        val result = creationOfMateUseCase.createMate(username, shortPassword)
+
+        // Then
+        assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Password less than 8 characters")
     }
 
     @Test
-    fun `createMate should return failure when username already exists`() {
+    fun `createMate fails when username already exists in repository`() {
+        // Given
         val existingUser = AuthServiceTestData.user
         every { authRepository.getAllUsers() } returns listOf(existingUser)
 
-        val result = creationOfMateUseCase.createMate(
-            AuthServiceTestData.userName, AuthServiceTestData.userPassword
-        )
+        val username = AuthServiceTestData.userName
+        val password = AuthServiceTestData.userPassword
+
+        // When
+        val result = creationOfMateUseCase.createMate(username, password)
+
+        // Then
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Username already exists")
     }
 
     @Test
-    fun `createMate should return success when all fields are valid`() {
+    fun `createMate succeeds when username and password are valid and username does not exist`() {
+        // Given
         every { authRepository.getAllUsers() } returns emptyList()
+
+        val username = AuthServiceTestData.userName
+        val password = AuthServiceTestData.userPassword
+        val hashedPassword = hashingPassword.hashPassword(password)
+
         every {
-            authRepository.createMate(
-                AuthServiceTestData.userName,
-                hashingPassword.hashPassword(AuthServiceTestData.userPassword)
-            )
+            authRepository.createMate(username, hashedPassword)
         } returns Result.success(AuthServiceTestData.excepctedUser)
 
-        val result = creationOfMateUseCase.createMate(
-            AuthServiceTestData.userName, AuthServiceTestData.userPassword
-        )
+        // When
+        val result = creationOfMateUseCase.createMate(username, password)
 
+        // Then
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(AuthServiceTestData.excepctedUser)
     }
