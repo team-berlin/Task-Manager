@@ -1,6 +1,6 @@
-package com.berlin.logic.repositories
+package com.berlin.domain.repository
 
-import com.berlin.model.AuditLog
+import com.berlin.domain.model.AuditLog
 
 interface AuditRepository {
     fun addAuditLog(auditLog: AuditLog):Result<String>

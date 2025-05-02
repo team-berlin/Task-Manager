@@ -1,31 +1,31 @@
-package com.berlin.logic.usecase.auditSystem
+package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.logic.generateIdHelper.IdGenerator
-import com.berlin.logic.repositories.AuditRepository
-import com.berlin.model.AuditAction
-import com.berlin.model.AuditLog
-import com.berlin.model.EntityType
-import com.berlin.model.User
+import com.berlin.domain.helper.IdGenerator
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.EntityType
+import com.berlin.domain.repository.AuditRepository
+import com.berlin.domain.model.User
 
 class AddAuditLogUseCase(
     private val auditRepository: AuditRepository,
     private val idGenerator: IdGenerator
-
 ) {
 
     fun addAuditLog(
-        createdBy: User,
+        createdByUserId:User,
         auditAction: AuditAction,
         changesDescription: String,
         entityType: EntityType,
-        entityId: String
+        entityId: String,
+        timestamp: Long = System.currentTimeMillis()
     ): Result<String> {
         return try {
             val id = idGenerator.generateId("AUDIT")
             val auditLog = AuditLog(
                 id = id,
-                timestamp = System.currentTimeMillis(),
-                createdBy = createdBy,
+                timestamp = timestamp,
+                createdByUserId=createdByUserId,
                 auditAction = auditAction,
                 changesDescription = changesDescription,
                 entityType = entityType,
@@ -34,7 +34,7 @@ class AddAuditLogUseCase(
 
             val result = auditRepository.addAuditLog(auditLog)
             if (result.isSuccess) {
-                result
+                Result.success("Audit log added successfully")
             } else {
                 Result.failure(Exception("Audit log failed to add"))
             }
