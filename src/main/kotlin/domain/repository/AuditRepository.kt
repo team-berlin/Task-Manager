@@ -7,4 +7,5 @@ interface AuditRepository {
     fun getAuditLogsByProjectId(projectId:String):List<AuditLog>
     fun getAuditLogsByTaskId(taskId:String):List<AuditLog>
     fun getAuditLogsByUserId(userId:String):List<AuditLog>
+
 }
