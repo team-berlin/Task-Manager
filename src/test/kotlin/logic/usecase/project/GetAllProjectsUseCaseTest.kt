@@ -1,8 +1,8 @@
 package com.berlin.logic.usecase.project
 
 import com.berlin.helper.projectHelper
-import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.model.Project
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

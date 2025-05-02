@@ -1,5 +1,6 @@
 package com.berlin.logic.generateIdHelper
 
+import com.berlin.domain.helper.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows

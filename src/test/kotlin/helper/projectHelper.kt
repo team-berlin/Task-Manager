@@ -1,6 +1,6 @@
 package com.berlin.helper
 
-import com.berlin.model.Project
+import com.berlin.domain.model.Project
 
 fun projectHelper(
     id: String = "123",
