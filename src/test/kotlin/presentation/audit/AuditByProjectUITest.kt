@@ -1,0 +1,118 @@
+package presentation.audit
+
+import com.berlin.data.DummyData
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
+import com.berlin.presentation.audit.AuditByProjectUI
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+
+class AuditByProjectUITest {
+
+    private lateinit var getAuditLogsByProjectIdUseCase: GetAuditLogsByProjectIdUseCase
+    private lateinit var viewer: Viewer
+    private lateinit var reader: Reader
+    private lateinit var ui: AuditByProjectUI
+
+    private val sampleProject = Project("P1", "Test Project", null, null, null)
+    private val sampleLogs = listOf(
+        AuditLog(
+            id = "A1",
+            timestamp = 1234567890L,
+            createdByUserId = "U1",
+            auditAction = AuditAction.CREATE,
+            changesDescription = "Initial creation",
+            entityType = EntityType.PROJECT,
+            entityId = "P1"
+        )
+    )
+
+    @BeforeEach
+    fun setup() {
+        getAuditLogsByProjectIdUseCase = mockk()
+        viewer = mockk(relaxed = true)
+        reader = mockk()
+        ui = AuditByProjectUI(getAuditLogsByProjectIdUseCase, viewer, reader)
+
+        DummyData.projects.clear()
+        DummyData.projects.add(sampleProject)
+    }
+
+    @Test
+    fun `displays audit logs for selected project`() {
+        every { reader.read() } returns "1"
+        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns sampleLogs
+
+        ui.run()
+
+        verify {
+            viewer.show(match { it.contains("=== Audit Logs for Test Project ===") })
+            viewer.show(match { it.contains("ID: A1") })
+            viewer.show(match { it.contains("Initial creation") })
+        }
+    }
+
+    @Test
+    fun `displays message when no logs exist for project`() {
+        every { reader.read() } returns "1"
+        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns emptyList()
+
+        ui.run()
+
+        verify {
+            viewer.show("No audit logs found for project Test Project.")
+        }
+    }
+
+    @Test
+    fun `displays cancelled message when input is x`() {
+        every { reader.read() } returns "x"
+
+        ui.run()
+
+        verify {
+            viewer.show("Cancelled.")
+        }
+    }
+    @Test
+    fun `displays null when changesDescription is null`() {
+        every { reader.read() } returns "1"
+        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns listOf(
+            AuditLog(
+                id = "A2",
+                timestamp = 1234567891L,
+                createdByUserId = "U2",
+                auditAction = AuditAction.UPDATE,
+                changesDescription = null,
+                entityType = EntityType.PROJECT,
+                entityId = "P1"
+            )
+        )
+
+        ui.run()
+
+        verify {
+            viewer.show(match { it.contains("Changes: null") })
+        }
+    }
+
+    @Test
+    fun `displays invalid selection for non-number input`() {
+        every { reader.read() } returns "not-a-number"
+
+        ui.run()
+
+        verify {
+            viewer.show("Invalid selection")
+        }
+    }
+}
+
