@@ -10,126 +10,108 @@ import java.io.FileReader
 import java.io.FileWriter
 
 class CsvDataSource<T>(
-    private val rootDirectory: String, private val schema: BaseSchema<T>
+    private val rootDirectory: String,
+    private val schema: BaseSchema<T>
 ) : BaseDataSource<T> {
 
     private val csvFile: File
         get() = File(rootDirectory, schema.fileName)
 
-    override fun getAll(): List<T> {
-        if (!csvFile.exists())
-            throw FileNotFoundException("File not found: ${csvFile.name}")
-
-        return FileReader(csvFile).use { reader ->
-            CSVReaderBuilder(reader)
-                .withSkipLines(1)
-                .build()
-                .use { csvReader ->
-                    csvReader
-                        .asSequence()
-                        .filter { row -> row.isNotEmpty() }
-                        .mapNotNull { row -> schema.fromRow(row.toList()) }
-                        .toList()
-                }
-        }
-
-    }
-
-    override fun getById(id: String): T? {
-        if (!csvFile.exists()) {
-            return null
-        }
-
-        return getAll().find { entity ->
-            schema.getId(entity) == id
+    override fun getAll(): List<T> = when {
+        !csvFile.exists() -> throw FileNotFoundException("File not found: ${csvFile.name}")
+        else -> Result.run {
+            FileReader(csvFile).use { reader ->
+                CSVReaderBuilder(reader)
+                    .withSkipLines(1)
+                    .build()
+                    .use { csvReader ->
+                        csvReader
+                            .asSequence()
+                            .filter { it.isNotEmpty() }
+                            .mapNotNull { schema.fromRow(it.toList()) }
+                            .toList()
+                    }
+            }
         }
     }
 
-    override fun update(id: String, entity: T): Boolean {
+    override fun getById(id: String): T? = when {
+        !csvFile.exists() -> null
+        else -> Result.runCatching {
+            getAll().find { entity -> schema.getId(entity) == id }
+        }.getOrNull()
+    }
+
+    override fun update(id: String, entity: T): Boolean = Result.runCatching {
+        schema.toRow(entity).takeIf { it.isNotEmpty() } ?: return false
+
         if (!csvFile.exists()) return false
 
-        val rowToWrite = schema.toRow(entity)
-        if (rowToWrite.isEmpty()) return false
+        val entities = getAll()
+        val entityIndex = entities.indexOfFirst { schema.getId(it) == id }
 
-        return try {
-            val entities = getAll()
-            val entityIndex = entities.indexOfFirst { schema.getId(it) == id }
+        if (entityIndex == -1) return false
 
-            if (entityIndex == -1) return false
-
-            val updatedEntities = entities.mapIndexed { index, currentEntity ->
-                if (index == entityIndex) entity else currentEntity
-            }
-
-            return writeEntitiesToFile(updatedEntities)
-        } catch (e: Exception) {
-            false
+        val updatedEntities = entities.mapIndexed { index, currentEntity ->
+            if (index == entityIndex) entity else currentEntity
         }
-    }
 
-    override fun delete(id: String): Boolean {
+        writeEntitiesToFile(updatedEntities)
+    }.getOrDefault(false)
+
+    override fun delete(id: String): Boolean = Result.runCatching {
         if (!csvFile.exists()) return false
 
-        return try {
-            val entities = getAll()
-            val entityExists = entities.any { schema.getId(it) == id }
+        val entities = getAll()
+        val entityExists = entities.any { schema.getId(it) == id }
 
-            if (!entityExists) return false
+        if (!entityExists) return false
 
-            val remainingEntities = entities.filter { schema.getId(it) != id }
+        val remainingEntities = entities.filter { schema.getId(it) != id }
 
-            return writeEntitiesToFile(remainingEntities)
-        } catch (e: Exception) {
-            false
-        }
-    }
+        writeEntitiesToFile(remainingEntities)
+    }.getOrDefault(false)
 
-    override fun write(entity: T): Boolean {
-        val rowToWrite = schema.toRow(entity)
-        if (rowToWrite.isEmpty()) return false
-        try {
-            csvFile.parentFile?.mkdirs()
-            if (!csvFile.exists()) {
-                FileWriter(csvFile).use { writer ->
-                    CSVWriter(writer).use { csvWriter ->
-                        csvWriter.writeNext(schema.header.toTypedArray())
-                        csvWriter.writeNext(rowToWrite.toTypedArray())
-                    }
-                }
-            } else {
-                FileWriter(csvFile, true).use { writer ->
-                    CSVWriter(writer).use { csvWriter ->
-                        csvWriter.writeNext(rowToWrite.toTypedArray())
-                    }
-                }
-            }
-            return true
-        } catch (e: Exception) {
-            return false
-        }
-    }
-
-    override fun writeAll(entities: List<T>): Boolean {
-        if (entities.isEmpty()) return false
+    override fun write(entity: T): Boolean = Result.runCatching {
+        val rowToWrite = schema.toRow(entity).takeIf { it.isNotEmpty() } ?: return false
 
         csvFile.parentFile?.mkdirs()
-        return writeEntitiesToFile(entities)
-    }
 
-    private fun writeEntitiesToFile(entities: List<T>): Boolean {
-        return try {
-            FileWriter(csvFile).use { writer ->
+        when {
+            !csvFile.exists() -> FileWriter(csvFile).use { writer ->
                 CSVWriter(writer).use { csvWriter ->
                     csvWriter.writeNext(schema.header.toTypedArray())
-                    entities
-                        .map { schema.toRow(it) }
-                        .filter { it.isNotEmpty() }
-                        .forEach { csvWriter.writeNext(it.toTypedArray()) }
+                    csvWriter.writeNext(rowToWrite.toTypedArray())
                 }
             }
-            true
-        } catch (e: Exception) {
-            false
+            else -> FileWriter(csvFile, true).use { writer ->
+                CSVWriter(writer).use { csvWriter ->
+                    csvWriter.writeNext(rowToWrite.toTypedArray())
+                }
+            }
         }
+        true
+    }.getOrDefault(false)
+
+    override fun writeAll(entities: List<T>): Boolean = when {
+        entities.isEmpty() -> false
+        else -> Result.runCatching {
+            csvFile.parentFile?.mkdirs()
+            writeEntitiesToFile(entities)
+        }.getOrDefault(false)
     }
+
+    private fun writeEntitiesToFile(entities: List<T>): Boolean = Result.runCatching {
+        FileWriter(csvFile).use { writer ->
+            CSVWriter(writer).use { csvWriter ->
+                csvWriter.writeNext(schema.header.toTypedArray())
+                entities
+                    .mapNotNull { entity ->
+                        schema.toRow(entity).takeIf { it.isNotEmpty() }
+                    }
+                    .forEach { csvWriter.writeNext(it.toTypedArray()) }
+            }
+        }
+        true
+    }.getOrDefault(false)
 }
