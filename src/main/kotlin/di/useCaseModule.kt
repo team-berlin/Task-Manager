@@ -26,11 +26,11 @@ val useCaseModule = module {
     single { UpdateTaskUseCase(get()) }
     single { ChangeTaskStateUseCase(get()) }
     single { GetTaskByIdUseCase(get()) }
-  //  single { AuthenticateUserUseCase(get()) }
     single { CreateMateUseCase(get(),get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUseCase(get()) }
     single { FetchAllUsersUseCase(get()) }
     single <HashingPassword> { MD5Hasher() }
     single<AuthenticationRepository> { AuthRepositoryInMemory()  }
+    single { AuthenticateUserUseCase(get(),get()) }
 }
