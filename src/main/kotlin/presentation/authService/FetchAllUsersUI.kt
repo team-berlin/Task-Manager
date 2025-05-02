@@ -1,4 +1,23 @@
 package com.berlin.presentation.authService
 
-class FetchAllUsersUI {
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.presentation.UiRunner
+import com.berlin.presentation.io.Viewer
+
+class FetchAllUsersUI(
+    private val fetchAllUsers: FetchAllUsersUseCase,
+    private val viewer: Viewer,
+) : UiRunner {
+    override val id: Int = 5
+    override val label: String = "fetch all users"
+    override fun run() {
+        val users = fetchAllUsers.getAllUsers()
+        if (users.isEmpty()) {
+            viewer.show("No users found.")
+        } else {
+            users.forEach { user ->
+                viewer.show("ID: ${user.id}, Name: ${user.userName}")
+            }
+        }
+    }
 }

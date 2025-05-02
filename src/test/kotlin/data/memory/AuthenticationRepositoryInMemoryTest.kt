@@ -1,5 +1,6 @@
 package com.berlin.data.memory
 
+import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
@@ -79,7 +80,7 @@ class AuthenticationRepositoryInMemoryTest {
         val result = inMemoryAuthRepositoryImpl.getUserById(nonExistentId)
 
         // Then
-        assertThat(result).isNull()
+        assertThat(result.onFailure { UserNotFoundException("user not found") })
     }
 
     @Test

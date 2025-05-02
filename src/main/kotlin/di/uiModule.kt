@@ -2,13 +2,16 @@ package com.berlin.di
 
 import com.berlin.domain.model.User
 import com.berlin.data.DummyData
+import com.berlin.domain.usecase.authService.GetUserByIDUseCase
+import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.MainMenuUI
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.authService.AuthenticateUserUi
-import com.berlin.presentation.authService.GetUserByIDUI
+import com.berlin.presentation.authService.CreationOfMateUi
 import com.berlin.presentation.task.*
+import domain.usecase.authService.AuthenticateUserUseCase
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.math.sin
 
 
 val uiModule = module {
@@ -21,32 +24,26 @@ val uiModule = module {
     single { UpdateTaskUI(get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
-    single { GetUserByIDUI(get(), get(), get()) }
-    single { AuthenticateUserUi(get(), get(), get()) }
-    single<List<UiRunner>>(named("adminRunners")) {
-        listOf(
-            get<CreateTaskUI>(),
-            get<AssignTaskUI>(),
-            get<DeleteTaskUI>(),
-            get<UpdateTaskUI>(),
-            get<GetTaskByIdUI>(),
-            get<GetUserByIDUI>()
-        )
-    }
-    single<List<UiRunner>>(named("mateRunners")) {
-        listOf(
-            get<GetTasksByProjectIdUI>(),
-            get<ChangeTaskStateUI>()
-        )
-    }
+    single {GetUserByIDUseCase(get())}
+    single { GettingUsersLoggedInUseCase(get()) }
+    single { CreationOfMateUi(get(),get(),get()) }
+    single { AuthenticateUserUi(get(),get(),get()) }
 
+
+    /* aggregated main menu */
     single {
         MainMenuUI(
-            logInUI = get(),
+            runners = listOf(
+                get<CreateTaskUI>(),
+                get<AssignTaskUI>(),
+                get<DeleteTaskUI>(),
+                get<GetTasksByProjectIdUI>(),
+                get<UpdateTaskUI>(),
+                get<ChangeTaskStateUI>(),
+                get<GetTaskByIdUI>()
+            ),
             viewer = get(),
-            reader = get(),
-            adminRunners = get(named("adminRunners")),
-            mateRunners = get(named("mateRunners"))
+            reader = get()
         )
     }
 }
