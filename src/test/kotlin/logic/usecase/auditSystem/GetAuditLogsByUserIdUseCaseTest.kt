@@ -27,7 +27,7 @@ class GetAuditLogsByUserIdUseCaseTest {
         // Given
         val userId = "u1"
         val logs = listOf(
-            generateAuditLog(createdBy = generateAuditLog().createdBy)
+            generateAuditLog()
         )
         every { auditRepository.getAuditLogsByUserId(userId) } returns logs
 

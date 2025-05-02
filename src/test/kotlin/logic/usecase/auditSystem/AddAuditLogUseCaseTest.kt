@@ -1,13 +1,13 @@
 package logic.usecase.auditSystem
 
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.berlin.helper.generateAuditLog
 import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.repositories.AuditRepository
 import com.berlin.logic.usecase.auditSystem.AddAuditLogUseCase
-import com.berlin.model.AuditAction
-import com.berlin.model.EntityType
-import com.berlin.model.User
-import com.berlin.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +38,7 @@ class AddAuditLogUseCaseTest {
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
-            createdBy = auditLog.createdBy,
+            createdBy = User("u1", "TestUser", "ffkjkuyu", UserRole.ADMIN),
             auditAction = auditLog.auditAction,
             changesDescription = auditLog.changesDescription!!,
             entityType = auditLog.entityType,
@@ -63,7 +63,7 @@ class AddAuditLogUseCaseTest {
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
-            createdBy = auditLog.createdBy,
+            createdBy = User("u1", "TestUser", "ffkjkuyu", UserRole.ADMIN),
             auditAction = auditLog.auditAction,
             changesDescription = auditLog.changesDescription!!,
             entityType = auditLog.entityType,

@@ -1,9 +1,9 @@
 package logic.usecase.auditSystem
 
+import com.berlin.domain.model.EntityType
 import com.berlin.helper.generateAuditLog
 import com.berlin.logic.repositories.AuditRepository
 import com.berlin.logic.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
-import com.berlin.model.EntityType
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

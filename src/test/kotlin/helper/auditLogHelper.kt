@@ -1,6 +1,6 @@
 package com.berlin.helper
 
-import com.berlin.model.*
+import com.berlin.domain.model.*
 
 fun generateAuditLog(
     id: String = "A1",
@@ -14,7 +14,7 @@ fun generateAuditLog(
     return AuditLog(
         id = id,
         timestamp = timestamp,
-        createdBy = createdBy,
+        createdByUserId = createdBy.id,
         auditAction = action,
         changesDescription = changesDescription,
         entityType = entityType,

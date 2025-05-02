@@ -1,11 +1,11 @@
 package com.berlin.logic.usecase.auditSystem
 
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.User
 import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.repositories.AuditRepository
-import com.berlin.model.AuditAction
-import com.berlin.model.AuditLog
-import com.berlin.model.EntityType
-import com.berlin.model.User
 
 class AddAuditLogUseCase(
     private val auditRepository: AuditRepository,
@@ -25,7 +25,7 @@ class AddAuditLogUseCase(
             val auditLog = AuditLog(
                 id = id,
                 timestamp = System.currentTimeMillis(),
-                createdBy = createdBy,
+                createdByUserId = createdBy.id,
                 auditAction = auditAction,
                 changesDescription = changesDescription,
                 entityType = entityType,

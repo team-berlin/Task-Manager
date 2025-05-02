@@ -1,7 +1,7 @@
 package com.berlin.logic.usecase.auditSystem
 
+import com.berlin.domain.model.AuditLog
 import com.berlin.logic.repositories.AuditRepository
-import com.berlin.model.AuditLog
 
 class GetAuditLogsByProjectIdUseCase(
     private val auditRepository: AuditRepository
