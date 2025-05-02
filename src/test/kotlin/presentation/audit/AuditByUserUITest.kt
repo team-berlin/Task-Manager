@@ -2,8 +2,7 @@ package presentation.audit
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.*
-import com.berlin.domain.repository.AuditRepository
-import com.berlin.logic.usecase.auditSystem.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
 import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer

@@ -5,8 +5,7 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.User
-import com.berlin.domain.repository.AuditRepository
-import com.berlin.logic.usecase.auditSystem.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader

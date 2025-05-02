@@ -6,8 +6,7 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.Task
-import com.berlin.domain.repository.AuditRepository
-import com.berlin.logic.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
