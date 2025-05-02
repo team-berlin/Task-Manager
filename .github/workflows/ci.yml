@@ -14,9 +14,8 @@ jobs:
   run-tests:
     name: Execute Tests & Generate Coverage
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
@@ -26,38 +25,60 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Make Gradle wrapper executable
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests & enforce coverage
-        run: ./gradlew clean check
+      - name: Run Unit Tests
+        run: ./gradlew test
 
-      - name: Generate XML coverage report
+      - name: Generate Kover XML Report
         run: ./gradlew koverXmlReport
 
-      - name: Upload coverage report artifact
+      - name: Upload coverage report XML
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: kover-coverage-report
-          path: build/reports/kover/
+          path: build/reports/kover/xml/report.xml
           retention-days: 1
 
+      - name: Test Summary
+        uses: test-summary/action@v2
+        with:
+          paths: "**/build/test-results/**/*.xml"
+        if: always()
+
+      - name: Verify coverage thresholds
+        run: ./gradlew koverVerify
+
   analyze-pr:
-    name: Comment Coverage Summary
-    runs-on: ubuntu-latest
+    name: Analyze PR Code Coverage
     needs: run-tests
+    runs-on: ubuntu-latest
     if: ${{ always() && github.event_name == 'pull_request' }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check for Kover artifact
+        id: check_artifact
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId
+            });
+            return artifacts.data.artifacts.some(a => a.name === "kover-coverage-report");
+
       - name: Download coverage report
+        if: steps.check_artifact.outputs.result == 'true'
         uses: actions/download-artifact@v4
         with:
           name: kover-coverage-report
-          path: build/reports/kover/
+          path: build/reports/kover
 
       - name: Comment on PR with coverage
         uses: madrapps/jacoco-report@v1.7.1
