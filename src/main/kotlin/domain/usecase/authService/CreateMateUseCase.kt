@@ -2,13 +2,12 @@ package com.berlin.domain.usecase.authService
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.model.User
 
-class CreationOfMateUseCase(
+class CreateMateUseCase(
     private val repository: AuthenticationRepository,
     private val hashingPassword: HashingPassword
 ) {
-    fun createMate(userName: String, password: String): Result<User> {
+    fun createMate(userName: String, password: String): Result<com.berlin.domain.model.User> {
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("Username and password must not be empty"))
         }

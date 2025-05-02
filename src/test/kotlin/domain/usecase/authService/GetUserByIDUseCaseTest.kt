@@ -1,9 +1,14 @@
 package com.berlin.domain.usecase.authService
+
+import com.berlin.domain.exception.InvalidUserIdException
+import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.helper.AuthServiceTestData.idNotExist
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,22 +24,23 @@ class GetUserByIDUseCaseTest {
     }
 
     @Test
-    fun `getUserById returns null when ID does not exist`() {
+    fun `getUserById returns User Not Valid Exception when ID does not exist`() {
         // Given
-        val nonExistentId = AuthServiceTestData.idNotExist
-        every { repository.getUserById(nonExistentId) } returns null
+        val nonExistentId = idNotExist
+        every { repository.getUserById(nonExistentId) } returns Result.failure(UserNotFoundException(idNotExist))
 
         // When
         val result = getUserByIDUseCase.getUserById(nonExistentId)
 
         // Then
-        assertThat(result).isNull()
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isEqualTo( UserNotFoundException(idNotExist))
     }
 
     @Test
-    fun `getUserById throws IllegalArgumentException when ID is empty`() {
+    fun `getUserById throws InvalidUserIdException when ID is empty`() {
         // When & Then
-        assertThrows<IllegalArgumentException> {
+        assertThrows<InvalidUserIdException> {
             getUserByIDUseCase.getUserById("")
         }
     }
@@ -44,13 +50,20 @@ class GetUserByIDUseCaseTest {
         // Given
         val existingId = AuthServiceTestData.idExist
         val expectedUser = AuthServiceTestData.existingUser
-        every { repository.getUserById(existingId) } returns expectedUser
+        every { repository.getUserById(existingId) } returns Result.success(expectedUser)
 
         // When
         val result = getUserByIDUseCase.getUserById(existingId)
 
         // Then
-        assertThat(result).isEqualTo(expectedUser)
+        assertThat(result.isSuccess).isTrue()
     }
 
+    @Test
+    fun `throws Invalid User Id Exception when id is blank`() {
+        assertThrows<InvalidUserIdException> {
+            getUserByIDUseCase.getUserById("   ")
+        }
+        verify(exactly = 0) { repository.getUserById(any()) }
+    }
 }

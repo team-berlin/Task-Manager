@@ -2,7 +2,7 @@ package domain.logic.usecase.authService
 
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.CreationOfMateUseCase
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.domain.fakeData.FakeHashingPassword
 import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
@@ -11,17 +11,17 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreationOfMateUseCaseTest {
+class CreateMateUseCaseTest {
 
     private lateinit var authRepository: AuthenticationRepository
     private lateinit var hashingPassword: HashingPassword
-    private lateinit var creationOfMateUseCase: CreationOfMateUseCase
+    private lateinit var createMateUseCase: CreateMateUseCase
 
     @BeforeEach
     fun setup() {
         authRepository = mockk()
         hashingPassword = FakeHashingPassword()
-        creationOfMateUseCase = CreationOfMateUseCase(authRepository, hashingPassword)
+        createMateUseCase = CreateMateUseCase(authRepository, hashingPassword)
     }
 
     @Test
@@ -31,7 +31,7 @@ class CreationOfMateUseCaseTest {
         val password = AuthServiceTestData.userPassword
 
         // When
-        val result = creationOfMateUseCase.createMate(emptyUsername, password)
+        val result = createMateUseCase.createMate(emptyUsername, password)
 
         // Then
         assertThat(result.isFailure).isTrue()
@@ -45,7 +45,7 @@ class CreationOfMateUseCaseTest {
         val emptyPassword = AuthServiceTestData.userPasswordIsEmpty
 
         // When
-        val result = creationOfMateUseCase.createMate(username, emptyPassword)
+        val result = createMateUseCase.createMate(username, emptyPassword)
 
         // Then
         assertThat(result.isFailure).isTrue()
@@ -59,7 +59,7 @@ class CreationOfMateUseCaseTest {
         val shortPassword = AuthServiceTestData.passwordLessThanEight
 
         // When
-        val result = creationOfMateUseCase.createMate(username, shortPassword)
+        val result = createMateUseCase.createMate(username, shortPassword)
 
         // Then
         assertThat(result.isFailure).isTrue()
@@ -76,7 +76,7 @@ class CreationOfMateUseCaseTest {
         val password = AuthServiceTestData.userPassword
 
         // When
-        val result = creationOfMateUseCase.createMate(username, password)
+        val result = createMateUseCase.createMate(username, password)
 
         // Then
         assertThat(result.isFailure).isTrue()
@@ -97,7 +97,7 @@ class CreationOfMateUseCaseTest {
         } returns Result.success(AuthServiceTestData.excepctedUser)
 
         // When
-        val result = creationOfMateUseCase.createMate(username, password)
+        val result = createMateUseCase.createMate(username, password)
 
         // Then
         assertThat(result.isSuccess).isTrue()

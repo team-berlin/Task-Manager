@@ -8,11 +8,11 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
 class AuthenticationRepositoryInMemoryTest {
-    private lateinit var inMemoryAuthRepositoryImpl: InMemoryAuthRepositoryImpl
+    private lateinit var inMemoryAuthRepositoryImpl: AuthRepositoryInMemory
 
     @BeforeEach
     fun setup() {
-        inMemoryAuthRepositoryImpl = InMemoryAuthRepositoryImpl()
+        inMemoryAuthRepositoryImpl = AuthRepositoryInMemory()
     }
 
     @Test

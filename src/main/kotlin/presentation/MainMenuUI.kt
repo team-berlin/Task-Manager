@@ -14,7 +14,8 @@ class MainMenuUI(
 
     override fun run() {
         while (true) {
-            showMenu()
+            showAuth()
+           // showMenu()
             when (val input = reader.read()?.trim()) {
                 null, "", "X", "x" -> return
                 else -> runners
@@ -24,12 +25,19 @@ class MainMenuUI(
             }
         }
     }
-
-    private fun showMenu() {
-        viewer.show("=== Task Manager ===")
+    private fun showAuth(){
+        viewer.show("===Auth Services ===")
         runners.sortedBy { it.id }
             .forEach { viewer.show("${it.id} – ${it.label}") }
         viewer.show("X – Exit")
         viewer.show("Select an option:")
     }
-}
+    }
+//    private fun showMenu() {
+//        viewer.show("=== Task Manager ===")
+//        runners.sortedBy { it.id }
+//            .forEach { viewer.show("${it.id} – ${it.label}") }
+//        viewer.show("X – Exit")
+//        viewer.show("Select an option:")
+//    }
+

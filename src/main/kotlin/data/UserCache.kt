@@ -1,5 +1,6 @@
 package data
-import com.berlin.model.User
+
+import com.berlin.domain.model.User
 
 object UserCache {
     var currentUser: User? = null
