@@ -26,14 +26,24 @@ class MainMenuUITest {
         viewer = mockk(relaxed = true) {
             every { show(capture(printed)) } just Runs
         }
+
         reader = mockk()
     }
 
     @Test
     fun `exit immediately on blank input without running any runner`() {
         every { reader.read() } returns ""
-        menu = MainMenuUI(emptyList(), viewer, reader)
-
+        val dummyRunner = mockk<UiRunner>(relaxed = true) {
+            every { id } returns 1
+            every { label } returns "Dummy Runner"
+        }
+        menu = MainMenuUI(
+            logInUI = emptyList(),
+            viewer = viewer,
+            reader = reader,
+            adminRunners = listOf(dummyRunner),
+            mateRunners = emptyList()
+        )
         menu.run()
 
         // should have printed the menu once, then returned
@@ -60,7 +70,7 @@ class MainMenuUITest {
         }
 
         every { reader.read() } returnsMany listOf("1", "X")
-        menu = MainMenuUI(listOf(r0, r1), viewer, reader)
+        menu = MainMenuUI(listOf(r0, r1), viewer, reader,adminRunners = listOf(),mateRunners = listOf())
 
         menu.run()
 
@@ -80,7 +90,7 @@ class MainMenuUITest {
         }
 
         every { reader.read() } returnsMany listOf("99", "")
-        menu = MainMenuUI(listOf(dummy), viewer, reader)
+        menu = MainMenuUI(listOf(dummy), viewer, reader, adminRunners = listOf(),mateRunners = listOf())
 
         menu.run()
 
@@ -90,7 +100,7 @@ class MainMenuUITest {
     @Test
     fun `trimmed lowercase x also exits`() {
         every { reader.read() } returnsMany listOf("  x  ")
-        menu = MainMenuUI(emptyList(), viewer, reader)
+        menu = MainMenuUI(emptyList(), viewer, reader,adminRunners = listOf(),mateRunners = listOf())
 
         menu.run()
 
@@ -107,7 +117,7 @@ class MainMenuUITest {
             var ran = false
             override fun run() { ran = true }
         }
-        menu = MainMenuUI(listOf(dummy), viewer, reader)
+        menu = MainMenuUI(listOf(dummy), viewer, reader, adminRunners = listOf(),mateRunners = listOf())
 
         menu.run()
 
@@ -118,7 +128,7 @@ class MainMenuUITest {
     @Test
     fun `menu has correct id and label`() {
         every { reader.read() } returns ""
-        menu = MainMenuUI(emptyList(), viewer, reader)
+        menu = MainMenuUI(emptyList(), viewer, reader,adminRunners = listOf(),mateRunners = listOf())
 
         assertThat(menu.id).isEqualTo(0)
         assertThat(menu.label).isEqualTo("Main menu")

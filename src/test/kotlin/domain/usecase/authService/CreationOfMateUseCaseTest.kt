@@ -2,7 +2,7 @@ package domain.logic.usecase.authService
 
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.CreateMateUseCase
+import com.berlin.domain.usecase.authService.CreationOfMateUseCase
 import com.berlin.domain.fakeData.FakeHashingPassword
 import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
@@ -11,17 +11,17 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreateMateUseCaseTest {
+class CreationOfMateUseCaseTest {
 
     private lateinit var authRepository: AuthenticationRepository
     private lateinit var hashingPassword: HashingPassword
-    private lateinit var createMateUseCase: CreateMateUseCase
+    private lateinit var createMateUseCase: CreationOfMateUseCase
 
     @BeforeEach
     fun setup() {
         authRepository = mockk()
         hashingPassword = FakeHashingPassword()
-        createMateUseCase = CreateMateUseCase(authRepository, hashingPassword)
+        createMateUseCase = CreationOfMateUseCase(authRepository, hashingPassword)
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.berlin.data.memory.AuthRepositoryInMemory
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.CreateMateUseCase
+import com.berlin.domain.usecase.authService.CreationOfMateUseCase
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
@@ -26,7 +26,7 @@ val useCaseModule = module {
     single { UpdateTaskUseCase(get()) }
     single { ChangeTaskStateUseCase(get()) }
     single { GetTaskByIdUseCase(get()) }
-    single { CreateMateUseCase(get(),get()) }
+    single { CreationOfMateUseCase(get(),get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUseCase(get()) }
     single { FetchAllUsersUseCase(get()) }

@@ -3,7 +3,7 @@ import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.repository.AuthenticationRepository
 
-class CreateMateUseCase(
+class CreationOfMateUseCase(
     private val repository: AuthenticationRepository,
     private val hashingPassword: HashingPassword
 ) {

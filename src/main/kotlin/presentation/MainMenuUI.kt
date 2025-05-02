@@ -1,13 +1,12 @@
 package com.berlin.presentation
 
 import com.berlin.domain.model.UserRole
-import com.berlin.presentation.authService.AuthenticateUserUi
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import data.UserCache
 
 class MainMenuUI(
-    private val logInUI: AuthenticateUserUi,
+    private val logInUI: List<UiRunner>,
     private val viewer: Viewer,
     private val reader: Reader,
     private val adminRunners: List<UiRunner>,
@@ -19,8 +18,7 @@ class MainMenuUI(
     private lateinit var runners: List<UiRunner>
     override fun run() {
         viewer.show("=== Welcome to our PlanMate app ===")
-        logInUI.run()
-
+        logInUI.forEach { it.run() }
         runners = giveUserPermission(UserCache) ?: return
 
         val title = when (UserCache.currentUser?.role) {
