@@ -1,6 +1,6 @@
-package com.berlin.logic.repositories
+package com.berlin.domain.repository
 
-import com.berlin.model.Project
+import com.berlin.domain.model.Project
 
 interface ProjectRepository {
     fun createProject(project:Project): Result<String>

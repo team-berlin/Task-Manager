@@ -1,14 +1,13 @@
 package logic.usecase.project;
 
-import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.logic.usecase.project.DeleteProjectUseCase
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.usecase.project.DeleteProjectUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
