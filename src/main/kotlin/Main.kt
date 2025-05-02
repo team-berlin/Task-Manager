@@ -11,7 +11,7 @@ fun main() {
 
     startKoin {
         printLogger()
-        modules(appModule, useCaseModule, uiModule)
+        modules(appModule, useCaseModule, uiModule, dataModule)
     }
 
     val mainMenu: MainMenuUI = getKoin().get()
