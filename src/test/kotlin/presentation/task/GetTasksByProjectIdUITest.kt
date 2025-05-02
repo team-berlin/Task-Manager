@@ -24,7 +24,7 @@ class GetTasksByProjectIdUITest {
 
     private val projectP1 = Project("P1", "Core", null, listOf("S1"), emptyList())
     private val stateTodo = State("S1", "TODO", "P1")
-    private val alice = User("U1", "alice", "pw",permission = Permission(), UserRole.MATE)
+    private val alice = User("U1", "alice", "pw", UserRole.MATE)
 
     @BeforeEach
     fun setUp() {

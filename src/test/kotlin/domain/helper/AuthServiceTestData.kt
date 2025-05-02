@@ -17,23 +17,16 @@ object AuthServiceTestData {
     val excepctedUser = userDummyData(
         userName = userName,
         password = userPassword,
-        permission = Permission(viewAuditLogs = true),
         role = UserRole.MATE
     )
     val user = userDummyData(
-        userName = "Fatma", password = "hashed_securePassword", permission =
-        Permission(
-            createTask = true,
-            editTask = true,
-            deleteTask = true,
-            viewAuditLogs = true
-        )
+        userName = "Fatma", password = "hashed_securePassword"
     )
 
     val testUserName = "Fatma"
     val testUserPassword = "1234567899"
-    val adminIsFirstUser = userDummyData("55", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
-    val existingUser = userDummyData("13", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
+    val adminIsFirstUser = userDummyData("55", "Menna", "12345678")
+    val existingUser = userDummyData("13", "Menna", "12345678")
 
 
 }

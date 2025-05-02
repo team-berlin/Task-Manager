@@ -14,8 +14,8 @@ class TaskRepositoryInMemoryTest {
 
     private lateinit var repo: TaskRepositoryInMemory
 
-    private val alice = User("U1", "alice", "pw",permission = Permission(), UserRole.MATE)
-    private val bob = User("U2", "bob", "pw", permission = Permission(),UserRole.MATE)
+    private val alice = User("U1", "alice", "pw", UserRole.MATE)
+    private val bob = User("U2", "bob", "pw", UserRole.MATE)
 
     @BeforeEach
     fun setUp() {

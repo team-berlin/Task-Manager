@@ -2,9 +2,7 @@ package presentation.authService
 
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
-import com.berlin.model.Permission
 import com.berlin.presentation.authService.FetchAllUsersUI
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -32,8 +30,8 @@ class FetchAllUsersUseCaseTest {
     fun `should print all users when users are available`() {
         // Given
         val users = listOf(
-            User(id = "1", userName = "Menna", password = "12345678j", permission = Permission(), role=UserRole.ADMIN),
-            User(id = "2", userName = "Sarah", password = "1234567890", permission = Permission(), role = UserRole.MATE)
+            User(id = "1", userName = "Menna", password = "12345678j",  role=UserRole.ADMIN),
+            User(id = "2", userName = "Sarah", password = "1234567890",  role = UserRole.MATE)
         )
         every { useCase.getAllUsers() } returns users
 
