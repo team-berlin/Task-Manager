@@ -2,9 +2,9 @@ package com.berlin.data.schema
 
 import com.berlin.data.AuditLogIndex
 import com.berlin.data.BaseSchema
-import com.berlin.model.AuditAction
-import com.berlin.model.AuditLog
-import com.berlin.model.EntityType
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.EntityType
 
 class AuditSchema(
     override val fileName: String, override val header: List<String>

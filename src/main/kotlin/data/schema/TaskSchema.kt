@@ -2,7 +2,7 @@ package com.berlin.data.schema
 
 import com.berlin.data.BaseSchema
 import com.berlin.data.TaskIndex
-import com.berlin.model.Task
+import com.berlin.domain.model.Task
 
 class TaskSchema(
     override val fileName: String,
@@ -34,8 +34,8 @@ class TaskSchema(
             task.title,
             task.description ?: "",
             task.stateId,
-            task.assignedTo,
-            task.createBy
+            task.assignedToUserId,
+            task.createByUserId
         )
     }
 
@@ -46,8 +46,8 @@ class TaskSchema(
             title = row[TaskIndex.TITLE],
             description = row[TaskIndex.DESCRIPTION].ifEmpty { null },
             stateId = row[TaskIndex.STATE_ID],
-            assignedTo = row[TaskIndex.ASSIGNED_TO],
-            createBy = row[TaskIndex.CREATE_BY]
+            assignedToUserId = row[TaskIndex.ASSIGNED_TO_USER_ID],
+            createByUserId = row[TaskIndex.CREATE_BY_USER_ID]
         )
     }
 
@@ -56,8 +56,8 @@ class TaskSchema(
                 row[TaskIndex.PROJECT_ID].isEmpty() ||
                 row[TaskIndex.TITLE].isEmpty() ||
                 row[TaskIndex.STATE_ID].isEmpty() ||
-                row[TaskIndex.ASSIGNED_TO].isEmpty() ||
-                row[TaskIndex.CREATE_BY].isEmpty())
+                row[TaskIndex.ASSIGNED_TO_USER_ID].isEmpty() ||
+                row[TaskIndex.CREATE_BY_USER_ID].isEmpty())
     }
 
     private fun checkTaskIsNotValid(task: Task): Boolean {
@@ -65,8 +65,8 @@ class TaskSchema(
                 task.projectId.isEmpty() ||
                 task.title.isEmpty() ||
                 task.stateId.isEmpty() ||
-                task.assignedTo.isEmpty() ||
-                task.createBy.isEmpty())
+                task.assignedToUserId.isEmpty() ||
+                task.createByUserId.isEmpty())
     }
 
     private companion object {

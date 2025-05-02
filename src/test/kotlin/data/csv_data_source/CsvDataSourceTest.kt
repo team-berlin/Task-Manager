@@ -1,8 +1,8 @@
 package com.berlin.data.csv_data_source
 
 import com.berlin.data.BaseSchema
-import com.berlin.model.User
-import com.berlin.model.UserRole
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

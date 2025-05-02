@@ -13,9 +13,8 @@ object TaskIndex {
     const val TITLE = 2
     const val DESCRIPTION = 3
     const val STATE_ID = 4
-    const val ASSIGNED_TO = 5
-    const val CREATE_BY = 6
-    const val AUDIT_LOGS = 7
+    const val ASSIGNED_TO_USER_ID = 5
+    const val CREATE_BY_USER_ID = 6
 }
 
 object StateIndex {

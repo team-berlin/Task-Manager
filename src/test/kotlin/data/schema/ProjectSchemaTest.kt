@@ -1,7 +1,7 @@
 package data.schema
 
 import com.berlin.data.schema.ProjectSchema
-import com.berlin.model.Project
+import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -131,6 +131,14 @@ class ProjectSchemaTest {
  }
 
  @Test
+ fun `fromRow should return null when empty row passed miss id column`() {
+  //when
+  val result = projectSchema.fromRow(emptyList())
+  //then
+  assertThat(result).isNull()
+ }
+
+ @Test
  fun `fromRow should return null when invalid project passed miss name column`() {
   //when
   val result = projectSchema.fromRow(invalidRowEmptyName)
@@ -183,7 +191,7 @@ class ProjectSchemaTest {
    id = "proj123",
    name = "SampleProject",
    description = "A sample project",
-   statesId = emptyList(),
+   statesId = null,
    tasksId = listOf("task1", "task2")
   )
   val validProjectEmptyTasksId = Project(
@@ -191,7 +199,7 @@ class ProjectSchemaTest {
    name = "SampleProject",
    description = "A sample project",
    statesId = listOf("state1", "state2"),
-   tasksId = emptyList()
+   tasksId = null
   )
   val invalidProjectEmptyId = Project(
    id = "",

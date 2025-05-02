@@ -2,7 +2,7 @@ package com.berlin.data.schema
 
 import com.berlin.data.BaseSchema
 import com.berlin.data.ProjectIndex
-import com.berlin.model.Project
+import com.berlin.domain.model.Project
 
 class ProjectSchema(
     override val fileName: String,
@@ -32,8 +32,8 @@ class ProjectSchema(
             project.id,
             project.name,
             project.description ?: "",
-            "[${project.statesId.joinToString(",")}]",
-            "[${project.tasksId.joinToString(",")}]"
+            project.statesId?.joinToString(",", "[", "]") ?: "[]",
+            project.tasksId?.joinToString(",", "[", "]") ?: "[]"
         )
     }
 
@@ -42,13 +42,14 @@ class ProjectSchema(
             id = row[ProjectIndex.ID],
             name = row[ProjectIndex.NAME],
             description = row[ProjectIndex.DESCRIPTION].ifEmpty { null },
-            statesId = stringListToList(row[ProjectIndex.STATES_ID]),
-            tasksId = stringListToList(row[ProjectIndex.TASKS_ID])
+            statesId = row[ProjectIndex.STATES_ID].let { if (it == "[]") null else stringListToList(it) },
+            tasksId = row[ProjectIndex.TASKS_ID].let { if (it == "[]") null else stringListToList(it) }
         )
     }
 
     private fun checkRowIsNotValidProject(row: List<String>): Boolean {
-        return (row[ProjectIndex.ID].isEmpty() ||
+        return (row.isEmpty()||
+                row[ProjectIndex.ID].isEmpty() ||
                 row[ProjectIndex.NAME].isEmpty())
     }
 
@@ -60,7 +61,7 @@ class ProjectSchema(
     private fun stringListToList(listString: String): List<String> {
         return listString
             .removeSurrounding("[", "]")
-            .takeIf { it.isNotEmpty() }?.split(",") ?: emptyList()
+            .split(",")
     }
 
     private companion object {

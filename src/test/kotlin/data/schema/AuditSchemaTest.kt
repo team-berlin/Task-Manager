@@ -1,9 +1,9 @@
 package data.schema
 
 import com.berlin.data.schema.AuditSchema
-import com.berlin.model.AuditLog
-import com.berlin.model.AuditAction
-import com.berlin.model.EntityType
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

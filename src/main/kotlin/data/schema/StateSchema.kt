@@ -2,7 +2,7 @@ package com.berlin.data.schema
 
 import com.berlin.data.BaseSchema
 import com.berlin.data.StateIndex
-import com.berlin.model.State
+import com.berlin.domain.model.State
 
 class StateSchema(
     override val fileName: String,

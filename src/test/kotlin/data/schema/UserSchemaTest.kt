@@ -1,8 +1,8 @@
 package data.schema
 
 import com.berlin.data.schema.UserSchema
-import com.berlin.model.User
-import com.berlin.model.UserRole
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

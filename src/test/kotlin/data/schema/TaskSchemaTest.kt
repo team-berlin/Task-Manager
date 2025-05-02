@@ -1,7 +1,7 @@
 package data.schema
 
 import com.berlin.data.schema.TaskSchema
-import com.berlin.model.*
+import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -97,7 +97,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss create by attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyCreateBy)
+        val result = taskSchema.toRow(invalidTaskEmptycreateByUserId)
         //then
         assertThat(result).isEmpty()
     }
@@ -157,7 +157,7 @@ class TaskSchemaTest {
     @Test
     fun `fromRow should return null when invalid row passed miss assign to column`() {
         //when
-        val result = taskSchema.fromRow(invalidRowEmptyAssignTo)
+        val result = taskSchema.fromRow(invalidRowEmptyAssignToUserId)
         //then
         assertThat(result).isNull()
     }
@@ -165,7 +165,7 @@ class TaskSchemaTest {
     @Test
     fun `fromRow should return null when invalid row passed miss create by column`() {
         //when
-        val result = taskSchema.fromRow(invalidRowEmptyCreateBy)
+        val result = taskSchema.fromRow(invalidRowEmptyCreateByUserId)
         //then
         assertThat(result).isNull()
     }
@@ -210,8 +210,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = testUserId2
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2
         )
         val validTaskEmptyDescription = Task(
             id = "t1",
@@ -219,8 +219,8 @@ class TaskSchemaTest {
             title = "task1",
             description = null,
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = testUserId2,
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyId = Task(
             id = "",
@@ -228,8 +228,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = testUserId2,
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyProjectId = Task(
             id = "t1",
@@ -237,8 +237,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = testUserId2,
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyTitle = Task(
             id = "t1",
@@ -246,8 +246,8 @@ class TaskSchemaTest {
             title = "",
             description = "desc",
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = testUserId2,
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyStateId = Task(
             id = "t1",
@@ -255,8 +255,8 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "",
-            assignedTo = testUserId,
-            createBy = testUserId2,
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2,
         )
         val invalidTaskEmptyAssignTo = Task(
             id = "t1",
@@ -264,17 +264,17 @@ class TaskSchemaTest {
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = "",
-            createBy = testUserId2,
+            assignedToUserId = "",
+            createByUserId = testUserId2,
         )
-        val invalidTaskEmptyCreateBy = Task(
+        val invalidTaskEmptycreateByUserId = Task(
             id = "t1",
             projectId = "p1",
             title = "task1",
             description = "desc",
             stateId = "s1",
-            assignedTo = testUserId,
-            createBy = "",
+            assignedToUserId = testUserId,
+            createByUserId = "",
         )
 
         //endregion
@@ -299,10 +299,10 @@ class TaskSchemaTest {
         val invalidRowEmptyStateId = listOf(
             "t1", "p1", "task1", "desc", "", "u1", "u2"
         )
-        val invalidRowEmptyAssignTo = listOf(
+        val invalidRowEmptyAssignToUserId = listOf(
             "t1", "p1", "task1", "desc", "s1", "", "u2"
         )
-        val invalidRowEmptyCreateBy = listOf(
+        val invalidRowEmptyCreateByUserId = listOf(
             "t1", "p1", "task1", "desc", "s1", "u1", ""
         )
 

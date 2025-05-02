@@ -1,7 +1,7 @@
 package data.schema
 
 import com.berlin.data.schema.StateSchema
-import com.berlin.model.State
+import com.berlin.domain.model.State
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
