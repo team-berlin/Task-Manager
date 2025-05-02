@@ -6,7 +6,6 @@ import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import com.berlin.data.DummyData
-import com.berlin.model.Permission
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
