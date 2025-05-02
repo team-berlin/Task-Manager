@@ -12,16 +12,27 @@ class GetAllProjectsUi(
     override val label: String = "Get All Projects"
 
     override fun run() {
+        displayHeader()
+        displayProjects()
+    }
 
+    private fun displayHeader() {
         viewer.display("=== Available Projects ===\n")
         viewer.display("================================================================\n\n")
-        if (getAllProjectsUseCase.getAllProjects().isNotEmpty()) {
-            getAllProjectsUseCase.getAllProjects().forEach { project ->
-                viewer.display("Project ID: ${project.id}, Title: ${project.name}")
-            }
-        } else {
-            throw Exception("No Such Projects")
-        }
+    }
 
+    private fun displayProjects() {
+        getAllProjectsUseCase.getAllProjects().let { projects ->
+            when {
+                projects.isNotEmpty() -> {
+                    projects.forEach { project ->
+                        viewer.display("Project ID: ${project.id}, Title: ${project.name}")
+                    }
+                }
+                else -> {
+                    viewer.display("No projects available.\n")
+                }
+            }
+        }
     }
 }

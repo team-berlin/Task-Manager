@@ -28,17 +28,6 @@ class CreateProjectUiTest {
     }
 
     @Test
-    fun `should throw exception when the project name input is null`() {
-        // Given
-        every { reader.getUserInput() } returns null
-
-        //When && Then
-        assertThrows<Exception> {
-            createProjectUi.run()
-        }
-    }
-
-    @Test
     fun `should create a project successfully when valid project name provided with no description`() {
         // Given
         val validProjectName = "My Project"
@@ -65,18 +54,6 @@ class CreateProjectUiTest {
         // Then
         verify { createProjectUseCase.createNewProject(validProjectName, projectDescription, null, null) }
         verify { viewer.display("Project created successfully!\n") }
-    }
-
-    @Test
-    fun `should handle null project name input by retrying`() {
-        // Given
-        val validProjectName = "Valid Project"
-        every { reader.getUserInput() } returnsMany listOf(null, validProjectName)
-
-        // When & Then
-        assertThrows<Exception> {
-            createProjectUi.run()
-        }
     }
 
     @Test
@@ -187,5 +164,57 @@ class CreateProjectUiTest {
 
         // Then
         verify { viewer.display("Project creation failed!\n") }
+    }
+
+    @Test
+    fun `should take user input again when empty project name is provided`() {
+        // Given
+        every { reader.getUserInput() } returnsMany listOf("", "Valid Project Name")
+
+        // When
+        createProjectUi.run()
+
+        // Then
+        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
+    }
+
+    @Test
+    fun `should take user input again when blank project name is provided`() {
+        // Given
+        every { reader.getUserInput() } returnsMany listOf("   ", "Valid Project Name", "no")
+
+        // When
+        createProjectUi.run()
+
+        // Then
+        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
+    }
+
+    @Test
+    fun `should take user input again when null project name is provided`() {
+        // Given
+        every { reader.getUserInput() } returnsMany listOf(null, "Valid Project Name", "no")
+
+        // When
+        createProjectUi.run()
+
+        // Then
+        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
+    }
+
+    @Test
+    fun `should accept valid project name after multiple invalid attempts`() {
+        // Given
+        every { reader.getUserInput() } returnsMany listOf("", "  ", null, "Valid Project Name", "no")
+
+        // When
+        createProjectUi.run()
+
+        // Then
+        verify(exactly = 3) { viewer.display("Please enter a valid project name:") }
+        verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
     }
 }

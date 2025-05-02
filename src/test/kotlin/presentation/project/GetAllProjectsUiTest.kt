@@ -48,14 +48,15 @@ class GetAllProjectsUiTest {
     }
 
     @Test
-    fun `Should throw exception when there no available projects`() {
+    fun `Should return failed message when there no available projects`() {
         // Given
         every { getAllProjectsUseCase.getAllProjects() } returns emptyList()
 
-        // When && Then
-        assertThrows<Exception> {
-            getAllProjectsUi.run()
-        }
+        // When
+        getAllProjectsUi.run()
+
+        // Then
+        verify { viewer.display("No projects available.\n") }
 
 
     }

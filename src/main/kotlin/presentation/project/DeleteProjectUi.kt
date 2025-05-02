@@ -16,40 +16,53 @@ class DeleteProjectUi(
     override val label: String = "Delete Project"
 
     override fun run() {
+        displayHeader()
+        val projects = displayAvailableProjects()
+
+        if (projects.isEmpty()) {
+            viewer.display("No projects available to delete.\n")
+            return
+        }
+
+        val projectId = getValidProjectId(projects.map { it.id })
+        deleteProject(projectId)
+    }
+
+    private fun displayHeader() {
         viewer.display("=== Delete Project ===\n")
         viewer.display("================================================================\n\n")
+    }
+
+    private fun displayAvailableProjects() = getAllProjectsUseCase.getAllProjects().also { projects ->
         viewer.display("Available Projects:\n")
-        getAllProjectsUseCase.getAllProjects().forEach { project ->
+        projects.forEach { project ->
             viewer.display("Project ID: ${project.id}, Title: ${project.name}")
         }
+    }
+
+    private fun getValidProjectId(validIds: List<String>): String {
         viewer.display("Enter project id to delete:\n")
-        var projectId: String?
-        var isValid = false
+
         while (true) {
-            projectId = reader.getUserInput()
-            if (projectId == null) {
-                throw Exception("Project id can not be null")
-            } else {
-                for (project in getAllProjectsUseCase.getAllProjects()) {
-                    if (projectId == project.id) {
-                        isValid = true
-                        break
-                    }
+            reader.getUserInput()?.let { inputId ->
+                if (validIds.contains(inputId)) {
+                    return inputId
                 }
             }
-            if (!isValid) {
-                throw Exception("Please enter a valid project id")
-            } else {
-                break
-            }
+
+            viewer.display("Please enter a valid project id from the list above:")
         }
-        viewer.display("deleting project...\n")
-        val deletionProcess = deleteProjectUseCase.deleteProject(projectId)
-        if (deletionProcess.isSuccess) {
-            viewer.display("Project deleted Successfully!\n")
+    }
+
+    private fun deleteProject(projectId: String) {
+        viewer.display("Deleting project...\n")
+
+        val deletionResult = deleteProjectUseCase.deleteProject(projectId)
+
+        if (deletionResult.isSuccess) {
+            viewer.display("Project deleted successfully!\n")
         } else {
             viewer.display("Project deletion failed!\n")
         }
     }
-
 }

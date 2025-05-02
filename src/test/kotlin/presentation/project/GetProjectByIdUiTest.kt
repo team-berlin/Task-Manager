@@ -19,6 +19,15 @@ class GetProjectByIdUiTest {
     private val viewer: Viewer = mockk(relaxed = true)
     private val reader: Reader = mockk(relaxed = true)
 
+    private val testProjects =
+        Project(
+            id = "project-123",
+            name = "Test Project",
+            statesId = listOf("state-1", "state-2"),
+            tasksId = listOf("task-1", "task-2"),
+            description = "Test project description"
+        )
+
     @BeforeEach
     fun setup() {
         getProjectByIdUseCase = mockk(relaxed = true)
@@ -26,19 +35,11 @@ class GetProjectByIdUiTest {
     }
 
     @Test
-    fun `run should display project details when valid project id is entered`() {
+    fun `run should display complete project details when valid project id is entered`() {
         // Given
-        val projectId = "project-123"
-        val project = Project(
-            id = projectId,
-            name = "Test Project",
-            statesId = listOf("state-1", "state-2"),
-            tasksId = listOf("task-1", "task-2"),
-            description = "description"
-        )
-
+        val projectId = testProjects.id
         every { reader.getUserInput() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
 
         // When
         getProjectByIdUi.run()
@@ -49,33 +50,106 @@ class GetProjectByIdUiTest {
     }
 
     @Test
-    fun `run should throw exception when user input is null`() {
+    fun `run should handle empty inputs and take another valid input`() {
         // Given
-        every { reader.getUserInput() } returns null
+        val projectId = testProjects.id
 
-        // When & Then
-        assertThrows<Exception> { getProjectByIdUi.run() }
+        every { reader.getUserInput() } returnsMany listOf("", projectId)
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
 
-        // Verify
-        verify { reader.getUserInput() }
+        // When
+        getProjectByIdUi.run()
+
+        // Then
+        verify(exactly = 2) { reader.getUserInput() }
+        verify { getProjectByIdUseCase.getProjectById(projectId) }
     }
 
     @Test
-    fun `run should throw exception when project does not exist`() {
+    fun `run should handle whitespace inputs and take another valid input`() {
         // Given
-        val projectId = "non-existent-id"
-        val exception = Exception("Project with ID $projectId does not exist")
+        val projectId = testProjects.id
+        every { reader.getUserInput() } returnsMany listOf("   ", projectId)
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
+
+        // When
+        getProjectByIdUi.run()
+
+        // Then
+        verify(exactly = 2) { reader.getUserInput() }
+        verify { getProjectByIdUseCase.getProjectById(projectId) }
+    }
+
+    @Test
+    fun `run should display error message when retrieving project fails`() {
+        // Given
+        val projectId = "invalid-id"
+        val errorMessage = "Project not found"
+        val exception = Exception(errorMessage)
 
         every { reader.getUserInput() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } throws exception
 
-        // When & Then
-        val thrownException = assertThrows<Exception> { getProjectByIdUi.run() }
+        // When
+        getProjectByIdUi.run()
 
-        // Verify
+        // Then
         verify { reader.getUserInput() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
-        assert(thrownException.message == exception.message)
+        verify { viewer.display("Error retrieving project: $errorMessage\n") }
     }
 
+    @Test
+    fun `run should display project with null description correctly`() {
+        // Given
+        val projectId = testProjects.id
+        val project = testProjects.copy(description = null)
+
+        every { reader.getUserInput() } returns projectId
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+
+        // When
+        getProjectByIdUi.run()
+
+        // Then
+        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        verify { viewer.display("=== Project Description: No description ===\n") }
+    }
+
+    @Test
+    fun `run should display message when project has no states`() {
+        // Given
+        val projectId = testProjects.id
+        val project = testProjects.copy(statesId = null)
+
+
+        every { reader.getUserInput() } returns projectId
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+
+        // When
+        getProjectByIdUi.run()
+
+        // Then
+        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        verify { viewer.display("No states defined for this project.\n") }
+    }
+
+    @Test
+    fun `run should display message when state has no tasks`() {
+        // Given
+        val projectId = testProjects.id
+        val project = testProjects.copy(statesId = listOf("state-1"), tasksId = null)
+
+        every { reader.getUserInput() } returns projectId
+        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+
+        // When
+        getProjectByIdUi.run()
+
+        // Then
+        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        verify { viewer.display("State: [state-1] state-1\n") }
+        verify { viewer.display("  No tasks for this state.\n\n") }
+    }
 }
+
