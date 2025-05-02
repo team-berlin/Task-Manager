@@ -1,10 +1,11 @@
 package com.berlin.data.memory
+import com.berlin.data.DummyData.users
+import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.logic.generateIdHelper.IdGenerator
 import com.berlin.logic.generateIdHelper.IdGeneratorImplementation
-import com.berlin.model.User
 import data.UserCache
 
 class InMemoryAuthRepositoryImpl : AuthenticationRepository {
@@ -12,7 +13,7 @@ class InMemoryAuthRepositoryImpl : AuthenticationRepository {
     private val userId: IdGenerator = IdGeneratorImplementation()
 
     override fun login(userName: String, password: String): Result<User> {
-        val user = listOfUser.find { it.userName == userName && it.password == password }
+        val user = users.find { it.userName == userName && it.password == password }
         return if (user != null) {
             Result.success(user)
         } else {
@@ -39,7 +40,7 @@ class InMemoryAuthRepositoryImpl : AuthenticationRepository {
     }
 
     override fun getAllUsers(): List<User> {
-        return listOfUser
+        return users
     }
 
     override fun getCurrentUser(): User? {

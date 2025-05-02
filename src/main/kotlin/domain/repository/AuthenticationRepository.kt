@@ -1,12 +1,10 @@
 package com.berlin.domain.repository
 
-import com.berlin.model.User
-
 interface AuthenticationRepository {
-    fun login(userName: String, password: String): Result<User>
-    fun createMate(userName: String, password: String): Result<User>
-    fun getUserById(userId: String): User?
-    fun getAllUsers(): List<User>
-    fun getCurrentUser(): User?
+    fun login(userName: String, password: String): Result<com.berlin.domain.model.User>
+    fun createMate(userName: String, password: String): Result<com.berlin.domain.model.User>
+    fun getUserById(userId: String): com.berlin.domain.model.User?
+    fun getAllUsers(): List<com.berlin.domain.model.User>
+    fun getCurrentUser(): com.berlin.domain.model.User?
 
 }

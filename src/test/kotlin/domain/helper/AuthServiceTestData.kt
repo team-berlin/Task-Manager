@@ -29,6 +29,21 @@ object AuthServiceTestData {
                 viewAuditLogs = true
             )
     )
+    val loginViews = listOf(
+        "Enter your user name: ",
+        "Enter your password: ",
+        "Welcome fatma",
+        "try again"
+
+    )
+    val createMateViews = listOf(
+        "Enter user name: ",
+        "Enter user password",
+        "New mate is successfully created!",
+        "something wrong please try again!"
+    )
+    val testUserName = "Fatma"
+    val testUserPassword = "1234567899"
     val adminIsFirstUser = userDummyData("55", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
     val existingUser = userDummyData("13", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
 

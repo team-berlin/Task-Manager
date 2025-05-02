@@ -10,7 +10,8 @@ object DummyData {
     val users = mutableListOf(
         User("U1", "alice", "secret", permission = Permission(), UserRole.ADMIN),
         User("U2", "bob", "secret", permission = Permission(),UserRole.MATE),
-        User("U3", "carol", "secret", permission = Permission() ,UserRole.MATE)
+        User("U3", "carol", "secret", permission = Permission() ,UserRole.MATE),
+        User("U1", "fatma", "secret12345", permission = Permission(), UserRole.ADMIN),
     )
 
     val projects = mutableListOf(

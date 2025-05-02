@@ -8,7 +8,7 @@ class CreationOfMateUseCase(
     private val repository: AuthenticationRepository,
     private val hashingPassword: HashingPassword
 ) {
-    fun createMate(userName: String, password: String): Result<User> {
+    fun createMate(userName: String, password: String): Result<com.berlin.domain.model.User> {
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("Username and password must not be empty"))
         }
@@ -18,7 +18,7 @@ class CreationOfMateUseCase(
         if (repository.getAllUsers().any { it.userName == userName }) {
             return Result.failure(InvalidCredentialsException("Username already exists"))
         }
-        val hashedPassword=hashingPassword.hashPassword(password)
+        val hashedPassword = hashingPassword.hashPassword(password)
         return repository.createMate(userName, hashedPassword)
     }
 }

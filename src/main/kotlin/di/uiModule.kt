@@ -3,6 +3,7 @@ package com.berlin.di
 import com.berlin.domain.model.User
 import com.berlin.data.DummyData
 import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.authService.AuthenticateUserUi
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -18,6 +19,7 @@ val uiModule = module {
     single { UpdateTaskUI(get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
+    single { AuthenticateUserUi(get(),get (), get()) }
 
     /* aggregated main menu */
     single {

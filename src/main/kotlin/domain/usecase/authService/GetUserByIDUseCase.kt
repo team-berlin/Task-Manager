@@ -6,7 +6,7 @@ import com.berlin.model.User
 class GetUserByIDUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getUserById(id:String): User? {
+    fun getUserById(id:String): com.berlin.domain.model.User? {
         if (id.isEmpty())
             throw IllegalArgumentException("User ID must not be blank.")
 
