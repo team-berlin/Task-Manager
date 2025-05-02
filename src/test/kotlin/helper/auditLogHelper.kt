@@ -3,13 +3,11 @@ package com.berlin.helper
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
-import com.berlin.domain.model.UserRole
-import com.berlin.domain.model.User
 
 fun generateAuditLog(
     id: String = "A1",
     timestamp: Long = System.currentTimeMillis(),
-    createdBy: User = User("u1", "TestUser", "ffkjkuyu", UserRole.ADMIN),
+    createdBy: String = "u1",
     action: AuditAction = AuditAction.CREATE,
     changesDescription: String? = "Created something",
     entityType: EntityType = EntityType.TASK,

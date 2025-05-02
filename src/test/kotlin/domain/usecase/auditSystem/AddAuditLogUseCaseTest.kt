@@ -79,7 +79,7 @@ class AddAuditLogUseCaseTest {
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
-            createdByUserId = User("u1", "TestUser", "ffkjkuyu", UserRole.ADMIN),
+            createdByUserId = "u1",
             auditAction = AuditAction.CREATE,
             changesDescription = "Created something",
             entityType = EntityType.TASK,

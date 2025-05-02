@@ -5,7 +5,6 @@ import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.repository.AuditRepository
-import com.berlin.domain.model.User
 
 class AddAuditLogUseCase(
     private val auditRepository: AuditRepository,
@@ -13,7 +12,7 @@ class AddAuditLogUseCase(
 ) {
 
     fun addAuditLog(
-        createdByUserId:User,
+        createdByUserId:String,
         auditAction: AuditAction,
         changesDescription: String,
         entityType: EntityType,
