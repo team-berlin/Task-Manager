@@ -36,13 +36,16 @@ class AuthRepositoryInMemory : AuthenticationRepository {
     }
 
     override fun getUserById(userId: String): Result<User> =
-       TODO()
+        users.firstOrNull { it.id == userId }
+            ?.let(Result.Companion::success)
+            ?: failure(UserNotFoundException(userId))
+
 
     override fun getAllUsers(): List<User> {
-       TODO()
+        return users
     }
 
     override fun getCurrentUser(): User? {
-       TODO()
+        return UserCache.currentUser
     }
 }

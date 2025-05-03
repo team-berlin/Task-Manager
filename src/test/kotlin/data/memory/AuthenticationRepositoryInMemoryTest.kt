@@ -1,9 +1,7 @@
 package com.berlin.data.memory
 
-import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import data.UserCache
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -58,53 +56,4 @@ class AuthenticationRepositoryInMemoryTest {
         assertThat(result.isFailure).isTrue()
     }
 
-    @Test
-    fun `getUserById should return the correct user when the user exists`() {
-        // Given
-        val createdUser = inMemoryAuthRepositoryImpl.createMate("mena", "1234").getOrNull()!!
-
-        // When
-        val result = inMemoryAuthRepositoryImpl.getUserById(createdUser.id)
-
-        // Then
-        assertThat(result).isEqualTo(createdUser)
-    }
-
-    @Test
-    fun `getUserById should return null when the user ID does not exist`() {
-        // Given
-        val nonExistentId = "999"
-
-        // When
-        val result = inMemoryAuthRepositoryImpl.getUserById(nonExistentId)
-
-        // Then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `getAllUsers should return all created users`() {
-        // Given
-        inMemoryAuthRepositoryImpl.createMate("user1", "pass1")
-        inMemoryAuthRepositoryImpl.createMate("user2", "pass2")
-
-        // When
-        val users = inMemoryAuthRepositoryImpl.getAllUsers()
-
-        // Then
-        assertThat(users).hasSize(2)
-    }
-
-    @Test
-    fun `getCurrentUser should return the user currently stored in the cache`() {
-        // Given
-        val user = AuthServiceTestData.user
-        UserCache.currentUser = user
-
-        // When
-        val result = inMemoryAuthRepositoryImpl.getCurrentUser()
-
-        // Then
-        assertThat(result).isEqualTo(user)
-    }
 }

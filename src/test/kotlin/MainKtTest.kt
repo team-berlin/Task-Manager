@@ -1,6 +1,5 @@
 package com.berlin
 
-import com.google.common.base.CharMatcher.any
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.AfterEach
@@ -15,7 +14,7 @@ class MainTest {
     fun `main prints banner`() {
         /* ── 1  Stub readLine() so the CLI exits right away ───────── */
         mockkStatic("kotlin.io.ConsoleKt")
-        every { readLine() } returns "X"
+        every { readlnOrNull() } returns "X"
 
         /* ── 2  Capture System.out ─────────────────────────────────── */
         val originalOut = System.out
@@ -26,11 +25,11 @@ class MainTest {
         main()                              // com.berlin.MainKt.main()
 
         /* ── 4  Assertions ─────────────────────────────────────────── */
-        val output = buffer
-        assertThat(output).isEqualTo(any())
+        val output = buffer.toString()
+        assertThat(output).contains("=== Task Manager ===")
 
         /* verify readLine() was actually called */
-        verify(exactly = 1) { any() }
+        verify(exactly = 1) { readlnOrNull() }
 
         /* restore stdout for other tests */
         System.setOut(originalOut)

@@ -20,7 +20,7 @@ class CreateTaskUI(
     private val reader: Reader,
 ) : UiRunner {
 
-    override val id: Int = 1
+    override val id: Int = 30
     override val label: String = "Create task"
 
     override fun run() {
