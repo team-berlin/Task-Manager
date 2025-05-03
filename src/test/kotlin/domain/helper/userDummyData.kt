@@ -2,7 +2,7 @@ package com.berlin.logic.helper
 
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 
 fun userDummyData(
     id: String = "1",

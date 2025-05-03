@@ -2,7 +2,7 @@ package com.berlin.domain.helper
 
 import com.berlin.domain.model.UserRole
 import com.berlin.logic.helper.userDummyData
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 
 object AuthServiceTestData {
     val inValidUserName = "Ahmed"

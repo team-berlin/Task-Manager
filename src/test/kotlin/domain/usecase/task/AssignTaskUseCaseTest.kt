@@ -6,7 +6,7 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

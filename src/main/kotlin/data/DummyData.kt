@@ -1,7 +1,7 @@
 package com.berlin.data
 
 import com.berlin.domain.model.*
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 import java.util.*
 
 object DummyData {

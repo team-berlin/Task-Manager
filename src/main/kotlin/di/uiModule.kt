@@ -21,7 +21,7 @@ val uiModule = module {
     single { UpdateTaskUI(get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
-    single { GetUserByIDUI(get(), get(), get()) }
+    //single { GetUserByIDUI(get(), get(), get()) }
     single { AuthenticateUserUi(get(), get(), get()) }
     single<List<UiRunner>>(named("adminRunners")) {
         listOf(
@@ -30,7 +30,7 @@ val uiModule = module {
             get<DeleteTaskUI>(),
             get<UpdateTaskUI>(),
             get<GetTaskByIdUI>(),
-            get<GetUserByIDUI>()
+           // get<GetUserByIDUI>()
         )
     }
     single<List<UiRunner>>(named("mateRunners")) {

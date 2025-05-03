@@ -4,7 +4,7 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat

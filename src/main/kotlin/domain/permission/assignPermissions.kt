@@ -1,7 +1,7 @@
 package com.berlin.domain.permission
 
 import com.berlin.domain.model.UserRole
-import com.berlin.model.Permission
+import com.berlin.domain.model.Permission
 
 fun assignPermissions(role: UserRole): Permission {
     return when(role){

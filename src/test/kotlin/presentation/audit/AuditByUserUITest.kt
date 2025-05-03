@@ -2,6 +2,7 @@ package presentation.audit
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.*
+import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
 import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.io.Reader
@@ -27,7 +28,7 @@ class AuditByUserUITest {
 
         DummyData.users.clear()
         DummyData.users.addAll(
-            listOf(User("U1", "alice", "secret", UserRole.ADMIN))
+            listOf(User("U1", "alice", "secret", permission = assignPermissions(UserRole.ADMIN), UserRole.ADMIN))
         )
     }
 

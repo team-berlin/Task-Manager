@@ -1,11 +1,11 @@
 package com.berlin.domain.model
 
-import com.berlin.model.Permission
+import com.berlin.domain.permission.assignPermissions
 
 data class User(
     val id:String,
     val userName:String,
     val password:String,
-    val permission: Permission,
+    val permission: Permission= assignPermissions(UserRole.MATE),
     val role: UserRole
 )
