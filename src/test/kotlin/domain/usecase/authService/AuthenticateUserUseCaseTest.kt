@@ -23,7 +23,7 @@ class AuthenticateUserUseCaseTest {
     fun setup() {
         authRepository = mockk<AuthenticationRepository>()
         hashingPassword = FakeHashingPassword()
-        authenticateUserUseCase = AuthenticateUserUseCase(authRepository, hashingPassword)
+        authenticateUserUseCase = AuthenticateUserUseCase(authRepository)
     }
 
     @Test
@@ -135,7 +135,7 @@ class AuthenticateUserUseCaseTest {
 
         val mockedHashing = mockk<HashingPassword>()
         every { mockedHashing.hashPassword(password) } returns hashedPassword
-        authenticateUserUseCase = AuthenticateUserUseCase(authRepository, mockedHashing)
+        authenticateUserUseCase = AuthenticateUserUseCase(authRepository)
 
         every { authRepository.getAllUsers() } returns listOf(AuthServiceTestData.user)
         every { authRepository.login(userName, hashedPassword) } returns Result.failure(expectedException)

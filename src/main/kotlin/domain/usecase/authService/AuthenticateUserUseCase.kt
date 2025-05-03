@@ -8,7 +8,7 @@ import data.UserCache
 
 class AuthenticateUserUseCase(
     private val repository: AuthenticationRepository,
-    private val hashingPassword: HashingPassword
+    //private val hashingPassword: HashingPassword
 ) {
     fun login(userName: String, password: String): Result<com.berlin.domain.model.User> {
         if (userName.isEmpty() || password.isEmpty())
@@ -21,8 +21,8 @@ class AuthenticateUserUseCase(
         if (cachedUser != null && cachedUser.userName == userName)
             return Result.success(cachedUser)
 
-        val hashedPassword=hashingPassword.hashPassword(password)
-        val userResult = repository.login(userName, hashedPassword)
+//        val hashedPassword = hashingPassword.hashPassword(password)
+        val userResult = repository.login(userName, password)
 
         return userResult.fold(
             onSuccess = { user ->

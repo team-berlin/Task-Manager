@@ -17,7 +17,7 @@ class CreationOfMateUseCase(
         if (repository.getAllUsers().any { it.userName == userName }) {
             return Result.failure(InvalidCredentialsException("Username already exists"))
         }
-        val hashedPassword=hashingPassword.hashPassword(password)
+        val hashedPassword = hashingPassword.hashPassword(password)
         return repository.createMate(userName, hashedPassword)
     }
 }
