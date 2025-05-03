@@ -16,9 +16,9 @@ class GetUserByIDUI(
         try {
             viewer.show("Enter the user id: ")
             val id=(reader.read()).toString()
-            getUserByIDUseCase.getUserById(id)
+            viewer.show(getUserByIDUseCase.getUserById(id).toString())
         }catch (_:Exception){
-
+            viewer.show("No User for this Id")
         }
 
     }

@@ -12,8 +12,14 @@ class GettingUsersLoggedInUI(
     override val label: String = "get user logged in"
     override fun run() {
         try {
-            viewer.show("Enter the user id: ")
-            getUserLoggedIn.getCurrentUser()
+            val user=getUserLoggedIn.getCurrentUser()
+            try {
+                val usertoShow= listOf(user?.id,user?.userName,user?.permission,user?.role)
+                viewer.show(usertoShow.toString())
+            }catch(e:Exception){
+                viewer.show("no user logged in,please log in")
+            }
+
         }catch(e:Exception){
             viewer.show("no user logged in,please log in")
         }

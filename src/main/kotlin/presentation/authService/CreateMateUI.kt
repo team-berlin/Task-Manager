@@ -11,7 +11,7 @@ class CreationOfMateUi(
     private val viewer: Viewer,
     private val reader: Reader,
 ): UiRunner {
-    override val id: Int = 3
+    override val id: Int = 300
     override val label: String = "Create new mate"
     override fun run() {
         handleMateCreation()
