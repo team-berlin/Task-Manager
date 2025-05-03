@@ -13,4 +13,4 @@ class GetUserByIDUseCase(
         return repository.getUserById(id)
 
     }
-    }
+}

@@ -28,9 +28,9 @@ kover {
         filters {
             excludes {
                 classes(
-                    "**.model.**",
-                    "**.di.**",
-                    "**.exception.**",
+                    "*.model.*",
+                    "*.di.*",
+                    "*.exception.*",
                 )
             }
         }

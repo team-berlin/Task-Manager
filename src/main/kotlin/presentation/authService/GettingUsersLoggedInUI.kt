@@ -1,7 +1,5 @@
 package com.berlin.presentation.authService
 
-import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Viewer
