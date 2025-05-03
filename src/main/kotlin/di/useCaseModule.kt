@@ -31,7 +31,6 @@ val useCaseModule = module {
     single { GettingUsersLoggedInUseCase(get()) }
     single { FetchAllUsersUseCase(get()) }
     single <HashingPassword> { MD5Hasher() }
-    single<AuthenticationRepository> { AuthRepositoryInMemory()  }
     single { AuthenticateUserUseCase(get(),get()) }
     single { CreationOfMateUseCase(get(),get()) }
 }
