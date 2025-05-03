@@ -12,8 +12,8 @@ object AuthServiceTestData {
     val userNameIsEmpty = ""
     val userPassword = "hashed_securePassword"
     val userPasswordIsEmpty = ""
-    val idNotExist = "6"
-    val idExist = "13"
+    val idNotExist = "u6"
+    val idExist = "u13"
     val excepctedUser = userDummyData(
         userName = userName,
         password = userPassword,
@@ -32,8 +32,8 @@ object AuthServiceTestData {
 
     val testUserName = "Fatma"
     val testUserPassword = "1234567899"
-    val adminIsFirstUser = userDummyData("55", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
-    val existingUser = userDummyData("13", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
+    val adminIsFirstUser = userDummyData("u55", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
+    val existingUser = userDummyData("u13", "Menna", "12345678", permission = Permission(viewAuditLogs = true))
 
 
 }
