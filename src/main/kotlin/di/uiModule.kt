@@ -3,9 +3,10 @@ package com.berlin.di
 import com.berlin.domain.model.User
 import com.berlin.data.DummyData
 import com.berlin.presentation.MainMenuUI
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.authService.AuthenticateUserUi
+import com.berlin.presentation.authService.CreationOfMateUi
 import com.berlin.presentation.authService.GetUserByIDUI
+import com.berlin.presentation.authService.GettingUsersLoggedInUI
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -21,32 +22,29 @@ val uiModule = module {
     single { UpdateTaskUI(get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
-    //single { GetUserByIDUI(get(), get(), get()) }
+    single { GetUserByIDUI(get(), get(), get()) }
     single { AuthenticateUserUi(get(), get(), get()) }
-    single<List<UiRunner>>(named("adminRunners")) {
-        listOf(
-            get<CreateTaskUI>(),
-            get<AssignTaskUI>(),
-            get<DeleteTaskUI>(),
-            get<UpdateTaskUI>(),
-            get<GetTaskByIdUI>(),
-           // get<GetUserByIDUI>()
-        )
-    }
-    single<List<UiRunner>>(named("mateRunners")) {
-        listOf(
-            get<GetTasksByProjectIdUI>(),
-            get<ChangeTaskStateUI>()
-        )
-    }
+    single { CreationOfMateUi(get(), get(), get()) }
+    single { GettingUsersLoggedInUI(get(), get()) }
 
+    /* aggregated main menu */
     single {
         MainMenuUI(
-            logInUI = get(),
+            runners = listOf(
+                get<CreateTaskUI>(),
+                get<AssignTaskUI>(),
+                get<DeleteTaskUI>(),
+                get<GetTasksByProjectIdUI>(),
+                get<UpdateTaskUI>(),
+                get<ChangeTaskStateUI>(),
+                get<GetTaskByIdUI>(),
+                get<GetUserByIDUI>(),
+                get<GettingUsersLoggedInUI>(),
+                get<CreationOfMateUi>(),
+                get<AuthenticateUserUi>()
+            ),
             viewer = get(),
-            reader = get(),
-            adminRunners = get(named("adminRunners")),
-            mateRunners = get(named("mateRunners"))
+            reader = get()
         )
     }
 }
