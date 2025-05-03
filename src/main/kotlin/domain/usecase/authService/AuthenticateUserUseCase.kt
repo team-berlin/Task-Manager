@@ -13,9 +13,10 @@ class AuthenticateUserUseCase(
     fun login(userName: String, password: String): Result<com.berlin.domain.model.User> {
         if (userName.isEmpty() || password.isEmpty())
             return Result.failure(InvalidCredentialsException("No user found"))
+        val result=repository.getAllUsers()
+        result.onSuccess {users-> if(users.isEmpty())
+            return Result.failure(InvalidCredentialsException("No account")) }
 
-        if (repository.getAllUsers().isEmpty())
-            return Result.failure(InvalidCredentialsException("No account"))
 
         val cachedUser = UserCache.currentUser
         if (cachedUser != null && cachedUser.userName == userName)

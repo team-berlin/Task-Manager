@@ -12,11 +12,15 @@ class FetchAllUsersUI(
     override val label: String = "fetch all users"
     override fun run() {
         val users = fetchAllUsers.getAllUsers()
-        if (users.isEmpty()) {
-            viewer.show("No users found.")
-        } else {
-            users.forEach { user ->
-                viewer.show("ID: ${user.id}, Name: ${user.userName}")
+        users.onSuccess {
+            if (it.isEmpty()) {
+                viewer.show("No users found.")
+            } else {
+                users.onSuccess { usersList ->
+                    usersList.forEach { user ->
+                        viewer.show("ID: ${user.id}, Name: ${user.userName}")
+                    }
+                }
             }
         }
     }

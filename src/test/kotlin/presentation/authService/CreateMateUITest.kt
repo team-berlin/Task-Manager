@@ -1,4 +1,5 @@
 package presentation.authService
+
 import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.fakeData.FakeHashingPassword
 import com.berlin.domain.hashPassword.HashingPassword
@@ -45,8 +46,7 @@ class CreationOfMateUiTest {
 
         every { reader.read() } returnsMany listOf(testUserName, testUserPassword)
 
-        every { authenticationRepository.getAllUsers() } returns emptyList()
-
+        every { authenticationRepository.getAllUsers() } returns Result.success(listOf())
         every {
             authenticationRepository.createMate(
                 testUserName, hashedPassword
@@ -63,7 +63,7 @@ class CreationOfMateUiTest {
     fun `run should handle invalid data and prompt user to try again when enter invalid data`() {
         every { viewer.show(any()) } just Runs
         every { reader.read() } returnsMany listOf("", "")
-        every { authenticationRepository.getAllUsers() } returns listOf(excepctedUser)
+        every { authenticationRepository.getAllUsers() } returns Result.success(listOf(excepctedUser))
         every {
             authenticationRepository.createMate("", "")
         } returns Result.failure(InvalidAssigneeException("Password cannot be empty"))
@@ -72,6 +72,7 @@ class CreationOfMateUiTest {
 
         verify(atLeast = 1) { viewer.show("something wrong please try again!") }
     }
+
     @Test
     fun `run should retry on failure then succeed on second attempt`() {
         every { viewer.show(any()) } just Runs
@@ -80,9 +81,10 @@ class CreationOfMateUiTest {
 
         every { reader.read() } returnsMany listOf(
             "", "",
-            testUserName, testUserPassword)
+            testUserName, testUserPassword
+        )
 
-        every { authenticationRepository.getAllUsers() } returns emptyList()
+        every { authenticationRepository.getAllUsers() } returns Result.success(listOf())
 
         every {
             authenticationRepository.createMate("", "")
@@ -97,11 +99,12 @@ class CreationOfMateUiTest {
         verify(exactly = 1) { viewer.show("something wrong please try again!") }
         verify { viewer.show("New mate is successfully created!") }
     }
+
     @Test
     fun `run should treat null inputs as empty strings`() {
         every { viewer.show(any()) } just Runs
         every { reader.read() } returnsMany listOf(null, null, testUserName, testUserPassword)
-        every { authenticationRepository.getAllUsers() } returns emptyList()
+        every { authenticationRepository.getAllUsers() } returns Result.success(listOf())
 
         val hashedPassword = hashingPassword.hashPassword(testUserPassword)
 

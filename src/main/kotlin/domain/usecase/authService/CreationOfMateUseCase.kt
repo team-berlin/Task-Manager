@@ -14,9 +14,7 @@ class CreationOfMateUseCase(
         if (password.length < 8) {
             return Result.failure(InvalidCredentialsException("Password less than 8 characters"))
         }
-        if (repository.getAllUsers().any { it.userName == userName }) {
-            return Result.failure(InvalidCredentialsException("Username already exists"))
-        }
+
         val hashedPassword=hashingPassword.hashPassword(password)
         return repository.createMate(userName, hashedPassword)
     }

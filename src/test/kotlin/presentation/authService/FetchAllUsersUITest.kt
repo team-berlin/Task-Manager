@@ -33,7 +33,7 @@ class FetchAllUsersUseCaseTest {
             User(id = "1", userName = "Menna", password = "12345678j",  role=UserRole.ADMIN),
             User(id = "2", userName = "Sarah", password = "1234567890",  role = UserRole.MATE)
         )
-        every { useCase.getAllUsers() } returns users
+        every { useCase.getAllUsers() } returns Result.success(users)
 
         // When
         ui.run()
@@ -48,7 +48,7 @@ class FetchAllUsersUseCaseTest {
     @Test
     fun `should print message when no users are found`() {
         // Given
-        every { useCase.getAllUsers() } returns emptyList()
+        every { useCase.getAllUsers() } returns Result.success(listOf())
 
         // When
         ui.run()
