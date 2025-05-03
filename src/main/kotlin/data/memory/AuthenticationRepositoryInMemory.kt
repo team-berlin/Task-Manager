@@ -6,7 +6,6 @@ import com.berlin.domain.helper.IdGenerator
 import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 import kotlin.Result.Companion.failure
@@ -28,7 +27,6 @@ class AuthRepositoryInMemory : AuthenticationRepository {
             id = userId.generateId(userName),
             userName = userName,
             password = password,
-            permission = assignPermissions(UserRole.MATE),
             role = UserRole.MATE
         )
         users.add(newUser)

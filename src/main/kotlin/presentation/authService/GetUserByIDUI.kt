@@ -10,16 +10,16 @@ class GetUserByIDUI(
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
-    override val id: Int = 900
-    override val label: String = "get user by id"
+    override val id: Int = 1
+    override val label: String = "Log in"
     override fun run() {
         try {
             viewer.show("Enter the user id: ")
             val id=(reader.read()).toString()
-            viewer.show(getUserByIDUseCase.getUserById(id).toString())
-        }catch (_:Exception){
-            viewer.show("No User for this Id")
+            getUserByIDUseCase.getUserById(id)
+        }catch (exception:Exception){
+
         }
 
     }
-}
+    }

@@ -6,7 +6,6 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.model.Permission
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -20,9 +19,9 @@ class AssignTaskUseCaseTest {
     private lateinit var taskRepository: TaskRepository
     private lateinit var useCase: AssignTaskUseCase
 
-    private val creator = User("U0", "alice", "pw",permission = Permission(), UserRole.ADMIN)
-    private val oldAssignee = User("U1", "john", "pw",permission = Permission(), UserRole.MATE)
-    private val anotherAssignee = User("U2", "bob", "pw",permission = Permission(), UserRole.MATE)
+    private val creator = User("U0", "alice", "pw", UserRole.ADMIN)
+    private val oldAssignee = User("U1", "john", "pw", UserRole.MATE)
+    private val anotherAssignee = User("U2", "bob", "pw", UserRole.MATE)
 
     private val stored = Task(
         id = "1",

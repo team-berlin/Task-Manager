@@ -2,13 +2,12 @@ package domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
-import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 
 class AuthenticateUserUseCase(
     private val repository: AuthenticationRepository,
-    //private val hashingPassword: HashingPassword
+    private val hashingPassword: HashingPassword,
 ) {
     fun login(userName: String, password: String): Result<com.berlin.domain.model.User> {
         if (userName.isEmpty() || password.isEmpty())
@@ -21,12 +20,12 @@ class AuthenticateUserUseCase(
         if (cachedUser != null && cachedUser.userName == userName)
             return Result.success(cachedUser)
 
-//        val hashedPassword = hashingPassword.hashPassword(password)
-        val userResult = repository.login(userName, password)
+        val hashedPassword = hashingPassword.hashPassword(password)
+        val userResult = repository.login(userName, hashedPassword)
 
         return userResult.fold(
             onSuccess = { user ->
-                val updateUser = user.copy(permission = assignPermissions(user.role))
+                val updateUser = user
                 UserCache.currentUser = updateUser
                 Result.success(user)
             },

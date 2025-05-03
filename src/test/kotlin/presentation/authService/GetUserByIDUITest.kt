@@ -60,3 +60,4 @@ class GetUserByIDUITest {
         assertThat(printed).contains("Enter the user id: ")
     }
 }
+
