@@ -29,6 +29,14 @@ object DummyData {
         State("S7", "QA", "P2")
     )
 
+    val initialDemoTasks = mutableListOf(
+        Task("T1", "P1", "Implement API Layer", "Set up all base services", "S1", "U2", "U1"),
+        Task("T2", "P2", "Design Login UI", "Simple and clean login screen", "S5", "U3", "U1"),
+        Task("T3", "P2", "Integrate Firebase", "User authentication backend", "S6", "U2", "U1")
+    )
+
+
+
     /* ------------  Mutable data  ------------ */
     val tasks: MutableList<Task> = Collections.synchronizedList(mutableListOf())
 }
