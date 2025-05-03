@@ -23,12 +23,12 @@ class FetchAllUsersUseCaseTest {
     fun `getAllUsers returns admin as first user when no mates exist`() {
         // Given
         val expectedAdminUser = AuthServiceTestData.adminIsFirstUser
-        every { repository.getAllUsers() } returns listOf(expectedAdminUser)
+        every { repository.getAllUsers() } returns Result.success(listOf(expectedAdminUser))
 
         // When
         val result = fetchAllUsersUseCase.getAllUsers()
 
         // Then
-        assertThat(result).isEqualTo(listOf(expectedAdminUser))
+        assertThat(result).isEqualTo(Result.success(listOf(expectedAdminUser)))
     }
 }

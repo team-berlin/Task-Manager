@@ -19,6 +19,7 @@ class AssignPermissionsKtTest {
         assertThat(permissions.deleteProject).isFalse()
         assertThat(permissions.assignTask).isFalse()
     }
+
     @Test
     fun `assignPermissions should return correct permissions for ADMIN role`() {
         val permissions = assignPermissions(UserRole.ADMIN)
@@ -32,5 +33,6 @@ class AssignPermissionsKtTest {
         assertThat(permissions.assignTask).isTrue()
         assertThat(permissions.viewAuditLogs).isTrue()
     }
+
 }
 

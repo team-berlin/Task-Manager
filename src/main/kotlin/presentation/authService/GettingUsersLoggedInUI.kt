@@ -13,12 +13,13 @@ class GettingUsersLoggedInUI(
     override fun run() {
         try {
             val user=getUserLoggedIn.getCurrentUser()
-            try {
-                val usertoShow= listOf(user?.id,user?.userName,user?.permission,user?.role)
-                viewer.show(usertoShow.toString())
-            }catch(e:Exception){
-                viewer.show("no user logged in,please log in")
-            }
+            user.onSuccess {  userData->
+                val userId=userData?.id
+                val userName=userData?.userName
+                val permission=userData?.permission
+                val role=userData?.role
+                viewer.show(listOf(userId,userName,permission,role).toString()) }
+
 
         }catch(e:Exception){
             viewer.show("no user logged in,please log in")

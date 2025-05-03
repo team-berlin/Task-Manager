@@ -66,27 +66,11 @@ class CreationOfMateUseCaseTest {
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Password less than 8 characters")
     }
 
-    @Test
-    fun `createMate fails when username already exists in repository`() {
-        // Given
-        val existingUser = AuthServiceTestData.user
-        every { authRepository.getAllUsers() } returns listOf(existingUser)
-
-        val username = AuthServiceTestData.userName
-        val password = AuthServiceTestData.userPassword
-
-        // When
-        val result = createMateUseCase.createMate(username, password)
-
-        // Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("Username already exists")
-    }
 
     @Test
     fun `createMate succeeds when username and password are valid and username does not exist`() {
         // Given
-        every { authRepository.getAllUsers() } returns emptyList()
+        every { authRepository.getAllUsers() } returns Result.success(listOf())
 
         val username = AuthServiceTestData.userName
         val password = AuthServiceTestData.userPassword

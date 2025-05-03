@@ -52,11 +52,9 @@ class AuthRepositoryInMemory : AuthenticationRepository {
             ?: failure(UserNotFoundException(userId))
 
 
-    override fun getAllUsers(): List<User> {
-        return users
-    }
+    override fun getAllUsers(): Result<List<User>> = users.let(Result.Companion::success)
 
-    override fun getCurrentUser(): User? {
-        return UserCache.currentUser
-    }
+
+    override fun getCurrentUser(): Result<User?> =Result.success(UserCache.currentUser)
+
 }
