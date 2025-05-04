@@ -16,8 +16,7 @@ class FetchAllUsersUI(
         users.onSuccess { usersList ->
             if (usersList.isEmpty())
                 viewer.show("No users found.")
-            else
-                usersList.forEach { user -> showUserInfo(user) }
+            else usersList.forEach { user -> showUserInfo(user) }
         }
     }
 
@@ -28,3 +27,4 @@ class FetchAllUsersUI(
         viewer.show("=====================")
     }
 }
+
