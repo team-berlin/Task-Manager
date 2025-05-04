@@ -7,6 +7,7 @@ import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
+import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -14,6 +15,7 @@ import com.berlin.presentation.io.Viewer
 
 class ChangeTaskStateUI(
     private val changeState: ChangeTaskStateUseCase,
+    private val getAllTasks: GetAllTasksUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
@@ -25,7 +27,7 @@ class ChangeTaskStateUI(
         try {
             val task = choose(
                 title    = "Tasks",
-                elements = DummyData.tasks,
+                elements = getAllTasks(),
                 labelOf  = { "${it.id} – ${it.title} [${it.stateId}]" },
                 viewer   = viewer,
                 reader   = reader

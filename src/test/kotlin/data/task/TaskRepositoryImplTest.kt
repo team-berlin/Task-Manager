@@ -1,17 +1,19 @@
 package com.berlin.data.memory
 
+import com.berlin.data.BaseDataSource
+import com.berlin.data.DummyData
+import com.berlin.domain.exception.InvalidTaskException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import com.berlin.data.DummyData
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class TaskRepositoryInMemoryTest {
+class TaskRepositoryImplTest {
 
-    private lateinit var repo: TaskRepositoryInMemory
+    private lateinit var repo: TaskRepositoryImpl
 
     private val alice = User("U1", "alice", "pw", UserRole.MATE)
     private val bob = User("U2", "bob", "pw", UserRole.MATE)
@@ -19,7 +21,7 @@ class TaskRepositoryInMemoryTest {
     @BeforeEach
     fun setUp() {
         DummyData.tasks.clear()
-        repo = TaskRepositoryInMemory()
+        repo = TaskRepositoryImpl(DummyData)
     }
 
     @Test
@@ -71,9 +73,8 @@ class TaskRepositoryInMemoryTest {
     @Test
     fun `update fails when task not found`() {
         val result = repo.update(task("1"))
-
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(IndexOutOfBoundsException::class.java)
+        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
     }
 
     @Test
@@ -88,14 +89,12 @@ class TaskRepositoryInMemoryTest {
         assertThat(result.getOrNull()).containsExactly(t1, t2)
     }
 
-
     @Test
     fun `delete succeeds when task exists`() {
         repo.create(task("1"))
 
         val result = repo.delete("1")
         assertThat(result.isSuccess).isTrue()
-        // list should now be empty
         assertThat(repo.getAllTasks()).isEmpty()
     }
 
@@ -104,14 +103,6 @@ class TaskRepositoryInMemoryTest {
         val result = repo.delete("46")
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
-    }
-
-    @Test
-    fun `nextId increments with size`() {
-        repo.create(task("1"))
-        repo.create(task("2"))
-        val next = repo.nextId()
-        assertThat(next).isEqualTo("3")
     }
 
     private fun task(
@@ -127,4 +118,33 @@ class TaskRepositoryInMemoryTest {
         assignedToUserId = bob.id,
         createByUserId = alice.id
     )
+
+    @Test
+    fun `create fails when write returns false`() {
+        val failingDs = object : BaseDataSource<Task> {
+            override fun write(item: Task) = false
+            override fun writeAll(entities: List<Task>) = false
+            override fun getById(id: String): Task? = null
+            override fun update(id: String, item: Task) = false
+            override fun delete(id: String) = false
+            override fun getAll(): List<Task> = emptyList()
+        }
+
+        val repo = TaskRepositoryImpl(failingDs)
+        val t = Task(
+            id = "X",
+            projectId = "P1",
+            title = "won't matter",
+            description = null,
+            stateId = "TODO",
+            assignedToUserId = "U2",
+            createByUserId = "U1"
+        )
+
+        val result = repo.create(t)
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
+    }
+
 }

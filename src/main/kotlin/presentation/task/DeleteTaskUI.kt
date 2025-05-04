@@ -5,6 +5,7 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.usecase.task.DeleteTaskUseCase
+import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -12,6 +13,7 @@ import com.berlin.presentation.io.Viewer
 
 class DeleteTaskUI(
     private val deleteTask: DeleteTaskUseCase,
+    private val getAllTasks: GetAllTasksUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
@@ -23,7 +25,7 @@ class DeleteTaskUI(
         try {
             val task = choose(
                 title = "Tasks",
-                elements = DummyData.tasks,
+                elements = getAllTasks(),
                 labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
