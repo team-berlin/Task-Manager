@@ -6,7 +6,7 @@ build/
 
 # Ignore files
 *.txt
-*.csv
+*.csv_files
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
