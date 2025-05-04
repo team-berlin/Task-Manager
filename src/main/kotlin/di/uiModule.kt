@@ -13,11 +13,11 @@ val uiModule = module {
     single<User>(named("currentUser")) { DummyData.users.first() }
 
     single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
-    single { AssignTaskUI(get(), get(), get()) }
-    single { DeleteTaskUI(get(), get(), get()) }
+    single { AssignTaskUI(get(), get(), get(), get()) }
+    single { DeleteTaskUI(get(), get(), get(),get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
-    single { UpdateTaskUI(get(), get(), get()) }
-    single { ChangeTaskStateUI(get(), get(), get()) }
+    single { UpdateTaskUI(get(), get(), get(), get()) }
+    single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUI(get(), get(), get()) }
     single { AuthenticateUserUi(get(), get(), get()) }

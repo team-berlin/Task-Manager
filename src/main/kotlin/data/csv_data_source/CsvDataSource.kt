@@ -18,7 +18,7 @@ class CsvDataSource<T>(
         get() = File(rootDirectory, schema.fileName)
 
     override fun getAll(): List<T> = when {
-        !csvFile.exists() -> throw FileNotFoundException("File not found: ${csvFile.name}")
+        !csvFile.exists() -> emptyList()
         else -> Result.run {
             FileReader(csvFile).use { reader ->
                 CSVReaderBuilder(reader)

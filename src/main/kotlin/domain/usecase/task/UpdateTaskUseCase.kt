@@ -1,10 +1,8 @@
 package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
-import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.data.DummyData.tasks
 
 class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,

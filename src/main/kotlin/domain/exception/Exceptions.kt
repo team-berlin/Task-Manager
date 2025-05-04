@@ -13,3 +13,5 @@ class InvalidCredentialsException(message: String): Exception(message)
 class UserNotFoundException(message: String) : NoSuchElementException(message)
 class InvalidUserIdException(message: String): Exception(message)
 class UserNotLoggedInException(message: String) : NoSuchElementException(message)
+
+class InvalidTaskException(message: String): Exception(message)

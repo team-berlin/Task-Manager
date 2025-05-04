@@ -8,6 +8,5 @@ interface TaskRepository {
     fun findById(id: String): Result<Task>
     fun findTasksByProjectId(projectId: String): Result<List<Task>>
     fun delete(id: String): Result<Unit>
-    fun nextId(): String
     fun getAllTasks(): List<Task>
 }
