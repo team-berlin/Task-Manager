@@ -7,6 +7,7 @@ data class Task(
     val title:String,
     val description:String?,
     val stateId:String,
-    val assignedTo: String,
-    val createBy: String
-)
+    val assignedTo:User,
+    val createBy:User,
+    val auditLogs:List<AuditLog>
+    )
