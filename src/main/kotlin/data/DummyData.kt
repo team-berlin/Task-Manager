@@ -1,10 +1,9 @@
 package com.berlin.data
 
 import com.berlin.domain.model.*
-import com.berlin.domain.model.Permission
 import java.util.*
 
-object DummyData {
+object DummyData : BaseDataSource<Task> {
 
     /* ------------  Static demo data  ------------ */
     val users = mutableListOf(
@@ -35,8 +34,35 @@ object DummyData {
         Task("T3", "P2", "Integrate Firebase", "User authentication backend", "S6", "U2", "U1")
     )
 
-
-
-    /* ------------  Mutable data  ------------ */
+    /* ------------  Mutable in-memory store  ------------ */
+    // tests do `DummyData.tasks.clear()` in @BeforeEach
     val tasks: MutableList<Task> = Collections.synchronizedList(mutableListOf())
+
+    /* ------------  BaseDataSource<Task> implementation  ------------ */
+
+    override fun write(item: Task): Boolean =
+        tasks.add(item)
+
+    override fun writeAll(entities: List<Task>): Boolean =
+        tasks.addAll(entities)
+
+    override fun getById(id: String): Task? =
+        tasks.firstOrNull { it.id == id }
+
+    override fun update(id: String, item: Task): Boolean {
+        val idx = tasks.indexOfFirst { it.id == id }
+        return if (idx >= 0) {
+            tasks[idx] = item
+            true
+        } else {
+            false
+        }
+    }
+
+    override fun delete(id: String): Boolean =
+        tasks.removeIf { it.id == id }
+
+    override fun getAll(): List<Task> =
+        // return a snapshot so callers can’t mutate directly
+        tasks.toList()
 }

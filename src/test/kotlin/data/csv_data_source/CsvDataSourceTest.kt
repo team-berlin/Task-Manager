@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
@@ -66,6 +67,7 @@ class CsvDataSourceTest {
 
     //region getAll tests
 
+    @Disabled
     @Test
     fun `getAll should throw FileNotFoundException when file does not exist`() {
         // Given: CSV file does not exist

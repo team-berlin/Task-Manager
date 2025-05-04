@@ -9,6 +9,6 @@ class InvalidAssigneeException(message: String): Exception(message)
 class InvalidTaskStateException(message: String): Exception(message)
 class InvalidProjectIdException(message: String): Exception(message)
 class InvalidTaskIdException(message: String): Exception(message)
+class InvalidTaskException(message: String): Exception(message)
 class InvalidCredentialsException(message: String): Exception(message)
-class UserNotFoundException(message: String) : NoSuchElementException(message)
-class InvalidUserIdException(message: String): Exception(message)
+
