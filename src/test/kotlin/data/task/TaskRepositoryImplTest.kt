@@ -17,7 +17,7 @@ class TaskRepositoryImplTest {
 
     private lateinit var repo: TaskRepositoryImpl
 
-    private val alice = User("U1", "alice", "pw",permission = Permission(), UserRole.MATE)
+    private val alice = User("U1", "alice", "pw", permission = Permission(), UserRole.MATE)
     private val bob = User("U2", "bob", "pw", permission = Permission(),UserRole.MATE)
 
     @BeforeEach

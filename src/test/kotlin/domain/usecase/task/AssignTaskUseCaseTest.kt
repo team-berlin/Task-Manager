@@ -20,9 +20,9 @@ class AssignTaskUseCaseTest {
     private lateinit var taskRepository: TaskRepository
     private lateinit var useCase: AssignTaskUseCase
 
-    private val creator = User("U0", "alice", "pw",permission = Permission(), UserRole.ADMIN)
-    private val oldAssignee = User("U1", "john", "pw",permission = Permission(), UserRole.MATE)
-    private val anotherAssignee = User("U2", "bob", "pw",permission = Permission(), UserRole.MATE)
+    private val creator = User("U0", "alice", "pw", permission = Permission(), UserRole.ADMIN)
+    private val oldAssignee = User("U1", "john", "pw", permission = Permission(), UserRole.MATE)
+    private val anotherAssignee = User("U2", "bob", "pw", permission = Permission(), UserRole.MATE)
 
     private val stored = Task(
         id = "1",
