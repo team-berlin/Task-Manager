@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.authService
 
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.AuthenticationRepository
 
@@ -8,7 +9,7 @@ class GetUserByIDUseCase(
 ) {
     fun getUserById(id: String): Result<User> {
         if (!isIDValid(id))
-            throw IndexOutOfBoundsException("User ID can't be empty or just digits")
+            throw InvalidCredentialsException("User ID can't be empty or just digits")
         return repository.getUserById(id)
 
     }

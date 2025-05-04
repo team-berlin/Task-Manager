@@ -1,10 +1,8 @@
 package com.berlin.domain.usecase.authService
 
-import com.berlin.domain.exception.InvalidUserIdException
-import com.berlin.domain.exception.UserNotFoundException
-import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.helper.AuthServiceTestData
-import com.berlin.domain.helper.AuthServiceTestData.idNotExist
+import com.berlin.domain.repository.AuthenticationRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +38,7 @@ class GetUserByIDUseCaseTest {
     @Test
     fun `getUserById throws InvalidUserIdException when ID is empty`() {
         // When & Then
-        assertThrows<InvalidUserIdException> {
+        assertThrows<InvalidCredentialsException> {
             getUserByIDUseCase.getUserById("")
         }
     }
@@ -61,7 +59,7 @@ class GetUserByIDUseCaseTest {
 
     @Test
     fun `throws Invalid User Id Exception when id is blank`() {
-        assertThrows<InvalidUserIdException> {
+        assertThrows<InvalidCredentialsException> {
             getUserByIDUseCase.getUserById("   ")
         }
         verify(exactly = 0) { repository.getUserById(any()) }
