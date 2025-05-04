@@ -9,7 +9,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 class GetUserByIDUseCaseTest {
     private lateinit var repository: AuthenticationRepository
@@ -19,28 +20,6 @@ class GetUserByIDUseCaseTest {
     fun setup() {
         repository = mockk()
         getUserByIDUseCase = GetUserByIDUseCase(repository)
-    }
-
-//    @Test
-//    fun `getUserById returns User Not Valid Exception when ID does not exist`() {
-//        // Given
-//        val nonExistentId = idNotExist
-//        every { repository.getUserById(nonExistentId) } returns Result.failure(UserNotFoundException(idNotExist))
-//
-//        // When
-//        val result = getUserByIDUseCase.getUserById(nonExistentId)
-//
-//        // Then
-//        assertThat(result.isFailure).isTrue()
-//        assertThat(result.exceptionOrNull()).isEqualTo( UserNotFoundException(idNotExist))
-//    }
-
-    @Test
-    fun `getUserById throws InvalidUserIdException when ID is empty`() {
-        // When & Then
-        assertThrows<InvalidCredentialsException> {
-            getUserByIDUseCase.getUserById("")
-        }
     }
 
     @Test
@@ -57,11 +36,15 @@ class GetUserByIDUseCaseTest {
         assertThat(result.isSuccess).isTrue()
     }
 
-    @Test
-    fun `throws Invalid User Id Exception when id is blank`() {
-        assertThrows<InvalidCredentialsException> {
-            getUserByIDUseCase.getUserById("   ")
-        }
+    @ParameterizedTest
+    @ValueSource(strings = [" ", "655659"])
+    fun `returns failure when id is blank`(invalidString: String) {
+        // When
+        val result = getUserByIDUseCase.getUserById(invalidString)
+
+        // Then
+        assertThat(result.isFailure).isTrue()
         verify(exactly = 0) { repository.getUserById(any()) }
     }
+
 }

@@ -9,5 +9,4 @@ interface AuthenticationRepository {
     fun getUserById(userId: String): Result<User>
     fun getAllUsers(): Result<List<User>>
     fun getCurrentUser(): Result<User?>
-
 }

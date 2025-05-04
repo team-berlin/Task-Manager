@@ -13,9 +13,10 @@ import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 import kotlin.Result.Companion.failure
 
-class AuthRepositoryInMemory : AuthenticationRepository {
-    private val userId: IdGenerator = IdGeneratorImplementation()
-    private val hashingPassword: HashingPassword =MD5Hasher()
+class AuthRepositoryInMemory(
+    private val userId: IdGenerator ,
+    private val hashingPassword: HashingPassword
+) : AuthenticationRepository {
 
     override fun login(userName: String, password: String): Result<User> {
         val hashPassword = hashingPassword.hashPassword(password)

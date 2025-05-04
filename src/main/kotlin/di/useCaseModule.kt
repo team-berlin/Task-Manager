@@ -1,9 +1,5 @@
 package com.berlin.di
 
-import com.berlin.data.memory.AuthRepositoryInMemory
-import com.berlin.domain.hashPassword.HashingPassword
-import com.berlin.domain.hashPassword.MD5Hasher
-import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.usecase.authService.CreationOfMateUseCase
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
@@ -31,9 +27,7 @@ val useCaseModule = module {
     single { CreationOfMateUseCase(get(),get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUseCase(get()) }
-    single<AuthenticationRepository> { AuthRepositoryInMemory() }
     single { FetchAllUsersUseCase(get()) }
-    single <HashingPassword> { MD5Hasher() }
     single { AuthenticateUserUseCase(get(),get()) }
-    single { CreationOfMateUseCase(get(),get()) }
+
 }

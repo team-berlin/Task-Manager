@@ -31,7 +31,7 @@ class GettingUsersLoggedInUseCaseTest {
     }
 
     @Test
-    fun `getCurrentUser returns admin user when admin is logged in`() {
+    fun `getCurrentUser returns admin when admin is logged in`() {
         // Given
         val expectedAdminUser = AuthServiceTestData.adminIsFirstUser
         every { repository.getCurrentUser() } returns Result.success(expectedAdminUser)
