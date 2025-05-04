@@ -51,7 +51,6 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 1) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        // exact ID shown in the success message
         assertThat(printed.last()).contains("Task created: id=T42")
     }
 
