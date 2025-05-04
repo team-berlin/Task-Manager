@@ -1,10 +1,8 @@
 package com.berlin.domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidUserIdException
-import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.helper.AuthServiceTestData
-import com.berlin.domain.helper.AuthServiceTestData.idNotExist
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -23,19 +21,6 @@ class GetUserByIDUseCaseTest {
         getUserByIDUseCase = GetUserByIDUseCase(repository)
     }
 
-//    @Test
-//    fun `getUserById returns User Not Valid Exception when ID does not exist`() {
-//        // Given
-//        val nonExistentId = idNotExist
-//        every { repository.getUserById(nonExistentId) } returns Result.failure(UserNotFoundException(idNotExist))
-//
-//        // When
-//        val result = getUserByIDUseCase.getUserById(nonExistentId)
-//
-//        // Then
-//        assertThat(result.isFailure).isTrue()
-//        assertThat(result.exceptionOrNull()).isEqualTo( UserNotFoundException(idNotExist))
-//    }
 
     @Test
     fun `getUserById throws InvalidUserIdException when ID is empty`() {

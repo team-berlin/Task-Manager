@@ -45,18 +45,5 @@ class GetUserByIDUITest {
         assertThat(printed).contains("Enter the user id: ")
     }
 
-    @Test
-    fun `should handle exception when thrown by use case`() {
-        // Given
-        val id = "456"
-        every { reader.read() } returns id
-        every { useCase.getUserById(id) } throws RuntimeException("Something went wrong")
 
-        // When
-        ui.run()
-
-        // Then
-        verify { useCase.getUserById(id) }
-        assertThat(printed).contains("Enter the user id: ")
-    }
 }

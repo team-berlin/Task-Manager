@@ -1,16 +1,15 @@
 package com.berlin.data
 
 import com.berlin.domain.model.*
-import com.berlin.domain.model.Permission
 import java.util.*
 
 object DummyData : BaseDataSource<Task> {
 
     /* ------------  Static demo data  ------------ */
     val users = mutableListOf(
-        User("U1", "alice", "secret", permission = Permission(), UserRole.ADMIN),
-        User("U2", "bob", "secret12345", permission = Permission(),UserRole.MATE),
-        User("U3", "carol", "secret", permission = Permission() ,UserRole.MATE)
+        User("U1", "alice", "secret", UserRole.ADMIN),
+        User("U2", "bob", "secret12345", UserRole.MATE),
+        User("U3", "carol", "secret", UserRole.MATE)
     )
 
     val projects = mutableListOf(

@@ -3,7 +3,6 @@ package com.berlin.data.csv_data_source
 import com.berlin.data.BaseSchema
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.permission.assignPermissions
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -31,8 +30,8 @@ class CsvDataSourceTest {
 
     private val testUsers = listOf(
         testUser,
-        User("u2", "user2", "pass2", assignPermissions(UserRole.ADMIN), UserRole.ADMIN),
-        User("u3", "user3", "pass3", assignPermissions(UserRole.MATE), UserRole.MATE)
+        User("u2", "user2", "pass2" ,UserRole.ADMIN),
+        User("u3", "user3", "pass3",  UserRole.MATE)
     )
 
     @TempDir
@@ -169,7 +168,7 @@ class CsvDataSourceTest {
     fun `write should append to file and return true when writing to existing file`() {
         // Given: file exists with test data
         createCsvWithTestData()
-        val newUser = User("u4", "user4", "pass4", assignPermissions(UserRole.ADMIN), UserRole.ADMIN)
+        val newUser = User("u4", "user4", "pass4", UserRole.ADMIN)
         every { mockSchema.toRow(newUser) } returns listOf("u4", "user4", "pass4", "ADMIN")
 
         // When: write is called with a new entity

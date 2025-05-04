@@ -187,20 +187,6 @@ class AuthenticateUserUseCaseTest {
         assertThat(UserCache.currentUser).isNull()
     }
 
-    @Test
-    fun `login returns cached user with same permissions`() {
-        // Given
-        val user = AuthServiceTestData.excepctedUser
-        UserCache.currentUser = user
-        every { authRepository.getAllUsers() } returns Result.success(listOf(user))
-
-        // When
-        val result = authenticateUserUseCase.login(user.userName, "any_password")
-
-        // Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()?.permission).isEqualTo(user.permission)
-    }
 
     @Test
     fun `login ignores cache if username is different and proceeds with login`() {

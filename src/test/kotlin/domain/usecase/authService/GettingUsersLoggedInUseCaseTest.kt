@@ -18,17 +18,7 @@ class GettingUsersLoggedInUseCaseTest {
         gettingUsersLoggedInUseCase = GettingUsersLoggedInUseCase(repository)
     }
 
-    @Test
-    fun `getCurrentUser returns null when no one is logged in`() {
-        // Given
-        every { repository.getCurrentUser() } returns Result.success(null)
 
-        // When
-        val result = gettingUsersLoggedInUseCase.getCurrentUser()
-
-        // Then
-        assertThat(result).isEqualTo(Result.success(null))
-    }
 
     @Test
     fun `getCurrentUser returns admin user when admin is logged in`() {

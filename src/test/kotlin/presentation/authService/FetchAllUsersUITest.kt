@@ -40,9 +40,14 @@ class FetchAllUsersUseCaseTest {
 
         // Then
         assertThat(printed).containsExactly(
-            "ID: 1, Name: Menna",
-            "ID: 2, Name: Sarah"
-        )
+            "ID: 1",
+            "Name: Menna",
+            "role: ADMIN",
+            "=====================",
+            "ID: 2",
+            "Name: Sarah",
+            "role: MATE",
+            "=====================")
     }
 
     @Test
