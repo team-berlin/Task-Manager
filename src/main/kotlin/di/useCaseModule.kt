@@ -12,6 +12,7 @@ import com.berlin.domain.usecase.task.AssignTaskUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
 import com.berlin.domain.usecase.task.DeleteTaskUseCase
+import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.GetTaskByIdUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase

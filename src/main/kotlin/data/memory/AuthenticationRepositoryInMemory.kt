@@ -1,7 +1,7 @@
 package com.berlin.data.memory
 
 import com.berlin.data.DummyData.users
-import com.berlin.domain.exception.UserNotFoundException
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.helper.IdGenerator
@@ -49,7 +49,7 @@ class AuthRepositoryInMemory : AuthenticationRepository {
     override fun getUserById(userId: String): Result<User> =
         users.firstOrNull { it.id == userId }
             ?.let(Result.Companion::success)
-            ?: failure(UserNotFoundException(userId))
+            ?: failure(InvalidCredentialsException(userId))
 
 
     override fun getAllUsers(): Result<List<User>> = users.let(Result.Companion::success)
