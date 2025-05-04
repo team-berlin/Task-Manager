@@ -4,7 +4,6 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
-import com.berlin.domain.model.Permission
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -24,7 +23,7 @@ class GetTasksByProjectIdUITest {
 
     private val projectP1 = Project("P1", "Core", null, listOf("S1"), emptyList())
     private val stateTodo = State("S1", "TODO", "P1")
-    private val alice = User("U1", "alice", "pw", permission = Permission(), UserRole.MATE)
+    private val alice = User("U1", "alice", "pw", UserRole.MATE)
 
     @BeforeEach
     fun setUp() {

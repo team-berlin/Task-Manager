@@ -1,16 +1,15 @@
 package com.berlin.domain.usecase.authService
 
-import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.api.assertThrows
 
 class GetUserByIDUseCaseTest {
     private lateinit var repository: AuthenticationRepository
@@ -20,6 +19,15 @@ class GetUserByIDUseCaseTest {
     fun setup() {
         repository = mockk()
         getUserByIDUseCase = GetUserByIDUseCase(repository)
+    }
+
+
+    @Test
+    fun `getUserById throws InvalidUserIdException when ID is empty`() {
+        // When & Then
+        assertThrows<InvalidUserIdException> {
+            getUserByIDUseCase.getUserById("")
+        }
     }
 
     @Test
@@ -36,15 +44,11 @@ class GetUserByIDUseCaseTest {
         assertThat(result.isSuccess).isTrue()
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = [" ", "655659"])
-    fun `returns failure when id is blank`(invalidString: String) {
-        // When
-        val result = getUserByIDUseCase.getUserById(invalidString)
-
-        // Then
-        assertThat(result.isFailure).isTrue()
+    @Test
+    fun `throws Invalid User Id Exception when id is blank`() {
+        assertThrows<InvalidUserIdException> {
+            getUserByIDUseCase.getUserById("   ")
+        }
         verify(exactly = 0) { repository.getUserById(any()) }
     }
-
 }

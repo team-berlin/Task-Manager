@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 
 val dataModule = module {
-    single<BaseSchema<User>> {
+    single<UserSchema> {
         UserSchema(
             fileName = "user.csv",
             header = listOf("User Id", "UserName", "Password", "User Role")

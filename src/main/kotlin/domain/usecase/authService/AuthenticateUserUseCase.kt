@@ -3,7 +3,6 @@ package domain.usecase.authService
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.model.User
-import com.berlin.domain.permission.assignPermissions
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 
@@ -24,7 +23,7 @@ class AuthenticateUserUseCase(
 
         return userResult.fold(
             onSuccess = { user ->
-                val updateUser = user.copy(permission = assignPermissions(user.role))
+                val updateUser = user
                 UserCache.currentUser = updateUser
                 Result.success(updateUser)
             },
