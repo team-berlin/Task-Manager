@@ -6,6 +6,7 @@ import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
+import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.task.ChangeTaskStateUI
@@ -20,6 +21,7 @@ class ChangeTaskStateUITest {
     private lateinit var reader: Reader
     private lateinit var changeUC: ChangeTaskStateUseCase
     private lateinit var ui: ChangeTaskStateUI
+    private lateinit var getAllTasks: GetAllTasksUseCase
 
     private val printed = mutableListOf<String>()
     private lateinit var task: Task
@@ -31,7 +33,6 @@ class ChangeTaskStateUITest {
         DummyData.tasks.clear()
         DummyData.states.clear()
 
-        // one task and two states
         task = Task(
             id = "T1",
             projectId = "P1",
@@ -41,6 +42,7 @@ class ChangeTaskStateUITest {
             assignedToUserId = alice.id,
             createByUserId = alice.id
         )
+
         DummyData.tasks += task
         DummyData.states += State("S1", "TODO", "P1")
         DummyData.states += State("S2", "DONE", "P1")
@@ -50,7 +52,9 @@ class ChangeTaskStateUITest {
         }
         reader = mockk()
         changeUC = mockk()
-        ui = ChangeTaskStateUI(changeUC, viewer, reader)
+        getAllTasks = mockk()
+        ui = ChangeTaskStateUI(changeUC, getAllTasks, viewer, reader)
+        every { getAllTasks.invoke() } returns listOf(task)
         printed.clear()
     }
 

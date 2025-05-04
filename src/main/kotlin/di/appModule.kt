@@ -1,6 +1,7 @@
 package com.berlin.di
 
 import com.berlin.data.BaseDataSource
+import com.berlin.data.BaseSchema
 import com.berlin.data.memory.TaskRepositoryImpl
 import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.model.*
@@ -14,10 +15,16 @@ import com.berlin.presentation.io.Viewer
 import org.koin.dsl.module
 
 val appModule = module {
-    single { DummyData }
-    single<MutableList<Task>> { DummyData.tasks }
-    single<BaseDataSource<CsvDataSource<Task>>> { get() }
-    single<TaskRepository> { TaskRepositoryImpl(get()) }
+
+    single<BaseDataSource<Task>> {
+        CsvDataSource(
+            rootDirectory = "csv_files",
+            schema = get<BaseSchema<Task>>()
+        )
+    }
+    single<TaskRepository> {
+        TaskRepositoryImpl( get<BaseDataSource<Task>>() )
+    }
     single<Viewer> { ConsoleViewer() }
     single<Reader> { ConsoleReader() }
     single<IdGeneratorImplementation> { IdGeneratorImplementation() }
