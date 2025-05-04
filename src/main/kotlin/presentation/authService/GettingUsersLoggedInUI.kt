@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Viewer
@@ -11,20 +12,18 @@ class GettingUsersLoggedInUI(
     override val id: Int = 100
     override val label: String = "get user logged in"
     override fun run() {
-        try {
-            val user=getUserLoggedIn.getCurrentUser()
-            user.onSuccess {  userData->
-                val userId=userData?.id
-                val userName=userData?.userName
-                val permission=userData?.permission
-                val role=userData?.role
-                viewer.show(listOf(userId,userName,permission,role).toString()) }
+        val user = getUserLoggedIn.getCurrentUser()
+        user.fold(
+            onSuccess = { showUserInfo(it) },
 
+            onFailure = { viewer.show("no user logged in,please log in") }
+        )
 
-        }catch(e:Exception){
-            viewer.show("no user logged in,please log in")
-        }
+    }
 
-
+    private fun showUserInfo(user: User) {
+        viewer.show("ID: ${user.id}")
+        viewer.show(" Name: ${user.userName}")
+        viewer.show(" role: ${user.role}")
     }
 }

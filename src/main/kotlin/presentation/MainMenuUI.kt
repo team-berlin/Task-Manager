@@ -32,4 +32,8 @@ class MainMenuUI(
         viewer.show("X – Exit")
         viewer.show("Select an option:")
     }
+    private fun showOptions(){
+        viewer.show("")
+
+    }
 }

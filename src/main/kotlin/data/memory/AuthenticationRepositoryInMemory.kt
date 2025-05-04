@@ -2,6 +2,7 @@ package com.berlin.data.memory
 
 import com.berlin.data.DummyData.users
 import com.berlin.domain.exception.UserNotFoundException
+import com.berlin.domain.exception.UserNotLoggedInException
 import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.helper.IdGenerator
@@ -15,7 +16,7 @@ import kotlin.Result.Companion.failure
 
 class AuthRepositoryInMemory : AuthenticationRepository {
     private val userId: IdGenerator = IdGeneratorImplementation()
-    private val hashingPassword: HashingPassword =MD5Hasher()
+    private val hashingPassword: HashingPassword = MD5Hasher()
 
     override fun login(userName: String, password: String): Result<User> {
         val hashPassword = hashingPassword.hashPassword(password)
@@ -55,6 +56,13 @@ class AuthRepositoryInMemory : AuthenticationRepository {
     override fun getAllUsers(): Result<List<User>> = users.let(Result.Companion::success)
 
 
-    override fun getCurrentUser(): Result<User?> =Result.success(UserCache.currentUser)
+    override fun getCurrentUser(): Result<User> {
+        val user = UserCache.currentUser
+        return if (user != null) {
+            Result.success(user)
+        } else {
+            Result.failure(UserNotLoggedInException("No one logged in"))
+        }
+    }
 
 }

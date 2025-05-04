@@ -10,8 +10,8 @@ class GetUserByIDUseCase(
     fun getUserById(id: String): Result<User> {
         if (!isIDValid(id))
             throw InvalidUserIdException("User ID can't be empty or just digits")
-        return repository.getUserById(id)
 
+        return repository.getUserById(id)
     }
 
     private fun isIDValid(id: String): Boolean =
