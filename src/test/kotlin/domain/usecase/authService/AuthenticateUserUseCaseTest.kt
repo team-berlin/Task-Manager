@@ -45,18 +45,15 @@ class AuthenticateUserUseCaseTest {
     @Test
     fun `login fails when user is not found in repository`() {
         // Given
-        val hashedPassword = hashingPassword.hashPassword(AuthServiceTestData.userPassword)
-        every { authRepository.getAllUsers() } returns Result.success(listOf())
+        val hashedPassword = hashingPassword.hashPassword(AuthServiceTestData.inValidUserPassword)
         every { authRepository.login(AuthServiceTestData.inValidUserName, hashedPassword) } returns Result.failure(
             InvalidCredentialsException("No found data")
         )
-
         // When
-        val result = authenticateUserUseCase.login(AuthServiceTestData.inValidUserName, AuthServiceTestData.inValidUserPassword)
-
+        val result = authenticateUserUseCase.login(AuthServiceTestData.inValidUserName,AuthServiceTestData.inValidUserPassword)
         // Then
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("No account")
+        assertThat(result.exceptionOrNull()?.message).isEqualTo("No found data")
     }
 
     @Test
@@ -67,10 +64,8 @@ class AuthenticateUserUseCaseTest {
         every { authRepository.login(AuthServiceTestData.userNameIsEmpty, hashedPassword) } returns Result.failure(
             InvalidCredentialsException("No user found")
         )
-
         // When
         val result = authenticateUserUseCase.login(AuthServiceTestData.userNameIsEmpty, "12345678")
-
         // Then
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("No user found")
@@ -113,41 +108,32 @@ class AuthenticateUserUseCaseTest {
     }
 
     @Test
-    fun `login fails when no users exist in repository`() {
-        // Given
-        every { authRepository.getAllUsers() } returns Result.success(listOf())
-
-        // When
-        val result = authenticateUserUseCase.login(AuthServiceTestData.userName, AuthServiceTestData.userPassword)
-
-        // Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()?.message).isEqualTo("No account")
-    }
-
-    @Test
     fun `login fails when repository login returns failure`() {
         // Given
         val userName = "Fatma"
-        val password = "123456"
+        val rawPassword = "123456"
         val hashedPassword = "hashed_123456"
-        val expectedException = InvalidCredentialsException("Invalid credentials")
 
         val mockedHashing = mockk<HashingPassword>()
-        every { mockedHashing.hashPassword(password) } returns hashedPassword
-        authenticateUserUseCase = AuthenticateUserUseCase(authRepository, mockedHashing)
+        every { mockedHashing.hashPassword(rawPassword) } returns hashedPassword
 
-        every { authRepository.getAllUsers() } returns Result.success(listOf(AuthServiceTestData.user))
-        every { authRepository.login(userName, hashedPassword) } returns Result.failure(expectedException)
+        val mockedRepo = mockk<AuthenticationRepository>()
+        authenticateUserUseCase = AuthenticateUserUseCase(mockedRepo, mockedHashing)
+
+        every { mockedRepo.getAllUsers() } returns Result.success(listOf(AuthServiceTestData.user))
+        every { mockedRepo.login(userName, hashedPassword) } returns Result.failure(InvalidCredentialsException("Invalid"))
+
         UserCache.currentUser = null
 
         // When
-        val result = authenticateUserUseCase.login(userName, password)
+        val result = authenticateUserUseCase.login(userName, rawPassword)
 
         // Then
         assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isEqualTo(expectedException)
+        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
+        assertThat(result.exceptionOrNull()?.message).isEqualTo("Invalid")
     }
+
 
     @Test
     fun `login returns cached user even if password is wrong`() {

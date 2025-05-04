@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.model.User
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -18,7 +19,7 @@ class AuthenticateUserUi(
         authenticateLoop()
     }
 
-    private fun validateUser(): Result<com.berlin.domain.model.User> {
+    private fun validateUser(): Result<User> {
         viewer.show("Enter your user name: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter your password: ")
@@ -26,7 +27,7 @@ class AuthenticateUserUi(
         return authenticateUser.login(userName, password)
     }
 
-    private fun authenticateLoop(attempts: Int = 0, maxAttempts: Int = 3) {
+    private fun authenticateLoop(failedAttemps: Int = 0, maxAttemps: Int = 3) {
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")
@@ -34,8 +35,8 @@ class AuthenticateUserUi(
             },
             onFailure = {
                 viewer.show("Try again")
-                if (attempts < maxAttempts) {
-                    authenticateLoop(attempts + 1, maxAttempts)
+                if (failedAttemps < maxAttemps) {
+                    authenticateLoop(failedAttemps + 1, maxAttemps)
                 }
             }
         )

@@ -6,6 +6,6 @@ data class User(
     val id:String,
     val userName:String,
     val password:String,
-    val permission: Permission= assignPermissions(UserRole.MATE),
+    val permission: Any = assignPermissions(UserRole.MATE),
     val role: UserRole
 )

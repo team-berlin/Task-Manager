@@ -30,7 +30,7 @@ class FetchAllUsersUseCaseTest {
     fun `should print all users when users are available`() {
         // Given
         val users = listOf(
-            User(id = "1", userName = "Menna", password = "12345678j",  role=UserRole.ADMIN),
+            User(id = "1", userName = "Menna", password = "12345678j",  role =UserRole.ADMIN),
             User(id = "2", userName = "Sarah", password = "1234567890",  role = UserRole.MATE)
         )
         every { useCase.getAllUsers() } returns Result.success(users)
