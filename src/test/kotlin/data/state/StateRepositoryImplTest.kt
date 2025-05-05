@@ -216,19 +216,21 @@ class StateRepositoryImplTest {
 
     // region getStateByTaskId
     @Test
-    fun `getStateByTaskId should return stateId when data source returns task matches`() {
+    fun `getStateByTaskId should return state when data sources returns state matches task`() {
         // Given
-        every { taskDataSource.getAll() } returns tasks
+        every { taskDataSource.getById(any()) } returns validTask
+        every { stateDataSource.getById(any()) } returns validState
         // When
         val result = repository.getStateByTaskId(validTask.id)
         // Then
-        assertThat(result).isEqualTo(validTask.stateId)
+        assertThat(result).isEqualTo(validState)
     }
 
     @Test
-    fun `getStateByTaskId should return null when data source returns empty list of tasks or no matches`() {
+    fun `getStateByTaskId should return null when data sources returns null no match state and no task`() {
         // Given
-        every { taskDataSource.getAll() } returns emptyList()
+        every { taskDataSource.getById(any()) } returns null
+        every { stateDataSource.getById(any()) } returns null
         // When
         val result = repository.getStateByTaskId(validTask.id)
         // Then
@@ -252,7 +254,7 @@ class StateRepositoryImplTest {
         val states = listOf(
             State(id = "st123", name = "ToDo", projectId = "pppppp"),
             State(id = "st456", name = "InProgress", projectId = "pppppp"),
-            State(id = "st789", name = "Done", projectId = "ppppppp")
+            State(id = "st789", name = "Done", projectId = "pppppp")
         )
         val tasks = listOf(
             Task(

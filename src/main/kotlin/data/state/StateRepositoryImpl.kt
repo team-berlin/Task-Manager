@@ -11,30 +11,45 @@ class StateRepositoryImpl(
     private val taskDataSource: CsvDataSource<Task>
 ):StateRepository {
     override fun addState(state: State): Result<String> {
-        return Result.failure(InvalidStateException("can not add state"))
+        return if (stateDataSource.write(state))
+            Result.success(state.id)
+        else
+            Result.failure(InvalidStateException("can not add state"))
     }
 
     override fun getStatesByProjectId(projectId: String): List<State>? {
-        return null
+        return stateDataSource.getAll()
+            .filter { it.projectId == projectId }
+            .takeIf { it.isNotEmpty() }
     }
 
     override fun getTasksByStateId(stateId: String): List<Task>? {
-        return null
+        return taskDataSource.getAll()
+            .filter { it.stateId == stateId }
+            .takeIf { it.isNotEmpty() }
     }
 
     override fun deleteState(stateId: String): Result<String> {
-        return Result.failure(InvalidStateException("can not delete state"))
+        return if (stateDataSource.delete(stateId))
+            Result.success(stateId)
+        else
+            Result.failure(InvalidStateException("can not delete state"))
     }
 
     override fun updateState(state: State): Result<String> {
-        return Result.failure(InvalidStateException("can not update state"))
+        return if (stateDataSource.update(state.id,state))
+            Result.success(state.id)
+        else
+            Result.failure(InvalidStateException("can not update state"))
     }
 
     override fun getStateByTaskId(taskId: String): State? {
-        return null
+       return taskDataSource
+           .getById(taskId)
+           ?.let { stateDataSource.getById(it.stateId) }
     }
 
     override fun getStateById(stateId: String): State? {
-        return null
+        return stateDataSource.getById(stateId)
     }
 }
