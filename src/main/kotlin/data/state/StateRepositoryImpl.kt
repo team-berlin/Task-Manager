@@ -1,14 +1,14 @@
 package com.berlin.data.state
 
-import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
 
 class StateRepositoryImpl(
-    private val stateDataSource: CsvDataSource<State>,
-    private val taskDataSource: CsvDataSource<Task>
+    private val stateDataSource: BaseDataSource<State>,
+    private val taskDataSource: BaseDataSource<Task>
 ):StateRepository {
     override fun addState(state: State): Result<String> {
         return if (stateDataSource.write(state))

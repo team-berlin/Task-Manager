@@ -1,5 +1,6 @@
 package com.berlin.data.state
 
+import com.berlin.data.BaseDataSource
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.model.State
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test
 
 class StateRepositoryImplTest {
     private lateinit var repository: StateRepositoryImpl
-    private val stateDataSource: CsvDataSource<State> = mockk()
-    private val taskDataSource: CsvDataSource<Task> = mockk()
+    private val stateDataSource: BaseDataSource<State> = mockk()
+    private val taskDataSource: BaseDataSource<Task> = mockk()
 
     @BeforeEach
     fun setUp() {
