@@ -12,31 +12,31 @@ class TaskRepositoryImpl(
     val baseDataSource: BaseDataSource<Task>,
 ) : TaskRepository {
 
-    override fun create(task: Task): Result<Task> = runCatching {
+    override suspend fun create(task: Task): Result<Task> = runCatching {
         if (baseDataSource.write(task)) task else throw InvalidTaskException("some thing went error")
     }
 
-    override fun update(task: Task): Result<Task> = runCatching {
+    override suspend fun update(task: Task): Result<Task> = runCatching {
         if (!baseDataSource.update(task.id, task))
             throw InvalidTaskException("some thing went error")
         task
     }
 
-    override fun findById(id: String): Result<Task> =
+    override suspend fun findById(id: String): Result<Task> =
         baseDataSource.getById(id)
             ?.let { success(it) }
             ?: failure(TaskNotFoundException(id))
 
 
-    override fun findTasksByProjectId(projectId: String): Result<List<Task>> =
+    override suspend fun findTasksByProjectId(projectId: String): Result<List<Task>> =
         success(baseDataSource.getAll().filter { it.projectId == projectId })
 
-    override fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = runCatching {
         if (!baseDataSource.delete(id))
             throw TaskNotFoundException(id)
     }
 
-    override fun getAllTasks(): List<Task> {
+    override suspend fun getAllTasks(): List<Task> {
          return baseDataSource.getAll()
     }
 }
