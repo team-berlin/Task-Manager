@@ -1,38 +1,34 @@
 package com.berlin.di
 
-import com.berlin.data.Audit.AuditRepositoryImpl
-import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.memory.TaskRepositoryImpl
-import com.berlin.data.project.ProjectRepositoryImpl
-import com.berlin.data.schema.*
-import com.berlin.data.state.StateRepositoryImpl
-import com.berlin.domain.model.*
-import com.berlin.domain.repository.AuditRepository
-import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.repository.StateRepository
-import com.berlin.domain.repository.TaskRepository
-import org.koin.core.qualifier.named
+import com.berlin.data.schema.AuditSchema
+import com.berlin.data.schema.ProjectSchema
+import com.berlin.data.schema.StateSchema
+import com.berlin.data.schema.TaskSchema
+import com.berlin.data.schema.UserSchema
+import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.Project
+import com.berlin.domain.model.State
+import com.berlin.domain.model.Task
+import com.berlin.domain.model.User
 import org.koin.dsl.module
 
 
 val dataModule = module {
-
-    single<BaseSchema<User>>(named("UserSchema")) {
     single<UserSchema> {
         UserSchema(
             fileName = "user.csv",
             header = listOf("User Id", "UserName", "Password", "User Role")
         )
     }
-    single<BaseSchema<Project>>(named("ProjectSchema")) {
+    single<BaseSchema<Project>> {
         ProjectSchema(
             fileName = "project.csv",
             header = listOf("Project Id", "Project Name", "Description", "States", "Tasks")
         )
     }
-    single<BaseSchema<AuditLog>>(named("AuditSchema")) {
+    single<BaseSchema<AuditLog>> {
         AuditSchema(
             fileName = "audit.csv",
             header = listOf(
@@ -46,10 +42,8 @@ val dataModule = module {
             )
         )
     }
-    single<BaseSchema<State>>(named("StateSchema")) {
-        StateSchema(fileName = "state.csv",
-            header = listOf("State Id", "Name", "Project Id")) }
-    single<BaseSchema<Task>>(named("TaskSchema")) {
+    single<BaseSchema<State>> { StateSchema(fileName = "state.csv", header = listOf("State Id", "Name", "Project Id")) }
+    single<BaseSchema<Task>> {
         TaskSchema(
             fileName = "task.csv",
             header = listOf(
@@ -64,17 +58,9 @@ val dataModule = module {
         )
     }
 
-    single<BaseDataSource<User>>{ CsvDataSource("csv_files", get(named("UserSchema"))) }
-    single<BaseDataSource<Project>>{ CsvDataSource("csv_files", get(named("ProjectSchema"))) }
-    single<BaseDataSource<Task>>{ CsvDataSource("csv_files", get(named("TaskSchema"))) }
-    single<BaseDataSource<State>>{ CsvDataSource("csv_files", get(named("StateSchema"))) }
-    single<BaseDataSource<AuditLog>>{ CsvDataSource("csv_files", get(named("AuditSchema"))) }
-
-
-    single <ProjectRepository> { ProjectRepositoryImpl(get()) }
-    single <TaskRepository> { TaskRepositoryImpl(get()) }
-    single <AuditRepository>{ AuditRepositoryImpl(get<BaseDataSource<AuditLog>>()) }
-    single <StateRepository>{ StateRepositoryImpl(get<BaseDataSource<State>>(),get<BaseDataSource<Task>>()) }
-
-}
+    single { CsvDataSource<User>("csv_files", get()) }
+    single { CsvDataSource<Project>("csv_files", get()) }
+    single { CsvDataSource<Task>("csv_files", get()) }
+    single { CsvDataSource<State>("csv_files", get()) }
+    single { CsvDataSource<AuditLog>("csv_files", get()) }
 }

@@ -14,18 +14,16 @@ class AuthenticateUserUseCase(
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("No user found"))
         }
+
         val cachedUser = UserCache.currentUser
         if (cachedUser != null && cachedUser.userName == userName)
             return Result.success(cachedUser)
 
         val hashedPassword=hashingPassword.hashPassword(password)
-        val userResult = repository.login(userName, hashedPassword)
-
-        return userResult.fold(
+        return  repository.login(userName, hashedPassword).fold(
             onSuccess = { user ->
-                val updateUser = user
-                UserCache.currentUser = updateUser
-                Result.success(updateUser)
+                UserCache.currentUser = user
+                Result.success(user)
             },
             onFailure = { exception ->
                 Result.failure(exception)

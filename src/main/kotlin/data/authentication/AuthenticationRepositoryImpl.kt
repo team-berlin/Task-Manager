@@ -14,13 +14,12 @@ import data.UserCache
 import kotlin.Result.Companion.failure
 
 
-class AuthenticationRepositoryImpl(val userDataSource: BaseDataSource<User>) : AuthenticationRepository {
-    private val userId: IdGenerator = IdGeneratorImplementation()
-    private val hashingPassword: HashingPassword = MD5Hasher()
+class AuthenticationRepositoryImpl(
+    private val userDataSource: BaseDataSource<User>,
+    ): AuthenticationRepository {
 
     override fun login(userName: String, password: String): Result<User> {
-        val hashPassword = hashingPassword.hashPassword(password)
-        val user = userDataSource.getAll().find { it.userName == userName && it.password == hashPassword }
+        val user = userDataSource.getAll().find { it.userName == userName && it.password == password }
         return if (user != null) {
             Result.success(user)
         } else {
@@ -28,16 +27,9 @@ class AuthenticationRepositoryImpl(val userDataSource: BaseDataSource<User>) : A
         }
     }
 
-    override fun createMate(userName: String, password: String): Result<User> {
-        val hashingPassword = hashingPassword.hashPassword(password)
-        val newUser = User(
-            id = userId.generateId(userName),
-            userName = userName,
-            password = hashingPassword,
-            role = UserRole.MATE
-        )
-        userDataSource.write(newUser)
-        return Result.success(newUser)
+    override fun createMate(user: User): Result<User> {
+        userDataSource.write(user)
+        return Result.success(user)
 
     }
 

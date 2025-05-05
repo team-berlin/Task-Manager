@@ -1,11 +1,14 @@
 package com.berlin.domain.usecase.authService
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.helper.IdGenerator
 import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
 
 class CreationOfMateUseCase(
     private val repository: AuthenticationRepository,
+    private val idGenerator: IdGenerator,
     private val hashingPassword: HashingPassword
 ) {
     fun createMate(userName: String, password: String): Result<User> {
@@ -17,7 +20,13 @@ class CreationOfMateUseCase(
         }
 
         val hashedPassword=hashingPassword.hashPassword(password)
-        return repository.createMate(userName, hashedPassword)
+        val newUser = User(
+            id = idGenerator.generateId(password),
+            userName = userName,
+            password = hashedPassword,
+            role = UserRole.MATE
+        )
+        return repository.createMate(newUser)
     }
      private companion object{
        const val MAIN_PASSWORD_LENGHT = 8

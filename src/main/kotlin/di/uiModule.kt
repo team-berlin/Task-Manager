@@ -1,10 +1,20 @@
 package com.berlin.di
 
-import com.berlin.domain.model.User
 import com.berlin.data.DummyData
+import com.berlin.domain.model.User
 import com.berlin.presentation.MainMenuUI
-import com.berlin.presentation.authService.*
-import com.berlin.presentation.task.*
+import com.berlin.presentation.authService.AuthenticateUserUi
+import com.berlin.presentation.authService.CreationOfMateUi
+import com.berlin.presentation.authService.FetchAllUsersUI
+import com.berlin.presentation.authService.GetUserByIDUI
+import com.berlin.presentation.authService.GettingUsersLoggedInUI
+import com.berlin.presentation.task.AssignTaskUI
+import com.berlin.presentation.task.ChangeTaskStateUI
+import com.berlin.presentation.task.CreateTaskUI
+import com.berlin.presentation.task.DeleteTaskUI
+import com.berlin.presentation.task.GetTaskByIdUI
+import com.berlin.presentation.task.GetTasksByProjectIdUI
+import com.berlin.presentation.task.UpdateTaskUI
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
