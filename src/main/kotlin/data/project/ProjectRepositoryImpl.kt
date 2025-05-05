@@ -1,11 +1,11 @@
 package com.berlin.data.project
 
-import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Project
 import com.berlin.domain.repository.ProjectRepository
 
-class ProjectRepositoryImpl(private val projectDataSource: CsvDataSource<Project>)
+class ProjectRepositoryImpl(private val projectDataSource: BaseDataSource<Project>)
     : ProjectRepository {
     override fun createProject(project: Project): Result<String> {
         return if (projectDataSource.write(project))
