@@ -1,5 +1,10 @@
 package com.berlin.di
 
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.project.*
 import com.berlin.domain.usecase.task.*
 import org.koin.dsl.module
 
@@ -11,4 +16,16 @@ val useCaseModule = module {
     single { UpdateTaskUseCase(get()) }
     single { ChangeTaskStateUseCase(get()) }
     single { GetTaskByIdUseCase(get()) }
+    single { GetAllTasksUseCase(get()) }
+
+    single { CreateProjectUseCase(get(),get()) }
+    single { GetAllProjectsUseCase(get()) }
+    single { DeleteProjectUseCase(get()) }
+    single { GetProjectByIdUseCase(get()) }
+    single { UpdateProjectUseCase(get()) }
+
+    single { AddAuditLogUseCase(get(),get()) }
+    single { GetAuditLogsByProjectIdUseCase(get()) }
+    single { GetAuditLogsByTaskIdUseCase(get()) }
+    single { GetAuditLogsByUserIdUseCase(get()) }
 }

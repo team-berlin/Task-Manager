@@ -4,6 +4,7 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.task.DeleteTaskUseCase
+import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -19,8 +20,10 @@ class DeleteTaskUITest {
     }
     private val reader: Reader = mockk()
     private val deleteUC: DeleteTaskUseCase = mockk()
+    private val getAllTasks: GetAllTasksUseCase = mockk()
 
-    private lateinit var theTask: Task
+
+    private lateinit var task: Task
     private lateinit var ui: DeleteTaskUI
 
     @BeforeEach
@@ -28,7 +31,7 @@ class DeleteTaskUITest {
         DummyData.tasks.clear()
         printed.clear()
 
-        theTask = Task(
+        task = Task(
             id = "T1",
             projectId = "P1",
             title = "Demo",
@@ -37,20 +40,22 @@ class DeleteTaskUITest {
             assignedToUserId = "U1",
             createByUserId = "U1"
         )
-        DummyData.tasks += theTask
+        DummyData.tasks += task
 
-        ui = DeleteTaskUI(deleteUC, viewer, reader)
+        every { getAllTasks.invoke() } returns listOf(task)
+
+        ui = DeleteTaskUI(deleteUC, getAllTasks, viewer, reader)
     }
 
     @Test
     fun `deletes task and prints confirmation`() {
         every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(theTask.id) } returns Result.success(Unit)
+        every { deleteUC.invoke(task.id) } returns Result.success(Unit)
 
         ui.run()
 
-        verify(exactly = 1) { deleteUC.invoke(theTask.id) }
-        assertThat(DummyData.tasks).doesNotContain(theTask)
+        verify(exactly = 1) { deleteUC.invoke(task.id) }
+        assertThat(DummyData.tasks).doesNotContain(task)
         assertThat(printed.last()).contains("Deleted.")
     }
 
@@ -61,7 +66,7 @@ class DeleteTaskUITest {
         ui.run()
 
         verify(exactly = 0) { deleteUC.invoke(any()) }
-        assertThat(DummyData.tasks).contains(theTask)
+        assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("Cancelled.")
     }
 
@@ -78,12 +83,12 @@ class DeleteTaskUITest {
     @Test
     fun `failure from use case is shown`() {
         every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(theTask.id) } returns Result.failure(IllegalStateException("cannot delete"))
+        every { deleteUC.invoke(task.id) } returns Result.failure(IllegalStateException("cannot delete"))
 
         ui.run()
 
-        verify(exactly = 1) { deleteUC.invoke(theTask.id) }
-        assertThat(DummyData.tasks).contains(theTask)
+        verify(exactly = 1) { deleteUC.invoke(task.id) }
+        assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("cannot delete")
     }
 
@@ -100,13 +105,13 @@ class DeleteTaskUITest {
     @Test
     fun `throws and shows InvalidTaskIdException from use case`() {
         every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(theTask.id) } throws InvalidTaskIdException("bad id")
+        every { deleteUC.invoke(task.id) } throws InvalidTaskIdException("bad id")
 
         ui.run()
 
-        assertThat(DummyData.tasks).contains(theTask)
+        assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("invalid task id")
-        verify(exactly = 1) { deleteUC.invoke(theTask.id) }
+        verify(exactly = 1) { deleteUC.invoke(task.id) }
     }
 
 }
