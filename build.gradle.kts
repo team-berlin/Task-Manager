@@ -20,6 +20,10 @@ dependencies {
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+
+    implementation("org.mongodb:mongodb-driver-sync:4.10.1")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
 
 kover {
