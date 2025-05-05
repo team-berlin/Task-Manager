@@ -1,13 +1,13 @@
 package com.berlin.data.memory
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import com.berlin.data.DummyData
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -15,7 +15,7 @@ class TaskRepositoryImplTest {
 
     private lateinit var repo: TaskRepositoryImpl
 
-    private val alice = User("U1", "alice", "pw", UserRole.MATE)
+    private val alice = User("U1", "alice", "pw",  UserRole.MATE)
     private val bob = User("U2", "bob", "pw", UserRole.MATE)
 
     @BeforeEach

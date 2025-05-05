@@ -1,8 +1,8 @@
 package com.berlin.di
-
 import com.berlin.data.Audit.AuditRepositoryImpl
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
+import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.memory.TaskRepositoryImpl
 import com.berlin.data.project.ProjectRepositoryImpl
@@ -10,6 +10,7 @@ import com.berlin.data.schema.*
 import com.berlin.data.state.StateRepositoryImpl
 import com.berlin.domain.model.*
 import com.berlin.domain.repository.AuditRepository
+import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.repository.TaskRepository
@@ -70,9 +71,12 @@ val dataModule = module {
     single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
 
+
     single <ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource"))) }
     single <TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource"))) }
     single <AuditRepository>{ AuditRepositoryImpl(get(named("AuditDataSource"))) }
     single <StateRepository>{ StateRepositoryImpl(get(named("StateDataSource")),get(named("TaskDataSource"))) }
+    single <AuthenticationRepository> { AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 
+    single <AuthenticationRepository>{ AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 }
