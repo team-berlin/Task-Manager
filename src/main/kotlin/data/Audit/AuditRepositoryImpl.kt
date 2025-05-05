@@ -1,11 +1,11 @@
 package com.berlin.data.Audit
 
-import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidAuditLogException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.AuditRepository
 
-class AuditRepositoryImpl (private val auditLogDataSource: CsvDataSource<AuditLog>) : AuditRepository {
+class AuditRepositoryImpl (private val auditLogDataSource: BaseDataSource<AuditLog>) : AuditRepository {
 
     override fun addAuditLog(auditLog: AuditLog): Result<String> {
         return if (auditLogDataSource.write(auditLog)) {
