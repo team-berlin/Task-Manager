@@ -1,5 +1,20 @@
 package com.berlin
 
+import com.berlin.di.uiModule
+import com.berlin.di.useCaseModule
+import com.berlin.di.*
+import com.berlin.presentation.MainMenuUI
+import org.koin.core.context.startKoin
+import org.koin.mp.KoinPlatform.getKoin
+
 fun main() {
-    println("Hello World!")
+
+    startKoin {
+        printLogger()
+        modules(appModule, useCaseModule, uiModule, dataModule)
+    }
+
+    val mainMenu: MainMenuUI = getKoin().get()
+    mainMenu.run()
+
 }

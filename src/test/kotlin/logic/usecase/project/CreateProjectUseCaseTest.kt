@@ -1,9 +1,8 @@
 package logic.usecase.project;
 
 import com.berlin.helper.projectHelper
-import com.berlin.logic.generateIdHelper.IdGenerator
-import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.logic.usecase.project.CreateProjectUseCase
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
