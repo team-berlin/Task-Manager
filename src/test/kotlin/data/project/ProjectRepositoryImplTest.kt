@@ -1,5 +1,6 @@
 package data.project
 
+import com.berlin.data.BaseDataSource
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.domain.exception.InvalidProjectException
@@ -12,7 +13,7 @@ import kotlin.test.Test
 
 class ProjectRepositoryImplTest {
     private lateinit var repository: ProjectRepositoryImpl
-    private val csvDataSource: CsvDataSource<Project> = mockk()
+    private val csvDataSource: BaseDataSource<Project> = mockk()
 
     @BeforeEach
     fun setUp() {
