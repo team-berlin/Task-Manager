@@ -28,7 +28,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.createProject(validProject)
         // Then
-        assertThat(result.isSuccess)
+        assertThat(result.isSuccess).isTrue()
     }
 
     @Test
@@ -48,7 +48,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.createProject(validProject)
         // Then
-        assertThat(result.isFailure)
+        assertThat(result.isFailure).isTrue()
     }
 
     @Test
@@ -117,7 +117,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.isSuccess)
+        assertThat(result.isSuccess).isTrue()
     }
 
     @Test
@@ -137,7 +137,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.isFailure)
+        assertThat(result.isFailure).isTrue()
     }
 
     @Test
@@ -159,7 +159,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.isSuccess)
+        assertThat(result.isSuccess).isTrue()
     }
 
     @Test
@@ -179,7 +179,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.isFailure)
+        assertThat(result.isFailure).isTrue()
     }
 
     @Test
