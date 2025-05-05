@@ -35,9 +35,9 @@ class DeleteTaskUI(
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
             deleteTask(task.id).onSuccess {
-                    DummyData.tasks.remove(task)
-                    viewer.show("Deleted.")
-                }.onFailure { viewer.show(it.message ?: "Deletion failed") }
+                //DummyData.tasks.remove(task)
+                viewer.show("Deleted.")
+            }.onFailure { viewer.show(it.message ?: "Deletion failed") }
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
