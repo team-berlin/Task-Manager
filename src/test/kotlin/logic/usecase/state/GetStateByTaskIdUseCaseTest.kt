@@ -41,7 +41,7 @@ class GetStateByTaskIdUseCaseTest {
 //    @Test
 //    fun `should throw exception when task id does not exist`() {
 //        // Given
-//        every { taskRepository.findById("T2") } returns null
+//        every { taskRepository.findById("T2") } returns Result.failure(Exception("State with ID T2 does not exist"))
 //
 //        // When & Then
 //        val exception = assertThrows<Exception> { getStateByTaskIdUseCase.getStateByTaskId("T2") }
