@@ -12,7 +12,7 @@ class AuthenticateUserUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
-    override val id: Int = 1
+    override val id: Int = 4000
     override val label: String = "Log in"
 
     override fun run() {

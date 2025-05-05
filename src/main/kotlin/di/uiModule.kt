@@ -41,14 +41,14 @@ val uiModule = module {
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>(),
 
-                get<AuthenticateUserUi>(),
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
                 get<GetUserByIDUI>()
             ),
             viewer = get(),
-            reader = get()
+            reader = get(),
+            authUi = get<AuthenticateUserUi>()
         )
     }
 }
