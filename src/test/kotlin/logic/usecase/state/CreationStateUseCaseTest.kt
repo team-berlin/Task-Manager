@@ -27,22 +27,22 @@ class CreationStateUseCaseTest {
         )
     }
 
-//    @Test
-//    fun `createNewState should return success when state created successfully`() {
-//        // Given
-//        val validState = State(id = "S1", name = "TODO", projectId = "P1")
-//        every { stateRepository.addState(any()) } returns Result.success("State created successfully")
-//        every { stateRepository.getStateById(any()) } returns mockk()
-//
-//        // When
-//        val result = createStateUseCase.createNewState(validState.name,
-//            validState.projectId)
-//
-//        // Then
-//        assertThat(result).isEqualTo(
-//            Result.success("State created successfully")
-//        )
-//    }
+    @Test
+    fun `createNewState should return success when state created successfully`() {
+        // Given
+        val validState = State(id = "S1", name = "TODO", projectId = "P1")
+        every { stateRepository.addState(any()) } returns Result.success("State created successfully")
+        every { stateRepository.getStateById(any()) } returns mockk()
+
+        // When
+        val result = createStateUseCase.createNewState(validState.name,
+            validState.projectId)
+
+        // Then
+        assertThat(result).isEqualTo(
+            Result.success("State created successfully")
+        )
+    }
 
     @Test
     fun `createNewState should return failure when state creation fails`() {

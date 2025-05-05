@@ -27,33 +27,33 @@ class GetAllStatesByProjectIdUseCaseTest {
         )
     }
 
-//    @Test
-//    fun `should return states when states are found for the project`() {
-//        // Given
-//        val expectedStates = listOf(
-//            State(id = "S1", name = "Active", projectId = "P1"),
-//            State(id = "S2", name = "Inactive", projectId = "P1")
-//        )
-//        every { projectRepository.getProjectById("P1") } returns mockk()
-//        every { stateRepository.getStatesByProjectId("P1") } returns expectedStates
-//
-//        // When
-//        val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1")
-//
-//        // Then
-//        assertThat(result).isEqualTo(expectedStates)
-//    }
+    @Test
+    fun `should return states when states are found for the project`() {
+        // Given
+        val expectedStates = listOf(
+            State(id = "S1", name = "Active", projectId = "P1"),
+            State(id = "S2", name = "Inactive", projectId = "P1")
+        )
+        every { projectRepository.getProjectById("P1") } returns mockk()
+        every { stateRepository.getStatesByProjectId("P1") } returns expectedStates
 
-//    @Test
-//    fun `should throw exception when no states are found for the project`() {
-//        // Given
-//        every { projectRepository.getProjectById("P1") } returns mockk()
-//        every { stateRepository.getStatesByProjectId("P3") } returns null
-//
-//        // When & Then
-//        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
-//        assertThat(exception.message).isEqualTo("No tasks found for state ID P3")
-//    }
+        // When
+        val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1")
+
+        // Then
+        assertThat(result).isEqualTo(expectedStates)
+    }
+
+    @Test
+    fun `should throw exception when no states are found for the project`() {
+        // Given
+        every { projectRepository.getProjectById("P1") } returns mockk()
+        every { stateRepository.getStatesByProjectId("P3") } returns listOf(null)
+
+        // When & Then
+        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
+        assertThat(exception.message).isEqualTo("No tasks found for state ID P3")
+    }
 
     @Test
     fun `should throw exception when project ID does not exist`() {

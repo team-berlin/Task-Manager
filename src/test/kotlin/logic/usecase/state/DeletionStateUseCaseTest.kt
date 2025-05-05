@@ -20,18 +20,18 @@ class DeletionStateUseCaseTest {
         deleteStateUseCase = DeletionStateUseCase(stateRepository)
     }
 
-//    @Test
-//    fun `should return success when state is deleted successfully`() {
-//        // Given
-//        every { stateRepository.deleteState(any()) } returns Result.success("Deleted Successfully")
-//        every { stateRepository.getStateById(any()) } returns mockk()
-//
-//        // When
-//        val result = deleteStateUseCase.deleteState("state_1")
-//
-//        // Then
-//        assertThat(result).isEqualTo(Result.success("Deleted Successfully"))
-//    }
+    @Test
+    fun `should return success when state is deleted successfully`() {
+        // Given
+        every { stateRepository.deleteState(any()) } returns Result.success("Deleted Successfully")
+        every { stateRepository.getStateById(any()) } returns mockk()
+
+        // When
+        val result = deleteStateUseCase.deleteState("state_1")
+
+        // Then
+        assertThat(result).isEqualTo(Result.success("Deleted Successfully"))
+    }
 
     @Test
     fun `should return failure when state deletion fails`() {
