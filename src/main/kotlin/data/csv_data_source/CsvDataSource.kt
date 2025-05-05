@@ -5,11 +5,10 @@ import com.berlin.data.BaseSchema
 import com.opencsv.CSVReaderBuilder
 import com.opencsv.CSVWriter
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 
-class CsvDataSource<T>(
+open class CsvDataSource<T>(
     private val rootDirectory: String,
     private val schema: BaseSchema<T>
 ) : BaseDataSource<T> {
