@@ -1,14 +1,13 @@
-package presentation.project;
+package presentation.project
 
-import com.berlin.logic.usecase.project.CreateProjectUseCase
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.domain.usecase.project.CreateProjectUseCase
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.CreateProjectUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
@@ -31,14 +30,14 @@ class CreateProjectUiTest {
     fun `should create a project successfully when valid project name provided with no description`() {
         // Given
         val validProjectName = "My Project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "no")
+        every { reader.read() } returnsMany listOf(validProjectName, "no")
 
         // When
         createProjectUi.run()
 
         // Then
         verify { createProjectUseCase.createNewProject(validProjectName, null, null, null) }
-        verify { viewer.display("Project created successfully!\n") }
+        verify { viewer.show("Project created successfully!\n") }
     }
 
     @Test
@@ -46,14 +45,14 @@ class CreateProjectUiTest {
         // Given
         val validProjectName = "My Project"
         val projectDescription = "This is a test project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "yes", projectDescription)
+        every { reader.read() } returnsMany listOf(validProjectName, "yes", projectDescription)
 
         // When
         createProjectUi.run()
 
         // Then
         verify { createProjectUseCase.createNewProject(validProjectName, projectDescription, null, null) }
-        verify { viewer.display("Project created successfully!\n") }
+        verify { viewer.show("Project created successfully!\n") }
     }
 
     @Test
@@ -61,7 +60,7 @@ class CreateProjectUiTest {
         // Given
         val validProjectName = "Project X"
         val projectDescription = "Description for Project X"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "YES", projectDescription)
+        every { reader.read() } returnsMany listOf(validProjectName, "YES", projectDescription)
 
         // When
         createProjectUi.run()
@@ -74,7 +73,7 @@ class CreateProjectUiTest {
     fun `should pass null description when user provides anything other than 'yes'`() {
         // Given
         val validProjectName = "Another Project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "nope")
+        every { reader.read() } returnsMany listOf(validProjectName, "nope")
 
         // When
         createProjectUi.run()
@@ -88,7 +87,7 @@ class CreateProjectUiTest {
         // Given
         val validProjectName = "Project Y"
         val projectDescription = "This is another description"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "YeS", projectDescription)
+        every { reader.read() } returnsMany listOf(validProjectName, "YeS", projectDescription)
 
         // When
         createProjectUi.run()
@@ -102,7 +101,7 @@ class CreateProjectUiTest {
     fun `should pass null description when user provides anything other than 'yes'`(noResponse: String) {
         // Given
         val validProjectName = "Another Project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, noResponse)
+        every { reader.read() } returnsMany listOf(validProjectName, noResponse)
 
         // When
         createProjectUi.run()
@@ -115,7 +114,7 @@ class CreateProjectUiTest {
     fun `should handle null response for description option`() {
         // Given
         val validProjectName = "Project Z"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, null)
+        every { reader.read() } returnsMany listOf(validProjectName, null)
 
         // When
         createProjectUi.run()
@@ -128,7 +127,7 @@ class CreateProjectUiTest {
     fun `should display success message when project creation is successful`() {
         // Given
         val validProjectName = "Successful Project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "no")
+        every { reader.read() } returnsMany listOf(validProjectName, "no")
         every {
             createProjectUseCase.createNewProject(
                 any(),
@@ -142,14 +141,14 @@ class CreateProjectUiTest {
         createProjectUi.run()
 
         // Then
-        verify { viewer.display("Project created successfully!\n") }
+        verify { viewer.show("Project created successfully!\n") }
     }
 
     @Test
     fun `should display failure message when project creation fails`() {
         // Given
         val validProjectName = "Failing Project"
-        every { reader.getUserInput() } returnsMany listOf(validProjectName, "no")
+        every { reader.read() } returnsMany listOf(validProjectName, "no")
         every {
             createProjectUseCase.createNewProject(
                 any(),
@@ -163,58 +162,58 @@ class CreateProjectUiTest {
         createProjectUi.run()
 
         // Then
-        verify { viewer.display("Project creation failed!\n") }
+        verify { viewer.show("Project creation failed!\n") }
     }
 
     @Test
     fun `should take user input again when empty project name is provided`() {
         // Given
-        every { reader.getUserInput() } returnsMany listOf("", "Valid Project Name")
+        every { reader.read() } returnsMany listOf("", "Valid Project Name")
 
         // When
         createProjectUi.run()
 
         // Then
-        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify(exactly = 1) { viewer.show("Please enter a valid project name:") }
         verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
     }
 
     @Test
     fun `should take user input again when blank project name is provided`() {
         // Given
-        every { reader.getUserInput() } returnsMany listOf("   ", "Valid Project Name", "no")
+        every { reader.read() } returnsMany listOf("   ", "Valid Project Name", "no")
 
         // When
         createProjectUi.run()
 
         // Then
-        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify(exactly = 1) { viewer.show("Please enter a valid project name:") }
         verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
     }
 
     @Test
     fun `should take user input again when null project name is provided`() {
         // Given
-        every { reader.getUserInput() } returnsMany listOf(null, "Valid Project Name", "no")
+        every { reader.read() } returnsMany listOf(null, "Valid Project Name", "no")
 
         // When
         createProjectUi.run()
 
         // Then
-        verify(exactly = 1) { viewer.display("Please enter a valid project name:") }
+        verify(exactly = 1) { viewer.show("Please enter a valid project name:") }
         verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
     }
 
     @Test
     fun `should accept valid project name after multiple invalid attempts`() {
         // Given
-        every { reader.getUserInput() } returnsMany listOf("", "  ", null, "Valid Project Name", "no")
+        every { reader.read() } returnsMany listOf("", "  ", null, "Valid Project Name", "no")
 
         // When
         createProjectUi.run()
 
         // Then
-        verify(exactly = 3) { viewer.display("Please enter a valid project name:") }
+        verify(exactly = 3) { viewer.show("Please enter a valid project name:") }
         verify { createProjectUseCase.createNewProject("Valid Project Name", null, null, null) }
     }
 }

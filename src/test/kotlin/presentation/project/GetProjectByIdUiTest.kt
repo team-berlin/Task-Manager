@@ -1,15 +1,14 @@
-package presentation.project;
+package presentation.project
 
-import com.berlin.logic.usecase.project.GetProjectByIdUseCase
-import com.berlin.model.Project
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.domain.usecase.project.GetProjectByIdUseCase
+import com.berlin.domain.model.Project
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.GetProjectByIdUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
 class GetProjectByIdUiTest {
@@ -38,14 +37,14 @@ class GetProjectByIdUiTest {
     fun `run should display complete project details when valid project id is entered`() {
         // Given
         val projectId = testProjects.id
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
 
         // When
         getProjectByIdUi.run()
 
         // Then
-        verify { reader.getUserInput() }
+        verify { reader.read() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
     }
 
@@ -54,14 +53,14 @@ class GetProjectByIdUiTest {
         // Given
         val projectId = testProjects.id
 
-        every { reader.getUserInput() } returnsMany listOf("", projectId)
+        every { reader.read() } returnsMany listOf("", projectId)
         every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
 
         // When
         getProjectByIdUi.run()
 
         // Then
-        verify(exactly = 2) { reader.getUserInput() }
+        verify(exactly = 2) { reader.read() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
     }
 
@@ -69,14 +68,14 @@ class GetProjectByIdUiTest {
     fun `run should handle whitespace inputs and take another valid input`() {
         // Given
         val projectId = testProjects.id
-        every { reader.getUserInput() } returnsMany listOf("   ", projectId)
+        every { reader.read() } returnsMany listOf("   ", projectId)
         every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
 
         // When
         getProjectByIdUi.run()
 
         // Then
-        verify(exactly = 2) { reader.getUserInput() }
+        verify(exactly = 2) { reader.read() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
     }
 
@@ -87,16 +86,16 @@ class GetProjectByIdUiTest {
         val errorMessage = "Project not found"
         val exception = Exception(errorMessage)
 
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } throws exception
 
         // When
         getProjectByIdUi.run()
 
         // Then
-        verify { reader.getUserInput() }
+        verify { reader.read() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.display("Error retrieving project: $errorMessage\n") }
+        verify { viewer.show("Error retrieving project: $errorMessage\n") }
     }
 
     @Test
@@ -105,7 +104,7 @@ class GetProjectByIdUiTest {
         val projectId = testProjects.id
         val project = testProjects.copy(description = null)
 
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
 
         // When
@@ -113,7 +112,7 @@ class GetProjectByIdUiTest {
 
         // Then
         verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.display("=== Project Description: No description ===\n") }
+        verify { viewer.show("=== Project Description: No description ===\n") }
     }
 
     @Test
@@ -123,7 +122,7 @@ class GetProjectByIdUiTest {
         val project = testProjects.copy(statesId = null)
 
 
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
 
         // When
@@ -131,7 +130,7 @@ class GetProjectByIdUiTest {
 
         // Then
         verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.display("No states defined for this project.\n") }
+        verify { viewer.show("No states defined for this project.\n") }
     }
 
     @Test
@@ -140,7 +139,7 @@ class GetProjectByIdUiTest {
         val projectId = testProjects.id
         val project = testProjects.copy(statesId = listOf("state-1"), tasksId = null)
 
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
 
         // When
@@ -148,8 +147,8 @@ class GetProjectByIdUiTest {
 
         // Then
         verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.display("State: [state-1] state-1\n") }
-        verify { viewer.display("  No tasks for this state.\n\n") }
+        verify { viewer.show("State: [state-1] state-1\n") }
+        verify { viewer.show("  No tasks for this state.\n\n") }
     }
 }
 

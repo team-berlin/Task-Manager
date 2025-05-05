@@ -1,71 +1,70 @@
 package com.berlin.presentation.project
 
-import com.berlin.logic.usecase.project.GetProjectByIdUseCase
-import com.berlin.model.Project
+import com.berlin.domain.exception.InvalidProjectIdException
+import com.berlin.domain.exception.ProjectNotFoundException
+import com.berlin.domain.usecase.project.GetProjectByIdUseCase
+import com.berlin.domain.model.Project
 import com.berlin.presentation.UiRunner
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 
 class GetProjectByIdUi(
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-): UiRunner {
+) : UiRunner {
     override val id: Int = 4
     override val label: String = "View Project Details"
 
     override fun run() {
-        val projectId = getProjectId()
-
         try {
-            val project = getProjectByIdUseCase.getProjectById(projectId)
-            displayProjectDetails(project)
-        } catch (e: Exception) {
-            viewer.display("Error retrieving project: ${e.message}\n")
+            viewer.show("Enter project ID:")
+            val raw = reader.read()?.trim().orEmpty()
+            val project = getProjectByIdUseCase.getProjectById(raw)
+
+            showProject(project)
+
+        } catch (ex: InvalidProjectIdException) {
+            viewer.show("Invalid project ID")
+        } catch (ex: ProjectNotFoundException) {
+            viewer.show("No project found with ID")
+        } catch (ex: Exception) {
+            viewer.show(ex.message ?: "Lookup failed")
         }
     }
 
-    private fun getProjectId(): String {
-        viewer.display("Enter project id to view its details:\n")
+    private fun showProject(p: Project) {
+        viewer.show("ID: ${p.id}")
+        viewer.show("Title: ${p.name}")
+        viewer.show("Description: ${p.description ?: "(none)"}")
+        showStates(p)
+        showTasks(p)
+    }
 
-        while (true) {
-            reader.getUserInput()?.let { input ->
-                if (input.isNotBlank()) {
-                    return input
-                }
+
+    private fun showStates(project: Project) {
+        val states = project.statesId.orEmpty()
+        if (states.isEmpty()) {
+            viewer.show("No states defined for this project.")
+        } else {
+            viewer.show("States:")
+            states.forEach { stateId ->
+                viewer.show(" - [$stateId] $stateId")
             }
-            viewer.display("Please enter a valid project id:")
         }
     }
 
-    private fun displayProjectDetails(project: Project) {
-        displayProjectHeader(project)
-        displayProjectStatesAndTasks(project)
+    private fun showTasks(project: Project) {
+        val tasks = project.tasksId.orEmpty()
+        if (tasks.isEmpty()) {
+            viewer.show("\nNo tasks defined for this project.")
+        } else {
+            viewer.show("\nTasks:")
+            tasks.forEach { taskId ->
+                viewer.show(" - Task ID: $taskId")
+            }
+        }
     }
 
-    private fun displayProjectHeader(project: Project) {
-        viewer.display("=== Project Title: ${project.name} ===\n")
-        viewer.display("=== Project Description: ${project.description ?: "No description"} ===\n")
-        viewer.display("================================================================\n")
-    }
 
-    // TODO("States and Tasks information below must be handled after merging")
-
-    private fun displayProjectStatesAndTasks(project: Project) {
-        project.statesId?.takeIf { it.isNotEmpty() }?.forEach { state ->
-            displayState(state)
-            displayTasksForState(project, state)
-        } ?: viewer.display("No states defined for this project.\n")
-    }
-
-    private fun displayState(state: String) {
-        viewer.display("State: [${state}] ${state}\n")
-        viewer.display("----------------------------------------------------------------\n")
-    }
-
-    private fun displayTasksForState(project: Project, state: String) {
-        project.tasksId?.takeIf { it.isNotEmpty() }?.forEach { task ->
-            viewer.display("  - Task ID: ${task}, Title: ${task}, Assigned to: ${task}\n\n")
-        } ?: viewer.display("  No tasks for this state.\n\n")
-    }
 }

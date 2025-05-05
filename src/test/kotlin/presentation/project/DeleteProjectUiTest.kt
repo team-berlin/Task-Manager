@@ -1,17 +1,16 @@
-package presentation.project;
+package presentation.project
 
-import com.berlin.helper.projectHelper
-import com.berlin.logic.usecase.project.DeleteProjectUseCase
-import com.berlin.logic.usecase.project.GetAllProjectsUseCase
-import com.berlin.model.Project
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.project.DeleteProjectUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.DeleteProjectUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
@@ -54,7 +53,7 @@ class DeleteProjectUiTest {
     fun `should display failure message when deletion process fails`() {
         // Given
         val validProjectId = "project1"
-        every { reader.getUserInput() } returns validProjectId
+        every { reader.read() } returns validProjectId
         every { deleteProjectUseCase.deleteProject(validProjectId) } returns Result.failure(Exception("Deletion Failed"))
 
         // When
@@ -62,14 +61,14 @@ class DeleteProjectUiTest {
 
         // Then
         verify { deleteProjectUseCase.deleteProject(validProjectId) }
-        verify { viewer.display("Project deletion failed!\n") }
+        verify { viewer.show("Project deletion failed!\n") }
     }
 
     @Test
     fun `should display success message when deletion succeeds`() {
         // Given
         val validProjectId = "project1"
-        every { reader.getUserInput() } returns validProjectId
+        every { reader.read() } returns validProjectId
         every { deleteProjectUseCase.deleteProject(validProjectId) } returns Result.success("Deleted Successfully")
 
         // When
@@ -77,7 +76,7 @@ class DeleteProjectUiTest {
 
         // Then
         verify { deleteProjectUseCase.deleteProject(validProjectId) }
-        verify { viewer.display("Project deleted successfully!\n") }
+        verify { viewer.show("Project deleted successfully!\n") }
     }
 
     @Test
@@ -89,7 +88,7 @@ class DeleteProjectUiTest {
         deleteProjectUi.run()
 
         // Then
-        verify { viewer.display("No projects available to delete.\n") }
+        verify { viewer.show("No projects available to delete.\n") }
     }
 
     @Test
@@ -97,13 +96,13 @@ class DeleteProjectUiTest {
         // Given
         val invalidId = "invalidId"
         val validId = "project1"
-        every { reader.getUserInput() } returnsMany listOf(invalidId, validId)
+        every { reader.read() } returnsMany listOf(invalidId, validId)
 
         // When
         deleteProjectUi.run()
 
         // Then
-        verify { viewer.display("Please enter a valid project id from the list above:") }
+        verify { viewer.show("Please enter a valid project id from the list above:") }
         verify { deleteProjectUseCase.deleteProject(validId) }
     }
 
@@ -111,13 +110,13 @@ class DeleteProjectUiTest {
     fun `should handle null input for project ID`() {
         // Given
         val validId = "project1"
-        every { reader.getUserInput() } returnsMany listOf(null, validId)
+        every { reader.read() } returnsMany listOf(null, validId)
 
         // When
         deleteProjectUi.run()
 
         // Then
-        verify { viewer.display("Please enter a valid project id from the list above:") }
+        verify { viewer.show("Please enter a valid project id from the list above:") }
         verify { deleteProjectUseCase.deleteProject(validId) }
     }
 
@@ -129,13 +128,13 @@ class DeleteProjectUiTest {
         val nullInput = null
         val validId = "project2"
 
-        every { reader.getUserInput() } returnsMany listOf(invalidId1, invalidId2, nullInput, validId)
+        every { reader.read() } returnsMany listOf(invalidId1, invalidId2, nullInput, validId)
 
         // When
         deleteProjectUi.run()
 
         // Then
-        verify(exactly = 3) { viewer.display("Please enter a valid project id from the list above:") }
+        verify(exactly = 3) { viewer.show("Please enter a valid project id from the list above:") }
         verify { deleteProjectUseCase.deleteProject(validId) }
     }
 
@@ -143,7 +142,7 @@ class DeleteProjectUiTest {
     @ValueSource(strings = ["project1", "project2"])
     fun `should accept any valid project ID from the list`(projectId: String) {
         // Given
-        every { reader.getUserInput() } returns projectId
+        every { reader.read() } returns projectId
         every { deleteProjectUseCase.deleteProject(projectId) } returns Result.success("Deleted Successfully")
 
         // When
@@ -151,6 +150,6 @@ class DeleteProjectUiTest {
 
         // Then
         verify { deleteProjectUseCase.deleteProject(projectId) }
-        verify { viewer.display("Project deleted successfully!\n") }
+        verify { viewer.show("Project deleted successfully!\n") }
     }
 }

@@ -1,72 +1,49 @@
 package com.berlin.presentation.project
 
-import com.berlin.logic.usecase.project.CreateProjectUseCase
+import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.berlin.presentation.UiRunner
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 
 class CreateProjectUi(
-    private val createProjectUseCase: CreateProjectUseCase,
+    private val createProject: CreateProjectUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
+
     override val id: Int = 1
     override val label: String = "Create New Project"
 
+
     override fun run() {
-        displayHeader()
 
-        val projectName = getProjectName()
-        val projectDescription = getProjectDescription()
+        try {
+            val (name, description) = askProjectTitleAndDescription()
 
-        createProject(projectName, projectDescription)
-    }
+            createProject.createNewProject(
+                projectName = name,
+                description = description,
+                stateId = null,
+                taskId = null
+            ).onSuccess { viewer.show("Project created successfully") }
+                .onFailure { viewer.show(it.message ?: "Creation failed") }
 
-    private fun displayHeader() {
-        viewer.display("=== Create New Project ===\n")
-        viewer.display("================================================================\n\n")
-        viewer.display("Enter project details:\n")
-    }
-
-    private fun getProjectName(): String {
-        viewer.display("Project Title:")
-
-        while (true) {
-            reader.getUserInput()?.let { input ->
-                if (input.isNotBlank()) {
-                    return input
-                }
-            }
-            viewer.display("Please enter a valid project name:")
+        } catch (e: InputCancelledException) {
+            viewer.show("Project creation cancelled.")
+        } catch (e: Exception) {
+            viewer.show("Error: ${e.message}")
         }
     }
 
-    private fun getProjectDescription(): String? {
-        viewer.display("Do you want to write a description? (yes/no)")
-        val option = reader.getUserInput()?.lowercase()
+    private fun askProjectTitleAndDescription(): Pair<String, String?> {
+        viewer.show("Enter project name:")
+        val name = reader.read()?.trim().orEmpty()
+        if (name.isEmpty()) throw InvalidSelectionException("Project name cannot be empty")
 
-        return if (option == "yes") {
-            viewer.display("Enter project description:")
-            reader.getUserInput()
-        } else {
-            null
-        }
+        viewer.show("Enter project description (optional):")
+        return name to reader.read()?.trim()
     }
 
-    private fun createProject(projectName: String, projectDescription: String?) {
-        viewer.display("Creating project...\n")
-
-        val creationResult = createProjectUseCase.createNewProject(
-            projectName,
-            projectDescription,
-            null,
-            null
-        )
-
-        if (creationResult.isSuccess) {
-            viewer.display("Project created successfully!\n")
-        } else {
-            viewer.display("Project creation failed!\n")
-            }
-        }
-    }
+}

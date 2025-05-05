@@ -1,14 +1,13 @@
-package presentation.project;
+package presentation.project
 
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.helper.projectHelper
-import com.berlin.logic.usecase.project.GetAllProjectsUseCase
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.GetAllProjectsUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
 class GetAllProjectsUiTest {
@@ -32,7 +31,7 @@ class GetAllProjectsUiTest {
         getAllProjectsUi.run()
 
         // Then
-        verify { viewer.display(any()) }
+        verify { viewer.show(any()) }
     }
 
     @Test
@@ -44,7 +43,7 @@ class GetAllProjectsUiTest {
         getAllProjectsUi.run()
 
         // Then
-        verify { viewer.display(any()) }
+        verify { viewer.show(any()) }
     }
 
     @Test
@@ -56,7 +55,7 @@ class GetAllProjectsUiTest {
         getAllProjectsUi.run()
 
         // Then
-        verify { viewer.display("No projects available.\n") }
+        verify { viewer.show("No projects available.\n") }
 
 
     }

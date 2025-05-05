@@ -1,8 +1,8 @@
 package com.berlin.presentation.project
 
-import com.berlin.logic.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.UiRunner
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Viewer
 
 class GetAllProjectsUi(
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
@@ -12,13 +12,7 @@ class GetAllProjectsUi(
     override val label: String = "Get All Projects"
 
     override fun run() {
-        displayHeader()
         displayProjects()
-    }
-
-    private fun displayHeader() {
-        viewer.display("=== Available Projects ===\n")
-        viewer.display("================================================================\n\n")
     }
 
     private fun displayProjects() {
@@ -26,11 +20,11 @@ class GetAllProjectsUi(
             when {
                 projects.isNotEmpty() -> {
                     projects.forEach { project ->
-                        viewer.display("Project ID: ${project.id}, Title: ${project.name}")
+                        viewer.show("Project ID: ${project.id}, Title: ${project.name}")
                     }
                 }
                 else -> {
-                    viewer.display("No projects available.\n")
+                    viewer.show("No projects available.\n")
                 }
             }
         }

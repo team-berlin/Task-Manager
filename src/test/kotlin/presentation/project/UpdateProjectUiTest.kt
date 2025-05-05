@@ -1,12 +1,12 @@
-package presentation.project;
+package presentation.project
 
+import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.project.GetProjectByIdUseCase
+import com.berlin.domain.usecase.project.UpdateProjectUseCase
 import com.berlin.helper.projectHelper
-import com.berlin.logic.usecase.project.GetAllProjectsUseCase
-import com.berlin.logic.usecase.project.GetProjectByIdUseCase
-import com.berlin.logic.usecase.project.UpdateProjectUseCase
-import com.berlin.model.Project
-import com.berlin.presentation.input_output.Reader
-import com.berlin.presentation.input_output.Viewer
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.UpdateProjectUi
 import io.mockk.every
 import io.mockk.mockk
@@ -46,7 +46,7 @@ class UpdateProjectUiTest {
         val newTitle = "Updated Project 1"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "1", newTitle, "no")
+        every { reader.read() } returnsMany listOf(projectId, "1", newTitle, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -59,7 +59,7 @@ class UpdateProjectUiTest {
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
         assertEquals(newTitle, projectSlot.captured.name)
-        verify { viewer.display(match { it.contains("Project updated successfully") }) }
+        verify { viewer.show(match { it.contains("Project updated successfully") }) }
     }
 
     @Test
@@ -74,7 +74,7 @@ class UpdateProjectUiTest {
         val newDescription = "This is an updated description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "2", newDescription, "no")
+        every { reader.read() } returnsMany listOf(projectId, "2", newDescription, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -87,7 +87,7 @@ class UpdateProjectUiTest {
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
         assertEquals(newDescription, projectSlot.captured.description)
-        verify { viewer.display(match { it.contains("Project updated successfully") }) }
+        verify { viewer.show(match { it.contains("Project updated successfully") }) }
     }
 
     @Test
@@ -102,7 +102,7 @@ class UpdateProjectUiTest {
         val newDescription = "This is an updated description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId, "1", newTitle, "yes", "2", newDescription, "no"
         )
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
@@ -118,7 +118,7 @@ class UpdateProjectUiTest {
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
         assertEquals(newTitle, projectSlot.captured.name)
         assertEquals(newDescription, projectSlot.captured.description)
-        verify { viewer.display(match { it.contains("Project updated successfully") }) }
+        verify { viewer.show(match { it.contains("Project updated successfully") }) }
     }
 
     @Test
@@ -133,7 +133,7 @@ class UpdateProjectUiTest {
         val errorMessage = "Update failed"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "1", newTitle, "no")
+        every { reader.read() } returnsMany listOf(projectId, "1", newTitle, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.failure(Exception(errorMessage))
 
@@ -144,7 +144,7 @@ class UpdateProjectUiTest {
         verify { getAllProjectsUseCase.getAllProjects() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
         verify { updateProjectUseCase.updateProject(any()) }
-        verify { viewer.display(match { it.contains("Project update failed") }) }
+        verify { viewer.show(match { it.contains("Project update failed") }) }
     }
 
     @Test
@@ -159,7 +159,7 @@ class UpdateProjectUiTest {
         val newTitle = "Updated Project 1"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(invalidProjectId, validProjectId, "1", newTitle, "no")
+        every { reader.read() } returnsMany listOf(invalidProjectId, validProjectId, "1", newTitle, "no")
         every { getProjectByIdUseCase.getProjectById(validProjectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -170,7 +170,7 @@ class UpdateProjectUiTest {
         verify { getAllProjectsUseCase.getAllProjects() }
         verify { getProjectByIdUseCase.getProjectById(validProjectId) }
         verify { updateProjectUseCase.updateProject(any()) }
-        verify { viewer.display(match { it.contains("Project id not found") }) }
+        verify { viewer.show(match { it.contains("Project id not found") }) }
     }
 
     @Test
@@ -185,7 +185,7 @@ class UpdateProjectUiTest {
         val validTitle = "Valid Title"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "1", emptyTitle, validTitle, "no")
+        every { reader.read() } returnsMany listOf(projectId, "1", emptyTitle, validTitle, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -198,7 +198,7 @@ class UpdateProjectUiTest {
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
         assertEquals(validTitle, projectSlot.captured.name)
-        verify { viewer.display(match { it.contains("Project title cannot be empty") }) }
+        verify { viewer.show(match { it.contains("Project title cannot be empty") }) }
     }
 
     @Test
@@ -213,7 +213,7 @@ class UpdateProjectUiTest {
         val newDescription = "Updated Description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId,
             "1", newTitle, "YeS",
             "2", newDescription, "nO"
@@ -244,7 +244,7 @@ class UpdateProjectUiTest {
         val validOption = "no"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId,
             "1", newTitle, invalidOption, validOption
         )
@@ -258,7 +258,7 @@ class UpdateProjectUiTest {
         verify { getAllProjectsUseCase.getAllProjects() }
         verify { getProjectByIdUseCase.getProjectById(projectId) }
         verify { updateProjectUseCase.updateProject(any()) }
-        verify { viewer.display(match { it.contains("Please enter 'yes' or 'no'") }) }
+        verify { viewer.show(match { it.contains("Please enter 'yes' or 'no'") }) }
     }
 
     @Test
@@ -271,7 +271,7 @@ class UpdateProjectUiTest {
         val project = projects[0]
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "2", null, "no")
+        every { reader.read() } returnsMany listOf(projectId, "2", null, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -297,7 +297,7 @@ class UpdateProjectUiTest {
         val newTitle = "Updated Project 1"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(projectId, "1", newTitle, "no")
+        every { reader.read() } returnsMany listOf(projectId, "1", newTitle, "no")
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
         every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
 
@@ -306,7 +306,7 @@ class UpdateProjectUiTest {
 
         // Then
         verify(exactly = 1) { updateProjectUseCase.updateProject(any()) }
-        verify { viewer.display("Project updated successfully!\n") }
+        verify { viewer.show("Project updated successfully!\n") }
     }
 
     @Test
@@ -321,7 +321,7 @@ class UpdateProjectUiTest {
         val newDescription = "Updated Description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId,
             "1", newTitle, "yes",
             "2", newDescription, "no"
@@ -352,7 +352,7 @@ class UpdateProjectUiTest {
         val newDescription = "Updated Description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId,
             "1", newTitle, "YES",
             "2", newDescription, "NO"
@@ -382,7 +382,7 @@ class UpdateProjectUiTest {
         val newDescription = "Updated Description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId,
             "1", newTitle, "YeS",
             "2", newDescription, "nO"
@@ -414,7 +414,7 @@ class UpdateProjectUiTest {
         val newTitle = "Updated Title"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             invalidProjectId1, invalidProjectId2, validProjectId, "1", newTitle, "no"
         )
         every { getProjectByIdUseCase.getProjectById(validProjectId) } returns project
@@ -424,7 +424,7 @@ class UpdateProjectUiTest {
         updateProjectUi.run()
 
         // Then
-        verify(exactly = 2) { viewer.display("Project id not found. Please enter a valid project id:\n") }
+        verify(exactly = 2) { viewer.show("Project id not found. Please enter a valid project id:\n") }
         verify { getProjectByIdUseCase.getProjectById(validProjectId) }
         verify { updateProjectUseCase.updateProject(any()) }
     }
@@ -443,7 +443,7 @@ class UpdateProjectUiTest {
         val newTitle = "Updated Title"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId, invalidChoice1, invalidChoice2, validChoice, newTitle, "no"
         )
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
@@ -453,8 +453,8 @@ class UpdateProjectUiTest {
         updateProjectUi.run()
 
         // Then
-        verify { viewer.display("Please enter 1 or 2: ") }
-        verify { viewer.display("Please enter a number (1 or 2): ") }
+        verify { viewer.show("Please enter 1 or 2: ") }
+        verify { viewer.show("Please enter a number (1 or 2): ") }
         verify { updateProjectUseCase.updateProject(any()) }
     }
 
@@ -471,7 +471,7 @@ class UpdateProjectUiTest {
         val validTitle = "Valid Title"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId, "1", emptyTitle1, emptyTitle2, validTitle, "no"
         )
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
@@ -481,7 +481,7 @@ class UpdateProjectUiTest {
         updateProjectUi.run()
 
         // Then
-        verify(exactly = 2) { viewer.display("Project title cannot be empty. Please enter a valid title: ") }
+        verify(exactly = 2) { viewer.show("Project title cannot be empty. Please enter a valid title: ") }
         verify { updateProjectUseCase.updateProject(any()) }
     }
 
@@ -499,7 +499,7 @@ class UpdateProjectUiTest {
         val validOption = "no"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId, "1", newTitle, invalidOption1, invalidOption2, validOption
         )
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
@@ -509,7 +509,7 @@ class UpdateProjectUiTest {
         updateProjectUi.run()
 
         // Then
-        verify(exactly = 2) { viewer.display("Please enter 'yes' or 'no': ") }
+        verify(exactly = 2) { viewer.show("Please enter 'yes' or 'no': ") }
         verify { updateProjectUseCase.updateProject(any()) }
     }
 
@@ -525,7 +525,7 @@ class UpdateProjectUiTest {
         val newDescription = "New Description"
 
         every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.getUserInput() } returnsMany listOf(
+        every { reader.read() } returnsMany listOf(
             projectId, "1", newTitle, "yes", "2", newDescription, "no"
         )
         every { getProjectByIdUseCase.getProjectById(projectId) } returns project
