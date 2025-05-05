@@ -48,7 +48,7 @@ class GetAllStatesByProjectIdUseCaseTest {
     fun `should throw exception when no states are found for the project`() {
         // Given
         every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P3") } returns listOf(null)
+        every { stateRepository.getStatesByProjectId("P3") } returns null
 
         // When & Then
         val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }

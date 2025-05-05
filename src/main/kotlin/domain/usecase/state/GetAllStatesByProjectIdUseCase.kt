@@ -10,7 +10,7 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): Result<List<State>> {
+    fun getAllStatesByProjectId(projectId: String): List<State> {
 
         if (!validateProjectId(projectId))
             throw Exception("Project ID must not be empty or blank")
