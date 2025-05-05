@@ -2,6 +2,7 @@ package com.berlin.di
 
 import com.berlin.data.BaseSchema
 import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.csv_data_source.ProjectCsvDataSource
 import com.berlin.data.schema.*
 import com.berlin.domain.model.*
 import org.koin.dsl.module
@@ -55,4 +56,7 @@ val dataModule = module {
     single { CsvDataSource<Task>("csv_files", get()) }
     single { CsvDataSource<State>("csv_files", get()) }
     single { CsvDataSource<AuditLog>("csv_files", get()) }
+
+
+    single { ProjectCsvDataSource("csv_files",get()) }
 }
