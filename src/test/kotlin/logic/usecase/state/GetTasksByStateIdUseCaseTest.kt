@@ -1,7 +1,8 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.Task
+import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
+import com.berlin.domain.model.Task
+import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -22,8 +23,8 @@ class GetTasksByStateIdUseCaseTest {
         title = "Demo",
         description = null,
         stateId = "S5",
-        assignedTo = "1",
-        createBy = "2"
+        assignedToUserId = "1",
+        createByUserId = "2",
     )
 
     @BeforeEach

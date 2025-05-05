@@ -1,6 +1,7 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.logic.repositories.StateRepository
+import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.usecase.state.DeletionStateUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

@@ -1,12 +1,13 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.logic.generateIdHelper.IdGenerator
-import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.State
+
+import com.berlin.domain.helper.IdGeneratorImplementation
+import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.model.State
 
 class CreationStateUseCase(
     private val stateRepository: StateRepository,
-    private val idGenerator: IdGenerator,
+    private val idGenerator: IdGeneratorImplementation,
 ) {
     fun createNewState(stateName: String, projectId: String): Result<String> {
         if (validateStateName(stateName)) {

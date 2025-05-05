@@ -1,8 +1,8 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.logic.repositories.StateRepository
-import com.berlin.logic.repositories.TaskRepository
-import com.berlin.model.State
+import com.berlin.domain.model.State
+import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskRepository
 
 class GetStateByTaskIdUseCase(
     private val stateRepository: StateRepository,
@@ -20,7 +20,7 @@ class GetStateByTaskIdUseCase(
     }
 
 
-    private fun checkTaskExists(taskId: String): Boolean = taskRepository.getTaskById(taskId) != null
+    private fun checkTaskExists(taskId: String): Boolean = taskRepository.findById(taskId) != null
 
     private fun validateTaskId(taskId: String): Boolean = taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 

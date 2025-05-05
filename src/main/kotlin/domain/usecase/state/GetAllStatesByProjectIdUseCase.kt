@@ -1,8 +1,9 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.logic.repositories.ProjectRepository
-import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.State
+
+import com.berlin.domain.model.State
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.repository.StateRepository
 
 class GetAllStatesByProjectIdUseCase(
     private val stateRepository: StateRepository,

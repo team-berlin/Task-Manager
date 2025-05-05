@@ -1,6 +1,6 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.logic.repositories.StateRepository
+import com.berlin.domain.repository.StateRepository
 
 class DeletionStateUseCase(
     private val stateRepository: StateRepository

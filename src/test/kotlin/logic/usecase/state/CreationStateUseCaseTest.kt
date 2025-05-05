@@ -1,8 +1,9 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.logic.generateIdHelper.IdGenerator
-import com.berlin.logic.repositories.StateRepository
-import com.berlin.model.State
+import com.berlin.domain.helper.IdGeneratorImplementation
+import com.berlin.domain.usecase.state.CreationStateUseCase
+import com.berlin.domain.model.State
+import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -19,9 +20,11 @@ class CreationStateUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        val idGenerator: IdGenerator = mockk(relaxed = true)
-        createStateUseCase = CreationStateUseCase(stateRepository,
-            idGenerator)
+        val idGenerator: IdGeneratorImplementation = mockk(relaxed = true)
+        createStateUseCase = CreationStateUseCase(
+            stateRepository,
+            idGenerator
+        )
     }
 
     @Test
