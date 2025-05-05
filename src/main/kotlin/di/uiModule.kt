@@ -1,20 +1,12 @@
 package com.berlin.di
 
-import com.berlin.data.DummyData
 import com.berlin.domain.model.User
+import com.berlin.data.DummyData
+import com.berlin.domain.usecase.authService.GetUserByIDUseCase
+import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.MainMenuUI
-import com.berlin.presentation.authService.AuthenticateUserUi
-import com.berlin.presentation.authService.CreationOfMateUi
-import com.berlin.presentation.authService.FetchAllUsersUI
-import com.berlin.presentation.authService.GetUserByIDUI
-import com.berlin.presentation.authService.GettingUsersLoggedInUI
-import com.berlin.presentation.task.AssignTaskUI
-import com.berlin.presentation.task.ChangeTaskStateUI
-import com.berlin.presentation.task.CreateTaskUI
-import com.berlin.presentation.task.DeleteTaskUI
-import com.berlin.presentation.task.GetTaskByIdUI
-import com.berlin.presentation.task.GetTasksByProjectIdUI
-import com.berlin.presentation.task.UpdateTaskUI
+import com.berlin.presentation.authService.*
+import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -29,11 +21,11 @@ val uiModule = module {
     single { UpdateTaskUI(get(), get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
-    single { GetUserByIDUI(get(), get(), get()) }
-    single { AuthenticateUserUi(get(), get(), get()) }
-    single { CreationOfMateUi(get(), get(), get()) }
-    single { GettingUsersLoggedInUI(get(), get()) }
-    single { FetchAllUsersUI(get(),get()) }
+    single { GetUserByIDUseCase(get()) }
+    single { GettingUsersLoggedInUseCase(get()) }
+    single { CreationOfMateUi(get(),get(),get()) }
+    single { AuthenticateUserUi(get(),get(),get()) }
+
 
     /* aggregated main menu */
     single {
@@ -45,12 +37,7 @@ val uiModule = module {
                 get<GetTasksByProjectIdUI>(),
                 get<UpdateTaskUI>(),
                 get<ChangeTaskStateUI>(),
-                get<GetTaskByIdUI>(),
-                get<GetUserByIDUI>(),
-                get<GettingUsersLoggedInUI>(),
-                get<CreationOfMateUi>(),
-                get<AuthenticateUserUi>(),
-                get<FetchAllUsersUI>()
+                get<GetTaskByIdUI>()
             ),
             viewer = get(),
             reader = get()

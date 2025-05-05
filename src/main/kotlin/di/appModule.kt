@@ -18,6 +18,7 @@ import com.berlin.presentation.io.ConsoleReader
 import com.berlin.presentation.io.ConsoleViewer
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
@@ -32,7 +33,8 @@ val appModule = module {
     single<BaseDataSource<Task>> {
         CsvDataSource(
             rootDirectory = "csv_files",
-            schema = get<BaseSchema<Task>>()
+            schema = get(named("TaskSchema"))
+
         )
     }
 
