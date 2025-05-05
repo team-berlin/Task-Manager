@@ -22,9 +22,11 @@ val uiModule = module {
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUseCase(get()) }
-    single { GettingUsersLoggedInUseCase(get()) }
+    single { GettingUsersLoggedInUI(get(), get()) }
     single { CreationOfMateUi(get(),get(),get()) }
     single { AuthenticateUserUi(get(),get(),get()) }
+    single { FetchAllUsersUI(get(),get()) }
+    single { GetUserByIDUI(get(),get(),get()) }
 
 
     /* aggregated main menu */
@@ -37,7 +39,12 @@ val uiModule = module {
                 get<GetTasksByProjectIdUI>(),
                 get<UpdateTaskUI>(),
                 get<ChangeTaskStateUI>(),
-                get<GetTaskByIdUI>()
+                get<GetTaskByIdUI>(),
+                get<AuthenticateUserUi>(),
+                get<CreationOfMateUi>(),
+                get<FetchAllUsersUI>(),
+                get<GettingUsersLoggedInUI>(),
+                get<GetUserByIDUI>()
             ),
             viewer = get(),
             reader = get()

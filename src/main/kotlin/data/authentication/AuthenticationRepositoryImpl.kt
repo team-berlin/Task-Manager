@@ -15,7 +15,7 @@ import kotlin.Result.Companion.failure
 
 
 class AuthenticationRepositoryImpl(
-    private val userDataSource: BaseDataSource<User>,
+    private val userDataSource: BaseDataSource<User>
     ): AuthenticationRepository {
 
     override fun login(userName: String, password: String): Result<User> {

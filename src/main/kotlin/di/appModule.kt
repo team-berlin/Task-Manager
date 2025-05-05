@@ -1,7 +1,6 @@
 package com.berlin.di
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.BaseSchema
 import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.memory.TaskRepositoryImpl
