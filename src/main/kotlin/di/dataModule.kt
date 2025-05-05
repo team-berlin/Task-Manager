@@ -63,16 +63,16 @@ val dataModule = module {
         )
     }
 
-    single<BaseDataSource<User>>{ CsvDataSource("csv_files", get(named("UserSchema"))) }
-    single<BaseDataSource<Project>>{ CsvDataSource("csv_files", get(named("ProjectSchema"))) }
-    single<BaseDataSource<Task>>{ CsvDataSource("csv_files", get(named("TaskSchema"))) }
-    single<BaseDataSource<State>>{ CsvDataSource("csv_files", get(named("StateSchema"))) }
-    single<BaseDataSource<AuditLog>>{ CsvDataSource("csv_files", get(named("AuditSchema"))) }
+    single<BaseDataSource<User>>(named("UserDataSource")){ CsvDataSource("csv_files", get(named("UserSchema"))) }
+    single<BaseDataSource<Project>>(named("ProjectDataSource")){ CsvDataSource("csv_files", get(named("ProjectSchema"))) }
+    single<BaseDataSource<Task>>(named("TaskDataSource")){ CsvDataSource("csv_files", get(named("TaskSchema"))) }
+    single<BaseDataSource<State>>(named("StateDataSource")){ CsvDataSource("csv_files", get(named("StateSchema"))) }
+    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
 
-    single <ProjectRepository> { ProjectRepositoryImpl(get()) }
-    single <TaskRepository> { TaskRepositoryImpl(get()) }
-    single <AuditRepository>{ AuditRepositoryImpl(get<BaseDataSource<AuditLog>>()) }
-    single <StateRepository>{ StateRepositoryImpl(get<BaseDataSource<State>>(),get<BaseDataSource<Task>>()) }
+    single <ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource"))) }
+    single <TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource"))) }
+    single <AuditRepository>{ AuditRepositoryImpl(get(named("AuditDataSource"))) }
+    single <StateRepository>{ StateRepositoryImpl(get(named("StateDataSource")),get(named("TaskDataSource"))) }
 
 }
