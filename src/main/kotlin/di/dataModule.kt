@@ -1,13 +1,19 @@
 package com.berlin.di
 
+import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.memory.TaskRepositoryImpl
+import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.data.schema.*
 import com.berlin.domain.model.*
+import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.repository.TaskRepository
 import org.koin.dsl.module
 
 
 val dataModule = module {
+
     single<BaseSchema<User>> {
         UserSchema(
             fileName = "user.csv",
@@ -34,7 +40,9 @@ val dataModule = module {
             )
         )
     }
-    single<BaseSchema<State>> { StateSchema(fileName = "state.csv", header = listOf("State Id", "Name", "Project Id")) }
+    single<BaseSchema<State>> {
+        StateSchema(fileName = "state.csv",
+            header = listOf("State Id", "Name", "Project Id")) }
     single<BaseSchema<Task>> {
         TaskSchema(
             fileName = "task.csv",
@@ -50,12 +58,13 @@ val dataModule = module {
         )
     }
 
-    single { CsvDataSource<User>("csv_files", get()) }
-    single { CsvDataSource<Project>("csv_files", get()) }
-    single { CsvDataSource<Task>("csv_files", get()) }
-    single { CsvDataSource<State>("csv_files", get()) }
-    single { CsvDataSource<AuditLog>("csv_files", get()) }
+    single<BaseDataSource<User>>{ CsvDataSource("csv_files", get()) }
+    single<BaseDataSource<Project>>{ CsvDataSource("csv_files", get()) }
+    single<BaseDataSource<Task>>{ CsvDataSource("csv_files", get()) }
+    single<BaseDataSource<State>>{ CsvDataSource("csv_files", get()) }
+    single<BaseDataSource<AuditLog>>{ CsvDataSource("csv_files", get()) }
 
-
+    single<ProjectRepository> { ProjectRepositoryImpl(get()) }
+    single<TaskRepository> { TaskRepositoryImpl(get()) }
 
 }
