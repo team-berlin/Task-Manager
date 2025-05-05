@@ -10,14 +10,14 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): List<State>? {
+    fun getAllStatesByProjectId(projectId: String): Result<List<State>> {
 
         if (!validateProjectId(projectId))
             throw Exception("Project ID must not be empty or blank")
 
         if (checkProjectExists(projectId)) {
             return stateRepository.getStatesByProjectId(projectId)
-                ?: throw Exception("No tasks found for state ID $projectId")
+                ?: throw Exception("No states found for project ID $projectId")
         } else {
             throw Exception("Project with ID $projectId does not exist")
         }

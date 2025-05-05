@@ -5,6 +5,7 @@ import com.berlin.domain.repository.StateRepository
 class DeletionStateUseCase(
     private val stateRepository: StateRepository
 ) {
+
     fun deleteState(stateId: String): Result<String> {
 
         if(!validateStateId(stateId))

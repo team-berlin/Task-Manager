@@ -5,7 +5,6 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.usecase.state.DeletionStateUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
