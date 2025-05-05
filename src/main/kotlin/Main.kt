@@ -16,4 +16,5 @@ fun main() {
 
     val mainMenu: MainMenuUI = getKoin().get()
     mainMenu.run()
+
 }
