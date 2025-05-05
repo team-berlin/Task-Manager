@@ -9,12 +9,12 @@ import com.berlin.domain.usecase.task.*
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    single { CreateTaskUseCase(get(), get()) }
-    single { AssignTaskUseCase(get()) }
-    single { DeleteTaskUseCase(get()) }
+    single { CreateTaskUseCase(get(), get(),get()) }
+    single { AssignTaskUseCase(get(),get()) }
+    single { DeleteTaskUseCase(get(),get()) }
     single { GetTasksByProjectUseCase(get()) }
-    single { UpdateTaskUseCase(get()) }
-    single { ChangeTaskStateUseCase(get()) }
+    single { UpdateTaskUseCase(get(),get()) }
+    single { ChangeTaskStateUseCase(get(),get()) }
     single { GetTaskByIdUseCase(get()) }
     single { GetAllTasksUseCase(get()) }
 

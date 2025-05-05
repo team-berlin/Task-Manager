@@ -1,11 +1,15 @@
 package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 
 class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,
+    private val addAuditLogUseCase: AddAuditLogUseCase
 ) {
 
     operator fun invoke(
@@ -27,7 +31,16 @@ class UpdateTaskUseCase(
         if (!validateTaskTitle(updated.title.trim())) {
             throw InvalidTaskTitle("task title must be not empty or plank")
         } else {
-            return taskRepository.update(updated)
+            val result=taskRepository.update(updated)
+            if (result.isSuccess)
+                addAuditLogUseCase.addAuditLog(
+                    createdByUserId = updated.createByUserId,
+                    auditAction = AuditAction.UPDATE,
+                    changesDescription = "Update task assign to ${updated.assignedToUserId} $taskId",
+                    entityType = EntityType.TASK,
+                    entityId = taskId
+                )
+            return result
         }
     }
 
