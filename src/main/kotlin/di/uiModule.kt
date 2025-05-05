@@ -40,6 +40,7 @@ val uiModule = module {
                 get<UpdateTaskUI>(),
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>(),
+
                 get<AuthenticateUserUi>(),
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),

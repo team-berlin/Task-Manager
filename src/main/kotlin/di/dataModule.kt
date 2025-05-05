@@ -78,4 +78,5 @@ val dataModule = module {
     single <StateRepository>{ StateRepositoryImpl(get(named("StateDataSource")),get(named("TaskDataSource"))) }
     single <AuthenticationRepository> { AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 
+    single <AuthenticationRepository>{ AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 }
