@@ -37,7 +37,7 @@ class UpdateTaskUITest {
         DummyData.users.clear()
         // add two users
         DummyData.users += User("U1", "alice", "pw", UserRole.MATE)
-        DummyData.users += User("U2", "bob", "pw", UserRole.MATE)
+        DummyData.users += User("U2", "bob", "pw",  UserRole.MATE)
 
         // add one existing task
         existing = Task(

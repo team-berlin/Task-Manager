@@ -30,8 +30,8 @@ class CsvDataSourceTest {
 
     private val testUsers = listOf(
         testUser,
-        User("u2", "user2", "pass2", UserRole.ADMIN),
-        User("u3", "user3", "pass3", UserRole.MATE)
+        User("u2", "user2", "pass2" ,UserRole.ADMIN),
+        User("u3", "user3", "pass3",  UserRole.MATE)
     )
 
     @TempDir

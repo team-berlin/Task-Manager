@@ -10,10 +10,10 @@ import java.io.FileWriter
 
 open class CsvDataSource<T>(
     private val rootDirectory: String,
-    private val schema: BaseSchema<T>
+    private val schema: BaseSchema<T>,
 ) : BaseDataSource<T> {
 
-    private val csvFile: File
+    val csvFile: File
         get() = File(rootDirectory, schema.fileName)
 
     override fun getAll(): List<T> = when {
@@ -83,6 +83,7 @@ open class CsvDataSource<T>(
                     csvWriter.writeNext(rowToWrite.toTypedArray())
                 }
             }
+
             else -> FileWriter(csvFile, true).use { writer ->
                 CSVWriter(writer).use { csvWriter ->
                     csvWriter.writeNext(rowToWrite.toTypedArray())

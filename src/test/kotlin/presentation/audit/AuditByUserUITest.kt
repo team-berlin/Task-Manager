@@ -27,7 +27,7 @@ class AuditByUserUITest {
 
         DummyData.users.clear()
         DummyData.users.addAll(
-            listOf(User("U1", "alice", "secret", UserRole.ADMIN))
+            listOf(User("U1", "alice", "secret",  UserRole.ADMIN))
         )
     }
 
