@@ -1,19 +1,20 @@
 package com.berlin.domain.usecase.state
 
+import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.repository.StateRepository
 
-class DeletionStateUseCase(
+class DeleteStateUseCase(
     private val stateRepository: StateRepository
 ) {
 
     fun deleteState(stateId: String): Result<String> {
 
         if(!validateStateId(stateId))
-            throw Exception("State ID must not be empty or blank")
+            throw InvalidStateIdException("State ID must not be empty or blank")
 
         if (!checkStateExists(stateId)) {
             return Result.failure(
-                Exception("State with ID $stateId does not exist")
+                InvalidStateIdException("State with ID $stateId does not exist")
             )
         }
 

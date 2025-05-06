@@ -1,11 +1,12 @@
 package com.berlin.domain.usecase.state
 
 
+import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.model.State
 
-class CreationStateUseCase(
+class CreateStateUseCase(
     private val stateRepository: StateRepository,
     private val idGenerator: IdGeneratorImplementation,
 ) {
@@ -20,7 +21,7 @@ class CreationStateUseCase(
                 .map { "State created successfully" }
                 .recover { "Creation Failed" }
         } else {
-            throw Exception("State Name must not be empty or blank")
+            throw InvalidStateNameException("State Name must not be empty or blank")
         }
     }
 

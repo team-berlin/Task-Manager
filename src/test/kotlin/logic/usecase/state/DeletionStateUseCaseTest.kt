@@ -1,7 +1,7 @@
 package com.berlin.logic.usecase.state
 
 import com.berlin.domain.repository.StateRepository
-import com.berlin.domain.usecase.state.DeletionStateUseCase
+import com.berlin.domain.usecase.state.DeleteStateUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -12,12 +12,12 @@ import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class DeletionStateUseCaseTest {
-    private lateinit var deleteStateUseCase: DeletionStateUseCase
+    private lateinit var deleteStateUseCase: DeleteStateUseCase
     private val stateRepository: StateRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        deleteStateUseCase = DeletionStateUseCase(stateRepository)
+        deleteStateUseCase = DeleteStateUseCase(stateRepository)
     }
 
     @Test
