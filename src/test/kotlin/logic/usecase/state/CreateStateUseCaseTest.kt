@@ -1,9 +1,9 @@
 package com.berlin.logic.usecase.state
 
-import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
