@@ -4,7 +4,8 @@ import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.memory.TaskRepositoryImpl
+import com.berlin.data.mongodb.config.MongoConfig
+import com.berlin.data.task.TaskRepositoryImpl
 import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.data.schema.*
 import com.berlin.data.state.StateRepositoryImpl
@@ -79,4 +80,6 @@ val dataModule = module {
     single <AuthenticationRepository> { AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 
     single <AuthenticationRepository>{ AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
+
+    single { MongoConfig() }
 }

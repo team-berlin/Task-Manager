@@ -10,46 +10,46 @@ class StateRepositoryImpl(
     private val stateDataSource: BaseDataSource<State>,
     private val taskDataSource: BaseDataSource<Task>
 ):StateRepository {
-    override suspend fun addState(state: State): Result<String> {
+    override fun addState(state: State): Result<String> {
         return if (stateDataSource.write(state))
             Result.success(state.id)
         else
             Result.failure(InvalidStateException("can not add state"))
     }
 
-    override suspend fun getStatesByProjectId(projectId: String): List<State>? {
+    override fun getStatesByProjectId(projectId: String): List<State>? {
         return stateDataSource.getAll()
             .filter { it.projectId == projectId }
             .takeIf { it.isNotEmpty() }
     }
 
-    override suspend fun getTasksByStateId(stateId: String): List<Task>? {
+    override fun getTasksByStateId(stateId: String): List<Task>? {
         return taskDataSource.getAll()
             .filter { it.stateId == stateId }
             .takeIf { it.isNotEmpty() }
     }
 
-    override suspend fun deleteState(stateId: String): Result<String> {
+    override fun deleteState(stateId: String): Result<String> {
         return if (stateDataSource.delete(stateId))
             Result.success(stateId)
         else
             Result.failure(InvalidStateException("can not delete state"))
     }
 
-    override suspend fun updateState(state: State): Result<String> {
+    override fun updateState(state: State): Result<String> {
         return if (stateDataSource.update(state.id,state))
             Result.success(state.id)
         else
             Result.failure(InvalidStateException("can not update state"))
     }
 
-    override suspend fun getStateByTaskId(taskId: String): State? {
+    override fun getStateByTaskId(taskId: String): State? {
        return taskDataSource
            .getById(taskId)
            ?.let { stateDataSource.getById(it.stateId) }
     }
 
-    override suspend fun getStateById(stateId: String): State? {
+    override fun getStateById(stateId: String): State? {
         return stateDataSource.getById(stateId)
     }
 }

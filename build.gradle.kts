@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation("io.insert-koin:koin-core:4.0.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("com.opencsv:opencsv:5.7.1")
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -21,9 +22,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
 
-    implementation("org.mongodb:mongodb-driver-sync:4.10.1")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.mongodb:bson-kotlin:4.10.1")
+
 }
 
 kover {
