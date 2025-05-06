@@ -1,5 +1,7 @@
 package com.berlin.domain.usecase.state
 
+import com.berlin.domain.exception.InvalidTaskIdException
+import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.repository.TaskRepository
@@ -10,12 +12,12 @@ class GetStateByTaskIdUseCase(
 ) {
 
     fun getStateByTaskId(taskId: String): State? {
-        if (!validateTaskId(taskId)) throw Exception("Task ID must not be empty or blank")
+        if (!validateTaskId(taskId)) throw InvalidTaskIdException("Task ID must not be empty or blank")
 
         if (checkTaskExists(taskId)) {
             return stateRepository.getStateByTaskId(taskId)
         } else {
-            throw Exception("State with ID $taskId does not exist")
+            throw InvalidTaskStateException("Task with ID $taskId does not exist")
         }
     }
 

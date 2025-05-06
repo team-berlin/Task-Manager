@@ -52,7 +52,7 @@ class GetAllStatesByProjectIdUseCaseTest {
 
         // When & Then
         val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
-        assertThat(exception.message).isEqualTo("No tasks found for state ID P3")
+        assertThat(exception.message).isEqualTo("No states found for project ID P3")
     }
 
     @Test

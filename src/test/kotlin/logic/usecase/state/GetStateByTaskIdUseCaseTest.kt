@@ -38,16 +38,6 @@ class GetStateByTaskIdUseCaseTest {
         assertThat(result).isEqualTo(expectedState)
     }
 
-//    @Test
-//    fun `should throw exception when task id does not exist`() {
-//        // Given
-//        every { taskRepository.findById("T2") } returns null
-//
-//        // When & Then
-//        val exception = assertThrows<Exception> { getStateByTaskIdUseCase.getStateByTaskId("T2") }
-//        assertThat(exception.message).isEqualTo("State with ID T2 does not exist")
-//    }
-
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when state id is invalid`(taskId: String) {

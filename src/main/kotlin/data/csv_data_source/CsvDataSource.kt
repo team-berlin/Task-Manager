@@ -5,16 +5,15 @@ import com.berlin.data.BaseSchema
 import com.opencsv.CSVReaderBuilder
 import com.opencsv.CSVWriter
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 
-class CsvDataSource<T>(
+open class CsvDataSource<T>(
     private val rootDirectory: String,
-    private val schema: BaseSchema<T>
+    private val schema: BaseSchema<T>,
 ) : BaseDataSource<T> {
 
-    private val csvFile: File
+    val csvFile: File
         get() = File(rootDirectory, schema.fileName)
 
     override fun getAll(): List<T> = when {
@@ -84,6 +83,7 @@ class CsvDataSource<T>(
                     csvWriter.writeNext(rowToWrite.toTypedArray())
                 }
             }
+
             else -> FileWriter(csvFile, true).use { writer ->
                 CSVWriter(writer).use { csvWriter ->
                     csvWriter.writeNext(rowToWrite.toTypedArray())

@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.state
 
+import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 
@@ -8,7 +9,7 @@ class UpdateStateUseCase(
 ) {
     fun updateState(state: State): Result<String> {
         if(!validateStateName(state.name))
-            throw Exception("State Name must not be empty or blank")
+            throw InvalidStateNameException("State Name must not be empty or blank")
 
         return stateRepository.updateState(state)
             .map { "Updated Successfully" }
