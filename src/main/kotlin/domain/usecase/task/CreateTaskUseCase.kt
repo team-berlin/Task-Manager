@@ -2,7 +2,7 @@ package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
-import com.berlin.domain.helper.IdGeneratorImplementation
+import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 

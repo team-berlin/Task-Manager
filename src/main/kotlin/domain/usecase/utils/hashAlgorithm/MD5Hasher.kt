@@ -2,7 +2,7 @@ package com.berlin.domain.hashPassword
 
 import java.security.MessageDigest
 
-class MD5Hasher : HashingPassword {
+class MD5Hasher : HashingString {
     override fun hashPassword(password: String): String {
         return encode(password)
     }

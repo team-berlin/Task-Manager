@@ -1,12 +1,12 @@
 package com.berlin.presentation.authService
 
 import com.berlin.domain.model.User
-import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
+import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Viewer
 
 class GettingUsersLoggedInUI(
-    private val getUserLoggedIn: GettingUsersLoggedInUseCase,
+    private val getUserLoggedIn: GetUserLoggedInUseCase,
     private val viewer: Viewer,
 ) : UiRunner {
     override val id: Int = 100

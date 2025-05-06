@@ -1,4 +1,4 @@
-package com.berlin.domain.helper
+package com.berlin.domain.usecase.utils.IDGenerator
 
 import kotlin.random.Random
 

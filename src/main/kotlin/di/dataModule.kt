@@ -1,4 +1,5 @@
 package com.berlin.di
+
 import com.berlin.data.Audit.AuditRepositoryImpl
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
@@ -14,6 +15,7 @@ import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.repository.TaskRepository
+import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -47,8 +49,11 @@ val dataModule = module {
         )
     }
     single<BaseSchema<State>>(named("StateSchema")) {
-        StateSchema(fileName = "state.csv",
-            header = listOf("State Id", "Name", "Project Id")) }
+        StateSchema(
+            fileName = "state.csv",
+            header = listOf("State Id", "Name", "Project Id")
+        )
+    }
     single<BaseSchema<Task>>(named("TaskSchema")) {
         TaskSchema(
             fileName = "task.csv",
@@ -64,19 +69,26 @@ val dataModule = module {
         )
     }
 
-    single<BaseDataSource<User>>(named("UserDataSource")){ CsvDataSource("csv_files", get(named("UserSchema"))) }
-    single<BaseDataSource<Project>>(named("ProjectDataSource")){ CsvDataSource("csv_files", get(named("ProjectSchema"))) }
-    single<BaseDataSource<Task>>(named("TaskDataSource")){ CsvDataSource("csv_files", get(named("TaskSchema"))) }
-    single<BaseDataSource<State>>(named("StateDataSource")){ CsvDataSource("csv_files", get(named("StateSchema"))) }
-    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
+    single<BaseDataSource<User>>(named("UserDataSource")) { CsvDataSource("csv_files", get(named("UserSchema"))) }
+    single<BaseDataSource<Project>>(named("ProjectDataSource")) {
+        CsvDataSource(
+            "csv_files",
+            get(named("ProjectSchema"))
+        )
+    }
+    single<BaseDataSource<Task>>(named("TaskDataSource")) { CsvDataSource("csv_files", get(named("TaskSchema"))) }
+    single<BaseDataSource<State>>(named("StateDataSource")) { CsvDataSource("csv_files", get(named("StateSchema"))) }
+    single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
 
 
-    single <ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource"))) }
-    single <TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource"))) }
-    single <AuditRepository>{ AuditRepositoryImpl(get(named("AuditDataSource"))) }
-    single <StateRepository>{ StateRepositoryImpl(get(named("StateDataSource")),get(named("TaskDataSource"))) }
-    single <AuthenticationRepository> { AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
+    single<ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource"))) }
+    single<TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource"))) }
+    single<AuditRepository> { AuditRepositoryImpl(get(named("AuditDataSource"))) }
+    single<StateRepository> { StateRepositoryImpl(get(named("StateDataSource")), get(named("TaskDataSource"))) }
+    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get(named("UserDataSource"))) }
 
-    single <AuthenticationRepository>{ AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
+
+    single { UserCache() }
+
 }

@@ -8,6 +8,7 @@ import data.UserCache
 import domain.usecase.authService.AuthenticateUserUseCase
 
 class AuthenticateUserUi(
+    private val userCache: UserCache,
     private val authenticateUser: AuthenticateUserUseCase,
     private val viewer: Viewer,
     private val reader: Reader
@@ -31,7 +32,7 @@ class AuthenticateUserUi(
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")
-                UserCache.currentUser = it
+                userCache.currentUser = it
             },
             onFailure = {
                 viewer.show("Try again")
