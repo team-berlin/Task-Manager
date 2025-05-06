@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
-class DeletionStateUseCaseTest {
+class DeleteStateUseCaseTest {
     private lateinit var deleteStateUseCase: DeleteStateUseCase
     private val stateRepository: StateRepository = mockk(relaxed = true)
 
