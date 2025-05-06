@@ -49,7 +49,7 @@ class MainMenuUITest {
         menu.run()
 
         //Then
-        assert(printed.contains("===ADMIN==="))
+        assert(printed.contains("===ADMIN Board==="))
     }
 
     @Test
@@ -66,7 +66,6 @@ class MainMenuUITest {
 
         //Then
         assert(printed.first().contains("===Welcome to our PlanMate==="))
-        assert(printed.contains("=== Task Manager ==="))
 
 
     }
@@ -101,8 +100,6 @@ class MainMenuUITest {
         assert(r1.invoked == 1)
         assert(r0.invoked == 0)
 
-        val banners = printed.filter { it.contains("=== Task Manager ===") }
-        assert(banners.size == 2)
     }
 
     @Test
@@ -156,9 +153,7 @@ class MainMenuUITest {
 
         menu.run()
 
-        assertThat(dummy.ran).isFalse()
-        assertThat(printed).contains("=== Task Manager ===")
-    }
+        assertThat(dummy.ran).isFalse() }
 
     @Test
     fun `menu has correct id and label`() {

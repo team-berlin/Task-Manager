@@ -11,7 +11,7 @@ class MainMenuUI(
     private val viewer: Viewer,
     private val reader: Reader,
     private val authUi: AuthenticateUserUi,
-    private val userCache: UserCache
+    private val userCache: UserCache,
 ) : UiRunner {
 
     override val id = 0
@@ -26,13 +26,9 @@ class MainMenuUI(
             return
         }
 
-        viewer.show("===${currentUser.role}===")
+        viewer.show("===${currentUser.role} Board===")
 
-        val filteringRunners = when (currentUser.role) {
-            UserRole.ADMIN -> runners.filter { it.id in adminPermissionsIds }
-            UserRole.MATE -> runners.filter { it.id in matePermissionsIds }
-
-        }
+        val filteringRunners = filterRunners(currentUser.role)
 
         while (true) {
             showMenu(filteringRunners)
@@ -46,14 +42,22 @@ class MainMenuUI(
         }
     }
 
+    private fun filterRunners(userRole: UserRole): List<UiRunner> =
+        when (userRole) {
+            UserRole.ADMIN -> runners.filter { it.id in adminPermissionFilterIds }
+            UserRole.MATE -> runners.filter { it.id in matePermissionFilterIds }
+        }
+
     private fun showMenu(runners: List<UiRunner>) {
-        viewer.show("=== Task Manager ===")
         runners.sortedBy { it.id }
             .forEach { viewer.show("${it.id} – ${it.label}") }
         viewer.show("X – Exit")
         viewer.show("Select an option:")
     }
 
-    private val adminPermissionsIds = listOf(1, 2, 3, 4, 5, 6, 7, 30, 100, 300, 500, 900)
-    private val matePermissionsIds = listOf(1, 2, 3, 4, 5, 6, 7)
+
+    private companion object {
+        val adminPermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7, 30, 100, 300, 500, 900)
+        val matePermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7)
+    }
 }

@@ -18,7 +18,7 @@ class AuthenticationRepositoryInMemoryTest {
     fun setup() {
         hashingString = MD5Hasher()
         AuthDummyData.users.clear()
-        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl(userCache = UserCache(),AuthDummyData)
+        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl( UserCache(),AuthDummyData)
     }
 
 

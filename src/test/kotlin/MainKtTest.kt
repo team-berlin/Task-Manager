@@ -1,29 +1,43 @@
-//package com.berlin
-//
-//import com.google.common.truth.Truth.assertThat
-//import io.mockk.*
-//import org.junit.jupiter.api.Test
-//import org.koin.core.context.stopKoin
-//import java.io.ByteArrayOutputStream
-//import java.io.PrintStream
-//class MainTest {
-//
-//    @Test
-//    fun `main prints banner`() {
-//        mockkStatic("kotlin.io.ConsoleKt")
-//        every { readLine() } returns "X"
-//
-//        val originalOut = System.out
-//        val buffer = ByteArrayOutputStream()
-//        System.setOut(PrintStream(buffer))
-//
-//        main()
-//
-//        val output = buffer.toString()
-//        assertThat(output).contains("=== Task Manager")
-//
-//        verify(exactly = 1) { readLine() }
-//
-//        System.setOut(originalOut)
-//    }
-//}
+package com.berlin
+
+import com.berlin.data.DummyData
+import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.UiRunner
+import com.berlin.presentation.authService.AuthenticateUserUi
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
+import data.UserCache
+import io.mockk.*
+import org.junit.jupiter.api.Test
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+
+class MainTest {
+
+    @Test
+    fun `main prints banner`() {
+        //when
+        val mockViewer = mockk<Viewer>(relaxed = true)
+        val mockReader = mockk<Reader>()
+        every { mockReader.read() } returns "X"
+        val mockAuthUi = mockk<AuthenticateUserUi> { every { run() } just Runs }
+        val mockUserCache = mockk<UserCache>()
+        every { mockUserCache.currentUser } returns DummyData.users.first()
+        val dummyRunners = emptyList<UiRunner>()
+        val mainMenuUI = MainMenuUI(
+            runners = dummyRunners,
+            viewer = mockViewer,
+            reader = mockReader,
+            authUi = mockAuthUi,
+            userCache = mockUserCache
+        )
+        val originalOut = System.out
+        val buffer = ByteArrayOutputStream()
+        System.setOut(PrintStream(buffer))
+
+        mainMenuUI.run()
+
+        System.setOut(originalOut)
+        verify { mockAuthUi.run() }
+    }
+}
