@@ -6,9 +6,7 @@ import com.berlin.domain.repository.StateRepository
 class GetAllStatesUseCase(
     private val stateRepository: StateRepository,
 ) {
-
     operator fun invoke(): List<State> {
-
         return stateRepository.getAllStates()
     }
 }

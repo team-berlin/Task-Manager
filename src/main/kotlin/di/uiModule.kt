@@ -6,6 +6,9 @@ import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.MainMenuUI
 import com.berlin.presentation.authService.*
+import com.berlin.presentation.state.CreateStateUi
+import com.berlin.presentation.state.DeleteStateUi
+import com.berlin.presentation.state.GetAllStatesByProjectIdUi
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -28,6 +31,10 @@ val uiModule = module {
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
 
+    single { CreateStateUi(get(),get(),get()) }
+    single { DeleteStateUi(get(), get(), get(),get()) }
+    single { GetAllStatesByProjectIdUi(get(), get(), get()) }
+
 
     /* aggregated main menu */
     single {
@@ -45,7 +52,11 @@ val uiModule = module {
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
-                get<GetUserByIDUI>()
+                get<GetUserByIDUI>(),
+
+                get<CreateStateUi>(),
+                get<DeleteStateUi>(),
+                get<GetAllStatesByProjectIdUi>()
             ),
             viewer = get(),
             reader = get()

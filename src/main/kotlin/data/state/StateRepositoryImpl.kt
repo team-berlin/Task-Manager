@@ -5,6 +5,7 @@ import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
+import kotlin.Result.Companion.success
 
 class StateRepositoryImpl(
     private val stateDataSource: BaseDataSource<State>,
@@ -17,11 +18,10 @@ class StateRepositoryImpl(
             Result.failure(InvalidStateException("can not add state"))
     }
 
-    override fun getStatesByProjectId(projectId: String): List<State>? {
-        return stateDataSource.getAll()
-            .filter { it.projectId == projectId }
-            .takeIf { it.isNotEmpty() }
-    }
+    override fun getStatesByProjectId(projectId: String): Result<List<State>> =
+        success(stateDataSource.getAll().filter { it.projectId == projectId })
+
+
 
     override fun getTasksByStateId(stateId: String): List<Task>? {
         return taskDataSource.getAll()
@@ -51,5 +51,9 @@ class StateRepositoryImpl(
 
     override fun getStateById(stateId: String): State? {
         return stateDataSource.getById(stateId)
+    }
+
+    override fun getAllStates(): List<State> {
+        return stateDataSource.getAll()
     }
 }

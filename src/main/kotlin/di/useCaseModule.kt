@@ -9,9 +9,19 @@ import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.domain.usecase.project.*
+import com.berlin.domain.usecase.state.CreateStateUseCase
+import com.berlin.domain.usecase.state.DeleteStateUseCase
+import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.state.GetStateByIdUseCase
+import com.berlin.domain.usecase.state.GetStateByTaskIdUseCase
+import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
+import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.usecase.task.*
 import domain.usecase.authService.AuthenticateUserUseCase
+import org.koin.core.scope.get
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val useCaseModule = module {
     single { CreateTaskUseCase(get(), get()) }
@@ -39,4 +49,13 @@ val useCaseModule = module {
     single { FetchAllUsersUseCase(get()) }
     single { AuthenticateUserUseCase(get(), get()) }
     single { CreationOfMateUseCase(get(), get(), get()) }
+
+    single { CreateStateUseCase(get(),get())}
+    single { DeleteStateUseCase(get()) }
+    single { GetAllStatesByProjectIdUseCase(get(),get()) }
+    single { GetStateByIdUseCase(get()) }
+    single { GetStateByTaskIdUseCase(get(),get()) }
+    single { GetTasksByStateIdUseCase(get()) }
+    single { UpdateStateUseCase(get()) }
+    single { GetAllStatesUseCase(get()) }
 }

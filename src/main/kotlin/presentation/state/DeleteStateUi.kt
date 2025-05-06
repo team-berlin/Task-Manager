@@ -4,23 +4,24 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateIdException
-import com.berlin.domain.usecase.state.DeletionStateUseCase
+import com.berlin.domain.usecase.state.DeleteStateUseCase
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class DeletionStateUi(
-    private val deletionStateUseCase: DeletionStateUseCase,
+class DeleteStateUi(
+    private val deleteStateUseCase: DeleteStateUseCase,
     private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
-    override val id: Int = 2
+    override val id: Int = 2000
     override val label: String = "Delete State"
 
     override fun run() {
+
         try {
             val state = choose(
                 title = "States",
@@ -32,9 +33,9 @@ class DeletionStateUi(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            deletionStateUseCase.deleteState(state.id)
+            deleteStateUseCase.deleteState(state.id)
                 .onSuccess {
-                    DummyData.state.remove(state)
+                    DummyData.states.remove(state)
                     viewer.show("Deleted.")
                 }.onFailure {
                     viewer.show(it.message ?: "Deletion failed")
@@ -46,5 +47,6 @@ class DeletionStateUi(
         } catch (ex: InvalidStateIdException) {
             viewer.show("invalid state id")
         }
+
     }
 }

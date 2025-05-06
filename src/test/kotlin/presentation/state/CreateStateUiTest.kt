@@ -1,10 +1,10 @@
 package presentation.state;
 
 import com.berlin.domain.model.Project
-import com.berlin.domain.usecase.state.CreationStateUseCase
+import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.state.CreationStateUi
+import com.berlin.presentation.state.CreateStateUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,16 +19,16 @@ private val testProject = Project(
     description = "Test project description"
 )
 
-class CreationStateUiTest {
-    private lateinit var creationStateUseCase: CreationStateUseCase
-    private lateinit var creationStateUi: CreationStateUi
+class CreateStateUiTest {
+    private lateinit var createStateUseCase: CreateStateUseCase
+    private lateinit var createStateUi: CreateStateUi
     private val viewer: Viewer = mockk(relaxed = true)
     private val reader: Reader = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        creationStateUseCase = mockk(relaxed = true)
-        creationStateUi = CreationStateUi(creationStateUseCase, viewer, reader)
+        createStateUseCase = mockk(relaxed = true)
+        createStateUi = CreateStateUi(createStateUseCase, viewer, reader)
     }
 
     @Test
@@ -38,7 +38,7 @@ class CreationStateUiTest {
         every { reader.read() } returnsMany listOf(null, projectId, "exit")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
         verify(exactly = 3) { reader.read() }
@@ -51,7 +51,7 @@ class CreationStateUiTest {
         every { reader.read() } returnsMany listOf(projectId, null, "exit")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
         verify { viewer.show("State Name can not be empty") }
@@ -65,7 +65,7 @@ class CreationStateUiTest {
         every { reader.read() } returnsMany listOf(projectId, "exit")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
         verify(exactly = 2) { reader.read() }
@@ -79,17 +79,17 @@ class CreationStateUiTest {
 
         every { reader.read() } returnsMany listOf(projectId, stateName, "exit")
         every {
-            creationStateUseCase.createNewState(
+            createStateUseCase.createNewState(
                 stateName,
                 projectId
             )
         } returns Result.success("State created successfully")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
-        verify { creationStateUseCase.createNewState(stateName, projectId) }
+        verify { createStateUseCase.createNewState(stateName, projectId) }
         verify { viewer.show("State created successfully") }
     }
 
@@ -101,17 +101,17 @@ class CreationStateUiTest {
 
         every { reader.read() } returnsMany listOf(projectId, stateName, "exit")
         every {
-            creationStateUseCase.createNewState(
+            createStateUseCase.createNewState(
                 stateName,
                 projectId
             )
         } returns Result.failure(Exception("Creation Failed"))
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
-        verify { creationStateUseCase.createNewState(stateName, projectId) }
+        verify { createStateUseCase.createNewState(stateName, projectId) }
         verify { viewer.show("Creation Failed") }
     }
 
@@ -123,17 +123,17 @@ class CreationStateUiTest {
 
         every { reader.read() } returnsMany listOf(projectId, stateName, "exit")
         every {
-            creationStateUseCase.createNewState(
+            createStateUseCase.createNewState(
                 stateName,
                 projectId
             )
         } throws Exception("State Name must not be empty or blank")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
-        verify { creationStateUseCase.createNewState(stateName, projectId) }
+        verify { createStateUseCase.createNewState(stateName, projectId) }
         verify { viewer.show("Invalid State Name, Try Again") }
     }
 
@@ -144,7 +144,7 @@ class CreationStateUiTest {
         every { reader.read() } returnsMany listOf(projectId, "ExIt")
 
         // When
-        creationStateUi.run()
+        createStateUi.run()
 
         // Then
         verify(exactly = 2) { reader.read() }

@@ -6,6 +6,7 @@ import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.State
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -13,11 +14,12 @@ import com.berlin.presentation.io.Viewer
 
 class GetAllStatesByProjectIdUi(
     private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
+   // private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
 
-    override val id: Int = 3
+    override val id: Int = 3000
     override val label: String = "Get current states for a specific project"
 
     override fun run() {
@@ -31,8 +33,9 @@ class GetAllStatesByProjectIdUi(
             )
 
             getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id)
-                .onSuccess { states -> showSwimLaneFor(project.id, states) }
+                .onSuccess { state ->  showSwimLaneFor(project.id, state) }
                 .onFailure { viewer.show(it.message ?: "Failed to load states") }
+
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

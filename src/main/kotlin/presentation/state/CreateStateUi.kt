@@ -2,24 +2,25 @@ package com.berlin.presentation.state
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.Project
-import com.berlin.domain.usecase.state.CreationStateUseCase
+import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class CreationStateUi(
-    private val creationStateUseCase: CreationStateUseCase,
+class CreateStateUi(
+    private val createStateUseCase: CreateStateUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
 
-    override val id: Int = 1
+    override val id: Int = 1000
     override val label: String = "Create New State"
 
     override fun run() {
 
         val project = selectProject()
+        viewer.show("-- Enter a state in project ${project.name} --")
         addStateName(project)
 
     }
@@ -39,7 +40,7 @@ class CreationStateUi(
 
             else -> {
                 try {
-                    creationStateUseCase.createNewState(stateName, project.id)
+                    createStateUseCase.createNewState(stateName, project.id)
                         .onSuccess { viewer.show(it) }
                         .onFailure { viewer.show(it.message ?: "Creation failed") }
 
