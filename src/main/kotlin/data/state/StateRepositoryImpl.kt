@@ -8,8 +8,8 @@ import com.berlin.domain.repository.StateRepository
 
 class StateRepositoryImpl(
     private val stateDataSource: BaseDataSource<State>,
-    private val taskDataSource: BaseDataSource<Task>
-):StateRepository {
+    private val taskDataSource: BaseDataSource<Task>,
+) : StateRepository {
     override fun addState(state: State): Result<String> {
         return if (stateDataSource.write(state))
             Result.success(state.id)
@@ -37,19 +37,23 @@ class StateRepositoryImpl(
     }
 
     override fun updateState(state: State): Result<String> {
-        return if (stateDataSource.update(state.id,state))
+        return if (stateDataSource.update(state.id, state))
             Result.success(state.id)
         else
             Result.failure(InvalidStateException("can not update state"))
     }
 
     override fun getStateByTaskId(taskId: String): State? {
-       return taskDataSource
-           .getById(taskId)
-           ?.let { stateDataSource.getById(it.stateId) }
+        return taskDataSource
+            .getById(taskId)
+            ?.let { stateDataSource.getById(it.stateId) }
     }
 
     override fun getStateById(stateId: String): State? {
         return stateDataSource.getById(stateId)
+    }
+
+    override fun getAllStates(): List<State> {
+        return stateDataSource.getAll()
     }
 }

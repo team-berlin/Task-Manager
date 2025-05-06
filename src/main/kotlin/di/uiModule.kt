@@ -3,9 +3,10 @@ package com.berlin.di
 import com.berlin.domain.model.User
 import com.berlin.data.DummyData
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
-import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
 import com.berlin.presentation.MainMenuUI
 import com.berlin.presentation.authService.*
+import com.berlin.presentation.state.CreateStateUi
+import com.berlin.presentation.state.DeleteStateUi
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -28,6 +29,9 @@ val uiModule = module {
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
 
+    single { CreateStateUi(get(),get(),get()) }
+    single { DeleteStateUi(get(), get(), get(),get()) }
+
 
     /* aggregated main menu */
     single {
@@ -45,7 +49,10 @@ val uiModule = module {
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
-                get<GetUserByIDUI>()
+                get<GetUserByIDUI>(),
+
+                get<CreateStateUi>(),
+                get<DeleteStateUi>(),
             ),
             viewer = get(),
             reader = get()

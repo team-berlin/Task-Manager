@@ -11,4 +11,5 @@ interface StateRepository {
     fun updateState(state: State): Result<String>
     fun getStateByTaskId(taskId: String): State?
     fun getStateById(stateId: String): State?
+    fun getAllStates(): List<State>
 }
