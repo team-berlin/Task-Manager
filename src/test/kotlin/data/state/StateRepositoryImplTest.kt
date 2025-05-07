@@ -73,7 +73,7 @@ class StateRepositoryImplTest {
         // When
         val result = repository.getStateById(validState.id)
         // Then
-        assertThat(result).isEqualTo(validState)
+        assertThat(result.getOrNull()).isEqualTo(validState)
     }
 
     @Test
@@ -83,7 +83,7 @@ class StateRepositoryImplTest {
         // When
         val result = repository.getStateById(validState.id)
         // Then
-        assertThat(result).isNull()
+        assertThat(result.getOrNull()).isNull()
     }
     // endregion
 
@@ -95,7 +95,8 @@ class StateRepositoryImplTest {
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
-        assertThat(result).isEqualTo(states)
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(states)
     }
 
     @Test
@@ -105,8 +106,7 @@ class StateRepositoryImplTest {
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
-        assertThat(result).isNull()
-    }
+        assertThat(result.getOrNull()).isEmpty()    }
     // endregion
 
     // region getTasksByStateId

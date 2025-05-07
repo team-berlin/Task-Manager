@@ -60,7 +60,7 @@ class GetTasksByStateIdUseCaseTest {
     @Test
     fun `should throw exception when state id does not exist`() {
         // Given
-        every { stateRepository.getStateById("S2") } returns null
+        every { stateRepository.getStateById("S2") } returns mockk()
 
         // When & Then
         val exception = assertThrows<Exception> { getTasksByStateIdUseCase.getAllTasksByStateId("S2") }

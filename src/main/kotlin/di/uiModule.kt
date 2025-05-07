@@ -5,11 +5,11 @@ import com.berlin.data.DummyData
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
 import com.berlin.presentation.authService.*
-import com.berlin.presentation.state.CreateStateUi
-import com.berlin.presentation.state.DeleteStateUi
+import com.berlin.presentation.state.*
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.math.sin
 
 
 val uiModule = module {
@@ -17,22 +17,23 @@ val uiModule = module {
 
     single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
     single { AssignTaskUI(get(), get(), get(), get()) }
-    single { DeleteTaskUI(get(), get(), get(),get()) }
+    single { DeleteTaskUI(get(), get(), get(), get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
     single { UpdateTaskUI(get(), get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
-    single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get()) }
-    single { FetchAllUsersUI(get(),get()) }
-    single { GetUserByIDUI(get(),get(),get()) }
+    single { CreationOfMateUi(get(), get(), get()) }
+    single { AuthenticateUserUi(get(), get(), get()) }
+    single { FetchAllUsersUI(get(), get()) }
+    single { GetUserByIDUI(get(), get(), get()) }
 
-    single { CreateStateUi(get(),get(),get()) }
-    single { DeleteStateUi(get(), get(), get(),get()) }
-
-
+    single { CreateStateUi(get(), get(), get()) }
+    single { DeleteStateUi(get(), get(), get(), get()) }
+    single { GetStateByIdUi(get(), get(), get()) }
+    single { UpdateStateUi(get(), get(), get(), get()) }
+    single { GetAllStatesByProjectIdUi(get(),get(),get()) }
     /* aggregated main menu */
     single {
         MainMenuUI(
@@ -53,6 +54,9 @@ val uiModule = module {
 
                 get<CreateStateUi>(),
                 get<DeleteStateUi>(),
+                get<GetStateByIdUi>(),
+                get<UpdateStateUi>(),
+                get<GetAllStatesByProjectIdUi>()
             ),
             viewer = get(),
             reader = get()

@@ -1,5 +1,6 @@
 package com.berlin.logic.usecase.state
 
+import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
@@ -10,15 +11,18 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import org.junit.platform.commons.function.Try.failure
+import kotlin.Result.Companion.failure
 import kotlin.test.Test
 
 class GetStateByIdUseCaseTest {
 
     private lateinit var getStateByIdUseCase: GetStateByIdUseCase
-    private val stateRepository: StateRepository = mockk(relaxed = true)
+    private lateinit var stateRepository: StateRepository
 
     @BeforeEach
     fun setup() {
+        stateRepository= mockk()
         getStateByIdUseCase = GetStateByIdUseCase(stateRepository)
     }
 
@@ -26,26 +30,26 @@ class GetStateByIdUseCaseTest {
     fun `should return state when valid state id exists`() {
         // Given
         val expectedState = State(id = "S1", name = "Active", projectId = "P1")
-        every { stateRepository.getStateById("S1") } returns expectedState
+        every { stateRepository.getStateById("S1") } returns Result.success(expectedState)
 
         // When
         val result = getStateByIdUseCase.getStateById("S1")
 
         // Then
-        assertThat(result).isEqualTo(expectedState)
+        assertThat(result).isEqualTo(Result.success(expectedState))
     }
 
     @Test
     fun `should throw exception when state id does not exist`() {
         // Given
         val input = "S2"
-        every { stateRepository.getStateById(any()) } returns null
+        every { stateRepository.getStateById(any()) } returns Result.failure(StateNotFoundException(input))
 
         // When
-        val exception = assertThrows<Exception> { getStateByIdUseCase.getStateById("S2") }
+        val result = getStateByIdUseCase.getStateById("S2")
 
         // Then
-        assertThat(exception.message).isEqualTo("State with ID $input does not exist")
+        assertThat(result.isFailure).isTrue()
     }
 
     @ParameterizedTest

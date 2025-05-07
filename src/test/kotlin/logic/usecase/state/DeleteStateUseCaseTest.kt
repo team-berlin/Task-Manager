@@ -1,11 +1,13 @@
 package com.berlin.logic.usecase.state
 
+import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.usecase.state.DeleteStateUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -51,7 +53,8 @@ class DeleteStateUseCaseTest {
     @Test
     fun `should throw exception when state does not exist`() {
         // Given
-        every { stateRepository.getStateById(any()) } returns null
+        val stateId="S2"
+        every { stateRepository.getStateById(any()) } returns Result.failure(StateNotFoundException(stateId))
 
         // When
         val result = deleteStateUseCase.deleteState("S2")
