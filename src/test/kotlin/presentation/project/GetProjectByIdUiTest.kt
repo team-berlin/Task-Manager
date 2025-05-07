@@ -1,5 +1,7 @@
 package presentation.project
 
+import com.berlin.domain.exception.InvalidProjectIdException
+import com.berlin.domain.exception.ProjectNotFoundException
 import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.model.Project
 import com.berlin.presentation.io.Reader
@@ -8,147 +10,234 @@ import com.berlin.presentation.project.GetProjectByIdUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
 class GetProjectByIdUiTest {
 
-    private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
-    private lateinit var getProjectByIdUi: GetProjectByIdUi
-    private val viewer: Viewer = mockk(relaxed = true)
-    private val reader: Reader = mockk(relaxed = true)
+    private lateinit var useCase: GetProjectByIdUseCase
+    private lateinit var viewer: Viewer
+    private lateinit var reader: Reader
+    private lateinit var ui: GetProjectByIdUi
 
-    private val testProjects =
-        Project(
-            id = "project-123",
-            name = "Test Project",
-            statesId = listOf("state-1", "state-2"),
-            tasksId = listOf("task-1", "task-2"),
-            description = "Test project description"
-        )
+    private val project = Project(
+        id = "proj-1",
+        name = "Test Project",
+        description = "Sample description",
+        statesId = listOf("S1", "S2"),
+        tasksId = listOf("T1", "T2")
+    )
+
+    private val project2 = Project(
+        id = "proj-2",
+        name = "Test Project",
+        description = "Sample description",
+        statesId = emptyList(),
+        tasksId = emptyList()
+    )
+
+    private val project3 = Project(
+        id = "proj-3",
+        name = "Test Project",
+        description = null,
+        statesId = listOf("S1", "S2"),
+        tasksId = listOf("T1", "T2")
+    )
+
+    private val project4 = Project(
+        id = "proj-4",
+        name = "Test Project",
+        description = "Sample description",
+        statesId = listOf("S1", "S2"),
+        tasksId = null
+    )
+
+    private val project5 = Project(
+        id = "proj-5",
+        name = "Test Project",
+        description = "Sample description",
+        statesId = null,
+        tasksId = listOf("T1", "T2")
+    )
 
     @BeforeEach
     fun setup() {
-        getProjectByIdUseCase = mockk(relaxed = true)
-        getProjectByIdUi = GetProjectByIdUi(getProjectByIdUseCase, viewer, reader)
+        useCase = mockk()
+        viewer = mockk(relaxed = true)
+        reader = mockk()
+        ui = GetProjectByIdUi(useCase, viewer, reader)
     }
 
     @Test
-    fun `run should display complete project details when valid project id is entered`() {
-        // Given
-        val projectId = testProjects.id
-        every { reader.read() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
+    fun `run shows project details with states and tasks`() {
+        //Given
+        every { reader.read() } returns project.id
+        every { useCase.getProjectById(project.id) } returns project
 
-        // When
-        getProjectByIdUi.run()
+        //When
+        ui.run()
 
-        // Then
-        verify { reader.read() }
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        //Then
+        verifySequence {
+            viewer.show("Enter project ID:")
+            reader.read()
+            viewer.show("ID: ${project.id}")
+            viewer.show("Title: ${project.name}")
+            viewer.show("Description: ${project.description}")
+            viewer.show("States:")
+            viewer.show(" - [S1] S1")
+            viewer.show(" - [S2] S2")
+            viewer.show("\nTasks:")
+            viewer.show(" - Task ID: T1")
+            viewer.show(" - Task ID: T2")
+        }
     }
 
     @Test
-    fun `run should handle empty inputs and take another valid input`() {
-        // Given
-        val projectId = testProjects.id
+    fun `run shows no states or tasks when both are empty`() {
 
-        every { reader.read() } returnsMany listOf("", projectId)
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
+        //Given
+        every { reader.read() } returns project2.id
+        every { useCase.getProjectById(project2.id) } returns project2
 
-        // When
-        getProjectByIdUi.run()
+        //When
+        ui.run()
 
-        // Then
-        verify(exactly = 2) { reader.read() }
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        //Then
+        verify {
+            viewer.show("No states defined for this project.")
+            viewer.show("\nNo tasks defined for this project.")
+        }
     }
 
     @Test
-    fun `run should handle whitespace inputs and take another valid input`() {
-        // Given
-        val projectId = testProjects.id
-        every { reader.read() } returnsMany listOf("   ", projectId)
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns testProjects
+    fun `run shows invalid project ID when InvalidProjectIdException is thrown`() {
 
-        // When
-        getProjectByIdUi.run()
+        //Given
+        every { reader.read() } returns "no-id"
+        every { useCase.getProjectById("no-id") } throws InvalidProjectIdException("Invalid project ID")
 
-        // Then
-        verify(exactly = 2) { reader.read() }
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
+        //When
+        ui.run()
+
+        //Then
+        verify { viewer.show("Invalid project ID") }
     }
 
     @Test
-    fun `run should display error message when retrieving project fails`() {
-        // Given
-        val projectId = "invalid-id"
-        val errorMessage = "Project not found"
-        val exception = Exception(errorMessage)
+    fun `run shows no project found when ProjectNotFoundException is thrown`() {
 
-        every { reader.read() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } throws exception
+        //Given
+        every { reader.read() } returns "proj-999"
+        every { useCase.getProjectById("proj-999") } throws ProjectNotFoundException("No project found with ID")
 
-        // When
-        getProjectByIdUi.run()
+        //When
+        ui.run()
 
-        // Then
-        verify { reader.read() }
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.show("Error retrieving project: $errorMessage\n") }
+        //Then
+        verify { viewer.show("No project found with ID") }
     }
 
     @Test
-    fun `run should display project with null description correctly`() {
-        // Given
-        val projectId = testProjects.id
-        val project = testProjects.copy(description = null)
+    fun `run shows message when unknown exception is thrown`() {
 
-        every { reader.read() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+        //Given
+        every { reader.read() } returns "proj-x"
+        every { useCase.getProjectById("proj-x") } throws Exception("Something went wrong")
 
-        // When
-        getProjectByIdUi.run()
+        //When
+        ui.run()
 
-        // Then
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.show("=== Project Description: No description ===\n") }
+        //Then
+        verify { viewer.show("Something went wrong") }
     }
 
     @Test
-    fun `run should display message when project has no states`() {
-        // Given
-        val projectId = testProjects.id
-        val project = testProjects.copy(statesId = null)
+    fun `run shows default error message when exception has no message`() {
 
+        //Given
+        every { reader.read() } returns "proj-null"
+        every { useCase.getProjectById("proj-null") } throws Exception()
 
-        every { reader.read() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+        //When
+        ui.run()
 
-        // When
-        getProjectByIdUi.run()
-
-        // Then
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.show("No states defined for this project.\n") }
+        //Then
+        verify { viewer.show("Lookup failed") }
     }
 
     @Test
-    fun `run should display message when state has no tasks`() {
-        // Given
-        val projectId = testProjects.id
-        val project = testProjects.copy(statesId = listOf("state-1"), tasksId = null)
+    fun `run handles null input from reader and shows invalid ID`() {
 
-        every { reader.read() } returns projectId
-        every { getProjectByIdUseCase.getProjectById(projectId) } returns project
+        //Given
+        every { reader.read() } returns null
+        every { useCase.getProjectById("") } throws InvalidProjectIdException("Invalid project ID")
 
-        // When
-        getProjectByIdUi.run()
+        //When
+        ui.run()
 
-        // Then
-        verify { getProjectByIdUseCase.getProjectById(projectId) }
-        verify { viewer.show("State: [state-1] state-1\n") }
-        verify { viewer.show("  No tasks for this state.\n\n") }
+        //Then
+        verify { viewer.show("Invalid project ID") }
+    }
+
+    @Test
+    fun `run trims input from reader and passes to use case`() {
+
+        //Given
+        every { reader.read() } returns "   proj-1  "
+        every { useCase.getProjectById("proj-1") } returns project
+
+        //When
+        ui.run()
+
+        //Then
+        verify { useCase.getProjectById("proj-1") }
+    }
+
+    @Test
+    fun `run shows (none) when project has no description`() {
+
+        //Given
+        every { reader.read() } returns project3.id
+        every { useCase.getProjectById(project3.id) } returns project3
+
+        //When
+        ui.run()
+
+        //Then
+        verify { viewer.show("Description: (none)") }
+    }
+
+    @Test
+    fun `run handles null statesId and shows no states`() {
+
+        //Given
+        every { reader.read() } returns project5.id
+        every { useCase.getProjectById(project5.id) } returns project5
+
+        //When
+        ui.run()
+
+        //Then
+        verify { viewer.show("No states defined for this project.") }
+    }
+
+    @Test
+    fun `run handles null tasksId and shows no tasks`() {
+
+        //Given
+        every { reader.read() } returns project4.id
+        every { useCase.getProjectById(project4.id) } returns project4
+
+        //When
+        ui.run()
+
+        //Then
+        verify { viewer.show("\nNo tasks defined for this project.") }
     }
 }
+
+
+
 

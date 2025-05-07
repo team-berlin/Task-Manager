@@ -13,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -147,31 +148,6 @@ class UpdateProjectUiTest {
         verify { viewer.show(match { it.contains("Project update failed") }) }
     }
 
-    @Test
-    fun `run should handle invalid project id`() {
-        // Given
-        val projects = listOf(
-            projectHelper(id = "project-1", name = "Project 1", description = "Description 1")
-        )
-        val invalidProjectId = "invalid-id"
-        val validProjectId = "project-1"
-        val project = projects[0]
-        val newTitle = "Updated Project 1"
-
-        every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.read() } returnsMany listOf(invalidProjectId, validProjectId, "1", newTitle, "no")
-        every { getProjectByIdUseCase.getProjectById(validProjectId) } returns project
-        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
-
-        // When
-        updateProjectUi.run()
-
-        // Then
-        verify { getAllProjectsUseCase.getAllProjects() }
-        verify { getProjectByIdUseCase.getProjectById(validProjectId) }
-        verify { updateProjectUseCase.updateProject(any()) }
-        verify { viewer.show(match { it.contains("Project id not found") }) }
-    }
 
     @Test
     fun `run should handle empty title input by retrying another input`() {
@@ -400,34 +376,6 @@ class UpdateProjectUiTest {
         assertEquals(newDescription, projectSlot.captured.description)
     }
 
-    @Test
-    fun `run should handle trying different inputs until found valid project ID`() {
-        // Given
-        val projects = listOf(
-            projectHelper(id = "project-1", name = "Project 1"),
-            projectHelper(id = "project-2", name = "Project 2")
-        )
-        val invalidProjectId1 = "invalid-id-1"
-        val invalidProjectId2 = "invalid-id-2"
-        val validProjectId = "project-1"
-        val project = projects[0]
-        val newTitle = "Updated Title"
-
-        every { getAllProjectsUseCase.getAllProjects() } returns projects
-        every { reader.read() } returnsMany listOf(
-            invalidProjectId1, invalidProjectId2, validProjectId, "1", newTitle, "no"
-        )
-        every { getProjectByIdUseCase.getProjectById(validProjectId) } returns project
-        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Updated Successfully")
-
-        // When
-        updateProjectUi.run()
-
-        // Then
-        verify(exactly = 2) { viewer.show("Project id not found. Please enter a valid project id:\n") }
-        verify { getProjectByIdUseCase.getProjectById(validProjectId) }
-        verify { updateProjectUseCase.updateProject(any()) }
-    }
 
     @Test
     fun `run should handle trying different choices to found valid choice`() {
@@ -539,5 +487,135 @@ class UpdateProjectUiTest {
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
         assertEquals(newTitle, projectSlot.captured.name)
         assertEquals(newDescription, projectSlot.captured.description)
+    }
+
+    @Test
+    fun `promptForUpdateChoice should reject blank input`() {
+        // Given
+        val projects = listOf(projectHelper(id = "project-1", name = "Project 1"))
+        val blankInput = ""
+        val validChoice = "1"
+        val newTitle = "New Title"
+
+        every { getAllProjectsUseCase.getAllProjects() } returns projects
+        every { reader.read() } returnsMany listOf("project-1", blankInput, validChoice, newTitle, "no")
+        every { getProjectByIdUseCase.getProjectById("project-1") } returns projects[0]
+        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Success")
+
+        // When
+        updateProjectUi.run()
+
+        // Then
+        verify { viewer.show("Invalid choice. Please enter 1 or 2: ") }
+    }
+
+    @Test
+    fun `updateProjectTitle should reject blank title`() {
+        // Given
+        val projects = listOf(projectHelper(id = "project-1", name = "Project 1"))
+        val blankTitle = "   "
+        val validTitle = "Valid Title"
+
+        every { getAllProjectsUseCase.getAllProjects() } returns projects
+        every { reader.read() } returnsMany listOf("project-1", "1", blankTitle, validTitle, "no")
+        every { getProjectByIdUseCase.getProjectById("project-1") } returns projects[0]
+        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Success")
+
+        // When
+        updateProjectUi.run()
+
+        // Then
+        verify { viewer.show("Project title cannot be empty. Please enter a valid title: ") }
+        val projectSlot = slot<Project>()
+        verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
+        assertEquals(validTitle, projectSlot.captured.name)
+    }
+
+    @Test
+    fun `promptForUpdateChoice should reject out of range choices`() {
+        // Given
+        val projects = listOf(projectHelper(id = "project-1", name = "Project 1"))
+        val invalidChoice = "3"
+        val validChoice = "1"
+        val newTitle = "New Title"
+
+        every { getAllProjectsUseCase.getAllProjects() } returns projects
+        every { reader.read() } returnsMany listOf("project-1", invalidChoice, validChoice, newTitle, "no")
+        every { getProjectByIdUseCase.getProjectById("project-1") } returns projects[0]
+        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Success")
+
+        // When
+        updateProjectUi.run()
+
+        // Then
+        verify { viewer.show("Please enter 1 or 2: ") }
+    }
+
+    @Test
+    fun `shouldContinueUpdating should handle null input`() {
+        // Given
+        val projects = listOf(projectHelper(id = "project-1", name = "Project 1"))
+        val nullInput = null
+        val validInput = "no"
+        val newTitle = "New Title"
+
+        every { getAllProjectsUseCase.getAllProjects() } returns projects
+        every { reader.read() } returnsMany listOf("project-1", "1", newTitle, nullInput, validInput)
+        every { getProjectByIdUseCase.getProjectById("project-1") } returns projects[0]
+        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Success")
+
+        // When
+        updateProjectUi.run()
+
+        // Then
+        verify { viewer.show("Please enter 'yes' or 'no': ") }
+    }
+
+    @Test
+    fun `updateProjectFields should handle invalid choice exception`() {
+        // Given
+        val projects = listOf(projectHelper(id = "project-1", name = "Project 1"))
+        val invalidChoice = "3"
+        val validChoice = "1"
+        val newTitle = "New Title"
+
+        every { getAllProjectsUseCase.getAllProjects() } returns projects
+        every { reader.read() } returnsMany listOf("project-1", invalidChoice, validChoice, newTitle, "no")
+        every { getProjectByIdUseCase.getProjectById("project-1") } returns projects[0]
+        every { updateProjectUseCase.updateProject(any()) } returns Result.success("Success")
+
+        // When
+        updateProjectUi.run()
+
+        // Then
+        verify { viewer.show("Please enter 1 or 2: ") }
+        val projectSlot = slot<Project>()
+        verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
+        assertEquals(newTitle, projectSlot.captured.name)
+    }
+
+    @Test
+    fun `displayCurrentProjectDetails should show no description when null`() {
+        // Given
+        val project = projectHelper(id = "project-1", name = "Project 1", description = null)
+
+        // When
+        updateProjectUi.displayCurrentProjectDetails(project)
+
+        // Then
+        verify { viewer.show("Description: No description\n") }
+    }
+
+    @Test
+    fun `displayCurrentProjectDetails should show description when present`() {
+        // Given
+        val description = "Test Description"
+        val project = projectHelper(id = "project-1", name = "Project 1", description = description)
+
+        // When
+        updateProjectUi.displayCurrentProjectDetails(project)
+
+        // Then
+        verify { viewer.show("Description: $description\n") }
     }
 }

@@ -25,7 +25,11 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should display all projects list`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns listOf(projectHelper(),projectHelper(),projectHelper())
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(
+            projectHelper(),
+            projectHelper(),
+            projectHelper()
+        )
 
         // When
         getAllProjectsUi.run()

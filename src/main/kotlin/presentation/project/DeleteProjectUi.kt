@@ -17,7 +17,7 @@ class DeleteProjectUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
-    override val id: Int = 3
+    override val id: Int = 12
     override val label: String = "Delete Project"
 
 

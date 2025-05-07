@@ -1,5 +1,6 @@
 package presentation.project
 
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.DeleteProjectUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
@@ -10,146 +11,164 @@ import com.berlin.presentation.project.DeleteProjectUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
+
 class DeleteProjectUiTest {
 
-    private lateinit var deleteProjectUseCase: DeleteProjectUseCase
-    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
-    private lateinit var deleteProjectUi: DeleteProjectUi
-    private val viewer: Viewer = mockk(relaxed = true)
-    private val reader: Reader = mockk(relaxed = true)
+    private lateinit var deleteProject: DeleteProjectUseCase
+    private lateinit var getAllProjects: GetAllProjectsUseCase
+    private lateinit var viewer: Viewer
+    private lateinit var reader: Reader
+    private lateinit var ui: DeleteProjectUi
 
-    private val testProjects = listOf(
-        Project(
-            id = "project1",
-            name = "First Project",
-            description = "Test description",
-            statesId = null,
-            tasksId = null
-        ),
-        Project(
-            id = "project2",
-            name = "Second Project",
-            description = "Test description",
-            statesId = null,
-            tasksId = null
-        )
-    )
+    private val project = Project("prj-123", "Test Project", null, null, null)
 
     @BeforeEach
     fun setup() {
-        deleteProjectUseCase = mockk(relaxed = true)
-        getAllProjectsUseCase = mockk(relaxed = true)
-        deleteProjectUi = DeleteProjectUi(deleteProjectUseCase, getAllProjectsUseCase, viewer, reader)
-
-        every { getAllProjectsUseCase.getAllProjects() } returns testProjects
+        deleteProject = mockk()
+        getAllProjects = mockk()
+        viewer = mockk(relaxed = true)
+        reader = mockk()
+        ui = DeleteProjectUi(deleteProject, getAllProjects, viewer, reader)
     }
 
     @Test
-    fun `should display failure message when deletion process fails`() {
+    fun `run should delete project successfully when confirmed`() {
         // Given
-        val validProjectId = "project1"
-        every { reader.read() } returns validProjectId
-        every { deleteProjectUseCase.deleteProject(validProjectId) } returns Result.failure(Exception("Deletion Failed"))
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "1" andThen "y"
+        every { deleteProject.deleteProject(project.id) } returns Result.success("Deleted Successfully")
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { deleteProjectUseCase.deleteProject(validProjectId) }
-        verify { viewer.show("Project deletion failed!\n") }
+        verifySequence {
+            viewer.show("--- Projects ---")
+            viewer.show("1. ${project.id} – ${project.name}")
+            viewer.show("X – Cancel\nSelect:")
+            reader.read()
+            viewer.show("Type Y to confirm deletion:")
+            reader.read()
+            deleteProject.deleteProject(project.id)
+            viewer.show("Deleted.")
+        }
     }
 
     @Test
-    fun `should display success message when deletion succeeds`() {
+    fun `run should cancel when user types X`() {
         // Given
-        val validProjectId = "project1"
-        every { reader.read() } returns validProjectId
-        every { deleteProjectUseCase.deleteProject(validProjectId) } returns Result.success("Deleted Successfully")
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "x"
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { deleteProjectUseCase.deleteProject(validProjectId) }
-        verify { viewer.show("Project deleted successfully!\n") }
+        verify {
+            viewer.show("Cancelled.")
+        }
     }
 
     @Test
-    fun `should display return message when no projects available`() {
+    fun `run should cancel when user does not confirm deletion`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns emptyList()
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "1" andThen "no"
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { viewer.show("No projects available to delete.\n") }
+        verify {
+            viewer.show("Type Y to confirm deletion:")
+            viewer.show("Cancelled.")
+        }
     }
 
     @Test
-    fun `should take input from the user again when invalid project ID is provided`() {
+    fun `run should show invalid selection when input is not a number`() {
         // Given
-        val invalidId = "invalidId"
-        val validId = "project1"
-        every { reader.read() } returnsMany listOf(invalidId, validId)
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "aaa"
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { viewer.show("Please enter a valid project id from the list above:") }
-        verify { deleteProjectUseCase.deleteProject(validId) }
+        verify {
+            viewer.show("Invalid selection")
+        }
     }
 
     @Test
-    fun `should handle null input for project ID`() {
+    fun `run should show invalid selection when input is out of range`() {
         // Given
-        val validId = "project1"
-        every { reader.read() } returnsMany listOf(null, validId)
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "5"
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { viewer.show("Please enter a valid project id from the list above:") }
-        verify { deleteProjectUseCase.deleteProject(validId) }
+        verify {
+            viewer.show("Invalid selection")
+        }
     }
 
     @Test
-    fun `should continue taking input from the user until valid project ID is provided`() {
+    fun `run should show deletion failure message when delete fails`() {
         // Given
-        val invalidId1 = "invalid1"
-        val invalidId2 = "invalid2"
-        val nullInput = null
-        val validId = "project2"
-
-        every { reader.read() } returnsMany listOf(invalidId1, invalidId2, nullInput, validId)
+        val failureMessage = "delete is failed"
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "1" andThen "y"
+        every { deleteProject.deleteProject(project.id) } returns Result.failure(Exception(failureMessage))
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify(exactly = 3) { viewer.show("Please enter a valid project id from the list above:") }
-        verify { deleteProjectUseCase.deleteProject(validId) }
+        verify {
+            viewer.show(failureMessage)
+        }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = ["project1", "project2"])
-    fun `should accept any valid project ID from the list`(projectId: String) {
+    @Test
+    fun `run should show default failure message when exception has no message`() {
         // Given
-        every { reader.read() } returns projectId
-        every { deleteProjectUseCase.deleteProject(projectId) } returns Result.success("Deleted Successfully")
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "1" andThen "y"
+        every { deleteProject.deleteProject(project.id) } returns Result.failure(Exception())
 
         // When
-        deleteProjectUi.run()
+        ui.run()
 
         // Then
-        verify { deleteProjectUseCase.deleteProject(projectId) }
-        verify { viewer.show("Project deleted successfully!\n") }
+        verify {
+            viewer.show("Deletion failed")
+        }
+    }
+
+
+    @Test
+    fun `run should show invalid project id when deleteProject throws`() {
+        // Given
+        every { getAllProjects.getAllProjects() } returns listOf(project)
+        every { reader.read() } returns "1" andThen "y"
+        every { deleteProject.deleteProject(project.id) } throws InvalidProjectIdException("Error")
+
+        // When
+        ui.run()
+
+        // Then
+        verify {
+            viewer.show("invalid project id")
+        }
     }
 }
+
