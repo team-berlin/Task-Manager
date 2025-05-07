@@ -2,6 +2,7 @@ package com.berlin.domain.exception
 
 class TaskAlreadyExistsException(message: String) : IllegalStateException(message)
 class TaskNotFoundException(message: String) : NoSuchElementException(message)
+class StateNotFoundException(message: String) : NoSuchElementException(message)
 class ProjectNotFoundException(message: String) : NoSuchElementException(message)
 class InputCancelledException(message: String) : RuntimeException(message)
 class InvalidSelectionException(message: String) : RuntimeException(message)
@@ -18,3 +19,5 @@ class InvalidTaskException(message: String): Exception(message)
 class InvalidProjectException(message: String): Exception(message)
 class InvalidStateException(message: String): Exception(message)
 class InvalidAuditLogException(message: String): Exception(message)
+class InvalidStateIdException(message: String): Exception(message)
+class InvalidStateNameException(message: String): Exception(message)
