@@ -1,4 +1,4 @@
-name: CI with Kover & PR Comment
+name: ci-kover
 
 on:
   push:
