@@ -1,11 +1,10 @@
 name: ci-kover
 
 on:
-  push:
-    branches: [ main, development ]
   pull_request:
     branches: [ main, development ]
   workflow_dispatch:
+
 
 permissions:
   contents: read
