@@ -1,18 +1,17 @@
 package com.berlin.data.mongodb.config
 
+import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import io.mockk.every
-import io.mockk.mockk
-
-import io.mockk.verify
-import io.mockk.unmockkAll
+import io.mockk.*
+import org.bson.codecs.configuration.CodecRegistry
+import org.bson.codecs.pojo.PojoCodecProvider
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DisplayName
 
 class MongoConfigTest {
 
@@ -28,6 +27,7 @@ class MongoConfigTest {
         mockMongoDatabase = mockk(relaxed = true)
         mockCollection = mockk(relaxed = true)
 
+        // Create instance with test values
         mongoConfig = MongoConfig(
             connectionString = "mongodb://localhost:27017",
             databaseName = "testDatabase"
@@ -40,7 +40,8 @@ class MongoConfigTest {
     }
 
     @Test
-    fun `getDatabase should return database with correct name`() {
+    @DisplayName("getDatabase should return database with correct name")
+    fun `getDatabase returns database with correct name`() {
         // Given
         every { mockMongoClient.getDatabase(any()) } returns mockMongoDatabase
 
@@ -53,7 +54,8 @@ class MongoConfigTest {
     }
 
     @Test
-    fun `getCollection should return typed collection with correct name`() {
+    @DisplayName("getCollection should return typed collection with correct name")
+    fun `getCollection returns typed collection with correct name`() {
         // Given
         every { mockMongoDatabase.getCollection<TestDocument>(any()) } returns mockCollection
 
@@ -66,14 +68,73 @@ class MongoConfigTest {
     }
 
     @Test
-    fun `test MongoConfig constructor sets values correctly`() {
+    @DisplayName("test constructor sets correct values")
+    fun `constructor sets correct values`() {
         // When
-        val config = MongoConfig("test-connection-string", "test-db")
+        val customConfig = MongoConfig("custom-connection-string", "custom-db-name")
 
         // Then
-        assertNotNull(config)
+        assertNotNull(customConfig)
     }
 
-    // Data class for testing
+    @Test
+    fun `createMongoClient creates client with correct configuration`() {
+        // Mock the static methods we need to control
+        mockkStatic(MongoClient::class)
+        mockkStatic(MongoClientSettings::class)
+        mockkStatic(CodecRegistry::class)
+        mockkStatic(PojoCodecProvider::class)
+
+        // Mock CodecProvider
+        val mockProvider = mockk<PojoCodecProvider>()
+        val mockBuilder = mockk<PojoCodecProvider.Builder>()
+        every { PojoCodecProvider.builder() } returns mockBuilder
+        every { mockBuilder.automatic(true) } returns mockBuilder
+        every { mockBuilder.build() } returns mockProvider
+
+        // Mock CodecRegistry
+        val mockRegistry = mockk<CodecRegistry>()
+        val defaultRegistry = mockk<CodecRegistry>()
+        every { MongoClientSettings.getDefaultCodecRegistry() } returns defaultRegistry
+        mockkStatic("org.bson.codecs.configuration.CodecRegistries")
+        every {
+            org.bson.codecs.configuration.CodecRegistries.fromProviders(mockProvider)
+        } returns mockRegistry
+        every {
+            org.bson.codecs.configuration.CodecRegistries.fromRegistries(defaultRegistry, mockRegistry)
+        } returns mockRegistry
+
+        // Mock ClientSettings
+        val mockSettings = mockk<MongoClientSettings>()
+        val mockSettingsBuilder = mockk<MongoClientSettings.Builder>()
+        every { MongoClientSettings.builder() } returns mockSettingsBuilder
+        every { mockSettingsBuilder.applyConnectionString(any()) } returns mockSettingsBuilder
+        every { mockSettingsBuilder.codecRegistry(mockRegistry) } returns mockSettingsBuilder
+        every { mockSettingsBuilder.build() } returns mockSettings
+
+        // Mock MongoClient creation
+        every { MongoClient.create(mockSettings) } returns mockMongoClient
+
+        // Execute the method
+        val result = mongoConfig.createMongoClient()
+
+        // Verify
+        assertNotNull(result)
+        verify {
+            PojoCodecProvider.builder()
+            mockBuilder.automatic(true)
+            mockBuilder.build()
+            MongoClientSettings.getDefaultCodecRegistry()
+            org.bson.codecs.configuration.CodecRegistries.fromProviders(mockProvider)
+            org.bson.codecs.configuration.CodecRegistries.fromRegistries(defaultRegistry, mockRegistry)
+            MongoClientSettings.builder()
+            mockSettingsBuilder.applyConnectionString(match {
+                it.connectionString == "mongodb://localhost:27017"
+            })
+            mockSettingsBuilder.codecRegistry(mockRegistry)
+            mockSettingsBuilder.build()
+            MongoClient.create(mockSettings)
+        }
+    }
     data class TestDocument(val id: String, val name: String)
 }

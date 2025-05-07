@@ -38,10 +38,4 @@ class MongoConfig(
     inline fun <reified T : Any> getCollection(database: MongoDatabase, collectionName: String): MongoCollection<T> {
         return database.getCollection<T>(collectionName)
     }
-
-    inline fun <reified T : Any> getTypedCollection(collectionName: String): MongoCollection<T> {
-        val client = createMongoClient()
-        val database = getDatabase(client)
-        return getCollection(database, collectionName)
-    }
 }
