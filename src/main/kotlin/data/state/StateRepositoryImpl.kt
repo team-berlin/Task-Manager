@@ -3,7 +3,6 @@ package com.berlin.data.state
 import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.StateNotFoundException
-import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository

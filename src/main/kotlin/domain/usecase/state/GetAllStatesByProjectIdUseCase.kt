@@ -2,8 +2,6 @@ package com.berlin.domain.usecase.state
 
 
 import com.berlin.domain.exception.InvalidProjectIdException
-import com.berlin.domain.exception.ProjectNotFoundException
-import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository

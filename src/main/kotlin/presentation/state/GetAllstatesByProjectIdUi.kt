@@ -16,7 +16,7 @@ class GetAllStatesByProjectIdUi(
     private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
     // private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
+    private val reader: Reader,
 ) : UiRunner {
 
     override val id: Int = 3000
@@ -33,7 +33,7 @@ class GetAllStatesByProjectIdUi(
             )
 
             getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id)
-                .onSuccess { state ->  showSwimLaneFor(project.id, state) }
+                .onSuccess { state -> showSwimLaneFor(project.id, state) }
                 .onFailure { viewer.show(it.message ?: "Failed to load states") }
 
 
