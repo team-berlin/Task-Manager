@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.project
 
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.model.Project
 
@@ -9,7 +10,7 @@ class GetProjectByIdUseCase (
 
     fun getProjectById(projectId: String): Project {
         if(!validateProjectId(projectId))
-            throw Exception("Project ID must not be empty or blank")
+            throw InvalidProjectIdException("project id must not be empty, blank, or purely numeric")
 
         return projectRepository.getProjectById(projectId)
             ?: throw Exception("Project with ID $projectId does not exist")

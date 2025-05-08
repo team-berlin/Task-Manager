@@ -71,12 +71,12 @@ class CreateProjectUseCaseTest {
     ) {
         // When && Then
         assertThrows<Exception> {
-            createProjectUseCase.createNewProject(invalidName,
+            createProjectUseCase.createNewProject(
+                invalidName,
                 null,
                 null,
                 null
             )
         }
     }
-
 }
