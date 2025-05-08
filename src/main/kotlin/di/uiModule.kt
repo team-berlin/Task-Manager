@@ -10,7 +10,6 @@ import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import kotlin.math.sin
 
 
 val uiModule = module {
@@ -63,7 +62,7 @@ val uiModule = module {
                 get<DeleteStateUi>(),
                 get<GetStateByIdUi>(),
                 get<UpdateStateUi>(),
-                get<GetAllStatesByProjectIdUi>()
+                get<GetAllStatesByProjectIdUi>(),
                 
                 get<CreateProjectUi>(),
                 get<DeleteProjectUi>(),
