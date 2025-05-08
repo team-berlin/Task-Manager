@@ -8,14 +8,14 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GettingUsersLoggedInUseCaseTest {
+class GetUserLoggedInUseCaseTest {
     private lateinit var repository: AuthenticationRepository
-    private lateinit var gettingUsersLoggedInUseCase: GettingUsersLoggedInUseCase
+    private lateinit var gettingUsersLoggedInUseCase: GetUserLoggedInUseCase
 
     @BeforeEach
     fun setup() {
         repository = mockk()
-        gettingUsersLoggedInUseCase = GettingUsersLoggedInUseCase(repository)
+        gettingUsersLoggedInUseCase = GetUserLoggedInUseCase(repository)
     }
 
 

@@ -2,22 +2,23 @@ package com.berlin.data.memory
 
 import com.berlin.data.AuthDummyData
 import com.berlin.data.authentication.AuthenticationRepositoryImpl
-import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.hashPassword.HashingString
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
+import data.UserCache
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class AuthenticationRepositoryInMemoryTest {
     private lateinit var inMemoryAuthRepositoryImpl: AuthenticationRepositoryImpl
-    private lateinit var hashingPassword: HashingPassword
+    private lateinit var hashingString: HashingString
 
     @BeforeEach
     fun setup() {
-        hashingPassword = MD5Hasher()
+        hashingString = MD5Hasher()
         AuthDummyData.users.clear()
-        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl(AuthDummyData)
+        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl( UserCache(),AuthDummyData)
     }
 
 

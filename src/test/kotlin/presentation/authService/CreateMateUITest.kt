@@ -2,7 +2,7 @@ package com.berlin.presentation.authService
 
 import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.helper.AuthServiceTestData
-import com.berlin.domain.usecase.authService.CreationOfMateUseCase
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 class CreationOfMateUiTest {
 
-    private lateinit var creationOfMateUseCase: CreationOfMateUseCase
+    private lateinit var createMateUseCase: CreateMateUseCase
     private lateinit var creationOfMateUi: CreationOfMateUi
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
@@ -23,16 +23,16 @@ class CreationOfMateUiTest {
 
     @BeforeEach
     fun setup() {
-        creationOfMateUseCase = mockk()
+        createMateUseCase = mockk()
         viewer = mockk(relaxed = true)
         reader = mockk()
-        creationOfMateUi = CreationOfMateUi(creationOfMateUseCase, viewer, reader)
+        creationOfMateUi = CreationOfMateUi(createMateUseCase, viewer, reader)
     }
 
     @Test
     fun `run should show success message when user creation succeeds`() {
         every { reader.read() } returnsMany listOf(AuthServiceTestData.testForUserName, AuthServiceTestData.testForUserPassword)
-        every { creationOfMateUseCase.createMate(AuthServiceTestData.testForUserName, AuthServiceTestData.testForUserPassword) } returns Result.success(AuthServiceTestData.user)
+        every { createMateUseCase.createMate(AuthServiceTestData.testForUserName, AuthServiceTestData.testForUserPassword) } returns Result.success(AuthServiceTestData.user)
 
         creationOfMateUi.run()
 
@@ -42,8 +42,8 @@ class CreationOfMateUiTest {
     @Test
     fun `run should retry once after failure and succeed second time`() {
         every { reader.read() } returnsMany listOf("test1", "123", "test2", "456")
-        every { creationOfMateUseCase.createMate("test1", "123") } returns Result.failure(InvalidAssigneeException("fail"))
-        every { creationOfMateUseCase.createMate("test2", "456") } returns Result.success(AuthServiceTestData.excepctedUser)
+        every { createMateUseCase.createMate("test1", "123") } returns Result.failure(InvalidAssigneeException("fail"))
+        every { createMateUseCase.createMate("test2", "456") } returns Result.success(AuthServiceTestData.excepctedUser)
 
         creationOfMateUi.run()
 
@@ -62,8 +62,8 @@ class CreationOfMateUiTest {
     @Test
     fun `run should treat null inputs as empty strings`() {
         every { reader.read() } returnsMany listOf(null, null, "name", "pass")
-        every { creationOfMateUseCase.createMate("", "") } returns Result.failure(InvalidAssigneeException("empty"))
-        every { creationOfMateUseCase.createMate("name", "pass") } returns Result.success(AuthServiceTestData.excepctedUser)
+        every { createMateUseCase.createMate("", "") } returns Result.failure(InvalidAssigneeException("empty"))
+        every { createMateUseCase.createMate("name", "pass") } returns Result.success(AuthServiceTestData.excepctedUser)
 
         creationOfMateUi.run()
 

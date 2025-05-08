@@ -1,32 +1,28 @@
 package domain.logic.usecase.authService
 
-import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.hashPassword.HashingString
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.CreationOfMateUseCase
-import com.berlin.domain.fakeData.FakeHashingPassword
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.domain.helper.AuthServiceTestData
-import com.berlin.domain.helper.IdGenerator
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreationOfMateUseCaseTest {
+class CreateMateUseCaseTest {
 
     private lateinit var authRepository: AuthenticationRepository
     private lateinit var idGenerator: IdGenerator
-    private lateinit var hashingPassword: HashingPassword
-    private lateinit var createMateUseCase: CreationOfMateUseCase
+    private lateinit var hashingString: HashingString
+    private lateinit var createMateUseCase: CreateMateUseCase
 
     @BeforeEach
     fun setup() {
         authRepository = mockk()
-        hashingPassword = mockk()
+        hashingString = mockk()
         idGenerator = mockk()
-        createMateUseCase = CreationOfMateUseCase(authRepository, idGenerator, hashingPassword)
+        createMateUseCase = CreateMateUseCase(authRepository, idGenerator, hashingString)
     }
 
     @Test

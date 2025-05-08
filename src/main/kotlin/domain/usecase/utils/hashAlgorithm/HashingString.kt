@@ -1,5 +1,5 @@
 package com.berlin.domain.hashPassword
 
-interface HashingPassword {
+interface HashingString {
     fun hashPassword(password: String):String
 }

@@ -1,4 +1,4 @@
-package data.Audit
+package data.audit
 
 import com.berlin.data.Audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource

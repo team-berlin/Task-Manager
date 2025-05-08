@@ -1,8 +1,8 @@
 package com.berlin.domain.fakeData
 
-import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.hashPassword.HashingString
 
-class FakeHashingPassword : HashingPassword {
+class FakeHashingString : HashingString {
     override fun hashPassword(password: String): String = "$password-hashed"
 
 }

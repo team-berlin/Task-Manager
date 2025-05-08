@@ -4,10 +4,10 @@ import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
-import com.berlin.domain.usecase.authService.CreationOfMateUseCase
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
-import com.berlin.domain.usecase.authService.GettingUsersLoggedInUseCase
+import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.domain.usecase.project.*
 import com.berlin.domain.usecase.task.*
 import domain.usecase.authService.AuthenticateUserUseCase
@@ -35,8 +35,8 @@ val useCaseModule = module {
     single { GetAuditLogsByUserIdUseCase(get()) }
 
     single { GetUserByIDUseCase(get()) }
-    single { GettingUsersLoggedInUseCase(get()) }
+    single { GetUserLoggedInUseCase(get()) }
     single { FetchAllUsersUseCase(get()) }
-    single { AuthenticateUserUseCase(get(), get()) }
-    single { CreationOfMateUseCase(get(), get(), get()) }
+    single { AuthenticateUserUseCase(get(),get(), get()) }
+    single { CreateMateUseCase(get(), get(), get()) }
 }

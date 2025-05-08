@@ -1,13 +1,13 @@
 package com.berlin.presentation.authService
 
 import com.berlin.domain.model.User
-import com.berlin.domain.usecase.authService.CreationOfMateUseCase
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class CreationOfMateUi(
-    private val creationOfMateUseCase: CreationOfMateUseCase,
+    private val createMateUseCase: CreateMateUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ): UiRunner {
@@ -21,7 +21,7 @@ class CreationOfMateUi(
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
         val userPassword = reader.read()?.trim().orEmpty()
-        return creationOfMateUseCase.createMate(userName, userPassword)
+        return createMateUseCase.createMate(userName, userPassword)
     }
     private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
         createMate().onSuccess {
