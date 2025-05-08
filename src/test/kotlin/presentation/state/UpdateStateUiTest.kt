@@ -1,6 +1,5 @@
 package presentation.state
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.State
@@ -35,18 +34,18 @@ class UpdateStateUiTest {
    3- InvalidStateNameException-->"State Name must not be empty or blank"-->ok
     */
     private companion object {
-        val state = State("S1","Menna","P5")
+        val state = State("Q1","Menna","P5")
         val stateId= state.id
         val successfullyStateNewName = "done"
-        val stateProjectId = DummyData.states[1].projectId
+        val stateProjectId = "P5"
         val emptyStateName = ""
     }
 
     @Test
     fun `run should return successfully updated when every thing is correct`() {
         //Given
-        every { getAllStates() } returns DummyData.states
-        every { reader.read() } returnsMany listOf("2", "done")
+        every { getAllStates() } returns listOf(State("Q1","Menna","P5"))
+        every { reader.read() } returnsMany listOf("1", "done")
         every {
             updateState.updateState(any(), any(), any())
         } returns Result.success("Updated Successfully")
@@ -70,8 +69,8 @@ class UpdateStateUiTest {
     @Test
     fun `run should return update failed when update fails`() {
         //Given
-        every { getAllStates() } returns DummyData.states
-        every { reader.read() } returnsMany listOf("2", "done")
+        every { getAllStates() } returns listOf(State("Q1","Menna","P5"),)
+        every { reader.read() } returnsMany listOf("1", "done")
         every {
             updateState.updateState(any(), any(), any())
         } returns Result.failure(InvalidStateException("can not update state"))
@@ -86,8 +85,8 @@ class UpdateStateUiTest {
     @Test
     fun `run should throw InvalidStateNameException when State Name is empty or blank`() {
         //Given
-        every { getAllStates() } returns DummyData.states
-        every { reader.read() } returnsMany listOf("2", " ")
+        every { getAllStates() } returns listOf(State("Q1","Menna","P5"))
+        every { reader.read() } returnsMany listOf("1", " ")
         every {
             updateState.updateState(any(), emptyStateName, any())
         } throws InvalidStateNameException("State Name must not be empty or blank")

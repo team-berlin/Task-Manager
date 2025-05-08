@@ -1,7 +1,7 @@
 package presentation.state
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.StateNotFoundException
+import com.berlin.domain.model.State
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -33,7 +33,7 @@ class GetStateByIdUiTest {
     @Test
     fun `getStateById should return state when its id exists`() {
         //given
-        every { getStateById.getStateById("Q1") } returns Result.success(DummyData.states[1])
+        every { getStateById.getStateById("Q1") } returns Result.success(State("Q1","Menna","P5"),)
         every { reader.read() } returns "Q1"
         //when
         ui.run()
