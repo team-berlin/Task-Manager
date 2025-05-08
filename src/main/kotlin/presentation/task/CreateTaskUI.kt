@@ -12,10 +12,11 @@ import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
+import data.UserCache
 
 class CreateTaskUI(
     private val createTask: CreateTaskUseCase,
-    private val currentUser: User,
+    private val cashedUser: UserCache,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
@@ -31,7 +32,7 @@ class CreateTaskUI(
             val (title, desc) = askTitleAndDescription()
 
             createTask(
-                project.id, title, desc, state.id, currentUser.id, assignee.id
+                project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id
             ).onSuccess { viewer.show("Task created: id=${it.id}") }
                 .onFailure { viewer.show(it.message ?: "Creation failed") }
 

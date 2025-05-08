@@ -17,7 +17,7 @@ class AuditByUserUI(
     private val reader: Reader
 ) : UiRunner {
 
-    override val id: Int = 3
+    override val id: Int = 24234
     override val label: String = "Show audit by user"
 
     override fun run() {
@@ -61,6 +61,7 @@ class AuditByUserUI(
                 Changes: ${log.changesDescription ?: "null"}
                 """.trimIndent()
             )
+            viewer.show("")
         }
     }
 }

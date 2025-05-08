@@ -17,7 +17,7 @@ class CreationOfMateUi(
         handleMateCreation()
     }
     private fun createMate(): Result<User>{
-        viewer.show("Enter user name: ")
+        viewer.show("Enter user name or x to exit: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
         val userPassword = reader.read()?.trim().orEmpty()
@@ -27,12 +27,11 @@ class CreationOfMateUi(
         createMate().onSuccess {
             viewer.show("New mate is successfully created!")
         }.onFailure {
-            viewer.show("something wrong please try again!")
+            viewer.show(it.message ?: "some thing went wrong please try again!")
             if (attempt < maxAttempts) {
                 handleMateCreation(attempt + 1, maxAttempts)
             }
         }
     }
-
 
 }

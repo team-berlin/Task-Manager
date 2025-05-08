@@ -12,7 +12,7 @@ class GetAuditLogsByTaskIdUseCase(
         if (!validateTaskId(taskId))
             throw IllegalArgumentException("Task ID must not be empty, blank, or purely numeric")
 
-        return auditRepository.getAuditLogsByProjectId(taskId)
+        return auditRepository.getAuditLogsByTaskId(taskId)
 
     }
 

@@ -1,7 +1,5 @@
 package com.berlin.presentation.authService
 
-import com.berlin.domain.exception.InvalidUserIdException
-import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.UiRunner
@@ -19,24 +17,10 @@ class GetUserByIDUI(
     override fun run() {
         viewer.show("Enter the user id: ")
         val id = reader.read()?.trim().orEmpty()
-        try {
-            //val id = reader.read()?.trim().orEmpty()
-            val user = getUserByIDUseCase.getUserById(id)
-            user.fold(
-                onSuccess = { showUserInfo(it) },
-
-                onFailure = { ex ->
-                    when (ex) {
-                        is UserNotFoundException ->
-                            viewer.show("No user found for this ID")
-
-                        else -> viewer.show("error: $ex")
-                    }
-                }
-            )
-        } catch (e: InvalidUserIdException) {
-            viewer.show("Invalid ID")
-        }
+        getUserByIDUseCase.getUserById(id).fold(
+            onSuccess = { showUserInfo(it) },
+            onFailure = { viewer.show(it.message ?: "invalid user id") }
+        )
     }
 
     private fun showUserInfo(user: User) {

@@ -7,6 +7,8 @@ import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -15,11 +17,13 @@ import com.berlin.presentation.io.Viewer
 class AuditByTaskUI(
     private val viewer: Viewer,
     private val reader: Reader,
-    private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase
+    private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase,
+    private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase
 
 ) : UiRunner {
 
-    override val id = 2
+    override val id = 2349
     override val label = "View Audit Logs by Task"
 
     override fun run() {
@@ -57,13 +61,14 @@ class AuditByTaskUI(
                 Changes: ${log.changesDescription ?: "null"}
             """.trimIndent()
             )
+            viewer.show("")
         }
     }
 
     private fun selectProject () : Project{
         return choose(
             title = "Choose a project",
-            elements = DummyData.projects,
+            elements = getAllProjectsUseCase.getAllProjects(),
             labelOf = { project -> project.name },
             viewer = viewer,
             reader = reader
@@ -73,7 +78,7 @@ class AuditByTaskUI(
     private fun selectTask (selectedProject : Project) : Task {
         return choose(
             title = "Choose a task",
-            elements = DummyData.initialDemoTasks.filter { it.projectId == selectedProject.id },
+            elements = getTasksByProjectUseCase( selectedProject.id).getOrNull() ?: emptyList() ,
             labelOf = { task -> task.title },
             viewer = viewer,
             reader = reader

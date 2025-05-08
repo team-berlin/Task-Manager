@@ -10,24 +10,25 @@ import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.domain.usecase.project.*
 import com.berlin.domain.usecase.task.*
+import data.UserCache
 import domain.usecase.authService.AuthenticateUserUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    single { CreateTaskUseCase(get(), get()) }
-    single { AssignTaskUseCase(get()) }
-    single { DeleteTaskUseCase(get()) }
+    single { CreateTaskUseCase(get(), get(), get()) }
+    single { AssignTaskUseCase(get(), get(), get<UserCache>()) }
+    single { DeleteTaskUseCase(get(), get(), get<UserCache>()) }
     single { GetTasksByProjectUseCase(get()) }
-    single { UpdateTaskUseCase(get()) }
-    single { ChangeTaskStateUseCase(get()) }
+    single { UpdateTaskUseCase(get(), get(), get<UserCache>()) }
+    single { ChangeTaskStateUseCase(get(), get(), get<UserCache>()) }
     single { GetTaskByIdUseCase(get()) }
     single { GetAllTasksUseCase(get()) }
 
-    single { CreateProjectUseCase(get(), get()) }
+    single { CreateProjectUseCase(get(), get(), get(), get<UserCache>()) }
     single { GetAllProjectsUseCase(get()) }
-    single { DeleteProjectUseCase(get()) }
+    single { DeleteProjectUseCase(get(), get(), get<UserCache>()) }
     single { GetProjectByIdUseCase(get()) }
-    single { UpdateProjectUseCase(get()) }
+    single { UpdateProjectUseCase(get(), get(), get<UserCache>() ) }
 
     single { AddAuditLogUseCase(get(), get()) }
     single { GetAuditLogsByProjectIdUseCase(get()) }

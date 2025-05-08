@@ -5,6 +5,8 @@ import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.domain.hashPassword.HashingString
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import org.junit.jupiter.api.BeforeEach
@@ -13,12 +15,13 @@ import org.junit.jupiter.api.Test
 class AuthenticationRepositoryInMemoryTest {
     private lateinit var inMemoryAuthRepositoryImpl: AuthenticationRepositoryImpl
     private lateinit var hashingString: HashingString
+    private var cashedUser = User("user1234", "admin", "1212", UserRole.ADMIN)
 
     @BeforeEach
     fun setup() {
         hashingString = MD5Hasher()
         AuthDummyData.users.clear()
-        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl( UserCache(),AuthDummyData)
+        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl( UserCache(cashedUser),AuthDummyData)
     }
 
 

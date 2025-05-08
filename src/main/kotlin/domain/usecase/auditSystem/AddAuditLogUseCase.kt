@@ -14,16 +14,14 @@ class AddAuditLogUseCase(
     fun addAuditLog(
         createdByUserId:String,
         auditAction: AuditAction,
-        changesDescription: String,
+        changesDescription: String? = null,
         entityType: EntityType,
         entityId: String,
-        timestamp: Long = System.currentTimeMillis()
     ): Result<String> {
         return try {
-            val id = idGenerator.generateId("AUDIT")
             val auditLog = AuditLog(
-                id = id,
-                timestamp = timestamp,
+                id = idGenerator.generateId("AUDIT"),
+                timestamp = System.currentTimeMillis(),
                 createdByUserId=createdByUserId,
                 auditAction = auditAction,
                 changesDescription = changesDescription,

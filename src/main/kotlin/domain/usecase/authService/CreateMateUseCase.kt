@@ -15,13 +15,13 @@ class CreateMateUseCase(
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("Username and password must not be empty"))
         }
-        if (password.length < MAIN_PASSWORD_LENGHT) {
+        if (password.length < MAIN_PASSWORD_LENGTH) {
             return Result.failure(InvalidCredentialsException("Password less than 8 characters"))
         }
 
         val hashedPassword=hashingString.hashPassword(password)
         val newUser = User(
-            id = idGenerator.generateId(password),
+            id = idGenerator.generateId(userName),
             userName = userName,
             password = hashedPassword,
             role = UserRole.MATE
@@ -29,6 +29,6 @@ class CreateMateUseCase(
         return repository.createMate(newUser)
     }
      private companion object{
-       const val MAIN_PASSWORD_LENGHT = 8
+       const val MAIN_PASSWORD_LENGTH = 8
     }
 }

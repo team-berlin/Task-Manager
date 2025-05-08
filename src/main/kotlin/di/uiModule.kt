@@ -1,9 +1,12 @@
-package com.berlin.di
+ package com.berlin.di
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.audit.AuditByProjectUI
+import com.berlin.presentation.audit.AuditByTaskUI
+import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.authService.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
@@ -13,9 +16,9 @@ import org.koin.dsl.module
 
 
 val uiModule = module {
-    single<User>(named("currentUser")) { DummyData.users.first() }
+//    single<User>(named("currentUser")) { DummyData.users.first() }
 
-    single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
+    single { CreateTaskUI(get(), get<UserCache>(), get(), get()) }
     single { AssignTaskUI(get(), get(), get(), get()) }
     single { DeleteTaskUI(get(), get(), get(),get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
@@ -33,9 +36,11 @@ val uiModule = module {
     single { GetAllProjectsUi(get(),get()) }
     single { GetProjectByIdUi(get(),get(),get()) }
     single { UpdateProjectUi(get(),get(),get(),get(),get()) }
+    single { AuditByProjectUI(get(), get(), get(), get()) }
+    single { AuditByTaskUI(get(), get(), get(), get(), get()) }
+    single { AuditByUserUI(get(), get(), get()) }
 
 
-    /* aggregated main menu */
     single {
         MainMenuUI(
             runners = listOf(
@@ -57,12 +62,14 @@ val uiModule = module {
                 get<GetAllProjectsUi>(),
                 get<GetProjectByIdUi>(),
                 get<UpdateProjectUi>(),
+
+                get<AuditByTaskUI>(),
+                get<AuditByProjectUI>()
             ),
             viewer = get(),
             reader = get(),
             authUi = get<AuthenticateUserUi>(),
             userCache=get<UserCache>()
-
         )
     }
 }

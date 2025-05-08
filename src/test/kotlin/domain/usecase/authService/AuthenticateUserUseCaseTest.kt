@@ -4,6 +4,8 @@ import com.berlin.domain.hashPassword.HashingString
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.fakeData.FakeHashingString
 import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import domain.usecase.authService.AuthenticateUserUseCase
@@ -17,13 +19,14 @@ class AuthenticateUserUseCaseTest {
     private lateinit var authRepository: AuthenticationRepository
     private lateinit var hashingString: HashingString
     private lateinit var authenticateUserUseCase: AuthenticateUserUseCase
+    private var cashedUser = User("user1234", "admin", "1212", UserRole.ADMIN)
     private lateinit var userCache: UserCache
 
     @BeforeEach
     fun setup() {
         authRepository = mockk<AuthenticationRepository>()
         hashingString = FakeHashingString()
-        userCache= UserCache()
+        userCache= UserCache(cashedUser)
         authenticateUserUseCase = AuthenticateUserUseCase(userCache,authRepository, hashingString)
     }
 
@@ -124,7 +127,7 @@ class AuthenticateUserUseCaseTest {
         every { mockedRepo.getAllUsers() } returns Result.success(listOf(AuthServiceTestData.user))
         every { mockedRepo.login(userName, hashedPassword) } returns Result.failure(InvalidCredentialsException("Invalid"))
 
-        userCache.currentUser = null
+        userCache.currentUser = cashedUser
 
         // When
         val result = authenticateUserUseCase.login(userName, rawPassword)
@@ -158,7 +161,7 @@ class AuthenticateUserUseCaseTest {
         val hashedPassword = hashingString.hashPassword(AuthServiceTestData.userPassword)
         every { authRepository.getAllUsers() } returns Result.success(listOf(user))
         every { authRepository.login(user.userName, hashedPassword) } returns Result.failure(RuntimeException("Unexpected error"))
-        userCache.currentUser = null
+        userCache.currentUser = cashedUser
 
         // When
         val result = authenticateUserUseCase.login(user.userName, AuthServiceTestData.userPassword)
@@ -178,7 +181,7 @@ class AuthenticateUserUseCaseTest {
         every { authRepository.login(user.userName, hashedPassword) } returns Result.failure(
             InvalidCredentialsException("Wrong credentials")
         )
-        userCache.currentUser = null
+        userCache.currentUser = cashedUser
 
         // When
         val result = authenticateUserUseCase.login(user.userName, AuthServiceTestData.userPassword)
@@ -217,7 +220,7 @@ class AuthenticateUserUseCaseTest {
         val wrongPassword = "wrongPassword"
         val hashedWrongPassword = hashingString.hashPassword(wrongPassword)
 
-        userCache.currentUser = null
+        userCache.currentUser = cashedUser
         every { authRepository.getAllUsers() } returns Result.success(listOf(user))
         every { authRepository.login(user.userName, hashedWrongPassword) } returns Result.failure(
             InvalidCredentialsException("Wrong password")
