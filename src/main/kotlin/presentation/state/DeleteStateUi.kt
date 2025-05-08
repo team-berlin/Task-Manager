@@ -31,7 +31,7 @@ class DeleteStateUi(
                 reader = reader
             )
             viewer.show("Type Y to confirm deletion:")
-            if (!reader.read().equals("y", true)) throw InputCancelledException("")
+            if (!reader.read().equals("y", true)) throw InputCancelledException("Cancelled.")
 
             deleteStateUseCase.deleteState(state.id)
                 .onSuccess {

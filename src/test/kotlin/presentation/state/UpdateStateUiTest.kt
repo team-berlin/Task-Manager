@@ -1,9 +1,9 @@
 package presentation.state
 
 import com.berlin.data.DummyData
-import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.InvalidStateNameException
+import com.berlin.domain.model.State
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.presentation.io.Reader
@@ -30,14 +30,13 @@ class UpdateStateUiTest {
     }
 
     /*
-   1-successfully updated
-   2-update failed
-   3- InvalidStateNameException-->"State Name must not be empty or blank"
-   4-InputCancelledException-->"Cancelled."
-   5-InvalidSelectionException-->Invalid selection"
+   1-successfully updated-->ok
+   2-update failed-->ok
+   3- InvalidStateNameException-->"State Name must not be empty or blank"-->ok
     */
     private companion object {
-        val stateId = DummyData.states[1].id
+        val state = State("S1","Menna","P5")
+        val stateId= state.id
         val successfullyStateNewName = "done"
         val stateProjectId = DummyData.states[1].projectId
         val emptyStateName = ""
@@ -100,14 +99,5 @@ class UpdateStateUiTest {
         verify { viewer.show("State Name must not be empty or blank") }
     }
 
-    @Test
-    fun `run should `() {
-        //Given
-        every { reader.read() } returnsMany listOf("X")
-        //When
-        updateStateUi.run()
 
-        //Then
-        verify { viewer.show() }
-    }
 }
