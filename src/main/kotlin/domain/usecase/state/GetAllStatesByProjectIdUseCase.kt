@@ -18,10 +18,8 @@ class GetAllStatesByProjectIdUseCase(
 
         if (checkProjectExists(projectId)) {
             return stateRepository.getStatesByProjectId(projectId)
-            //  ?: throw StateNotFoundException("No states found for project ID $projectId")
         } else {
-            return Result.failure(Exception("sff"))
-            //throw ProjectNotFoundException("Project with ID $projectId does not exist")
+            return Result.failure(Exception("Project with ID $projectId does not exist"))
         }
     }
 

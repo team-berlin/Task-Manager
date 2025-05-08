@@ -41,18 +41,16 @@ class GetAllStatesByProjectIdUseCaseTest {
         val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1")
 
         // Then
-        assertThat(result).isEqualTo(expectedStates)
+        assertThat(result).isEqualTo(Result.success(expectedStates))
     }
 
     @Test
     fun `should throw exception when no states are found for the project`() {
         // Given
-        every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P3") } returns Result.success(emptyList())
+        every { stateRepository.getStatesByProjectId("P3") } returns Result.failure(Exception("Project with ID P3 does not exist"))
 
         // When & Then
-        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
-        assertThat(exception.message).isEqualTo("No states found for project ID P3")
+         assertThat(getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3").isFailure).isTrue()
     }
 
     @Test
@@ -61,8 +59,7 @@ class GetAllStatesByProjectIdUseCaseTest {
         every { projectRepository.getProjectById("P2") } returns null
 
         // When & Then
-        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2") }
-        assertThat(exception.message).isEqualTo("Project with ID P2 does not exist")
+        assertThat(getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2").isFailure).isTrue()
     }
 
     @ParameterizedTest

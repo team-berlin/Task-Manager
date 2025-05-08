@@ -52,15 +52,15 @@ class DeleteStateUseCaseTest {
     @Test
     fun `should throw exception when state does not exist`() {
         // Given
-        val stateId="S2"
+        val stateId="q2"
         every { stateRepository.getStateById(any()) } returns Result.failure(StateNotFoundException(stateId))
 
         // When
-        val result = deleteStateUseCase.deleteState("S2")
+        val result = deleteStateUseCase.deleteState("q2")
 
         // Then
         result.onFailure { exception ->
-            assertThat(exception.message).isEqualTo("State with ID S2 does not exist")
+            assertThat(exception.message).isEqualTo("State with ID q2 does not exist")
         }
     }
 
