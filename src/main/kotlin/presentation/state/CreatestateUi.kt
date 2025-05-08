@@ -11,7 +11,7 @@ import com.berlin.presentation.io.Viewer
 class CreateStateUi(
     private val createStateUseCase: CreateStateUseCase,
     private val viewer: Viewer,
-    private val reader: Reader,
+    private val reader: Reader
 ) : UiRunner {
 
     override val id: Int = 1000
