@@ -1,4 +1,4 @@
-package logic.usecase.project;
+package logic.usecase.project
 
 import com.berlin.domain.helper.IdGenerator
 import com.berlin.helper.projectHelper
@@ -71,12 +71,12 @@ class CreateProjectUseCaseTest {
     ) {
         // When && Then
         assertThrows<Exception> {
-            createProjectUseCase.createNewProject(invalidName,
+            createProjectUseCase.createNewProject(
+                invalidName,
                 null,
                 null,
                 null
             )
         }
     }
-
 }

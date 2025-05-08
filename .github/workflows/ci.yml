@@ -1,19 +1,21 @@
-name: CI with Kover
+name: ci-kover
 
 on:
   pull_request:
     branches: [ main, development ]
   workflow_dispatch:
 
+
 permissions:
-  contents: write
-  issues: write
+  contents: read
   pull-requests: write
+  checks: write
 
 jobs:
   run-tests:
-    name: Execute Tests & Generate Coverage
+    name: Run Tests and Generate Coverage
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,66 +30,62 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run Unit Tests
-        run: ./gradlew test
+      - name: Run tests and generate Kover reports
+        run: ./gradlew test koverHtmlReport
 
-      - name: Generate Kover XML Report
-        run: ./gradlew koverXmlReport
-
-      - name: Upload coverage report XML
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: kover-coverage-report
-          path: build/reports/kover/xml/report.xml
-          retention-days: 1
-
-      - name: Test Summary
-        uses: test-summary/action@v2
-        with:
-          paths: "**/build/test-results/**/*.xml"
-        if: always()
-
-      - name: Verify coverage thresholds
+      - name: Verify coverage thresholds (≥ 80%)
         run: ./gradlew koverVerify
 
-  analyze-pr:
-    name: Analyze PR Code Coverage
+      - name: Debug test result files
+        if: always()
+        run: |
+          echo "Checking if test results exist..."
+          ls -l build/test-results/test || echo "Directory not found"
+
+      - name: Upload test results (JUnit XML)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results/test/TEST-*.xml
+
+      - name: Upload Kover HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-html-report
+          path: build/reports/kover/html/
+
+  publish-test-results:
+    name: Comment on PR with Test Results
     needs: run-tests
     runs-on: ubuntu-latest
     if: ${{ always() && github.event_name == 'pull_request' }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Check for Kover artifact
-        id: check_artifact
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId
-            });
-            return artifacts.data.artifacts.some(a => a.name === "kover-coverage-report");
-
-      - name: Download coverage report
-        if: steps.check_artifact.outputs.result == 'true'
+      - name: Download test results
         uses: actions/download-artifact@v4
         with:
-          name: kover-coverage-report
-          path: build/reports/kover
+          name: test-results
+          path: test-results
 
-      - name: Comment on PR with coverage
-        uses: madrapps/jacoco-report@v1.7.1
+      - name: Publish Unit Test Results as PR comment
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          paths: build/reports/kover/**/xml/report.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 80
-          min-coverage-changed-files: 80
-          update-comment: true
-          title: Code Coverage Summary
-          pass-emoji: '✅'
-          fail-emoji: '❌'
+          files: test-results/TEST-*.xml
+
+  upload-coverage-html:
+    name: Upload HTML Coverage Report (Separate Job)
+    needs: run-tests
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download Kover HTML report
+        uses: actions/download-artifact@v4
+        with:
+          name: kover-html-report
+          path: build/reports/kover/html/
+
+      - name: Confirm HTML report upload
+        run: echo "Kover HTML report is available as artifact."
