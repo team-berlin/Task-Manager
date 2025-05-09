@@ -5,8 +5,8 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -14,7 +14,7 @@ import com.berlin.presentation.io.Viewer
 
 class GetAllStatesByProjectIdUi(
     private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
-    // private val getAllStates: GetAllStatesUseCase,
+    private val getAllProjects: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
@@ -26,7 +26,7 @@ class GetAllStatesByProjectIdUi(
         try {
             val project = choose(
                 title = "Projects",
-                elements = DummyData.projects,
+                elements = getAllProjects.getAllProjects(),
                 labelOf = { it.name },
                 viewer = viewer,
                 reader = reader

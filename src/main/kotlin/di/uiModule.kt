@@ -44,7 +44,7 @@ val uiModule = module {
     single { DeleteStateUi(get(), get(), get(), get()) }
     single { GetStateByIdUi(get(), get(), get()) }
     single { UpdateStateUi(get(), get(), get(), get()) }
-    single { GetAllStatesByProjectIdUi(get(),get(),get()) }
+    single { GetAllStatesByProjectIdUi(get(),get(),get(),get()) }
     /* aggregated main menu */
     single {
         MainMenuUI(

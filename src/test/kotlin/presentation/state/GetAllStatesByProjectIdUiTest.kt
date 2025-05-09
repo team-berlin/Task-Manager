@@ -4,6 +4,7 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -19,6 +20,7 @@ class GetAllStatesByProjectIdUiTest {
         every { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
+    private lateinit var getAllProjects: GetAllProjectsUseCase
     private lateinit var useCase: GetAllStatesByProjectIdUseCase
     private lateinit var ui: GetAllStatesByProjectIdUi
 
@@ -31,9 +33,10 @@ class GetAllStatesByProjectIdUiTest {
 
         DummyData.projects += projectP1
         DummyData.states += listOf(stateTodo, stateDone)
-
+        getAllProjects= mockk()
+        every { getAllProjects.getAllProjects() }returns DummyData.projects
         useCase = mockk()
-        ui = GetAllStatesByProjectIdUi(useCase, viewer, reader)
+        ui = GetAllStatesByProjectIdUi(useCase,getAllProjects ,viewer, reader)
     }
 
     @Test
@@ -59,6 +62,7 @@ class GetAllStatesByProjectIdUiTest {
     @Test
     fun `shows (no states) when project has no states`() {
         //Given
+
         every { reader.read() } returns "1"
         every { useCase.getAllStatesByProjectId(projectIdWithNoStates) } returns Result.success(emptyList())
 
