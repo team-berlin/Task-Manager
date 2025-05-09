@@ -1,6 +1,5 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat

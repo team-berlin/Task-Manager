@@ -1,8 +1,7 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
 import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.repository.StateRepository
-import com.berlin.domain.usecase.state.DeleteStateUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

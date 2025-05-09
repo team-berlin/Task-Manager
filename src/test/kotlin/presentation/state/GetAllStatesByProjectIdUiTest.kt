@@ -14,110 +14,120 @@ import org.junit.jupiter.api.Test
 
 class GetAllStatesByProjectIdUiTest {
 
- private val printed = mutableListOf<String>()
- private val viewer: Viewer = mockk(relaxed = true) {
-  every { show(capture(printed)) } just Runs
- }
- private val reader: Reader = mockk()
- private lateinit var useCase: GetAllStatesByProjectIdUseCase
- private lateinit var ui: GetAllStatesByProjectIdUi
+    private val printed = mutableListOf<String>()
+    private val viewer: Viewer = mockk(relaxed = true) {
+        every { show(capture(printed)) } just Runs
+    }
+    private val reader: Reader = mockk()
+    private lateinit var useCase: GetAllStatesByProjectIdUseCase
+    private lateinit var ui: GetAllStatesByProjectIdUi
 
- private val projectP1 = Project("P1", "Core", null, emptyList(), emptyList())
- private val stateTodo = State("S1", "TODO", "P1")
- private val stateDone = State("S2", "DONE", "P1")
 
- @BeforeEach
- fun setUp() {
-  DummyData.projects.clear()
-  DummyData.states.clear()
-  printed.clear()
+    @BeforeEach
+    fun setUp() {
+        DummyData.projects.clear()
+        DummyData.states.clear()
+        printed.clear()
 
-  DummyData.projects += projectP1
-  DummyData.states += listOf(stateTodo, stateDone)
+        DummyData.projects += projectP1
+        DummyData.states += listOf(stateTodo, stateDone)
 
-  useCase = mockk()
-  ui = GetAllStatesByProjectIdUi(useCase, viewer, reader)
- }
+        useCase = mockk()
+        ui = GetAllStatesByProjectIdUi(useCase, viewer, reader)
+    }
 
- @Test
- fun `shows swimlane with states`() {
-  //Given
-  every { reader.read() } returns "1"
-  every { useCase.getAllStatesByProjectId("P1") } returns Result.success(listOf(stateTodo, stateDone))
+    @Test
+    fun `shows swimlane with states`() {
+        //Given
+        every { reader.read() } returns "1"
+        every { useCase.getAllStatesByProjectId(projectIdWithNoStates) } returns Result.success(
+            listOf(
+                stateTodo,
+                stateDone
+            )
+        )
 
-  //Given
-  ui.run()
+        //Given
+        ui.run()
 
-  //Then
-  assertThat(printed).contains("\n=== States for project P1 ===")
-  assertThat(printed).contains("- S1: TODO")
-  assertThat(printed).contains("- S2: DONE")
- }
+        //Then
+        assertThat(printed).contains("\n=== States for project P1 ===")
+        assertThat(printed).contains("- S1: TODO")
+        assertThat(printed).contains("- S2: DONE")
+    }
 
- @Test
- fun `shows (no states) when project has no states`() {
-  //Given
-  every { reader.read() } returns "1"
-  every { useCase.getAllStatesByProjectId("P1") } returns Result.success(emptyList())
+    @Test
+    fun `shows (no states) when project has no states`() {
+        //Given
+        every { reader.read() } returns "1"
+        every { useCase.getAllStatesByProjectId(projectIdWithNoStates) } returns Result.success(emptyList())
 
-  //When
-  ui.run()
+        //When
+        ui.run()
 
-  //Then
-  assertThat(printed).contains("  (no states)")
- }
+        //Then
+        assertThat(printed).contains("  (no states)")
+    }
 
- @Test
- fun `cancelling input shows Cancelled`() {
-  //Given
-  every { reader.read() } returns "X"
+    @Test
+    fun `cancelling input shows Cancelled`() {
+        //Given
+        every { reader.read() } returns "X"
 
-  //When
-  ui.run()
+        //When
+        ui.run()
 
-  //Then
-  assertThat(printed.last()).contains("Cancelled.")
-  verify(exactly = 0) { useCase.getAllStatesByProjectId(any()) }
- }
+        //Then
+        assertThat(printed.last()).contains("Cancelled.")
+        verify(exactly = 0) { useCase.getAllStatesByProjectId(any()) }
+    }
 
- @Test
- fun `invalid selection shows error`() {
-  //Given
-  every { reader.read() } returns "99"
+    @Test
+    fun `invalid selection shows error`() {
+        //Given
+        every { reader.read() } returns "99"
 
-  //When
-  ui.run()
+        //When
+        ui.run()
 
-  //Then
-  assertThat(printed.last()).contains("Invalid selection")
-  verify(exactly = 0) { useCase.getAllStatesByProjectId(any()) }
- }
+        //Then
+        assertThat(printed.last()).contains("Invalid selection")
+        verify(exactly = 0) { useCase.getAllStatesByProjectId(any()) }
+    }
 
- @Test
- fun `on use case failure shows message`() {
-  //Given
-  every { reader.read() } returns "1"
-  every { useCase.getAllStatesByProjectId("P1") } returns Result.failure(RuntimeException("Failed to load"))
+    @Test
+    fun `getAllStatesByProjectId shows message Failed to load when failure`() {
+        //Given
+        every { reader.read() } returns "1"
+        every { useCase.getAllStatesByProjectId(projectIdWithNoStates) } returns Result.failure(RuntimeException("Failed to load"))
 
-  //When
-  ui.run()
+        //When
+        ui.run()
 
-  //Then
-  assertThat(printed.last()).contains("Failed to load")
-  verify(exactly = 1) { useCase.getAllStatesByProjectId("P1") }
- }
+        //Then
+        assertThat(printed.last()).contains("Failed to load")
+        verify(exactly = 1) { useCase.getAllStatesByProjectId("P1") }
+    }
 
- @Test
- fun `throws InvalidProjectIdException and shows invalid project id`() {
-  //Given
-  every { reader.read() } returns "1"
-  every { useCase.getAllStatesByProjectId("P1") } throws InvalidProjectIdException("invalid project id")
+    //TODO review exception thrown
+    @Test
+    fun `throws InvalidProjectIdException and shows invalid project id`() {
+        //Given
+        every { reader.read() } returns "1"
+        every { useCase.getAllStatesByProjectId(projectIdWithNoStates) } throws InvalidProjectIdException("invalid project id")
 
-  //When
-  ui.run()
+        //When
+        ui.run()
 
-  //Then
-  assertThat(printed.last()).contains("invalid project id")
-  verify(exactly = 1) { useCase.getAllStatesByProjectId("P1") }
- }
+        //Then
+        assertThat(printed.last()).contains("invalid project id")
+        verify(exactly = 1) { useCase.getAllStatesByProjectId(projectIdWithNoStates) }
+    }
+
+    private companion object {
+        val projectP1 = Project("P1", "Core", null, emptyList(), emptyList())
+        val stateTodo = State("S1", "TODO", "P1")
+        val stateDone = State("S2", "DONE", "P1")
+        const val projectIdWithNoStates = "P1"
+    }
 }

@@ -1,8 +1,7 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.exception.StateNotFoundException
-import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat

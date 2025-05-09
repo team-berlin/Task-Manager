@@ -13,10 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GetStateByIdUiTest {
-    /*
-   1-id not exist so state not exist
-   2-id exist
-    */
+
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
     private lateinit var getStateById: GetStateByIdUseCase
@@ -34,10 +31,16 @@ class GetStateByIdUiTest {
         printed.clear()
     }
 
+    private companion object {
+        val stateExists = State("Q1", "Menna", "P5")
+        val stateIdNotExist = "Q999"
+        val idWhenExceptionNull = "T3"
+    }
+
     @Test
     fun `getStateById should return state when its id exists`() {
         //given
-        every { getStateById.getStateById("Q1") } returns Result.success(State("Q1", "Menna", "P5"))
+        every { getStateById.getStateById("Q1") } returns Result.success(stateExists)
         every { reader.read() } returns "Q1"
         //when
         ui.run()
@@ -50,8 +53,8 @@ class GetStateByIdUiTest {
     @Test
     fun `getStateById should show message when id doesn't exist`() {
         // Given
-        every { reader.read() } returns "Q999"
-        every { getStateById.getStateById("Q999") } returns Result.failure(StateNotFoundException("State with ID Q999 not found"))
+        every { reader.read() } returns stateIdNotExist
+        every { getStateById.getStateById(stateIdNotExist) } returns Result.failure(StateNotFoundException("State with ID Q999 not found"))
 
         // When
         ui.run()
@@ -62,11 +65,14 @@ class GetStateByIdUiTest {
 
     @Test
     fun `lookup failed fallback when exception message null`() {
-        every { reader.read() } returns "T3"
-        every { getStateById.getStateById("T3") } returns Result.failure(IllegalStateException("Lookup failed"))
+        //given
+        every { reader.read() } returns idWhenExceptionNull
+        every { getStateById.getStateById(idWhenExceptionNull) } returns Result.failure(IllegalStateException("Lookup failed"))
 
+        //When
         ui.run()
 
+        //Then
         assertThat(printed.last()).contains("Lookup failed")
     }
 

@@ -1,6 +1,5 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository

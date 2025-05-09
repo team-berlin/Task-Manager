@@ -12,13 +12,7 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-/*
-1-InvalidStateIdException
-2-InvalidSelectionException
-3-InputCancelledException
-4-InvalidStateIdException
-5-InvalidStateException("can not delete state")
- */
+
 
 class DeleteStateUiTest {
 

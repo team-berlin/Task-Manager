@@ -1,7 +1,6 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
 import com.berlin.domain.exception.StateNotFoundException
-import com.berlin.domain.usecase.state.GetStateByIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.junit.platform.commons.function.Try.failure
-import kotlin.Result.Companion.failure
 import kotlin.test.Test
 
 class GetStateByIdUseCaseTest {

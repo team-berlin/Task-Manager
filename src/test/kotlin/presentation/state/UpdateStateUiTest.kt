@@ -28,23 +28,11 @@ class UpdateStateUiTest {
         updateStateUi = UpdateStateUi(updateState, getAllStates, viewer, reader)
     }
 
-    /*
-   1-successfully updated-->ok
-   2-update failed-->ok
-   3- InvalidStateNameException-->"State Name must not be empty or blank"-->ok
-    */
-    private companion object {
-        val state = State("Q1","Menna","P5")
-        val stateId= state.id
-        val successfullyStateNewName = "done"
-        val stateProjectId = "P5"
-        val emptyStateName = ""
-    }
 
     @Test
     fun `run should return successfully updated when every thing is correct`() {
         //Given
-        every { getAllStates() } returns listOf(State("Q1","Menna","P5"))
+        every { getAllStates() } returns states
         every { reader.read() } returnsMany listOf("1", "done")
         every {
             updateState.updateState(any(), any(), any())
@@ -58,9 +46,9 @@ class UpdateStateUiTest {
         verify { viewer.show(any()) }
         verify {
             updateState.updateState(
-                stateId,
+                state.id,
                 successfullyStateNewName,
-                stateProjectId
+                state.projectId
             )
         }
         verify { viewer.show("Updated Successfully") }
@@ -69,7 +57,7 @@ class UpdateStateUiTest {
     @Test
     fun `run should return update failed when update fails`() {
         //Given
-        every { getAllStates() } returns listOf(State("Q1","Menna","P5"),)
+        every { getAllStates() } returns states
         every { reader.read() } returnsMany listOf("1", "done")
         every {
             updateState.updateState(any(), any(), any())
@@ -85,7 +73,7 @@ class UpdateStateUiTest {
     @Test
     fun `run should throw InvalidStateNameException when State Name is empty or blank`() {
         //Given
-        every { getAllStates() } returns listOf(State("Q1","Menna","P5"))
+        every { getAllStates() } returns listOf(State("Q1", "Menna", "P5"))
         every { reader.read() } returnsMany listOf("1", " ")
         every {
             updateState.updateState(any(), emptyStateName, any())
@@ -98,5 +86,11 @@ class UpdateStateUiTest {
         verify { viewer.show("State Name must not be empty or blank") }
     }
 
+    private companion object {
+        private val state = State("Q1", "Menna", "P5")
+        private val states = listOf(state)
+        private const val successfullyStateNewName = "done"
+        private const val emptyStateName = ""
+    }
 
 }
