@@ -1,16 +1,22 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Viewer
 
 class FetchAllUsersUI(
     private val fetchAllUsers: FetchAllUsersUseCase,
     private val viewer: Viewer,
-) : UiRunner {
+) : PermissionedUiRunner {
+
     override val id: Int = 500
     override val label: String = "fetch all users"
+
+    override fun isAllowed(permission: Permission) = permission.fetchAllUsers
+
     override fun run() {
         val users = fetchAllUsers.getAllUsers()
         users.onSuccess { usersList ->

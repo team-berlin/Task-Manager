@@ -3,6 +3,8 @@ package com.berlin.presentation.task
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.*
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -20,13 +22,18 @@ class GetTasksByProjectIdUITest {
     private val reader: Reader = mockk()
     private lateinit var useCase: GetTasksByProjectUseCase
     private lateinit var ui: GetTasksByProjectIdUI
-
+    private lateinit var getAllStatesByProjectId: GetAllStatesByProjectIdUseCase
+    private lateinit var getAllProjectUseCase: GetAllProjectsUseCase
     private val projectP1 = Project("P1", "Core", null, listOf("S1"), emptyList())
     private val stateTodo = State("S1", "TODO", "P1")
     private val alice = User("U1", "alice", "pw", UserRole.MATE)
 
     @BeforeEach
     fun setUp() {
+        getAllStatesByProjectId= mockk()
+        getAllProjectUseCase= mockk()
+        every { getAllProjectUseCase.getAllProjects() }returns DummyData.projects
+
         DummyData.projects.clear()
         DummyData.states.clear()
         DummyData.tasks.clear()
@@ -36,7 +43,7 @@ class GetTasksByProjectIdUITest {
         DummyData.states += stateTodo
 
         useCase = mockk()
-        ui = GetTasksByProjectIdUI(useCase, viewer, reader)
+        ui = GetTasksByProjectIdUI(useCase,getAllProjectUseCase ,getAllStatesByProjectId,viewer, reader)
     }
 
     @Test
@@ -50,6 +57,10 @@ class GetTasksByProjectIdUITest {
             assignedToUserId = alice.id,
             createByUserId = alice.id
         )
+        every { getAllStatesByProjectId.getAllStatesByProjectId("P1") } returns Result.success(listOf( State("S1", "TODO", "P1"),
+            State("S2", "IN_PROGRESS", "P1"),
+            State("S3", "REVIEW", "P1"),
+            State("S4", "DONE", "P1"),))
         every { reader.read() } returns "1"
         every { useCase.invoke("P1") } returns Result.success(listOf(task))
 
@@ -61,6 +72,7 @@ class GetTasksByProjectIdUITest {
 
     @Test
     fun `prints no states message`() {
+        every { getAllStatesByProjectId.getAllStatesByProjectId("P1") }returns Result.success(emptyList())
         DummyData.states.clear()
         every { reader.read() } returns "1"
         every { useCase.invoke("P1") } returns Result.success(emptyList())
@@ -73,6 +85,10 @@ class GetTasksByProjectIdUITest {
     @Test
     fun `state with zero tasks prints placeholder`() {
         every { reader.read() } returns "1"
+        every { getAllStatesByProjectId.getAllStatesByProjectId("P1") }returns Result.success(listOf( State("S1", "TODO", "P1"),
+            State("S2", "IN_PROGRESS", "P1"),
+            State("S3", "REVIEW", "P1"),
+            State("S4", "DONE", "P1"),))
         every { useCase.invoke("P1") } returns Result.success(emptyList())
 
         ui.run()

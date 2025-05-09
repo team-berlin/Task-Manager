@@ -1,22 +1,26 @@
 package com.berlin.presentation.state
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.CreateStateUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class CreateStateUi(
+class CreateStateUI(
     private val createStateUseCase: CreateStateUseCase,
+    private val getAllProjectUseCase: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 1000
     override val label: String = "Create New State"
+
+    override fun isAllowed(permission: Permission) = permission.createState
 
     override fun run() {
 
@@ -59,7 +63,7 @@ class CreateStateUi(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = DummyData.projects, labelOf = { it.name }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectUseCase.getAllProjects(), labelOf = { it.name }, viewer = viewer, reader = reader
     )
 
 }

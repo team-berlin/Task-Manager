@@ -1,9 +1,11 @@
 package com.berlin.presentation.project
 
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.usecase.project.UpdateProjectUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -14,9 +16,11 @@ class UpdateProjectUi(
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
     override val id: Int = 15
     override val label: String = "Update Project"
+
+    override fun isAllowed(permission: Permission) = permission.updateProject
 
     override fun run() {
         displayHeader()

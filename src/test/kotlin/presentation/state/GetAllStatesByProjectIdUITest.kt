@@ -4,6 +4,7 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -12,7 +13,7 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetAllStatesByProjectIdUiTest {
+class GetAllStatesByProjectIdUITest {
 
     private val printed = mutableListOf<String>()
     private val viewer: Viewer = mockk(relaxed = true) {
@@ -20,11 +21,15 @@ class GetAllStatesByProjectIdUiTest {
     }
     private val reader: Reader = mockk()
     private lateinit var useCase: GetAllStatesByProjectIdUseCase
-    private lateinit var ui: GetAllStatesByProjectIdUi
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
+    private lateinit var ui: GetAllStatesByProjectIdUI
 
 
     @BeforeEach
     fun setUp() {
+        getAllProjectsUseCase = mockk()
+        every { getAllProjectsUseCase.getAllProjects() } returns DummyData.projects
+
         DummyData.projects.clear()
         DummyData.states.clear()
         printed.clear()
@@ -33,7 +38,7 @@ class GetAllStatesByProjectIdUiTest {
         DummyData.states += listOf(stateTodo, stateDone)
 
         useCase = mockk()
-        ui = GetAllStatesByProjectIdUi(useCase, viewer, reader)
+        ui = GetAllStatesByProjectIdUI(useCase, getAllProjectsUseCase,viewer, reader)
     }
 
     @Test

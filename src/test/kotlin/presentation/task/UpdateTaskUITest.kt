@@ -6,6 +6,7 @@ import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
 import com.berlin.presentation.io.Reader
@@ -22,13 +23,15 @@ class UpdateTaskUITest {
     private lateinit var updateUC: UpdateTaskUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
     private lateinit var ui: UpdateTaskUI
-
+    private lateinit var fetchAllUsersUseCase: FetchAllUsersUseCase
     private val printed = mutableListOf<String>()
     private lateinit var existing: Task
     private lateinit var newUser: User
 
     @BeforeEach
     fun setUp() {
+        fetchAllUsersUseCase= mockk()
+        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(DummyData.users)
         // reset in-memory data
         DummyData.tasks.clear()
         DummyData.users.clear()
@@ -59,7 +62,7 @@ class UpdateTaskUITest {
 
         every { getAllTasks.invoke() } returns listOf(existing)
 
-        ui = UpdateTaskUI(updateUC, getAllTasks, viewer, reader)
+        ui = UpdateTaskUI(updateUC, getAllTasks,fetchAllUsersUseCase, viewer, reader)
 
         printed.clear()
     }

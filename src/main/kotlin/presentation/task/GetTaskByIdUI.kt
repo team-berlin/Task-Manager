@@ -2,8 +2,10 @@ package com.berlin.presentation.task
 
 import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.exception.TaskNotFoundException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.task.GetTaskByIdUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -12,10 +14,12 @@ class GetTaskByIdUI(
     private val getTaskById: GetTaskByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 7
     override val label: String = "Get task by ID"
+
+    override fun isAllowed(permission: Permission) = permission.getTaskById
 
     override fun run() {
         try {

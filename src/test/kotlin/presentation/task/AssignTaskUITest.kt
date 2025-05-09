@@ -2,16 +2,14 @@ package com.berlin.presentation.task
 
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidAssigneeException
-import com.berlin.domain.exception.InputCancelledException
-import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.task.AssignTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.task.AssignTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -29,9 +27,12 @@ class AssignTaskUITest {
 
     private lateinit var task: Task
     private lateinit var newAssignee: User
+    private lateinit var fetchAllUsersUseCase: FetchAllUsersUseCase
 
     @BeforeEach
     fun setUp() {
+        fetchAllUsersUseCase= mockk()
+        every { fetchAllUsersUseCase.getAllUsers() }returns Result.success(DummyData.users)
         // reset in-memory data
         DummyData.tasks.clear()
         DummyData.users.clear()
@@ -53,7 +54,6 @@ class AssignTaskUITest {
             createByUserId     = DummyData.users[0].id
         )
         DummyData.tasks += task
-
         every { getAllTasks.invoke() } returns listOf(task)
         printed.clear()
     }
@@ -65,7 +65,7 @@ class AssignTaskUITest {
             assignTaskUC.invoke(task.id, newAssignee.id)
         } returns Result.success(task.copy(assignedToUserId = newAssignee.id))
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks, fetchAllUsersUseCase,viewer, reader).run()
 
         verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).contains("Assigned to ${newAssignee.userName}")
@@ -74,8 +74,7 @@ class AssignTaskUITest {
     @Test
     fun `user cancels in first chooser`() {
         every { reader.read() } returns "X"
-
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks, fetchAllUsersUseCase,viewer, reader).run()
 
         verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
         assertThat(printed.last()).contains("Cancelled.")
@@ -85,7 +84,7 @@ class AssignTaskUITest {
     fun `user cancels in second chooser`() {
         every { reader.read() } returnsMany listOf("1", "X")
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
 
         verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
         assertThat(printed.last()).contains("Cancelled.")
@@ -97,7 +96,7 @@ class AssignTaskUITest {
         val boom = IllegalStateException("cant assign")
         every { assignTaskUC.invoke(task.id, newAssignee.id) } returns Result.failure(boom)
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
 
         verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).contains("cant assign")
@@ -107,7 +106,7 @@ class AssignTaskUITest {
     fun `invalid index prints error message`() {
         every { reader.read() } returns "36"
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
 
         verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
         assertThat(printed.last()).contains("Invalid selection")
@@ -118,7 +117,7 @@ class AssignTaskUITest {
         every { reader.read() } returnsMany listOf("1", "2")
         every { assignTaskUC.invoke(task.id, newAssignee.id) } throws InvalidAssigneeException("nope")
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
 
         verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).contains("Invalid assignee")
@@ -129,7 +128,7 @@ class AssignTaskUITest {
         every { reader.read() } returnsMany listOf("1", "2")
         every { assignTaskUC.invoke(task.id, newAssignee.id) } returns Result.failure(RuntimeException("Assignment failed"))
 
-        AssignTaskUI(assignTaskUC, getAllTasks, viewer, reader).run()
+        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
 
         verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).isEqualTo("Assignment failed")

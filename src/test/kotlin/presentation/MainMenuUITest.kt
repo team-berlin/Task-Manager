@@ -4,7 +4,7 @@
 //import com.berlin.domain.model.UserRole
 //import com.berlin.presentation.MainMenuUI
 //import com.berlin.presentation.UiRunner
-//import com.berlin.presentation.authService.AuthenticateUserUi
+//import com.berlin.presentation.authService.AuthenticateUserUI
 //import com.berlin.presentation.io.Reader
 //import com.berlin.presentation.io.Viewer
 //import com.google.common.truth.Truth.assertThat
@@ -19,7 +19,7 @@
 //    private lateinit var viewer: Viewer
 //    private lateinit var reader: Reader
 //    private lateinit var menu: MainMenuUI
-//    private lateinit var authUi: AuthenticateUserUi
+//    private lateinit var authUi: AuthenticateUserUI
 //    private lateinit var userCache: UserCache
 //
 //    private val printed = mutableListOf<String>()
@@ -31,7 +31,7 @@
 //        }
 //        reader = mockk()
 //        authUi = mockk()
-//        userCache = UserCache()
+//        userCache = UserCache(User("Y1", "menna", "12345678", UserRole.ADMIN))
 //        userCache.currentUser = User("Y1", "menna", "12345678", UserRole.ADMIN)
 //    }
 //

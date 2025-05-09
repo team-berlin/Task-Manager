@@ -1,14 +1,15 @@
 package com.berlin.presentation.audit
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -21,10 +22,12 @@ class AuditByTaskUI(
     private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase
 
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id = 2349
     override val label = "View Audit Logs by Task"
+
+    override fun isAllowed(permission: Permission) = permission.getAuditByTask
 
     override fun run() {
         try {

@@ -7,6 +7,7 @@ import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
@@ -23,13 +24,15 @@ class ChangeTaskStateUITest {
     private lateinit var changeUC: ChangeTaskStateUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
     private lateinit var ui: ChangeTaskStateUI
-
+    private lateinit var getAllStateUseCase: GetAllStatesUseCase
     private val printed = mutableListOf<String>()
     private lateinit var task: Task
     private lateinit var alice: User
 
     @BeforeEach
     fun setUp() {
+        getAllStateUseCase = mockk()
+        every { getAllStateUseCase() } returns DummyData.states
         // reset all in-memory data
         DummyData.users.clear()
         DummyData.tasks.clear()
@@ -41,13 +44,13 @@ class ChangeTaskStateUITest {
 
         // one task in TODO state S1
         task = Task(
-            id                 = "T1",
-            projectId          = "P1",
-            title              = "Demo",
-            description        = null,
-            stateId            = "S1",
-            assignedToUserId   = alice.id,
-            createByUserId     = alice.id
+            id = "T1",
+            projectId = "P1",
+            title = "Demo",
+            description = null,
+            stateId = "S1",
+            assignedToUserId = alice.id,
+            createByUserId = alice.id
         )
         DummyData.tasks += task
 
@@ -56,15 +59,15 @@ class ChangeTaskStateUITest {
         DummyData.states += State("S2", "DONE", "P1")
 
         // mocks
-        viewer     = mockk(relaxed = true) { every { show(capture(printed)) } just Runs }
-        reader     = mockk()
-        changeUC   = mockk()
+        viewer = mockk(relaxed = true) { every { show(capture(printed)) } just Runs }
+        reader = mockk()
+        changeUC = mockk()
         getAllTasks = mockk()
 
         // stub before UI instantiation
         every { getAllTasks.invoke() } returns listOf(task)
 
-        ui = ChangeTaskStateUI(changeUC, getAllTasks, viewer, reader)
+        ui = ChangeTaskStateUI(changeUC, getAllTasks, getAllStateUseCase, viewer, reader)
         printed.clear()
     }
 

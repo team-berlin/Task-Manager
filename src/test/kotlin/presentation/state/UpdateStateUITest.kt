@@ -7,17 +7,17 @@ import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.state.UpdateStateUi
+import com.berlin.presentation.state.UpdateStateUI
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
-class UpdateStateUiTest {
+class UpdateStateUITest {
     private lateinit var updateState: UpdateStateUseCase
     private lateinit var getAllStates: GetAllStatesUseCase
-    private lateinit var updateStateUi: UpdateStateUi
+    private lateinit var updateStateUi: UpdateStateUI
     private var viewer: Viewer = mockk(relaxed = true)
     private var reader: Reader = mockk()
 
@@ -25,7 +25,7 @@ class UpdateStateUiTest {
     fun setup() {
         updateState = mockk()
         getAllStates = mockk()
-        updateStateUi = UpdateStateUi(updateState, getAllStates, viewer, reader)
+        updateStateUi = UpdateStateUI(updateState, getAllStates, viewer, reader)
     }
 
 
