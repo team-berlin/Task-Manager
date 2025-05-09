@@ -31,7 +31,8 @@ class MainMenuUITest {
         }
         reader = mockk()
         authUi = mockk()
-        userCache = UserCache()
+        //edit it to pass admin as a prameter
+        userCache = UserCache(User("1","ahmed","87897984",UserRole.ADMIN))
         userCache.currentUser = User("Y1", "menna", "12345678", UserRole.ADMIN)
     }
 

@@ -28,23 +28,8 @@ object AuthServiceTestData {
     val adminIsFirstUser = userDummyData("u55", "Menna", "12345678")
     val existingUser = userDummyData("u13", "Menna", "12345678")
 
-    const val testUserName = "testUser"
-    const val testUserPassword = "testPassword"
-    const val invalidInput = ""
-
-    val expectedUser = User(
-        id = "id_testPassword",
-        userName = testForUserName,
-        password = "hashed_testPassword",
-        role = UserRole.MATE
-    )
-
-    val emptyUser = User(
-        id = "id_",
-        userName = "",
-        password = "hashed_",
-        role = UserRole.MATE
-    )
+   val EMPTY_USER =  User("","","",UserRole.ADMIN)
+    val CACHEUSER =User("user1234", "admin", "1212", UserRole.ADMIN)
 
 
 }

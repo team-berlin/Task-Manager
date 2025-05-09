@@ -28,7 +28,7 @@ val uiModule = module {
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
     single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get(),get()) }
+    single { AuthenticateUserUi(get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
     single { CreateProjectUi(get(),get(),get()) }
