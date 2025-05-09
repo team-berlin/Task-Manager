@@ -23,6 +23,7 @@ class DeleteStateUi(
     override fun run() {
 
         try {
+
             val state = choose(
                 title = "States",
                 elements = getAllStates(),

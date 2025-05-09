@@ -22,7 +22,7 @@ class GetStateByIdUi(
             .onFailure { ex ->
             when (ex) {
                 is StateNotFoundException ->
-                    viewer.show("No task found with ID “$stateId”")
+                    viewer.show("No state found with ID “$stateId”")
 
                 else ->
                     viewer.show(ex.message ?: "Lookup failed")
