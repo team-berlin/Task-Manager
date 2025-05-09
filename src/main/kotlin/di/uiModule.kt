@@ -84,7 +84,6 @@ val uiModule = module {
             ),
             viewer = get(),
             reader = get(),
-            userRole=get()
         )
     }
 }
