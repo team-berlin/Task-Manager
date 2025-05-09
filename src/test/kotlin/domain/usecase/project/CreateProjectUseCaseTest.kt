@@ -1,8 +1,7 @@
-package logic.usecase.project
+package com.berlin.domain.usecase.project
 
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
-import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
 import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat

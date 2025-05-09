@@ -1,4 +1,4 @@
-package presentation.project
+package com.berlin.presentation.project
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project

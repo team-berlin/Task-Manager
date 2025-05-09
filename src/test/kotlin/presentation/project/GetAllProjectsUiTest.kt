@@ -1,4 +1,4 @@
-package presentation.project
+package com.berlin.presentation.project
 
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.helper.projectHelper
