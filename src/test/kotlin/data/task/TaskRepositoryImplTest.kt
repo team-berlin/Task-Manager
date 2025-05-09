@@ -1,4 +1,4 @@
-package com.berlin.data.memory
+package com.berlin.data.task
 
 import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidTaskException
@@ -147,4 +147,17 @@ class TaskRepositoryImplTest {
         assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
     }
 
+    @Test
+    fun `writeAll on data source adds all tasks and is reflected in repo`() {
+        DummyData.tasks.clear()
+
+        val t1 = task("bulk1")
+        val t2 = task("bulk2")
+
+        val wrote = DummyData.writeAll(listOf(t1, t2))
+        assertThat(wrote).isTrue()
+
+        val all = repo.getAllTasks()
+        assertThat(all).containsExactly(t1, t2)
+    }
 }

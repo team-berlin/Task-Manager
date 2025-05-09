@@ -1,5 +1,4 @@
-package presentation.task
-
+package com.berlin.presentation.task
 
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskTitle
@@ -11,7 +10,6 @@ import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.task.UpdateTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -23,7 +21,6 @@ class UpdateTaskUITest {
     private lateinit var reader: Reader
     private lateinit var updateUC: UpdateTaskUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
-
     private lateinit var ui: UpdateTaskUI
 
     private val printed = mutableListOf<String>()
@@ -70,10 +67,10 @@ class UpdateTaskUITest {
     @Test
     fun `success when title only changes`() {
         every { reader.read() } returnsMany listOf(
-            "1",
-            "NewTitle",
-            "",
-            "X"
+            "1",           // choose task #1
+            "NewTitle",    // new title
+            "",            // blank → keep old desc
+            "X"            // cancel assignee → keep old
         )
         every {
             updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
@@ -91,8 +88,8 @@ class UpdateTaskUITest {
     fun `success when description only changes`() {
         every { reader.read() } returnsMany listOf(
             "1",
-            "",
-            "NewDesc",
+            "",           // keep title
+            "NewDesc",    // new description
             "X"
         )
         every {
@@ -111,9 +108,9 @@ class UpdateTaskUITest {
     fun `success when assignee only changes`() {
         every { reader.read() } returnsMany listOf(
             "1",
-            "",
-            "",
-            "2"
+            "",           // keep title
+            "",           // keep desc
+            "2"           // choose user #2
         )
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
@@ -130,7 +127,10 @@ class UpdateTaskUITest {
     @Test
     fun `success when nothing changes`() {
         every { reader.read() } returnsMany listOf(
-            "1", "", "", "X"
+            "1",
+            "",
+            "",
+            "X"
         )
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
@@ -222,5 +222,4 @@ class UpdateTaskUITest {
 
         assertThat(printed.last()).contains("Task not founc")
     }
-
 }
