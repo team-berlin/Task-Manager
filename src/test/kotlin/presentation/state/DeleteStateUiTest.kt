@@ -32,7 +32,7 @@ class DeleteStateUiTest {
         DummyData.states.clear()
         printed.clear()
 
-        state = State( "S1",  "To Do","L3")
+        state = State("S1", "TODO", "P1")
         DummyData.states += state
 
         ui = DeleteStateUi(deleteState, getAllStates, viewer, reader)
@@ -41,7 +41,9 @@ class DeleteStateUiTest {
     @Test
     fun `deleteState should deletes state and prints confirmation when confirm`() {
         //Given
-        every { getAllStates() } returns listOf(state)
+        val stateDeleted = State("Q1","Menna","P5")
+
+        every { getAllStates() } returns DummyData.states
         every { reader.read() } returnsMany listOf("1", "y")
         every { deleteState.deleteState(state.id) } returns Result.success("Deleted Successfully")
 
@@ -50,7 +52,7 @@ class DeleteStateUiTest {
 
         //Then
         verify(exactly = 1) { deleteState.deleteState(state.id) }
-        assertThat(DummyData.states).doesNotContain(state)
+        assertThat(DummyData.states).doesNotContain(stateDeleted)
         assertThat(printed.last()).contains("Deleted.")
     }
 
