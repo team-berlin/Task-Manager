@@ -17,7 +17,7 @@ class AuthenticateUserUseCase(
         }
 
         val cachedUser = userCache.currentUser
-        if (cachedUser != null && cachedUser.userName == userName)
+        if (cachedUser.userName == userName)
             return Result.success(cachedUser)
 
         val hashedPassword=hashingString.hashPassword(password)

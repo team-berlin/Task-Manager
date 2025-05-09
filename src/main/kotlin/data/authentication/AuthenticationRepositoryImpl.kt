@@ -2,7 +2,6 @@ package com.berlin.data.authentication
 
 import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.UserNotFoundException
-import com.berlin.domain.exception.UserNotLoggedInException
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
@@ -42,12 +41,7 @@ class AuthenticationRepositoryImpl(
 
     override fun getCurrentUser(): Result<User> {
         val user = userCache.currentUser
-        return if (user != null) {
-            Result.success(user)
-        } else {
-            failure(UserNotLoggedInException("No one logged in"))
-
-        }
+        return Result.success(user)
 
     }
 

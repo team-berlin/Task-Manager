@@ -7,7 +7,6 @@ import com.berlin.domain.usecase.task.DeleteTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.task.DeleteTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -55,7 +54,7 @@ class DeleteTaskUITest {
         ui.run()
 
         verify(exactly = 1) { deleteUC.invoke(task.id) }
-        assertThat(DummyData.tasks).doesNotContain(task)
+        assertThat(DummyData.tasks).doesNotContain(listOf(task))
         assertThat(printed.last()).contains("Deleted.")
     }
 
