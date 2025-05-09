@@ -1,7 +1,7 @@
 package com.berlin.presentation
 
 import com.berlin.domain.model.UserRole
-import com.berlin.presentation.authService.AuthenticateUserUI
+import com.berlin.presentation.authService.AuthenticateUserUi
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import data.UserCache
@@ -10,7 +10,7 @@ class MainMenuUI(
     private val runners: List<UiRunner>,
     private val viewer: Viewer,
     private val reader: Reader,
-    private val authUi: AuthenticateUserUI,
+    private val authUi: AuthenticateUserUi,
     private val userCache: UserCache,
 ) : UiRunner {
 
@@ -57,7 +57,7 @@ class MainMenuUI(
 
 
     private companion object {
-        val adminPermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7, 30,50, 100, 300, 500, 900, 11, 12, 13, 14, 15, 24390823,1000,2000,3000,200000, 2349, 24234)
+        val adminPermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7, 30, 100, 300, 500, 900)
         val matePermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7)
     }
 }

@@ -1,4 +1,4 @@
- package com.berlin.di
+package com.berlin.di
 
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
@@ -27,7 +27,7 @@ val uiModule = module {
     single { GettingUsersLoggedInUI(get(), get()) }
 
     single { CreateMateUI(get(),get(),get()) }
-    single { AuthenticateUserUI(get(),get(),get()) }
+    single { AuthenticateUserUi(get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
     single { CreateProjectUi(get(),get(),get()) }
@@ -79,8 +79,9 @@ val uiModule = module {
             ),
             viewer = get(),
             reader = get(),
-            authUi = get<AuthenticateUserUI>(),
+            authUi = get<AuthenticateUserUi>(),
             userCache=get<UserCache>()
+
         )
     }
 }

@@ -27,5 +27,4 @@ val appModule = module {
             User("user1234", "admin", "1212", UserRole.ADMIN)
         )
     }
-
 }

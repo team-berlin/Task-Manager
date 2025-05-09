@@ -4,10 +4,9 @@ import com.berlin.domain.model.User
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import data.UserCache
 import domain.usecase.authService.AuthenticateUserUseCase
 
-class AuthenticateUserUI(
+class AuthenticateUserUi(
     private val authenticateUser: AuthenticateUserUseCase,
     private val viewer: Viewer,
     private val reader: Reader
