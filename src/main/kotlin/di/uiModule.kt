@@ -19,54 +19,49 @@ val uiModule = module {
 
     single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
     single { AssignTaskUI(get(), get(), get(), get()) }
-    single { DeleteTaskUI(get(), get(), get(),get()) }
+    single { DeleteTaskUI(get(), get(), get(), get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
     single { UpdateTaskUI(get(), get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
-    single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get(),get()) }
-    single { FetchAllUsersUI(get(),get()) }
-    single { GetUserByIDUI(get(),get(),get()) }
-    single { CreateProjectUi(get(),get(),get()) }
-    single { DeleteProjectUi(get(),get(),get(),get()) }
-    single { GetAllProjectsUi(get(),get()) }
-    single { GetProjectByIdUi(get(),get(),get()) }
-    single { UpdateProjectUi(get(),get(),get(),get(),get()) }
-
+    single { CreationOfMateUi(get(), get(), get()) }
+    single { AuthenticateUserUi(get(), get(), get(), get()) }
+    single { FetchAllUsersUI(get(), get()) }
+    single { GetUserByIDUI(get(), get(), get()) }
+    single { CreateProjectUi(get(), get(), get()) }
+    single { DeleteProjectUi(get(), get(), get(), get()) }
+    single { GetAllProjectsUi(get(), get()) }
+    single { GetProjectByIdUi(get(), get(), get()) }
+    single { UpdateProjectUi(get(), get(), get(), get(), get()) }
+    single { ManageusersMainUi(get(), get(), get()) }
 
     /* aggregated main menu */
     single {
         MainMenuUI(
             runners = listOf(
-                get<CreateTaskUI>(),
-                get<AssignTaskUI>(),
-                get<DeleteTaskUI>(),
-                get<GetTasksByProjectIdUI>(),
-                get<UpdateTaskUI>(),
-                get<ChangeTaskStateUI>(),
-                get<GetTaskByIdUI>(),
-
-                get<CreationOfMateUi>(),
-                get<FetchAllUsersUI>(),
-                get<GettingUsersLoggedInUI>(),
-                get<GetUserByIDUI>(),
-
-                get<CreateProjectUi>(),
-                get<DeleteProjectUi>(),
-                get<GetAllProjectsUi>(),
-                get<GetProjectByIdUi>(),
-                get<UpdateProjectUi>(),
+                get<ManageusersMainUi>(),
+                get<ManageProjcetsMainUi>()
             ),
             viewer = get(),
-            reader = get()
+            reader = get(),
+            authUi = get<AuthenticateUserUi>(),
+            userCache = get<UserCache>()
         )
     }
+    /*
+    get<CreateTaskUI>(),
+    get<AssignTaskUI>(),
+    get<DeleteTaskUI>(),
+    get<GetTasksByProjectIdUI>(),
+    get<UpdateTaskUI>(),
+    get<ChangeTaskStateUI>(),
+    get<GetTaskByIdUI>(),
+     */
     single {
         ManageusersMainUi(
-            runners = listOf(
+            usersRunners = listOf(
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
@@ -74,14 +69,13 @@ val uiModule = module {
             ),
             viewer = get(),
             reader = get(),
-            authUi = get<AuthenticateUserUi>(),
-            userCache=get<UserCache>()
 
-        )
+
+            )
     }
     single {
         ManageProjcetsMainUi(
-            runners = listOf(
+            projectRunners = listOf(
                 get<CreateProjectUi>(),
                 get<DeleteProjectUi>(),
                 get<GetAllProjectsUi>(),
@@ -89,7 +83,8 @@ val uiModule = module {
                 get<UpdateProjectUi>(),
             ),
             viewer = get(),
-            reader = get()
+            reader = get(),
+            userRole=get()
         )
     }
 }

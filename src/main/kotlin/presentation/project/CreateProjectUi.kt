@@ -2,7 +2,9 @@ package com.berlin.presentation.project
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.model.UserRole
 import com.berlin.domain.usecase.project.CreateProjectUseCase
+import com.berlin.presentation.RoleBasedPermission
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -10,9 +12,10 @@ import com.berlin.presentation.io.Viewer
 class CreateProjectUi(
     private val createProject: CreateProjectUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
-) : UiRunner {
+    private val reader: Reader,
+) : UiRunner, RoleBasedPermission {
 
+    override val allowedRoles = listOf(UserRole.ADMIN)
     override val id: Int = 1
     override val label: String = "Create New Project"
 

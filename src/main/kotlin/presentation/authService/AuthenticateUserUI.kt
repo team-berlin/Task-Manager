@@ -10,7 +10,8 @@ import domain.usecase.authService.AuthenticateUserUseCase
 class AuthenticateUserUi(
     private val authenticateUser: AuthenticateUserUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
+    private val reader: Reader,
+    private val userCache: UserCache
 ) : UiRunner {
     override val id: Int = 0
     override val label: String = "Log in"
@@ -31,7 +32,7 @@ class AuthenticateUserUi(
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")
-                UserCache.currentUser = it
+                userCache.currentUser = it
             },
             onFailure = {
                 viewer.show("Try again")

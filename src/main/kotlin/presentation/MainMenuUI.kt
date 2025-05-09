@@ -31,6 +31,7 @@ class MainMenuUI(
         val filteringRunners = filterRunners(currentUser.role)
 
         while (true) {
+
             showMenu(filteringRunners)
             when (val input = reader.read()?.trim()) {
                 null, "", "x", "X" -> return
@@ -57,7 +58,7 @@ class MainMenuUI(
 
 
     private companion object {
-        val adminPermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7, 30, 100, 300, 500, 900)
-        val matePermissionFilterIds = listOf(1, 2, 3, 4, 5, 6, 7)
+        val adminPermissionFilterIds = listOf(1, 2)
+        val matePermissionFilterIds = listOf(2)
     }
 }
