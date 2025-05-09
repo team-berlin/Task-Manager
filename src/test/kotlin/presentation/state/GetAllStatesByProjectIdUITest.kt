@@ -4,6 +4,7 @@ import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -21,6 +22,7 @@ class GetAllStatesByProjectIdUITest {
     private val reader: Reader = mockk()
     private lateinit var useCase: GetAllStatesByProjectIdUseCase
     private lateinit var ui: GetAllStatesByProjectIdUI
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
 
 
     @BeforeEach
@@ -33,7 +35,7 @@ class GetAllStatesByProjectIdUITest {
         DummyData.states += listOf(stateTodo, stateDone)
 
         useCase = mockk()
-        ui = GetAllStatesByProjectIdUI(useCase, viewer, reader)
+        ui = GetAllStatesByProjectIdUI(useCase,getAllProjectsUseCase, viewer, reader)
     }
 
     @Test

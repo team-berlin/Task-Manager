@@ -5,7 +5,6 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.State
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
@@ -37,7 +36,7 @@ class ChangeTaskStateUI(
                 reader   = reader
             )
 
-            val possible = getAllTasks().filter { it.projectId == task.projectId }
+            val possible = getAllStates().filter { it.projectId == task.projectId }
             if (possible.isEmpty()) {
                 viewer.show("No states defined for project ${task.projectId}")
                 return
@@ -45,13 +44,13 @@ class ChangeTaskStateUI(
             val state = choose(
                 title    = "States for project ${task.projectId}",
                 elements = possible,
-                labelOf  = { (it as State).name },
+                labelOf  = { (it ).name },
                 viewer   = viewer,
                 reader   = reader
             )
 
             changeState(task.id, state.id)
-                .onSuccess { viewer.show("Task ${task.id} moved to ${state.title}") }
+                .onSuccess { viewer.show("Task ${task.id} moved to ${state.name}") }
                 .onFailure { viewer.show(it.message ?: "Failed to change state") }
 
         } catch (ex: InputCancelledException) {

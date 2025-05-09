@@ -3,6 +3,7 @@ package presentation.audit
 import com.berlin.data.DummyData
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -17,13 +18,14 @@ class AuditByUserUITest {
     private val viewer = mockk<Viewer>(relaxed = true)
     private val reader = mockk<Reader>()
     private val getAuditLogsByUserIdUseCase = mockk<GetAuditLogsByUserIdUseCase>()
+    private val fetchAllUsers= mockk<FetchAllUsersUseCase>()
     private lateinit var ui: AuditByUserUI
 
 
     @BeforeEach
     fun setup() {
 
-        ui = AuditByUserUI(getAuditLogsByUserIdUseCase, viewer, reader)
+        ui = AuditByUserUI(getAuditLogsByUserIdUseCase,fetchAllUsers,viewer, reader)
 
         DummyData.users.clear()
         DummyData.users.addAll(
