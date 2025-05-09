@@ -1,6 +1,7 @@
 package com.berlin.presentation.state
 
 import com.berlin.data.DummyData
+import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.presentation.UiRunner
@@ -19,9 +20,14 @@ class CreateStateUi(
 
     override fun run() {
 
-        val project = selectProject()
-        viewer.show("-- Enter a state in project ${project.name} --")
-        addStateName(project)
+        try {
+            val project = selectProject()
+            viewer.show("-- Enter a state in project ${project.name} --")
+            addStateName(project)
+        } catch (_: InputCancelledException) {
+            viewer.show("Cancelled!")
+        }
+
 
     }
 
