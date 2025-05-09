@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class MD5HashAlgorithmTest {
 
-    private lateinit var mD5HashAlgorithm: HashingPassword
+    private lateinit var mD5HashAlgorithm: HashingString
 
     @BeforeEach
     fun setup() {

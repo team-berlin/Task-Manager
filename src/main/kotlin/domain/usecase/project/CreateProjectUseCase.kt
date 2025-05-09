@@ -1,6 +1,6 @@
 package com.berlin.domain.usecase.project
 
-import com.berlin.domain.helper.IdGenerator
+import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.model.Project
 

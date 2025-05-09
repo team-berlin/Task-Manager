@@ -9,6 +9,7 @@ import com.berlin.presentation.ManageusersMainUi
 import com.berlin.presentation.authService.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
+import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -26,7 +27,7 @@ val uiModule = module {
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
     single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get()) }
+    single { AuthenticateUserUi(get(),get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
     single { CreateProjectUi(get(),get(),get()) }
@@ -48,7 +49,6 @@ val uiModule = module {
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>(),
 
-                get<AuthenticateUserUi>(),
                 get<CreationOfMateUi>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
@@ -73,7 +73,10 @@ val uiModule = module {
                 get<GetUserByIDUI>()
             ),
             viewer = get(),
-            reader = get()
+            reader = get(),
+            authUi = get<AuthenticateUserUi>(),
+            userCache=get<UserCache>()
+
         )
     }
     single {

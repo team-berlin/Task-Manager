@@ -1,6 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.domain.helper.IdGenerator
+import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType

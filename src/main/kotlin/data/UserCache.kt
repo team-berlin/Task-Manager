@@ -2,6 +2,6 @@ package data
 
 import com.berlin.domain.model.User
 
-object UserCache {
+class UserCache {
     var currentUser: User? = null
 }
