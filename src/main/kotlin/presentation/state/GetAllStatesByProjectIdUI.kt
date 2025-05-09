@@ -1,32 +1,35 @@
 package com.berlin.presentation.state
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class GetAllStatesByProjectIdUi(
+class GetAllStatesByProjectIdUI(
     private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
-    // private val getAllStates: GetAllStatesUseCase,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 3000
     override val label: String = "Get current states for a specific project"
+
+    override fun isAllowed(permission: Permission) = permission.getAllStatesByProjectId
 
     override fun run() {
         try {
             val project = choose(
                 title = "Projects",
-                elements = DummyData.projects,
+                elements = getAllProjectsUseCase.getAllProjects(),
                 labelOf = { it.name },
                 viewer = viewer,
                 reader = reader
@@ -47,7 +50,7 @@ class GetAllStatesByProjectIdUi(
     }
 
     private fun showSwimLaneFor(projectId: String, states: List<State>) {
-        val projects = DummyData.projects.filter { it.id == projectId }
+        val projects = getAllProjectsUseCase.getAllProjects().filter { it.id == projectId }
         if (projects.isEmpty()) {
             viewer.show("No projects found")
             return

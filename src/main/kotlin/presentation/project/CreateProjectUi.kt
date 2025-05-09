@@ -1,6 +1,8 @@
 package com.berlin.presentation.project
 
+import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.CreateProjectUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -9,9 +11,11 @@ class CreateProjectUi(
     private val createProjectUseCase: CreateProjectUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
     override val id: Int = 1
     override val label: String = "Create New Project"
+
+    override fun isAllowed(permission: Permission) = permission.createProject
 
     override fun run() {
 

@@ -1,14 +1,15 @@
 package com.berlin.presentation.task
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.State
+import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -16,14 +17,17 @@ import com.berlin.presentation.io.Viewer
 class ChangeTaskStateUI(
     private val changeState: ChangeTaskStateUseCase,
     private val getAllTasks: GetAllTasksUseCase,
+    private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 6
     override val label: String = "Change task state"
 
-    override fun run() {
+    override fun isAllowed(permission: Permission) = permission.changeTaskState
+
+     override fun run() {
         try {
             val task = choose(
                 title    = "Tasks",
@@ -33,7 +37,7 @@ class ChangeTaskStateUI(
                 reader   = reader
             )
 
-            val possible = DummyData.states.filter { it.projectId == task.projectId }
+            val possible = getAllTasks().filter { it.projectId == task.projectId }
             if (possible.isEmpty()) {
                 viewer.show("No states defined for project ${task.projectId}")
                 return
@@ -47,7 +51,7 @@ class ChangeTaskStateUI(
             )
 
             changeState(task.id, state.id)
-                .onSuccess { viewer.show("Task ${task.id} moved to ${state.name}") }
+                .onSuccess { viewer.show("Task ${task.id} moved to ${state.title}") }
                 .onFailure { viewer.show(it.message ?: "Failed to change state") }
 
         } catch (ex: InputCancelledException) {

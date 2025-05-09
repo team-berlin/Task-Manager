@@ -2,8 +2,10 @@ package com.berlin.presentation.project
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.ProjectNotFoundException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.model.Project
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -12,9 +14,11 @@ class GetProjectByIdUi(
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
     override val id: Int = 14
     override val label: String = "View Project Details"
+
+    override fun isAllowed(permission: Permission) = permission.getTasksByProjectId
 
     override fun run() {
         try {

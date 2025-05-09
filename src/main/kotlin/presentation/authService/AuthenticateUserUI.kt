@@ -6,7 +6,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import domain.usecase.authService.AuthenticateUserUseCase
 
-class AuthenticateUserUi(
+class AuthenticateUserUI(
     private val authenticateUser: AuthenticateUserUseCase,
     private val viewer: Viewer,
     private val reader: Reader
@@ -26,15 +26,15 @@ class AuthenticateUserUi(
         return authenticateUser.login(userName, password)
     }
 
-    private fun authenticateLoop(failedAttemps: Int = 0, maxAttemps: Int = 3) {
+    private fun authenticateLoop(failedAttempts: Int = 0, maxAttempts: Int = 3) {
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")
             },
             onFailure = {
                 viewer.show("Try again")
-                if (failedAttemps < maxAttemps) {
-                    authenticateLoop(failedAttemps + 1, maxAttemps)
+                if (failedAttempts < maxAttempts) {
+                    authenticateLoop(failedAttempts + 1, maxAttempts)
                 }
             }
         )

@@ -1,11 +1,12 @@
 package com.berlin.presentation.project
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.DeleteProjectUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -16,10 +17,11 @@ class DeleteProjectUi(
     private val getAllProjects: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
     override val id: Int = 12
     override val label: String = "Delete Project"
 
+    override fun isAllowed(permission: Permission) = permission.deleteProject
 
     override fun run() {
         try {
@@ -36,7 +38,6 @@ class DeleteProjectUi(
 
             deleteProject.deleteProject(project.id)
                 .onSuccess {
-                    DummyData.projects.remove(project)
                     viewer.show("Deleted.")
                 }
                 .onFailure {

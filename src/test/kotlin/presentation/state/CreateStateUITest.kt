@@ -5,7 +5,7 @@ import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.state.CreateStateUi
+import com.berlin.presentation.state.CreateStateUI
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -13,9 +13,9 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreateStateUiTest {
+class CreateStateUITest {
     private lateinit var createStateUseCase: CreateStateUseCase
-    private lateinit var createStateUi: CreateStateUi
+    private lateinit var createStateUi: CreateStateUI
     private val viewer: Viewer = mockk(relaxed = true)
     private val reader: Reader = mockk(relaxed = true)
 
@@ -31,7 +31,7 @@ class CreateStateUiTest {
     @BeforeEach
     fun setup() {
         createStateUseCase = mockk(relaxed = true)
-        createStateUi = CreateStateUi(createStateUseCase, viewer, reader)
+        createStateUi = CreateStateUI(createStateUseCase, viewer, reader)
 
         // Mock the choose function to return our test project
         mockkStatic("com.berlin.presentation.helper.ChooserKt")

@@ -2,21 +2,26 @@ package com.berlin.presentation.state
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidStateNameException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.state.UpdateStateUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class UpdateStateUi(
+class UpdateStateUI(
     private val updateState: UpdateStateUseCase,
     private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-) : UiRunner {
+) : PermissionedUiRunner {
+
     override val id: Int = 50
     override val label: String = "Update State"
+
+    override fun isAllowed(permission: Permission) = permission.updateState
+
     override fun run() {
         try {
 

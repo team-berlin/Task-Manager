@@ -12,7 +12,7 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetAllStatesByProjectIdUiTest {
+class GetAllStatesByProjectIdUITest {
 
     private val printed = mutableListOf<String>()
     private val viewer: Viewer = mockk(relaxed = true) {
@@ -20,7 +20,7 @@ class GetAllStatesByProjectIdUiTest {
     }
     private val reader: Reader = mockk()
     private lateinit var useCase: GetAllStatesByProjectIdUseCase
-    private lateinit var ui: GetAllStatesByProjectIdUi
+    private lateinit var ui: GetAllStatesByProjectIdUI
 
 
     @BeforeEach
@@ -33,7 +33,7 @@ class GetAllStatesByProjectIdUiTest {
         DummyData.states += listOf(stateTodo, stateDone)
 
         useCase = mockk()
-        ui = GetAllStatesByProjectIdUi(useCase, viewer, reader)
+        ui = GetAllStatesByProjectIdUI(useCase, viewer, reader)
     }
 
     @Test

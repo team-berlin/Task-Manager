@@ -1,12 +1,13 @@
 package com.berlin.presentation.task
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.model.Permission
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.task.AssignTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -14,18 +15,21 @@ import com.berlin.presentation.io.Viewer
 class AssignTaskUI(
     private val assignTask: AssignTaskUseCase,
     private val getAllTasks: GetAllTasksUseCase,
+    private val fetchAllUsersUseCase: FetchAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 2
     override val label: String = "Assign task"
+
+    override fun isAllowed(permission: Permission) = permission.assignTask
 
     override fun run() {
         try {
             val task = selectTask()
             val assignee = choose(
-                title = "Users", elements = DummyData.users, labelOf = { it.userName }, viewer = viewer, reader = reader
+                title = "Users", elements = fetchAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
             )
 
             assignTask(task.id, assignee.id).onSuccess { viewer.show("Assigned to ${assignee.userName}") }

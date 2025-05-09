@@ -1,24 +1,30 @@
 package com.berlin.presentation.audit
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.UiRunner
+import com.berlin.presentation.authService.FetchAllUsersUI
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class AuditByUserUI(
     private val getAuditLogsByUserIdUseCase: GetAuditLogsByUserIdUseCase,
+    private val fetchAllUsers: FetchAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 24234
     override val label: String = "Show audit by user"
+
+    override fun isAllowed(permission: Permission) = permission.getAuditByUser
 
     override fun run() {
         try {
@@ -37,7 +43,7 @@ class AuditByUserUI(
     private fun selectUser(): User {
         return choose(
             title = "Choose a user",
-            elements = DummyData.users,
+            elements = fetchAllUsers.getAllUsers().getOrNull()?: emptyList(),
             labelOf = { user -> user.userName },
             viewer = viewer,
             reader = reader

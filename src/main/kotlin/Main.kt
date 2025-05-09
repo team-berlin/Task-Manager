@@ -15,8 +15,4 @@ fun main() {
     }
     val mainMenu: MainMenuUI = getKoin().get()
     mainMenu.run()
-
 }
-
-
-// autit -> project [tasks]
