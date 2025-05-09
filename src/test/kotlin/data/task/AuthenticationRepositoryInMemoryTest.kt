@@ -1,44 +1,118 @@
-package com.berlin.data.memory
+package com.berlin.data.authentication
 
 import com.berlin.data.AuthDummyData
-import com.berlin.data.authentication.AuthenticationRepositoryImpl
-import com.berlin.domain.hashPassword.HashingPassword
-import com.berlin.domain.hashPassword.MD5Hasher
+import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.helper.AuthServiceTestData
-import com.google.common.truth.Truth.assertThat
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
+import data.UserCache
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import com.google.common.truth.Truth.assertThat
 
 class AuthenticationRepositoryInMemoryTest {
-    private lateinit var inMemoryAuthRepositoryImpl: AuthenticationRepositoryImpl
-    private lateinit var hashingPassword: HashingPassword
+
+    private val cachedUser = User("user1234", "admin", "1212", UserRole.ADMIN)
+
+    private lateinit var repoWithCache:    AuthenticationRepositoryImpl
+    private lateinit var repoWithoutCache: AuthenticationRepositoryImpl
 
     @BeforeEach
     fun setup() {
-        hashingPassword = MD5Hasher()
         AuthDummyData.users.clear()
-        inMemoryAuthRepositoryImpl =AuthenticationRepositoryImpl(AuthDummyData)
+
+        repoWithCache = AuthenticationRepositoryImpl(
+            userCache      = UserCache(cachedUser),
+            userDataSource = AuthDummyData
+        )
+
+        repoWithoutCache = AuthenticationRepositoryImpl(
+            userCache      = UserCache(cachedUser),
+            userDataSource = AuthDummyData
+        )
     }
 
-
-
     @Test
-    fun `login should return success when provided with valid credentials`() {
-        val username = "Fatma"
-        val password = "hashed_securePassword"
-        inMemoryAuthRepositoryImpl.createMate(AuthServiceTestData.excepctedUser)
-        val result = inMemoryAuthRepositoryImpl.login(username, password)
+    fun `login succeeds with exactly matching credentials`() {
+        val expected = AuthServiceTestData.expectedUser
+        repoWithoutCache.createMate(expected)
+
+        val result = repoWithoutCache.login(expected.userName, expected.password)
+
         assertThat(result.isSuccess).isTrue()
-        val user = result.getOrNull()
-        assertThat(user?.userName).isEqualTo(username)
+        assertThat(result.getOrNull()).isEqualTo(expected)
     }
 
     @Test
-    fun `login should return failure when provided with invalid credentials`() {
-        inMemoryAuthRepositoryImpl.createMate(AuthServiceTestData.user)
-        val result = inMemoryAuthRepositoryImpl.login("wrong", "pass")
+    fun `login fails with wrong credentials`() {
+        repoWithoutCache.createMate(AuthServiceTestData.expectedUser)
+
+        val result = repoWithoutCache.login("wrongUser", "wrongPass")
+
         assertThat(result.isFailure).isTrue()
     }
 
+    @Test
+    fun `createMate persists and returns the new user`() {
+        val newUser = User("id-foo", "bar", "baz", UserRole.MATE)
 
+        val result = repoWithoutCache.createMate(newUser)
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(newUser)
+        assertThat(AuthDummyData.users).contains(newUser)
+    }
+
+    @Test
+    fun `getUserById returns user when exists`() {
+        val u = AuthServiceTestData.expectedUser
+        repoWithoutCache.createMate(u)
+
+        val result = repoWithoutCache.getUserById(u.id)
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(u)
+    }
+
+    @Test
+    fun `getUserById fails when user does not exist`() {
+        val missingId = "does-not-exist"
+
+        val result = repoWithoutCache.getUserById(missingId)
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull())
+            .isInstanceOf(UserNotFoundException::class.java)
+        assertThat(result.exceptionOrNull()?.message)
+            .isEqualTo(missingId)
+    }
+
+    @Test
+    fun `getAllUsers returns empty list when none exist`() {
+        val result = repoWithoutCache.getAllUsers()
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEmpty()
+    }
+
+    @Test
+    fun `getAllUsers returns all users when some exist`() {
+        val u1 = AuthServiceTestData.expectedUser
+        val u2 = User("id2", "alice", "pw", UserRole.MATE)
+        repoWithoutCache.createMate(u1)
+        repoWithoutCache.createMate(u2)
+
+        val result = repoWithoutCache.getAllUsers()
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).containsExactly(u1, u2)
+    }
+
+    @Test
+    fun `getCurrentUser returns the cached user when present`() {
+        val result = repoWithCache.getCurrentUser()
+
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).isEqualTo(cachedUser)
+    }
 }

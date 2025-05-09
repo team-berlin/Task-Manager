@@ -1,15 +1,16 @@
-package presentation.task
+package com.berlin.presentation.task
 
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
+import com.berlin.domain.model.User
+import com.berlin.domain.model.UserRole
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.task.ChangeTaskStateUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -20,65 +21,74 @@ class ChangeTaskStateUITest {
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
     private lateinit var changeUC: ChangeTaskStateUseCase
-    private lateinit var ui: ChangeTaskStateUI
     private lateinit var getAllTasks: GetAllTasksUseCase
+    private lateinit var ui: ChangeTaskStateUI
 
     private val printed = mutableListOf<String>()
     private lateinit var task: Task
-    private val alice = DummyData.users[0]
+    private lateinit var alice: User
 
     @BeforeEach
     fun setUp() {
-        // reset in-memory lists
+        // reset all in-memory data
+        DummyData.users.clear()
         DummyData.tasks.clear()
         DummyData.states.clear()
 
-        task = Task(
-            id = "T1",
-            projectId = "P1",
-            title = "Demo",
-            description = null,
-            stateId = "S1",
-            assignedToUserId = alice.id,
-            createByUserId = alice.id
-        )
+        // add one user (needed for assignedBy / filter logic)
+        alice = User("U1", "alice", "pw", UserRole.MATE)
+        DummyData.users += alice
 
+        // one task in TODO state S1
+        task = Task(
+            id                 = "T1",
+            projectId          = "P1",
+            title              = "Demo",
+            description        = null,
+            stateId            = "S1",
+            assignedToUserId   = alice.id,
+            createByUserId     = alice.id
+        )
         DummyData.tasks += task
+
+        // two possible states for project P1
         DummyData.states += State("S1", "TODO", "P1")
         DummyData.states += State("S2", "DONE", "P1")
 
-        viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
-        }
-        reader = mockk()
-        changeUC = mockk()
+        // mocks
+        viewer     = mockk(relaxed = true) { every { show(capture(printed)) } just Runs }
+        reader     = mockk()
+        changeUC   = mockk()
         getAllTasks = mockk()
-        ui = ChangeTaskStateUI(changeUC, getAllTasks, viewer, reader)
+
+        // stub before UI instantiation
         every { getAllTasks.invoke() } returns listOf(task)
+
+        ui = ChangeTaskStateUI(changeUC, getAllTasks, viewer, reader)
         printed.clear()
     }
 
     @Test
     fun `success moves to chosen state`() {
+        // pick task #1, then state #1 (TODO)
         every { reader.read() } returnsMany listOf("1", "1")
         every { changeUC.invoke("T1", "S1") } returns Result.success(task.copy(stateId = "S1"))
 
         ui.run()
 
-        assertThat(printed.last()).contains("Task T1 moved to TODO")
         verify { changeUC.invoke("T1", "S1") }
+        assertThat(printed.last()).contains("Task T1 moved to TODO")
     }
 
     @Test
     fun `no states defined prints message and returns`() {
-        // clear states so possible.isEmpty() triggers
-        DummyData.states.clear()
-        every { reader.read() } returns "1"
+        DummyData.states.clear()               // trigger "no states" path
+        every { reader.read() } returns "1"    // choose task
 
         ui.run()
 
-        assertThat(printed.last()).contains("No states defined for project P1")
         verify { changeUC wasNot Called }
+        assertThat(printed.last()).contains("No states defined for project P1")
     }
 
     @Test
@@ -87,8 +97,8 @@ class ChangeTaskStateUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Cancelled.")
         verify { changeUC wasNot Called }
+        assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
@@ -97,8 +107,8 @@ class ChangeTaskStateUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Invalid selection")
         verify { changeUC wasNot Called }
+        assertThat(printed.last()).contains("Invalid selection")
     }
 
     @Test
@@ -107,8 +117,8 @@ class ChangeTaskStateUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Cancelled.")
         verify { changeUC wasNot Called }
+        assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
@@ -117,8 +127,8 @@ class ChangeTaskStateUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Invalid selection")
         verify { changeUC wasNot Called }
+        assertThat(printed.last()).contains("Invalid selection")
     }
 
     @Test

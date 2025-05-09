@@ -1,9 +1,13 @@
 package presentation.audit
 
 import com.berlin.data.DummyData
+import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.audit.AuditByTaskUI
+import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -11,11 +15,14 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class AuditByTaskUITest {
 
     private val viewer = mockk<Viewer>(relaxed = true)
     private val reader = mockk<Reader>()
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
+    private lateinit var getTasksByProjectUseCase: GetTasksByProjectUseCase
     private val getAuditLogsByTaskIdUseCase = mockk<GetAuditLogsByTaskIdUseCase>()
 
     private lateinit var ui: AuditByTaskUI
@@ -23,7 +30,16 @@ class AuditByTaskUITest {
     @BeforeEach
     fun setup() {
 
-        ui = AuditByTaskUI(viewer, reader, getAuditLogsByTaskIdUseCase)
+        getAllProjectsUseCase = mockk()
+        getTasksByProjectUseCase = mockk()
+        ui = AuditByTaskUI(viewer, reader, getAuditLogsByTaskIdUseCase, getTasksByProjectUseCase, getAllProjectsUseCase)
+
+        every { getAllProjectsUseCase.getAllProjects() }returns listOf(
+            Project("P1", "Project 1", null, emptyList(), emptyList())
+        )
+        every { getTasksByProjectUseCase.invoke("P1") }returns Result.success(listOf(
+            Task("T1", "P1", "Task 1", null, "S1", "U2", "U1")
+        ))
 
         DummyData.projects.clear()
         DummyData.projects.addAll(
@@ -97,7 +113,6 @@ class AuditByTaskUITest {
     fun `should display message when no logs are found`() {
         every { reader.read() } returnsMany listOf("1", "1")
         every { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns emptyList()
-
         ui.run()
 
         verify { viewer.show("No audit logs found for this task.") }
@@ -106,7 +121,6 @@ class AuditByTaskUITest {
     @Test
     fun `should handle InputCancelledException gracefully`() {
         every { reader.read() } returns "x"
-
         ui.run()
 
         verify { viewer.show("Cancelled.") }
@@ -120,4 +134,7 @@ class AuditByTaskUITest {
 
         verify { viewer.show("Invalid selection") }
     }
+
+
+
 }

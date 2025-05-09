@@ -1,30 +1,33 @@
-package com.berlin.di
+ package com.berlin.di
 
-import com.berlin.data.DummyData
-import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.audit.AuditByProjectUI
+import com.berlin.presentation.audit.AuditByTaskUI
+import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.authService.*
+import com.berlin.presentation.state.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
-import org.koin.core.qualifier.named
+import data.UserCache
 import org.koin.dsl.module
 
 
 val uiModule = module {
-    single<User>(named("currentUser")) { DummyData.users.first() }
+//    single<User>(named("currentUser")) { DummyData.users.first() }
 
-    single { CreateTaskUI(get(), get(named("currentUser")), get(), get()) }
+    single { CreateTaskUI(get(), get<UserCache>(), get(), get()) }
     single { AssignTaskUI(get(), get(), get(), get()) }
-    single { DeleteTaskUI(get(), get(), get(),get()) }
+    single { DeleteTaskUI(get(), get(), get(), get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
     single { UpdateTaskUI(get(), get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
-    single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get()) }
+
+    single { CreateMateUI(get(),get(),get()) }
+    single { AuthenticateUserUI(get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
     single { CreateProjectUi(get(),get(),get()) }
@@ -32,8 +35,16 @@ val uiModule = module {
     single { GetAllProjectsUi(get(),get()) }
     single { GetProjectByIdUi(get(),get(),get()) }
     single { UpdateProjectUi(get(),get(),get(),get(),get()) }
+    single { AuditByProjectUI(get(), get(), get(), get()) }
+    single { AuditByTaskUI(get(), get(), get(), get(), get()) }
+    single { AuditByUserUI(get(), get(), get()) }
 
 
+    single { CreateStateUi(get(), get(), get()) }
+    single { DeleteStateUi(get(), get(), get(), get()) }
+    single { GetStateByIdUi(get(), get(), get()) }
+    single { UpdateStateUi(get(), get(), get(), get()) }
+    single { GetAllStatesByProjectIdUi(get(),get(),get()) }
     /* aggregated main menu */
     single {
         MainMenuUI(
@@ -46,20 +57,30 @@ val uiModule = module {
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>(),
 
-                get<AuthenticateUserUi>(),
-                get<CreationOfMateUi>(),
+                get<CreateMateUI>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
                 get<GetUserByIDUI>(),
+
+                get<CreateStateUi>(),
+                get<DeleteStateUi>(),
+                get<GetStateByIdUi>(),
+                get<UpdateStateUi>(),
+                get<GetAllStatesByProjectIdUi>(),
 
                 get<CreateProjectUi>(),
                 get<DeleteProjectUi>(),
                 get<GetAllProjectsUi>(),
                 get<GetProjectByIdUi>(),
                 get<UpdateProjectUi>(),
+
+                get<AuditByTaskUI>(),
+                get<AuditByProjectUI>()
             ),
             viewer = get(),
-            reader = get()
+            reader = get(),
+            authUi = get<AuthenticateUserUI>(),
+            userCache=get<UserCache>()
         )
     }
 }

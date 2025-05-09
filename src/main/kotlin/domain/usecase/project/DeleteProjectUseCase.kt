@@ -1,9 +1,15 @@
 package com.berlin.domain.usecase.project
 
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
 import com.berlin.domain.repository.ProjectRepository
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import data.UserCache
 
 class DeleteProjectUseCase (
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val addAuditLogUseCase: AddAuditLogUseCase,
+    private val cashedUser: UserCache
 ) {
     fun deleteProject(projectId: String): Result<String> {
 
@@ -16,7 +22,18 @@ class DeleteProjectUseCase (
             )
         }
 
-        return projectRepository.deleteProject(projectId)
+        val deletedProject = projectRepository.deleteProject(projectId)
+
+        if (deletedProject.isSuccess) {
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = cashedUser.currentUser.id,
+                auditAction = AuditAction.DELETE,
+                entityType = EntityType.PROJECT,
+                entityId = projectId,
+            )
+        }
+
+        return deletedProject
             .map { "Deleted Successfully" }
             .recover { "Deletion Failed" }
     }

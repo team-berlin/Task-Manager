@@ -7,6 +7,7 @@ import com.berlin.domain.usecase.task.DeleteTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
+import com.berlin.presentation.task.DeleteTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +22,6 @@ class DeleteTaskUITest {
     private val reader: Reader = mockk()
     private val deleteUC: DeleteTaskUseCase = mockk()
     private val getAllTasks: GetAllTasksUseCase = mockk()
-
 
     private lateinit var task: Task
     private lateinit var ui: DeleteTaskUI
@@ -77,6 +77,7 @@ class DeleteTaskUITest {
         ui.run()
 
         verify(exactly = 0) { deleteUC.invoke(any()) }
+        assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("Cancelled.")
     }
 
@@ -109,9 +110,10 @@ class DeleteTaskUITest {
 
         ui.run()
 
+        // task should not have been removed
         assertThat(DummyData.tasks).contains(task)
+        // and we show the invalid-id message
         assertThat(printed.last()).contains("invalid task id")
         verify(exactly = 1) { deleteUC.invoke(task.id) }
     }
-
 }

@@ -8,12 +8,11 @@ class GetStateByIdUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun getStateById(stateId: String): State {
+    fun getStateById(stateId: String): Result<State> {
         if(!validateStateId(stateId))
-            throw InvalidStateIdException("State ID must not be empty or blank")
+            throw InvalidStateIdException("State id must not be empty, blank, or purely numeric")
 
         return stateRepository.getStateById(stateId)
-            ?: throw InvalidStateIdException("State with ID $stateId does not exist")
     }
 
     private fun validateStateId(stateId: String): Boolean =

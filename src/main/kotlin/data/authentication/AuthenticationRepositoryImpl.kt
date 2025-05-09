@@ -3,18 +3,14 @@ package com.berlin.data.authentication
 import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.exception.UserNotLoggedInException
-import com.berlin.domain.hashPassword.HashingPassword
-import com.berlin.domain.hashPassword.MD5Hasher
-import com.berlin.domain.helper.IdGenerator
-import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 import kotlin.Result.Companion.failure
 
 
 class AuthenticationRepositoryImpl(
+    private val userCache: UserCache,
     private val userDataSource: BaseDataSource<User>
     ): AuthenticationRepository {
 
@@ -45,11 +41,11 @@ class AuthenticationRepositoryImpl(
 
 
     override fun getCurrentUser(): Result<User> {
-        val user = UserCache.currentUser
+        val user = userCache.currentUser
         return if (user != null) {
             Result.success(user)
         } else {
-            Result.failure(UserNotLoggedInException("No one logged in"))
+            failure(UserNotLoggedInException("No one logged in"))
 
         }
 

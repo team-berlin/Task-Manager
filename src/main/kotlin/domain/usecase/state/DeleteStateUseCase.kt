@@ -26,6 +26,6 @@ class DeleteStateUseCase(
     private fun validateStateId(stateId: String): Boolean =
         stateId.isNotBlank() || !(stateId.all { it.isDigit() })
 
-    fun checkStateExists(stateId: String): Boolean =
-        stateRepository.getStateById(stateId) != null
+    private fun checkStateExists(stateId: String): Boolean =
+        stateRepository.getStateById(stateId).isSuccess
 }

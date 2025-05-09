@@ -1,6 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.domain.helper.IdGenerator
+import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
@@ -14,16 +14,14 @@ class AddAuditLogUseCase(
     fun addAuditLog(
         createdByUserId:String,
         auditAction: AuditAction,
-        changesDescription: String,
+        changesDescription: String? = null,
         entityType: EntityType,
         entityId: String,
-        timestamp: Long = System.currentTimeMillis()
     ): Result<String> {
         return try {
-            val id = idGenerator.generateId("AUDIT")
             val auditLog = AuditLog(
-                id = id,
-                timestamp = timestamp,
+                id = idGenerator.generateId("AUDIT"),
+                timestamp = System.currentTimeMillis(),
                 createdByUserId=createdByUserId,
                 auditAction = auditAction,
                 changesDescription = changesDescription,

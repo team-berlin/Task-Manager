@@ -1,8 +1,7 @@
-package domain.usecase.task
+package com.berlin.domain.usecase.task
 
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

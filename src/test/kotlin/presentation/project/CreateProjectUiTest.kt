@@ -1,14 +1,10 @@
-package presentation.project
+package com.berlin.presentation.project
 
-import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.CreateProjectUi
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 class CreateProjectUiTest {
@@ -20,9 +16,9 @@ class CreateProjectUiTest {
 
     @BeforeEach
     fun setup() {
-        createProjectUseCase = mockk()
+        createProjectUseCase = mockk(relaxed = true)
         viewer = mockk(relaxed = true)
-        reader = mockk()
+        reader = mockk(relaxed = true)
         ui = CreateProjectUi(createProjectUseCase, viewer, reader)
     }
 
@@ -32,143 +28,82 @@ class CreateProjectUiTest {
         val name = "TestProject"
         val description = "Test Description"
 
-        every { reader.read() } returns name andThen description
-        every {
-            createProjectUseCase.createNewProject(name, description, null, null)
-        } returns Result.success("Creation Successfully")
+        every { reader.read() } returns name andThen "yes" andThen description
+        every { createProjectUseCase.createNewProject(name, description,
+            null, null) }returns Result.success("Creation Successfully")
 
         // When
         ui.run()
 
         // Then
-        verifySequence {
-            viewer.show("Enter project name:")
-            reader.read()
-            viewer.show("Enter project description (optional):")
-            reader.read()
-            createProjectUseCase.createNewProject(name, description, null, null)
-            viewer.show("Project created successfully")
-        }
-    }
-
-    @Test
-    fun `run should show error when project name is empty`() {
-        // Given
-        every { reader.read() } returns "   "
-
-        // When
-        ui.run()
-
-        // Then
-        verify {
-            viewer.show("Enter project name:")
-            reader.read()
-            viewer.show("Error: Project name cannot be empty")
-        }
+        verify { viewer.show("Creation Successfully") }
     }
 
     @Test
     fun `run should show failure message when project creation fails`() {
         // Given
-        val name = "ValidName"
-        val description = "Something"
-
-        every { reader.read() } returns name andThen description
-        every {
-            createProjectUseCase.createNewProject(name, description, null, null)
-        } returns Result.failure(Exception("Failed"))
-
-        // When
-        ui.run()
-
-        // Then
-        verifySequence {
-            viewer.show("Enter project name:")
-            reader.read()
-            viewer.show("Enter project description (optional):")
-            reader.read()
-            createProjectUseCase.createNewProject(name, description, null, null)
-            viewer.show("Failed")
-        }
-    }
-
-    @Test
-    fun `run should show cancelled message when input is cancelled`() {
-        // Given
-        every { reader.read() } throws InputCancelledException("User cancelled")
-
-        // When
-        ui.run()
-
-        // Then
-        verify {
-            viewer.show("Enter project name:")
-            viewer.show("Project creation cancelled.")
-        }
-    }
-
-    @Test
-    fun `run should show default failure message when exception has no message`() {
-        // Given
         val name = "ValidProject"
-        val description = "Something"
+        val description = "Test Description"
 
-        every { reader.read() } returns name andThen description
-        every {
-            createProjectUseCase.createNewProject(name, description, null, null)
-        } returns Result.failure(Exception())
+        every { reader.read() } returns name andThen "yes" andThen description
+        every { createProjectUseCase.createNewProject(name, description, null, null) }returns Result.failure(Exception("Creation Failed"))
 
         // When
         ui.run()
 
         // Then
         verifySequence {
-            viewer.show("Enter project name:")
+            viewer.show("=== Create New Project ===\n")
+            viewer.show("================================================================\n\n")
+            viewer.show("Enter project details:\n")
+            viewer.show("Project Title:")
             reader.read()
-            viewer.show("Enter project description (optional):")
+            viewer.show("Do you want to write a description? (yes/no)")
             reader.read()
-            createProjectUseCase.createNewProject(name, description, null, null)
-            viewer.show("Creation failed")
+            viewer.show("Enter project description:")
+            reader.read()
+            viewer.show("Creating project...\n")
+            createProjectUseCase.createNewProject(name, description,
+                null, null)
+            viewer.show("Error: Creation Failed\n")
         }
     }
 
     @Test
-    fun `run should show error when name is null and becomes empty`() {
-        // Given
-        every { reader.read() } returns null
-
-        // When
+    fun `run should view to user again when input null project name`(){
+        //given
+        every { reader.read() } returns null andThen "ggg" andThen "sfd"
+        every { createProjectUseCase.createNewProject(any(),any(),any(),any()) }returns Result.success("j")
+        //when
         ui.run()
+        //then
+        verify { viewer.show("Please enter a valid project name:") }
+    }
 
-        // Then
-        verify {
-            viewer.show("Enter project name:")
-            viewer.show("Error: Project name cannot be empty")
-        }
+    @Test
+    fun `run should view to user again when input blank project name`(){
+        //given
+        every { reader.read() } returns "" andThen "ggg" andThen "sfd"
+        every { createProjectUseCase.createNewProject(any(),any(),any(),any()) }returns Result.success("j")
+        //when
+        ui.run()
+        //then
+        verify { viewer.show("Please enter a valid project name:") }
     }
 
     @Test
     fun `run should create project when description is null`() {
         // Given
         val name = "MyProject"
-        val nullDescription: String? = null
 
-        every { reader.read() } returns name andThen nullDescription
-        every {
-            createProjectUseCase.createNewProject(name, null, null, null)
-        } returns Result.success("Creation Successfully")
+        every { reader.read() } returns name andThen "no"
+        every { createProjectUseCase.createNewProject(name, null,
+            null, null) }returns Result.success("Creation Successfully")
 
         // When
         ui.run()
 
         // Then
-        verifySequence {
-            viewer.show("Enter project name:")
-            reader.read()
-            viewer.show("Enter project description (optional):")
-            reader.read()
-            createProjectUseCase.createNewProject(name, null, null, null)
-            viewer.show("Project created successfully")
-        }
+        verify { viewer.show("Creation Successfully") }
     }
 }

@@ -2,8 +2,6 @@ package com.berlin.domain.usecase.state
 
 
 import com.berlin.domain.exception.InvalidProjectIdException
-import com.berlin.domain.exception.ProjectNotFoundException
-import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
@@ -13,16 +11,15 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): List<State> {
+    fun getAllStatesByProjectId(projectId: String): Result<List<State>> {
 
         if (!validateProjectId(projectId))
             throw InvalidProjectIdException("Project ID must not be empty or blank")
 
         if (checkProjectExists(projectId)) {
             return stateRepository.getStatesByProjectId(projectId)
-                ?: throw StateNotFoundException("No states found for project ID $projectId")
         } else {
-            throw ProjectNotFoundException("Project with ID $projectId does not exist")
+            return Result.failure(Exception("Project with ID $projectId does not exist"))
         }
     }
 
