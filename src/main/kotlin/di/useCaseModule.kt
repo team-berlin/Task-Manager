@@ -48,8 +48,7 @@ val useCaseModule = module {
     single { FetchAllUsersUseCase(get()) }
     single { AuthenticateUserUseCase(get(),get(), get()) }
     single { CreateMateUseCase(get(), get(), get()) }
-}
-
+    
     single { CreateStateUseCase(get(),get())}
     single { DeleteStateUseCase(get()) }
     single { GetAllStatesByProjectIdUseCase(get(),get()) }
