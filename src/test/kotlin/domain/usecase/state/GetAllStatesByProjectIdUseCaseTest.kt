@@ -1,6 +1,5 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
@@ -35,24 +34,22 @@ class GetAllStatesByProjectIdUseCaseTest {
             State(id = "S2", name = "Inactive", projectId = "P1")
         )
         every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P1") } returns expectedStates
+        every { stateRepository.getStatesByProjectId("P1") } returns Result.success(expectedStates)
 
         // When
         val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1")
 
         // Then
-        assertThat(result).isEqualTo(expectedStates)
+        assertThat(result).isEqualTo(Result.success(expectedStates))
     }
 
     @Test
     fun `should throw exception when no states are found for the project`() {
         // Given
-        every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P3") } returns null
+        every { stateRepository.getStatesByProjectId("P3") } returns Result.failure(Exception("Project with ID P3 does not exist"))
 
         // When & Then
-        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
-        assertThat(exception.message).isEqualTo("No states found for project ID P3")
+         assertThat(getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3").isFailure).isTrue()
     }
 
     @Test
@@ -61,8 +58,7 @@ class GetAllStatesByProjectIdUseCaseTest {
         every { projectRepository.getProjectById("P2") } returns null
 
         // When & Then
-        val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2") }
-        assertThat(exception.message).isEqualTo("Project with ID P2 does not exist")
+        assertThat(getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2").isFailure).isTrue()
     }
 
     @ParameterizedTest

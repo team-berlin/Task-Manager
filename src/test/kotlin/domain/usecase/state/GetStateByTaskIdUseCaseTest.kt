@@ -1,6 +1,5 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.GetStateByTaskIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.repository.TaskRepository

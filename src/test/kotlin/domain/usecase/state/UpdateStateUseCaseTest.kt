@@ -1,6 +1,5 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
@@ -29,7 +28,7 @@ class UpdateStateUseCaseTest {
         every { stateRepository.updateState(state) } returns Result.success("Updated Successfully")
 
         // When
-        val result = updateStateUseCase.updateState(state)
+        val result = updateStateUseCase.updateState(state.id,state.name,state.projectId)
 
         // Then
         assertThat(result).isEqualTo(Result.success("Updated Successfully"))
@@ -42,7 +41,7 @@ class UpdateStateUseCaseTest {
         every { stateRepository.updateState(state) } returns Result.failure(Exception())
 
         // When
-        val result = updateStateUseCase.updateState(state)
+        val result = updateStateUseCase.updateState(state.id,state.name,state.projectId)
 
         // Then
         result.onFailure { exception ->
@@ -62,7 +61,7 @@ class UpdateStateUseCaseTest {
 
         // When && Then
         assertThrows<Exception> {
-            updateStateUseCase.updateState(input)
+            updateStateUseCase.updateState(input.id,input.name,input.projectId)
         }
     }
 

@@ -1,6 +1,7 @@
-package com.berlin.logic.usecase.state
+package com.berlin.domain.usecase.state
 
-import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
+import com.berlin.domain.exception.InvalidStateIdException
+import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
@@ -60,10 +61,12 @@ class GetTasksByStateIdUseCaseTest {
     @Test
     fun `should throw exception when state id does not exist`() {
         // Given
-        every { stateRepository.getStateById("S2") } returns null
+        every { stateRepository.getStateById("S2") } returns Result.failure(StateNotFoundException("S2"))
 
         // When & Then
-        val exception = assertThrows<Exception> { getTasksByStateIdUseCase.getAllTasksByStateId("S2") }
+        val exception = assertThrows<InvalidStateIdException> {
+            getTasksByStateIdUseCase.getAllTasksByStateId("S2")
+        }
         assertThat(exception.message).isEqualTo("State with ID S2 does not exist")
     }
 

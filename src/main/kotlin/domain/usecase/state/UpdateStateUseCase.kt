@@ -5,13 +5,17 @@ import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 
 class UpdateStateUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: StateRepository,
 ) {
-    fun updateState(state: State): Result<String> {
-        if(!validateStateName(state.name))
+    fun updateState(stateId: String, newStateName: String, projectId: String): Result<String> {
+        if (!validateStateName(newStateName))
             throw InvalidStateNameException("State Name must not be empty or blank")
-
-        return stateRepository.updateState(state)
+        val updatedState = State(
+            id = stateId,
+            name = newStateName,
+            projectId = projectId
+        )
+        return stateRepository.updateState(updatedState)
             .map { "Updated Successfully" }
             .recover { "Update Failed" }
     }

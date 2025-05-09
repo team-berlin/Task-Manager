@@ -8,6 +8,7 @@ import com.berlin.presentation.audit.AuditByProjectUI
 import com.berlin.presentation.audit.AuditByTaskUI
 import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.authService.*
+import com.berlin.presentation.state.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
 import data.UserCache
@@ -20,13 +21,14 @@ val uiModule = module {
 
     single { CreateTaskUI(get(), get<UserCache>(), get(), get()) }
     single { AssignTaskUI(get(), get(), get(), get()) }
-    single { DeleteTaskUI(get(), get(), get(),get()) }
+    single { DeleteTaskUI(get(), get(), get(), get()) }
     single { GetTasksByProjectIdUI(get(), get(), get()) }
     single { UpdateTaskUI(get(), get(), get(), get()) }
     single { ChangeTaskStateUI(get(), get(), get(), get()) }
     single { GetTaskByIdUI(get(), get(), get()) }
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
+
     single { CreationOfMateUi(get(),get(),get()) }
     single { AuthenticateUserUi(get(),get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
@@ -41,6 +43,12 @@ val uiModule = module {
     single { AuditByUserUI(get(), get(), get()) }
 
 
+    single { CreateStateUi(get(), get(), get()) }
+    single { DeleteStateUi(get(), get(), get(), get()) }
+    single { GetStateByIdUi(get(), get(), get()) }
+    single { UpdateStateUi(get(), get(), get(), get()) }
+    single { GetAllStatesByProjectIdUi(get(),get(),get()) }
+    /* aggregated main menu */
     single {
         MainMenuUI(
             runners = listOf(
@@ -56,6 +64,12 @@ val uiModule = module {
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
                 get<GetUserByIDUI>(),
+
+                get<CreateStateUi>(),
+                get<DeleteStateUi>(),
+                get<GetStateByIdUi>(),
+                get<UpdateStateUi>(),
+                get<GetAllStatesByProjectIdUi>(),
 
                 get<CreateProjectUi>(),
                 get<DeleteProjectUi>(),
