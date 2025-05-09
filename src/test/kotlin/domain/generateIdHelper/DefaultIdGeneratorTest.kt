@@ -1,4 +1,4 @@
-package com.berlin.logic.generateIdHelper
+package com.berlin.domain.generateIdHelper
 
 import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat

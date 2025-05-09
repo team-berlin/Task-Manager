@@ -3,6 +3,8 @@ package presentation.audit
 import com.berlin.data.DummyData
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.audit.AuditByTaskUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -16,6 +18,8 @@ class AuditByTaskUITest {
 
     private val viewer = mockk<Viewer>(relaxed = true)
     private val reader = mockk<Reader>()
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
+    private lateinit var getTasksByProjectUseCase: GetTasksByProjectUseCase
     private val getAuditLogsByTaskIdUseCase = mockk<GetAuditLogsByTaskIdUseCase>()
 
     private lateinit var ui: AuditByTaskUI
@@ -23,7 +27,9 @@ class AuditByTaskUITest {
     @BeforeEach
     fun setup() {
 
-        ui = AuditByTaskUI(viewer, reader, getAuditLogsByTaskIdUseCase)
+        getAllProjectsUseCase = mockk()
+        getTasksByProjectUseCase = mockk()
+        ui = AuditByTaskUI(viewer, reader, getAuditLogsByTaskIdUseCase, getTasksByProjectUseCase, getAllProjectsUseCase)
 
         DummyData.projects.clear()
         DummyData.projects.addAll(

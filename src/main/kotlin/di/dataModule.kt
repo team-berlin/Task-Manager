@@ -5,13 +5,12 @@ import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.memory.TaskRepositoryImpl
+import com.berlin.data.task.TaskRepositoryImpl
 import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.data.schema.*
 import com.berlin.data.state.StateRepositoryImpl
 import com.berlin.domain.model.*
 import com.berlin.domain.repository.*
-import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 

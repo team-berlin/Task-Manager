@@ -1,12 +1,15 @@
 package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.TaskNotFoundException
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
+import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import data.UserCache
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -14,7 +17,11 @@ import org.junit.jupiter.api.assertThrows
 class DeleteTaskUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
+    private lateinit var addAuditLogUseCase: AddAuditLogUseCase
+    private lateinit var userCache: UserCache
     private lateinit var deleteTaskUseCase: DeleteTaskUseCase
+
+    private lateinit var currentUser: User
 
     private val stored = Task(
         id = "T1",
@@ -29,7 +36,18 @@ class DeleteTaskUseCaseTest {
     @BeforeEach
     fun setUp() {
         taskRepository = mockk()
-        deleteTaskUseCase = DeleteTaskUseCase(taskRepository)
+        addAuditLogUseCase = mockk()
+        userCache = mockk()
+
+        currentUser = mockk(relaxed = true)
+        every { currentUser.id } returns "U1"
+        every { userCache.currentUser } returns currentUser
+
+        every {
+            addAuditLogUseCase.addAuditLog("U1", AuditAction.DELETE, null, EntityType.TASK, "T1")
+        } returns Result.success("audit-log-id")
+
+        deleteTaskUseCase = DeleteTaskUseCase(taskRepository, addAuditLogUseCase, userCache)
     }
 
     @Test
@@ -40,7 +58,16 @@ class DeleteTaskUseCaseTest {
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isSuccess).isTrue()
-        verify(exactly = 1) { taskRepository.delete("T1") }
+        verify { taskRepository.delete("T1") }
+        verify {
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = "U1",
+                auditAction = AuditAction.DELETE,
+                changesDescription = null,
+                entityType = EntityType.TASK,
+                entityId = "T1"
+            )
+        }
     }
 
     @Test
@@ -63,7 +90,7 @@ class DeleteTaskUseCaseTest {
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        verify(exactly = 1) { taskRepository.delete("T1") }
+        verify { taskRepository.delete("T1") }
     }
 
     @Test

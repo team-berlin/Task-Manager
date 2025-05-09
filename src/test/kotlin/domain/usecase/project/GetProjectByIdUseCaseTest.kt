@@ -1,4 +1,4 @@
-package logic.usecase.project;
+package com.berlin.domain.usecase.project;
 
 import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository

@@ -1,4 +1,4 @@
-package presentation.project
+package com.berlin.presentation.project
 
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
@@ -7,13 +7,11 @@ import com.berlin.domain.usecase.project.UpdateProjectUseCase
 import com.berlin.helper.projectHelper
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.UpdateProjectUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

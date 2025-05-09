@@ -2,13 +2,15 @@ package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import data.UserCache
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.assertThrows
 class ChangeTaskStateUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
+    private lateinit var addAuditLogUseCase: AddAuditLogUseCase
+    private lateinit var userCache: UserCache
     private lateinit var useCase: ChangeTaskStateUseCase
 
     private val creator = mockk<User>(relaxed = true)
@@ -34,7 +38,22 @@ class ChangeTaskStateUseCaseTest {
     @BeforeEach
     fun setUp() {
         taskRepository = mockk()
-        useCase = ChangeTaskStateUseCase(taskRepository)
+        addAuditLogUseCase = mockk()
+        userCache = mockk()
+        every { userCache.currentUser } returns creator
+
+        // Needed to avoid MockKException during audit logging
+        every {
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = any(),
+                auditAction = any(),
+                changesDescription = any(),
+                entityType = any(),
+                entityId = any()
+            )
+        } returns Result.success("audit-log-id")
+
+        useCase = ChangeTaskStateUseCase(taskRepository, addAuditLogUseCase, userCache)
     }
 
     @Test
@@ -45,9 +64,10 @@ class ChangeTaskStateUseCaseTest {
         val result = useCase("1", "DONE")
 
         assertThat(result.isSuccess).isTrue()
-        verify(exactly = 1) {
+        verify {
             taskRepository.update(match { it.id == "1" && it.stateId == "DONE" })
         }
+        verifyAudit("1")
     }
 
     @Test
@@ -78,7 +98,6 @@ class ChangeTaskStateUseCaseTest {
         assertThrows<InvalidTaskStateException> {
             useCase("1", "   ")
         }
-        // no update should be attempted after validation fails
         verify(exactly = 0) { taskRepository.update(any()) }
     }
 
@@ -90,5 +109,17 @@ class ChangeTaskStateUseCaseTest {
             useCase("1", "1234")
         }
         verify(exactly = 0) { taskRepository.update(any()) }
+    }
+
+    private fun verifyAudit(taskId: String) {
+        verify {
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = creator.id,
+                auditAction = AuditAction.UPDATE,
+                changesDescription = null,
+                entityType = EntityType.TASK,
+                entityId = taskId
+            )
+        }
     }
 }

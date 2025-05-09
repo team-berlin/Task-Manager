@@ -1,11 +1,13 @@
-package logic.usecase.project;
+package com.berlin.domain.usecase.project;
 
 import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.project.UpdateProjectUseCase
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
+import data.UserCache
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,10 +18,13 @@ class UpdateProjectUseCaseTest {
 
     private lateinit var updateProjectUseCase: UpdateProjectUseCase
     private val projectRepository: ProjectRepository = mockk(relaxed = true)
+    private val addAuditLogUseCase: AddAuditLogUseCase = mockk(relaxed = true)
+    private val cashedUser: UserCache = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        updateProjectUseCase = UpdateProjectUseCase(projectRepository)
+        updateProjectUseCase = UpdateProjectUseCase(projectRepository,
+            addAuditLogUseCase, cashedUser)
     }
 
     @Test
@@ -27,12 +32,18 @@ class UpdateProjectUseCaseTest {
         // Given
         val project = projectHelper()
         every { projectRepository.updateProject(project) } returns Result.success("Updated Successfully")
+        every { cashedUser.currentUser.id } returns "user_123"
 
         // When
         val result = updateProjectUseCase.updateProject(project)
 
         // Then
         assertThat(result).isEqualTo(Result.success("Updated Successfully"))
+        verify(exactly = 1) {
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = "user_123", auditAction = any(), entityType = any(), entityId = any()
+            )
+        }
     }
 
     @Test

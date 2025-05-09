@@ -1,10 +1,12 @@
-package logic.usecase.project;
+package com.berlin.domain.usecase.project;
 
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.project.DeleteProjectUseCase
+import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
+import data.UserCache
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,22 +17,32 @@ class DeleteProjectUseCaseTest {
 
     private lateinit var deleteProjectUseCase: DeleteProjectUseCase
     private val projectRepository: ProjectRepository = mockk(relaxed = true)
+    private val addAuditLogUseCase: AddAuditLogUseCase = mockk(relaxed = true)
+    private val cashedUser: UserCache = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        deleteProjectUseCase = DeleteProjectUseCase(projectRepository)
+        deleteProjectUseCase = DeleteProjectUseCase(projectRepository, addAuditLogUseCase,
+            cashedUser)
     }
 
     @Test
     fun `should return success when project deleted successfully`() {
         // Given
         every { projectRepository.deleteProject(any()) } returns Result.success("")
+        every { cashedUser.currentUser.id } returns "user_123"
 
         // When
         val result = deleteProjectUseCase.deleteProject("project_1")
 
         // Then
         assertThat(result).isEqualTo(Result.success("Deleted Successfully"))
+        verify(exactly = 1) { addAuditLogUseCase.addAuditLog(
+            createdByUserId = "user_123",
+            auditAction = any(),
+            entityType = any(),
+            entityId = any()
+        ) }
     }
 
     @Test

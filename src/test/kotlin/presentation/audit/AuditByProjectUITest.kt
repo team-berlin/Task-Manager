@@ -6,6 +6,8 @@ import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.audit.AuditByProjectUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -18,6 +20,7 @@ import kotlin.test.Test
 class AuditByProjectUITest {
 
     private lateinit var getAuditLogsByProjectIdUseCase: GetAuditLogsByProjectIdUseCase
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
     private lateinit var ui: AuditByProjectUI
@@ -38,9 +41,10 @@ class AuditByProjectUITest {
     @BeforeEach
     fun setup() {
         getAuditLogsByProjectIdUseCase = mockk()
+        getAllProjectsUseCase = mockk()
         viewer = mockk(relaxed = true)
         reader = mockk()
-        ui = AuditByProjectUI(getAuditLogsByProjectIdUseCase, viewer, reader)
+        ui = AuditByProjectUI(getAuditLogsByProjectIdUseCase, getAllProjectsUseCase, viewer, reader)
 
         DummyData.projects.clear()
         DummyData.projects.add(sampleProject)
