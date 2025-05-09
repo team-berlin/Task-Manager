@@ -1,7 +1,6 @@
 package com.berlin.domain.usecase.state
 
 import com.berlin.domain.usecase.state.CreateStateUseCase
-import com.berlin.domain.helper.IdGeneratorImplementation
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation

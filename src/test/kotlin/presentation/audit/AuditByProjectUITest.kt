@@ -54,7 +54,7 @@ class AuditByProjectUITest {
     fun `displays audit logs for selected project`() {
         every { reader.read() } returns "1"
         every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns sampleLogs
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -68,7 +68,7 @@ class AuditByProjectUITest {
     fun `displays message when no logs exist for project`() {
         every { reader.read() } returns "1"
         every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns emptyList()
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -79,7 +79,7 @@ class AuditByProjectUITest {
     @Test
     fun `displays cancelled message when input is x`() {
         every { reader.read() } returns "x"
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -100,6 +100,7 @@ class AuditByProjectUITest {
                 entityId = "P1"
             )
         )
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
 
         ui.run()
 
@@ -111,6 +112,7 @@ class AuditByProjectUITest {
     @Test
     fun `displays invalid selection for non-number input`() {
         every { reader.read() } returns "not-a-number"
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
 
         ui.run()
 

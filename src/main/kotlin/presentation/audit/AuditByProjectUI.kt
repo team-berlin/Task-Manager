@@ -1,13 +1,11 @@
 package com.berlin.presentation.audit
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader

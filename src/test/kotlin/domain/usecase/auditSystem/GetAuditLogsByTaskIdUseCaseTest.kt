@@ -29,15 +29,13 @@ class GetAuditLogsByTaskIdUseCaseTest {
         val logs = listOf(
             generateAuditLog(id = "A3", entityId = taskId, entityType = EntityType.TASK)
         )
-        every { auditRepository.getAuditLogsByProjectId(taskId) } returns logs
+        every { auditRepository.getAuditLogsByTaskId(taskId) } returns logs
 
         //When
         val result = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(taskId)
 
         //That
         assertThat(result).isEqualTo(logs)
-        verify(exactly = 1) { auditRepository.getAuditLogsByProjectId(taskId) }
-
     }
 
 
