@@ -14,10 +14,11 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const branchName = context.payload.pull_request.head.ref;
-            const regex = /^JIRA-\d+-[\w-]+$/;
+            const regex = /^(JIRA-\d+)-(bugfix|feature|test|refactor|chore| experimental)\/[\w-]+$/;
 
             if (!regex.test(branchName)) {
-              core.setFailed('Branch name does not match the required format: JIRA-<NUMBER>-<desc>');
+              core.setFailed('Branch name does not match the required format: JIRA-<NUMBER>-(bugfix|experimental|feature|test|refactor|chore)/<branch-name>');
             } else {
               console.log('Branch name matches the required format');
             }
+
