@@ -21,12 +21,15 @@ class GetAllStatesByProjectIdUITest {
     }
     private val reader: Reader = mockk()
     private lateinit var useCase: GetAllStatesByProjectIdUseCase
-    private lateinit var ui: GetAllStatesByProjectIdUI
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
+    private lateinit var ui: GetAllStatesByProjectIdUI
 
 
     @BeforeEach
     fun setUp() {
+        getAllProjectsUseCase = mockk()
+        every { getAllProjectsUseCase.getAllProjects() } returns DummyData.projects
+
         DummyData.projects.clear()
         DummyData.states.clear()
         printed.clear()
@@ -35,7 +38,7 @@ class GetAllStatesByProjectIdUITest {
         DummyData.states += listOf(stateTodo, stateDone)
 
         useCase = mockk()
-        ui = GetAllStatesByProjectIdUI(useCase,getAllProjectsUseCase, viewer, reader)
+        ui = GetAllStatesByProjectIdUI(useCase, getAllProjectsUseCase,viewer, reader)
     }
 
     @Test
