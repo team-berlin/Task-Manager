@@ -6,7 +6,7 @@ import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class CreationOfMateUi(
+class CreateMateUI(
     private val createMateUseCase: CreateMateUseCase,
     private val viewer: Viewer,
     private val reader: Reader,

@@ -1,7 +1,5 @@
  package com.berlin.di
 
-import com.berlin.data.DummyData
-import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
 import com.berlin.presentation.audit.AuditByProjectUI
@@ -12,7 +10,6 @@ import com.berlin.presentation.state.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
 import data.UserCache
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
@@ -29,8 +26,8 @@ val uiModule = module {
     single { GetUserByIDUseCase(get()) }
     single { GettingUsersLoggedInUI(get(), get()) }
 
-    single { CreationOfMateUi(get(),get(),get()) }
-    single { AuthenticateUserUi(get(),get(),get(),get()) }
+    single { CreateMateUI(get(),get(),get()) }
+    single { AuthenticateUserUI(get(),get(),get()) }
     single { FetchAllUsersUI(get(),get()) }
     single { GetUserByIDUI(get(),get(),get()) }
     single { CreateProjectUi(get(),get(),get()) }
@@ -60,7 +57,7 @@ val uiModule = module {
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>(),
 
-                get<CreationOfMateUi>(),
+                get<CreateMateUI>(),
                 get<FetchAllUsersUI>(),
                 get<GettingUsersLoggedInUI>(),
                 get<GetUserByIDUI>(),
@@ -82,7 +79,7 @@ val uiModule = module {
             ),
             viewer = get(),
             reader = get(),
-            authUi = get<AuthenticateUserUi>(),
+            authUi = get<AuthenticateUserUI>(),
             userCache=get<UserCache>()
         )
     }

@@ -7,8 +7,7 @@ import com.berlin.presentation.io.Viewer
 import data.UserCache
 import domain.usecase.authService.AuthenticateUserUseCase
 
-class AuthenticateUserUi(
-    private val userCache: UserCache,
+class AuthenticateUserUI(
     private val authenticateUser: AuthenticateUserUseCase,
     private val viewer: Viewer,
     private val reader: Reader
@@ -20,7 +19,7 @@ class AuthenticateUserUi(
         authenticateLoop()
     }
 
-    private fun validateUser(): Result<User> {
+    fun validateUser(): Result<User> {
         viewer.show("Enter your user name: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter your password: ")
@@ -32,7 +31,6 @@ class AuthenticateUserUi(
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")
-                userCache.currentUser = it
             },
             onFailure = {
                 viewer.show("Try again")

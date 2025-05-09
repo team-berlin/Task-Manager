@@ -10,7 +10,7 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class FetchAllUsersUseCaseTest {
+class FetchAllUsersUITest {
     private lateinit var viewer: Viewer
     private lateinit var useCase: FetchAllUsersUseCase
     private lateinit var ui: FetchAllUsersUI
@@ -29,10 +29,6 @@ class FetchAllUsersUseCaseTest {
     @Test
     fun `should print all users when users are available`() {
         // Given
-        val users = listOf(
-            User(id = "1", userName = "Menna", password = "12345678j",  role =UserRole.ADMIN),
-            User(id = "2", userName = "Sarah", password = "1234567890",  role = UserRole.MATE)
-        )
         every { useCase.getAllUsers() } returns Result.success(users)
 
         // When
@@ -47,8 +43,10 @@ class FetchAllUsersUseCaseTest {
             "ID: 2",
             "Name: Sarah",
             "role: MATE",
-            "=====================")
+            "====================="
+        )
     }
+
 
     @Test
     fun `should print message when no users are found`() {
@@ -63,4 +61,30 @@ class FetchAllUsersUseCaseTest {
             "No users found."
         )
     }
+
+    @Test
+    fun `should return users when there is users`() {
+        every { useCase.getAllUsers() } returns Result.success(users)
+
+        ui.run()
+
+        verifySequence {
+            viewer.show("ID: ${users[0].id}")
+            viewer.show("Name: ${users[0].userName}")
+            viewer.show("role: ${users[0].role}")
+            viewer.show("=====================")
+            viewer.show("ID: ${users[1].id}")
+            viewer.show("Name: ${users[1].userName}")
+            viewer.show("role: ${users[1].role}")
+            viewer.show("=====================")
+        }
+    }
+
+    private companion object {
+        val users = listOf(
+            User(id = "1", userName = "Menna", password = "12345678j", role = UserRole.ADMIN),
+            User(id = "2", userName = "Sarah", password = "1234567890", role = UserRole.MATE)
+        )
+    }
+
 }

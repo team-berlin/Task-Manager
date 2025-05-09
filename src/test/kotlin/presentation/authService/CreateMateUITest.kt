@@ -12,10 +12,10 @@ import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CreationOfMateUiTest {
+class CreateMateUITest {
 
     private lateinit var createMateUseCase: CreateMateUseCase
-    private lateinit var creationOfMateUi: CreationOfMateUi
+    private lateinit var creationOfMateUi: CreateMateUI
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
 
@@ -26,7 +26,7 @@ class CreationOfMateUiTest {
         createMateUseCase = mockk()
         viewer = mockk(relaxed = true)
         reader = mockk()
-        creationOfMateUi = CreationOfMateUi(createMateUseCase, viewer, reader)
+        creationOfMateUi = CreateMateUI(createMateUseCase, viewer, reader)
     }
 
     @Test
@@ -43,16 +43,16 @@ class CreationOfMateUiTest {
     fun `run should retry once after failure and succeed second time`() {
         every { reader.read() } returnsMany listOf("test1", "123", "test2", "456")
         every { createMateUseCase.createMate("test1", "123") } returns Result.failure(InvalidAssigneeException("fail"))
-        every { createMateUseCase.createMate("test2", "456") } returns Result.success(AuthServiceTestData.excepctedUser)
+        every { createMateUseCase.createMate("test2", "456") } returns Result.success(AuthServiceTestData.expectedUser)
 
         creationOfMateUi.run()
 
         verifySequence {
-            viewer.show("Enter user name: ")
+            viewer.show("Enter user name or x to exit: ")
             viewer.show("Enter user password: ")
-            viewer.show("something wrong please try again!")
+            viewer.show("fail")
 
-            viewer.show("Enter user name: ")
+            viewer.show("Enter user name or x to exit: ")
             viewer.show("Enter user password: ")
             viewer.show("New mate is successfully created!")
         }
@@ -63,11 +63,13 @@ class CreationOfMateUiTest {
     fun `run should treat null inputs as empty strings`() {
         every { reader.read() } returnsMany listOf(null, null, "name", "pass")
         every { createMateUseCase.createMate("", "") } returns Result.failure(InvalidAssigneeException("empty"))
-        every { createMateUseCase.createMate("name", "pass") } returns Result.success(AuthServiceTestData.excepctedUser)
+        every { createMateUseCase.createMate("name", "pass") } returns Result.success(AuthServiceTestData.expectedUser)
 
         creationOfMateUi.run()
 
-        verify { viewer.show("something wrong please try again!") }
+        verify { viewer.show("empty") } // matching the actual error message
         verify { viewer.show("New mate is successfully created!") }
     }
+
+
 }

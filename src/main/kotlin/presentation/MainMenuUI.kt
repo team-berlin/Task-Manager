@@ -1,7 +1,7 @@
 package com.berlin.presentation
 
 import com.berlin.domain.model.UserRole
-import com.berlin.presentation.authService.AuthenticateUserUi
+import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import data.UserCache
@@ -10,7 +10,7 @@ class MainMenuUI(
     private val runners: List<UiRunner>,
     private val viewer: Viewer,
     private val reader: Reader,
-    private val authUi: AuthenticateUserUi,
+    private val authUi: AuthenticateUserUI,
     private val userCache: UserCache,
 ) : UiRunner {
 

@@ -3,7 +3,7 @@ package com.berlin
 import com.berlin.data.DummyData
 import com.berlin.presentation.MainMenuUI
 import com.berlin.presentation.UiRunner
-import com.berlin.presentation.authService.AuthenticateUserUi
+import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import data.UserCache
@@ -20,7 +20,7 @@ class MainTest {
         val mockViewer = mockk<Viewer>(relaxed = true)
         val mockReader = mockk<Reader>()
         every { mockReader.read() } returns "X"
-        val mockAuthUi = mockk<AuthenticateUserUi> { every { run() } just Runs }
+        val mockAuthUi = mockk<AuthenticateUserUI> { every { run() } just Runs }
         val mockUserCache = mockk<UserCache>()
         every { mockUserCache.currentUser } returns DummyData.users.first()
         val dummyRunners = emptyList<UiRunner>()
