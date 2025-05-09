@@ -13,7 +13,7 @@ class GetProjectByIdUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
-    override val id: Int = 14
+    override val id: Int = 4
     override val label: String = "View Project Details"
 
     override fun run() {

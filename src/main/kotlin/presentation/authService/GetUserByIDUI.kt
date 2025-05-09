@@ -13,7 +13,7 @@ class GetUserByIDUI(
     private val viewer: Viewer,
     private val reader: Reader,
 ) : UiRunner {
-    override val id: Int = 900
+    override val id: Int = 4
     override val label: String = "get user by id"
 
     override fun run() {

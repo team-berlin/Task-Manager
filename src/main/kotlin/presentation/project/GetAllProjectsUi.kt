@@ -8,7 +8,7 @@ class GetAllProjectsUi(
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val viewer: Viewer,
 ) : UiRunner {
-    override val id: Int = 13
+    override val id: Int = 3
     override val label: String = "Get All Projects"
 
     override fun run() {

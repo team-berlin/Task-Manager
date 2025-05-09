@@ -15,7 +15,7 @@ class UpdateProjectUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
-    override val id: Int = 15
+    override val id: Int = 5
     override val label: String = "Update Project"
 
     override fun run() {

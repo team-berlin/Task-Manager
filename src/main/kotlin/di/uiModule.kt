@@ -4,6 +4,8 @@ import com.berlin.data.DummyData
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.MainMenuUI
+import com.berlin.presentation.ManageProjcetsMainUi
+import com.berlin.presentation.ManageusersMainUi
 import com.berlin.presentation.authService.*
 import com.berlin.presentation.project.*
 import com.berlin.presentation.task.*
@@ -52,6 +54,31 @@ val uiModule = module {
                 get<GettingUsersLoggedInUI>(),
                 get<GetUserByIDUI>(),
 
+                get<CreateProjectUi>(),
+                get<DeleteProjectUi>(),
+                get<GetAllProjectsUi>(),
+                get<GetProjectByIdUi>(),
+                get<UpdateProjectUi>(),
+            ),
+            viewer = get(),
+            reader = get()
+        )
+    }
+    single {
+        ManageusersMainUi(
+            runners = listOf(
+                get<CreationOfMateUi>(),
+                get<FetchAllUsersUI>(),
+                get<GettingUsersLoggedInUI>(),
+                get<GetUserByIDUI>()
+            ),
+            viewer = get(),
+            reader = get()
+        )
+    }
+    single {
+        ManageProjcetsMainUi(
+            runners = listOf(
                 get<CreateProjectUi>(),
                 get<DeleteProjectUi>(),
                 get<GetAllProjectsUi>(),

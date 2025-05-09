@@ -9,7 +9,7 @@ class FetchAllUsersUI(
     private val fetchAllUsers: FetchAllUsersUseCase,
     private val viewer: Viewer,
 ) : UiRunner {
-    override val id: Int = 500
+    override val id: Int = 2
     override val label: String = "fetch all users"
     override fun run() {
         val users = fetchAllUsers.getAllUsers()

@@ -9,7 +9,7 @@ class GettingUsersLoggedInUI(
     private val getUserLoggedIn: GettingUsersLoggedInUseCase,
     private val viewer: Viewer,
 ) : UiRunner {
-    override val id: Int = 100
+    override val id: Int = 3
     override val label: String = "get user logged in"
     override fun run() {
         val user = getUserLoggedIn.getCurrentUser()
