@@ -7,14 +7,15 @@ import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
-import com.google.common.base.Verify.verify
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFailsWith
 
 class CreateMateUseCaseTest {
 
@@ -84,38 +85,64 @@ class CreateMateUseCaseTest {
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(InvalidCredentialsException::class.java)
     }
-
     @Test
-    fun `createMate succeeds when username and password are valid`() {
-        val username = "validUser"
+    fun `createMate should fail if password is less than 8 characters`() {
+        val userName = "mateUser"
+        val password = "short"
+
+        val result = createMateUseCase.createMate(userName, password)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is InvalidCredentialsException)
+        assertEquals("Password less than 8 characters", result.exceptionOrNull()?.message)
+    }
+    @Test
+    fun `createMate should hash the password and create user with correct details`() {
+        val userName = "mateUser"
         val password = "validPassword"
         val hashedPassword = "hashedPassword"
-        val generatedId = "generatedId"
+        val generatedId = "12345"
 
-        every { hashingString.hashPassword(password) } returns hashedPassword
-        every { idGenerator.generateId(username) } returns generatedId
-        every { authRepository.createMate(any()) } returns Result.success(User(generatedId, username, hashedPassword, UserRole.MATE))
+        every { hashingString.hashPassword(password) } returns hashedPassword // Ensure the password is hashed
+        every { idGenerator.generateId(userName) } returns generatedId // Ensure the ID is generated
+        every { authRepository.createMate(any()) } returns Result.success(User(generatedId, userName, hashedPassword, UserRole.MATE))
 
-        val result = createMateUseCase.createMate(username, password)
+        val result = createMateUseCase.createMate(userName, password)
 
-        assertThat(result.isSuccess).isTrue()
-
+        assertTrue(result.isSuccess)
         val user = result.getOrNull()
 
-        assertThat(user).isNotNull()
-        assertThat(user?.id).isEqualTo(generatedId)
-        assertThat(user?.userName).isEqualTo(username)
-        assertThat(user?.password).isEqualTo(hashedPassword)
-        assertThat(user?.role).isEqualTo(UserRole.MATE)
+        assertNotNull(user)
+        assertEquals(user?.userName, userName)
+        assertEquals(user?.password, hashedPassword)
+        assertEquals(user?.role, UserRole.MATE)
 
 
-        verify { authRepository.createMate(
-            User(
-                id = generatedId,
-                userName = username,
-                password = hashedPassword,
-                role = UserRole.MATE
+        verify {
+            authRepository.createMate(
+                User(
+                    id = generatedId,
+                    userName = userName,
+                    password = hashedPassword,
+                    role = UserRole.MATE
+                )
             )
-        )}
+        }
     }
-}
+
+    @Test
+    fun `createMate should fail if password is too short`() {
+        val userName = "mateUser"
+        val password = "short"
+
+        val result = createMateUseCase.createMate(userName, password)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is InvalidCredentialsException)
+        assertEquals("Password less than 8 characters", result.exceptionOrNull()?.message)
+
+        verify(exactly = 0) { authRepository.createMate(any()) }
+    }
+
+    }
+

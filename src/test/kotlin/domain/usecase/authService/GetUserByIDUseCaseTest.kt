@@ -2,8 +2,6 @@ package com.berlin.domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.helper.AuthServiceTestData
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -47,7 +45,6 @@ class GetUserByIDUseCaseTest {
         // Then
         assertThat(result.isSuccess).isTrue()
     }
-
     @Test
     fun `throws Invalid User Id Exception when id is blank`() {
         val existingId = "51"

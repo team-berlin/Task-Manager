@@ -63,7 +63,71 @@ class FetchAllUsersUseCaseTest {
             "No users found."
         )
     }
+    @Test
+    fun `should s display "No users found" when there are no users`() {
+        // Given
+        val emptyUserList = emptyList<User>()
+
+        val mockViewer = mockk<Viewer>(relaxed = true)
+        val useCase = mockk<FetchAllUsersUseCase>()
+        every { useCase.getAllUsers() } returns Result.success(emptyUserList)
+
+        val ui = FetchAllUsersUI(fetchAllUsers = useCase, viewer = mockViewer)
+
+        // When
+        ui.run()
+
+        // Then
+        verify { mockViewer.show("No users found.") }
+    }
+    @Test
+    fun `run should show user info for each user when users are returned`() {
+        // Arrange
+        val user1 = User("1", "Alice", "pass", UserRole.MATE)
+        val user2 = User("2", "Bob", "1234", UserRole.ADMIN)
+        val userList = listOf(user1, user2)
+
+        every { useCase.getAllUsers() } returns Result.success(userList)
+        every { viewer.show(any()) } just Runs
+
+        // Act
+        ui.run()
+
+        // Assert
+        verify(exactly = 8) { viewer.show(any()) } // 4 calls per user
+    }
+
+    @Test
+    fun `run should show message when user list is empty`() {
+        // Arrange
+        every { useCase.getAllUsers() } returns Result.success(emptyList())
+        every { viewer.show(any()) } just Runs
+
+        // Act
+        ui.run()
+
+        // Assert
+        verify(exactly = 1) { viewer.show(any()) }
+    }
+
+    @Test
+    fun `run should show nothing when fetchAllUsers returns failure`() {
+        // Arrange
+        every { useCase.getAllUsers() } returns Result.failure(Exception("error"))
+        every { viewer.show(any()) } just Runs
+
+        // Act
+        ui.run()
+
+        // Assert
+        verify(exactly = 0) { viewer.show(any()) }
+    }
+
+
 
 
 
 }
+
+
+
