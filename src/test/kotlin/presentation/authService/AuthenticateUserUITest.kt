@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-
 class AuthenticateUserUITest {
     private lateinit var userCache: UserCache
     private lateinit var authenticationRepository: AuthenticationRepository
@@ -195,6 +194,4 @@ class AuthenticateUserUITest {
 
         assertTrue(result.isFailure)
     }
-
-
 }
