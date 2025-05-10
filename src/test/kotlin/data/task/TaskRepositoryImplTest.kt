@@ -1,13 +1,14 @@
-package com.berlin.data.memory
+package com.berlin.data.task
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import com.berlin.data.DummyData
+import com.berlin.data.repository.TaskRepositoryImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -15,7 +16,7 @@ class TaskRepositoryImplTest {
 
     private lateinit var repo: TaskRepositoryImpl
 
-    private val alice = User("U1", "alice", "pw", UserRole.MATE)
+    private val alice = User("U1", "alice", "pw",  UserRole.MATE)
     private val bob = User("U2", "bob", "pw", UserRole.MATE)
 
     @BeforeEach
@@ -26,15 +27,15 @@ class TaskRepositoryImplTest {
 
     @Test
     fun `create succeeds for new id`() {
-        val result = repo.create(task("1"))
+        val result = repo.createTask(task("1"))
         assertThat(result.isSuccess).isTrue()
         assertThat(repo.getAllTasks()).hasSize(1)
     }
 
     @Test
     fun `create allows duplicate id (appends second entry)`() {
-        repo.create(task("1"))
-        val result2 = repo.create(task("1"))
+        repo.createTask(task("1"))
+        val result2 = repo.createTask(task("1"))
         assertThat(result2.isSuccess).isTrue()
 
         val matches = repo.getAllTasks().filter { it.id == "1" }
@@ -44,16 +45,16 @@ class TaskRepositoryImplTest {
     @Test
     fun `findById returns task when present`() {
         val t = task("1")
-        repo.create(t)
+        repo.createTask(t)
 
-        val result = repo.findById("1")
+        val result = repo.getTaskById("1")
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(t)
     }
 
     @Test
     fun `findById fails when absent`() {
-        val result = repo.findById("42")
+        val result = repo.getTaskById("42")
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
     }
@@ -61,10 +62,10 @@ class TaskRepositoryImplTest {
     @Test
     fun `update succeeds for existing task`() {
         val original = task("1")
-        repo.create(original)
+        repo.createTask(original)
 
         val changed = original.copy(title = "New title")
-        val result = repo.update(changed)
+        val result = repo.updateTask(changed)
 
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isEqualTo(changed)
@@ -72,7 +73,7 @@ class TaskRepositoryImplTest {
 
     @Test
     fun `update fails when task not found`() {
-        val result = repo.update(task("1"))
+        val result = repo.updateTask(task("1"))
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
     }
@@ -82,25 +83,25 @@ class TaskRepositoryImplTest {
         val t1 = task("1", projectId = "P1")
         val t2 = task("2", projectId = "P1")
         val t3 = task("3", projectId = "P2")
-        repo.create(t1); repo.create(t2); repo.create(t3)
+        repo.createTask(t1); repo.createTask(t2); repo.createTask(t3)
 
-        val result = repo.findTasksByProjectId("P1")
+        val result = repo.getTasksByProjectId("P1")
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).containsExactly(t1, t2)
     }
 
     @Test
     fun `delete succeeds when task exists`() {
-        repo.create(task("1"))
+        repo.createTask(task("1"))
 
-        val result = repo.delete("1")
+        val result = repo.deleteTask("1")
         assertThat(result.isSuccess).isTrue()
         assertThat(repo.getAllTasks()).isEmpty()
     }
 
     @Test
     fun `delete fails when task does not exist`() {
-        val result = repo.delete("46")
+        val result = repo.deleteTask("46")
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
     }
@@ -141,10 +142,23 @@ class TaskRepositoryImplTest {
             createByUserId = "U1"
         )
 
-        val result = repo.create(t)
+        val result = repo.createTask(t)
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
     }
 
+    @Test
+    fun `writeAll on data source adds all tasks and is reflected in repo`() {
+        DummyData.tasks.clear()
+
+        val t1 = task("bulk1")
+        val t2 = task("bulk2")
+
+        val wrote = DummyData.writeAll(listOf(t1, t2))
+        assertThat(wrote).isTrue()
+
+        val all = repo.getAllTasks()
+        assertThat(all).containsExactly(t1, t2)
+    }
 }

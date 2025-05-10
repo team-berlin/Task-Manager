@@ -1,17 +1,15 @@
-package presentation.task
+package com.berlin.presentation.task
 
-
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.task.UpdateTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -23,159 +21,140 @@ class UpdateTaskUITest {
     private lateinit var reader: Reader
     private lateinit var updateUC: UpdateTaskUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
-
+    private lateinit var fetchUsers: GetAllUsersUseCase
     private lateinit var ui: UpdateTaskUI
 
+    // Capture every call to viewer.show(...)
     private val printed = mutableListOf<String>()
-    private lateinit var existing: Task
-    private lateinit var newUser: User
+
+    private val existing = Task(
+        id = "T1",
+        projectId = "P1",
+        title = "OldTitle",
+        description = "OldDesc",
+        stateId = "TODO",
+        assignedToUserId = "U1",
+        createByUserId = "U1"
+    )
+
+    private val user1 = User(id = "U1", userName = "alice", password = "pw", role = UserRole.MATE)
+    private val user2 = User(id = "U2", userName = "bob", password = "pw", role = UserRole.MATE)
 
     @BeforeEach
     fun setUp() {
-        // reset in-memory data
-        DummyData.tasks.clear()
-        DummyData.users.clear()
-        // add two users
-        DummyData.users += User("U1", "alice", "pw", UserRole.MATE)
-        DummyData.users += User("U2", "bob", "pw", UserRole.MATE)
-
-        // add one existing task
-        existing = Task(
-            id = "T1",
-            projectId = "P1",
-            title = "OldTitle",
-            description = "OldDesc",
-            stateId = "TODO",
-            assignedToUserId = "U1",
-            createByUserId = "U1"
-        )
-        DummyData.tasks += existing
-        newUser = DummyData.users[1]  // bob
-
-        // mock IO and use-case
         viewer = mockk(relaxed = true) {
             every { show(capture(printed)) } just Runs
         }
         reader = mockk()
         updateUC = mockk()
         getAllTasks = mockk()
+        fetchUsers = mockk()
 
+        // always return exactly our one task
         every { getAllTasks.invoke() } returns listOf(existing)
+        // two users available
+        every { fetchUsers.getAllUsers() } returns Result.success(listOf(user1, user2))
 
-        ui = UpdateTaskUI(updateUC, getAllTasks, viewer, reader)
+        ui = UpdateTaskUI(
+            updateTask = updateUC,
+            getAllTasks = getAllTasks,
+            getAllUsersUseCase = fetchUsers,
+            viewer = viewer,
+            reader = reader
+        )
 
         printed.clear()
     }
 
+    /** Helper to drive the 4 reads: taskIndex, newTitle, newDesc, assigneeIndex/X  */
+    private fun stubReads(vararg inputs: String) {
+        every { reader.read() } returnsMany inputs.toList()
+    }
+
     @Test
-    fun `success when title only changes`() {
-        every { reader.read() } returnsMany listOf(
-            "1",
-            "NewTitle",
-            "",
-            "X"
-        )
+    fun `update title only`() {
+        stubReads("1", "NewTitle", "", "X")
         every {
             updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
         } returns Result.success(existing.copy(title = "NewTitle"))
 
         ui.run()
 
-        verify {
-            updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
-        }
+        verify { updateUC.invoke("T1", "NewTitle", null, null) }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when description only changes`() {
-        every { reader.read() } returnsMany listOf(
-            "1",
-            "",
-            "NewDesc",
-            "X"
-        )
+    fun `update description only`() {
+        stubReads("1", "", "NewDesc", "X")
         every {
             updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
         } returns Result.success(existing.copy(description = "NewDesc"))
 
         ui.run()
 
-        verify {
-            updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
-        }
+        verify { updateUC.invoke("T1", null, "NewDesc", null) }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when assignee only changes`() {
-        every { reader.read() } returnsMany listOf(
-            "1",
-            "",
-            "",
-            "2"
-        )
+    fun `update assignee only`() {
+        stubReads("1", "", "", "2")
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
         } returns Result.success(existing.copy(assignedToUserId = "U2"))
 
         ui.run()
 
-        verify {
-            updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
-        }
+        verify { updateUC.invoke("T1", null, null, "U2") }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when nothing changes`() {
-        every { reader.read() } returnsMany listOf(
-            "1", "", "", "X"
-        )
+    fun `nothing changes`() {
+        stubReads("1", "", "", "X")
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
         } returns Result.success(existing)
 
         ui.run()
 
-        verify {
-            updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
-        }
+        verify { updateUC.invoke("T1", null, null, null) }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `failure from use case is printed`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
+    fun `use-case failure prints its message`() {
+        stubReads("1", "", "", "X")
         every {
-            updateUC.invoke("T1", any(), any(), any())
+            updateUC.invoke(any(), any(), any(), any())
         } returns Result.failure(IllegalStateException("boom"))
 
         ui.run()
 
         assertThat(printed.last()).contains("boom")
-        verify { updateUC.invoke("T1", null, null, null) }
     }
 
     @Test
-    fun `fallback message when failure message null`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
+    fun `use-case failure without message shows default`() {
+        stubReads("1", "", "", "X")
         every {
-            updateUC.invoke("T1", any(), any(), any())
+            updateUC.invoke(any(), any(), any(), any())
         } returns Result.failure(IllegalStateException("Update failed"))
 
         ui.run()
 
-        assertThat(printed.last()).contains("Update failed")
+        assertThat(printed.last()).isEqualTo("Update failed")
     }
 
     @Test
-    fun `cancelling at task chooser prints Cancelled`() {
+    fun `cancel at task chooser prints Cancelled`() {
+        // first reader.read() -> "X" => choose() throws InputCancelledException
         every { reader.read() } returns "X"
 
         ui.run()
 
-        assertThat(printed.last()).contains("Cancelled.")
+        assertThat(printed.last()).isEqualTo("Cancelled.")
         verify { updateUC wasNot Called }
     }
 
@@ -185,42 +164,41 @@ class UpdateTaskUITest {
 
         ui.run()
 
-        assertThat(printed.last()).contains("Invalid selection")
+        assertThat(printed.last()).isEqualTo("Invalid selection")
         verify { updateUC wasNot Called }
     }
 
     @Test
     fun `invalid assignee index prints Invalid selection`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "99")
+        stubReads("1", "", "", "99")
 
         ui.run()
 
-        assertThat(printed.last()).contains("Invalid selection")
+        assertThat(printed.last()).isEqualTo("Invalid selection")
         verify { updateUC wasNot Called }
     }
 
     @Test
-    fun `shows InvalidTaskTitle when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "Bad!", "", "X")
+    fun `throws InvalidTaskTitle prints Invalid task title`() {
+        stubReads("1", "Bad!", "", "X")
         every {
             updateUC.invoke(any(), any(), any(), any())
         } throws InvalidTaskTitle("no digits")
 
         ui.run()
 
-        assertThat(printed.last()).contains("Invalid task title")
+        assertThat(printed.last()).isEqualTo("Invalid task title")
     }
 
     @Test
-    fun `shows TaskNotFoundException when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
+    fun `throws TaskNotFoundException prints Task not founc`() {
+        stubReads("1", "", "", "X")
         every {
             updateUC.invoke(any(), any(), any(), any())
-        } throws TaskNotFoundException("notfound")
+        } throws TaskNotFoundException("gone")
 
         ui.run()
 
-        assertThat(printed.last()).contains("Task not founc")
+        assertThat(printed.last()).isEqualTo("Task not founc")
     }
-
 }

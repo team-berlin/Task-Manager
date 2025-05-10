@@ -1,6 +1,5 @@
-package data.schema
+package com.berlin.data.schema
 
-import com.berlin.data.schema.TaskSchema
 import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach

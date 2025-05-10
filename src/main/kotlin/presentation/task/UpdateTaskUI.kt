@@ -1,13 +1,14 @@
 package com.berlin.presentation.task
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskNotFoundException
+import com.berlin.domain.model.Permission
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -15,12 +16,15 @@ import com.berlin.presentation.io.Viewer
 class UpdateTaskUI(
     private val updateTask: UpdateTaskUseCase,
     private val getAllTasks: GetAllTasksUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 5
     override val label: String = "Update task"
+
+    override fun isAllowed(permission: Permission) = permission.updateTask
 
     override fun run() {
         try {
@@ -44,7 +48,7 @@ class UpdateTaskUI(
             val newAssigneeId = try {
                 val user = choose(
                     title    = "Users",
-                    elements = DummyData.users,
+                    elements =  getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(),
                     labelOf  = { it.userName },
                     viewer   = viewer,
                     reader   = reader

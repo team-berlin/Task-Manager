@@ -1,27 +1,36 @@
 package com.berlin.presentation.task
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.User
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
+import data.UserCache
 
 class CreateTaskUI(
     private val createTask: CreateTaskUseCase,
-    private val currentUser: User,
+    private val cashedUser: UserCache,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase,
+    private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 1
     override val label: String = "Create task"
+
+    override fun isAllowed(permission: Permission) = permission.createTask
 
     override fun run() {
         try {
@@ -31,7 +40,7 @@ class CreateTaskUI(
             val (title, desc) = askTitleAndDescription()
 
             createTask(
-                project.id, title, desc, state.id, currentUser.id, assignee.id
+                project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id
             ).onSuccess { viewer.show("Task created: id=${it.id}") }
                 .onFailure { viewer.show(it.message ?: "Creation failed") }
 
@@ -47,19 +56,19 @@ class CreateTaskUI(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = DummyData.projects, labelOf = { it.name }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectsUseCase.getAllProjects(), labelOf = { it.name }, viewer = viewer, reader = reader
     )
 
     private fun selectState(project: Project) = choose(
         title = "States for ${project.name}",
-        elements = DummyData.states.filter { it.projectId == project.id },
+        elements = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id).getOrNull() ?: emptyList(),
         labelOf = { it.name },
         viewer = viewer,
         reader = reader
     )
 
     private fun selectUser(): User = choose(
-        title = "Users", elements = DummyData.users, labelOf = { it.userName }, viewer = viewer, reader = reader
+        title = "Users", elements = getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
     )
 
     private fun askTitleAndDescription(): Pair<String, String?> {

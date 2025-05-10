@@ -20,6 +20,7 @@ dependencies {
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    implementation ("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.0")
 }
 
 kover {
@@ -30,6 +31,7 @@ kover {
                     "**.model.**",
                     "**.di.**",
                     "**.exception.**",
+                    "**.io.**",
                 )
             }
         }
@@ -57,5 +59,5 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(22)
 }
