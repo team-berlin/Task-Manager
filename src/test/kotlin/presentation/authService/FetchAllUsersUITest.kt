@@ -1,4 +1,4 @@
-package presentation.authService
+package com.berlin.presentation.authService
 
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole

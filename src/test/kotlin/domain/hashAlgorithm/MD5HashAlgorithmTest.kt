@@ -1,5 +1,7 @@
-package com.berlin.domain.hashPassword
+package com.berlin.domain.hashAlgorithm
 
+import com.berlin.domain.hashPassword.HashingString
+import com.berlin.domain.hashPassword.MD5Hasher
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

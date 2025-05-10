@@ -7,12 +7,16 @@ import com.berlin.presentation.MainMenuUI
 import org.koin.core.context.startKoin
 import org.koin.mp.KoinPlatform.getKoin
 
-fun main() {
-
-    startKoin {
-        printLogger()
-        modules(dataModule, appModule, useCaseModule, uiModule)
+fun startApp() {
+    if (org.koin.core.context.GlobalContext.getOrNull() == null) {
+        startKoin {
+            modules(appModule, dataModule, useCaseModule, uiModule)
+        }
     }
-    val mainMenu: MainMenuUI = getKoin().get()
-    mainMenu.run()
+}
+
+fun main() {
+    startApp()
+    val mainMenuUi: MainMenuUI = getKoin().get()
+    mainMenuUi.run()
 }

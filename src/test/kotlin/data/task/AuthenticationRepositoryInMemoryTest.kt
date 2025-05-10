@@ -1,6 +1,7 @@
-package com.berlin.data.authentication
+package com.berlin.data.task
 
 import com.berlin.data.AuthDummyData
+import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.model.User
@@ -14,7 +15,7 @@ class AuthenticationRepositoryInMemoryTest {
 
     private val cachedUser = User("user1234", "admin", "1212", UserRole.ADMIN)
 
-    private lateinit var repoWithCache:    AuthenticationRepositoryImpl
+    private lateinit var repoWithCache: AuthenticationRepositoryImpl
     private lateinit var repoWithoutCache: AuthenticationRepositoryImpl
 
     @BeforeEach

@@ -1,6 +1,7 @@
-package com.berlin.data.csv_data_source
+package com.berlin.data.csvDataSource
 
 import com.berlin.data.BaseSchema
+import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat

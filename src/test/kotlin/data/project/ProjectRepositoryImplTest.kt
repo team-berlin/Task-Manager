@@ -1,4 +1,4 @@
-package data.project
+package com.berlin.data.project
 
 import com.berlin.data.BaseDataSource
 import com.berlin.data.csv_data_source.CsvDataSource

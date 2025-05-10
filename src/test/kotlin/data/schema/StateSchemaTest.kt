@@ -1,4 +1,4 @@
-package data.schema
+package com.berlin.data.schema
 
 import com.berlin.data.schema.StateSchema
 import com.berlin.domain.model.State

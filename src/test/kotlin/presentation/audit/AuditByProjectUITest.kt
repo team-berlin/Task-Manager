@@ -1,4 +1,4 @@
-package presentation.audit
+package com.berlin.presentation.audit
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.AuditAction
@@ -7,8 +7,6 @@ import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
-import com.berlin.presentation.audit.AuditByProjectUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
