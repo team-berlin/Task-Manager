@@ -4,6 +4,7 @@ import com.berlin.data.BaseSchema
 import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.mongodb.config.MongoConfig
+import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.task.TaskRepositoryImpl
 import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.data.schema.*
@@ -63,6 +64,16 @@ val dataModule = module {
         )
     }
 
+    single { MongoConfig() }
+
+    single<BaseDataSource<Task>>(named("mongoDbTaskDataSource")) { MongoDBTaskDataSource(get()) }
+    single<BaseDataSource<State>>(named("mongoDbStateDataSource")) { MongoDBStateDataSource(get()) }
+    single<BaseDataSource<Project>>(named("mongoDbProjectDataSource")) { MongoDBProjectDataSource(get()) }
+    single<BaseDataSource<AuditLog>>(named("mongoDbAuditLogDataSource")) { MongoDBauditLogDataSource(get()) }
+    single<BaseDataSource<User>>(named("mongoDbUserDataSource")) { MongoDBUserDataSource(get()) }
+
+    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
+
     single<BaseDataSource<User>>(named("UserDataSource")){ CsvDataSource("csv_files", get(named("UserSchema"))) }
     single<BaseDataSource<Project>>(named("ProjectDataSource")){ CsvDataSource("csv_files", get(named("ProjectSchema"))) }
     single<BaseDataSource<Task>>(named("TaskDataSource")){ CsvDataSource("csv_files", get(named("TaskSchema"))) }
@@ -79,5 +90,4 @@ val dataModule = module {
 
     single <AuthenticationRepository>{ AuthenticationRepositoryImpl(get(named("UserDataSource"))) }
 
-    single { MongoConfig() }
 }

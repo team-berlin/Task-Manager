@@ -9,7 +9,7 @@ import org.bson.codecs.pojo.PojoCodecProvider
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 
 class MongoConfig(
-    private val connectionString: String = "mongodb+srv://diyarHussein:BoB0S2i5tDLXr4Xw@planmate.gzyncow.mongodb.net/?retryWrites=true&w=majority&appName=PlanMate",
+    private val connectionString: String = "mongodb+srv://diyarHussein:7p53.t@GQ4F#@2c@planmate.gzyncow.mongodb.net/?retryWrites=true&w=majority&appName=PlanMate",
     private val databaseName: String = "PlanMate"
 ) {
 
