@@ -1,6 +1,5 @@
-package data.schema
+package com.berlin.data.schema
 
-import com.berlin.data.schema.AuditSchema
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType

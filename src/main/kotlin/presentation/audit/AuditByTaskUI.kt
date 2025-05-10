@@ -1,13 +1,15 @@
 package com.berlin.presentation.audit
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.Task
-import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
-import com.berlin.presentation.UiRunner
+import com.berlin.domain.usecase.audit_system.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
+import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -15,12 +17,16 @@ import com.berlin.presentation.io.Viewer
 class AuditByTaskUI(
     private val viewer: Viewer,
     private val reader: Reader,
-    private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase
+    private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase,
+    private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase
 
-) : UiRunner {
+) : PermissionedUiRunner {
 
     override val id = 2
     override val label = "View Audit Logs by Task"
+
+    override fun isAllowed(permission: Permission) = permission.getAuditByTask
 
     override fun run() {
         try {
@@ -57,13 +63,14 @@ class AuditByTaskUI(
                 Changes: ${log.changesDescription ?: "null"}
             """.trimIndent()
             )
+            viewer.show("")
         }
     }
 
     private fun selectProject () : Project{
         return choose(
             title = "Choose a project",
-            elements = DummyData.projects,
+            elements = getAllProjectsUseCase.getAllProjects(),
             labelOf = { project -> project.name },
             viewer = viewer,
             reader = reader
@@ -73,7 +80,7 @@ class AuditByTaskUI(
     private fun selectTask (selectedProject : Project) : Task {
         return choose(
             title = "Choose a task",
-            elements = DummyData.initialDemoTasks.filter { it.projectId == selectedProject.id },
+            elements = getTasksByProjectUseCase( selectedProject.id).getOrNull() ?: emptyList() ,
             labelOf = { task -> task.title },
             viewer = viewer,
             reader = reader

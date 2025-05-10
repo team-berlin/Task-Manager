@@ -1,7 +1,6 @@
 package com.berlin.domain.usecase.state
 
 import com.berlin.domain.exception.InvalidStateIdException
-import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
@@ -10,7 +9,7 @@ class GetTasksByStateIdUseCase (
     private val stateRepository: StateRepository
 ) {
 
-    fun getAllTasksByStateId(stateId: String): List<Task>? {
+    fun getAllTasksByStateId(stateId: String): List<Task> {
         if (!validateStateId(stateId)) throw InvalidStateIdException("State ID must not be empty or blank")
 
         if (checkStateExists(stateId)) {
@@ -22,7 +21,7 @@ class GetTasksByStateIdUseCase (
     }
 
 
-    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
+    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId).isSuccess
 
     private fun validateStateId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

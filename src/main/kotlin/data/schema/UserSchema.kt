@@ -11,7 +11,7 @@ class UserSchema(
 ) : BaseSchema<User> {
 
     init {
-        require(fileName.isNotEmpty()&&header.size==NUMBER_OF_ATTRIBUTES)
+        require(fileName.isNotEmpty()&&header.size== NUMBER_OF_ATTRIBUTES)
     }
 
     override fun toRow(entity: User): List<String> {

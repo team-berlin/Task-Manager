@@ -1,6 +1,7 @@
-package com.berlin.data.csv_data_source
+package com.berlin.data.csvDataSource
 
 import com.berlin.data.BaseSchema
+import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
@@ -66,14 +67,6 @@ class CsvDataSourceTest {
 
     //region getAll tests
 
-    @Disabled
-    @Test
-    fun `getAll should throw FileNotFoundException when file does not exist`() {
-        // Given: CSV file does not exist
-
-        // When // Then: getAll is called
-        assertThrows<FileNotFoundException> { csvDataSource.getAll() }
-    }
 
     @Test
     fun `getAll should return list of entities when file exists with valid data`() {

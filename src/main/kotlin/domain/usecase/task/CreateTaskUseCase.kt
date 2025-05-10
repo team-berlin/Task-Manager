@@ -2,13 +2,17 @@ package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
-import com.berlin.domain.helper.IdGeneratorImplementation
+import com.berlin.domain.model.AuditAction
+import com.berlin.domain.model.EntityType
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
-    private val defaultIdGenerator: IdGeneratorImplementation
+    private val defaultIdGenerator: IdGeneratorImplementation,
+    private val addAuditLogUseCase: AddAuditLogUseCase
 ) {
     operator fun invoke(
         projectId: String,
@@ -31,7 +35,19 @@ class CreateTaskUseCase(
             if (!validateUniqueTask(newTask.id)) {
                 throw TaskAlreadyExistsException("Task with id= ${newTask.id} and title = ${newTask.title} already exists")
             }
-            return taskRepository.create(newTask)
+
+            val createdTask = taskRepository.createTask(newTask)
+
+            if (createdTask.isSuccess) {
+                addAuditLogUseCase.addAuditLog(
+                    createdByUserId = createByUserId,
+                    auditAction = AuditAction.CREATE,
+                    entityType = EntityType.TASK,
+                    entityId = newTask.id,
+                )
+            }
+
+            return createdTask
         } else {
             throw InvalidTaskTitle("task title must be not empty or plank")
         }

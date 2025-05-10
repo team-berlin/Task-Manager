@@ -38,7 +38,7 @@ class GetTasksByProjectUseCaseTest {
 
     @Test
     fun `result is success when repository returns non-empty list`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.success(listOf(task))
+        every { taskRepository.getTasksByProjectId("P1") } returns Result.success(listOf(task))
 
         val result = useCase("P1")
 
@@ -47,7 +47,7 @@ class GetTasksByProjectUseCaseTest {
 
     @Test
     fun `result is success when repository returns empty list`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.success(emptyList())
+        every { taskRepository.getTasksByProjectId("P1") } returns Result.success(emptyList())
 
         val result = useCase("P1")
 
@@ -56,7 +56,7 @@ class GetTasksByProjectUseCaseTest {
 
     @Test
     fun `result is failure when repository returns unexpected error`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.failure(IllegalStateException("boom"))
+        every { taskRepository.getTasksByProjectId("P1") } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase("P1")
 
@@ -69,7 +69,7 @@ class GetTasksByProjectUseCaseTest {
             useCase("   ")
         }
 
-        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
+        verify(exactly = 0) { taskRepository.getTasksByProjectId(any()) }
     }
 
     @Test
@@ -78,6 +78,6 @@ class GetTasksByProjectUseCaseTest {
             useCase("12345")
         }
 
-        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
+        verify(exactly = 0) { taskRepository.getTasksByProjectId(any()) }
     }
 }
