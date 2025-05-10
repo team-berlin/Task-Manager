@@ -16,7 +16,7 @@ class GetUserByIDUI(
     override val id: Int = 900
     override val label: String = "get user by id"
 
-    override fun run() {
+    override suspend fun run() {
         viewer.show("Enter the user id: ")
         val id = reader.read()?.trim().orEmpty()
         try {

@@ -11,7 +11,7 @@ class FetchAllUsersUI(
 ) : UiRunner {
     override val id: Int = 500
     override val label: String = "fetch all users"
-    override fun run() {
+    override suspend fun run() {
         val users = fetchAllUsers.getAllUsers()
         users.onSuccess { usersList ->
             if (usersList.isEmpty())

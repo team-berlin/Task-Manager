@@ -9,9 +9,10 @@ import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
 import com.berlin.presentation.audit.AuditByProjectUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -47,9 +48,9 @@ class AuditByProjectUITest {
     }
 
     @Test
-    fun `displays audit logs for selected project`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns sampleLogs
+    fun `displays audit logs for selected project`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns sampleLogs
 
         ui.run()
 
@@ -61,9 +62,9 @@ class AuditByProjectUITest {
     }
 
     @Test
-    fun `displays message when no logs exist for project`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns emptyList()
+    fun `displays message when no logs exist for project`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns emptyList()
 
         ui.run()
 
@@ -73,8 +74,8 @@ class AuditByProjectUITest {
     }
 
     @Test
-    fun `displays cancelled message when input is x`() {
-        every { reader.read() } returns "x"
+    fun `displays cancelled message when input is x`() = runTest {
+        coEvery { reader.read() } returns "x"
 
         ui.run()
 
@@ -83,9 +84,9 @@ class AuditByProjectUITest {
         }
     }
     @Test
-    fun `displays null when changesDescription is null`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns listOf(
+    fun `displays null when changesDescription is null`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns listOf(
             AuditLog(
                 id = "A2",
                 timestamp = 1234567891L,
@@ -105,8 +106,8 @@ class AuditByProjectUITest {
     }
 
     @Test
-    fun `displays invalid selection for non-number input`() {
-        every { reader.read() } returns "not-a-number"
+    fun `displays invalid selection for non-number input`() = runTest {
+        coEvery { reader.read() } returns "not-a-number"
 
         ui.run()
 

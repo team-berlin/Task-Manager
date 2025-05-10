@@ -10,7 +10,7 @@ class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
     private val defaultIdGenerator: IdGeneratorImplementation
 ) {
-    operator fun invoke(
+    suspend operator fun invoke(
         projectId: String,
         title: String,
         description: String?,
@@ -41,7 +41,7 @@ class CreateTaskUseCase(
         return title.isNotBlank() && !title.any { it.isDigit() }
     }
 
-    private fun validateUniqueTask(taskId: String): Boolean {
+    private suspend fun validateUniqueTask(taskId: String): Boolean {
         return (taskRepository.getAllTasks().none { it.id == taskId })
     }
 }

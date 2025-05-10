@@ -22,7 +22,7 @@ class AuditByTaskUI(
     override val id = 2
     override val label = "View Audit Logs by Task"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val selectedProject = selectProject()
 

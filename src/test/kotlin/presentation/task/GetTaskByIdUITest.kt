@@ -8,6 +8,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -22,7 +23,7 @@ class GetTaskByIdUITest {
     @BeforeEach
     fun setUp() {
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
         useCase = mockk()
@@ -31,8 +32,8 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `success prints all task fields`() {
-        every { reader.read() } returns "T1"
+    fun `success prints all task fields`() = runTest {
+        coEvery { reader.read() } returns "T1"
         val task = Task(
             id = "T1",
             projectId = "P1",
@@ -42,7 +43,7 @@ class GetTaskByIdUITest {
             assignedToUserId = "U2",
             createByUserId = "U1"
         )
-        every { useCase.invoke("T1") } returns Result.success(task)
+        coEvery { useCase.invoke("T1") } returns Result.success(task)
 
         ui.run()
 
@@ -58,9 +59,9 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `not found prints friendly message`() {
-        every { reader.read() } returns "X42"
-        every { useCase.invoke("X42") } returns Result.failure(TaskNotFoundException("X42"))
+    fun `not found prints friendly message`() = runTest {
+        coEvery { reader.read() } returns "X42"
+        coEvery { useCase.invoke("X42") } returns Result.failure(TaskNotFoundException("X42"))
 
         ui.run()
 
@@ -69,9 +70,9 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `other failure prints exception message`() {
-        every { reader.read() } returns "T2"
-        every { useCase.invoke("T2") } returns Result.failure(IllegalStateException("boom"))
+    fun `other failure prints exception message`() = runTest {
+        coEvery { reader.read() } returns "T2"
+        coEvery { useCase.invoke("T2") } returns Result.failure(IllegalStateException("boom"))
 
         ui.run()
 
@@ -79,9 +80,9 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `lookup failed fallback when exception message null`() {
-        every { reader.read() } returns "T3"
-        every { useCase.invoke("T3") } returns Result.failure(IllegalStateException("Lookup failed"))
+    fun `lookup failed fallback when exception message null`() = runTest {
+        coEvery { reader.read() } returns "T3"
+        coEvery { useCase.invoke("T3") } returns Result.failure(IllegalStateException("Lookup failed"))
 
         ui.run()
 
@@ -89,20 +90,20 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `empty raw id triggers InvalidTaskIdException and prints invalid task id`() {
-        every { reader.read() } returns ""
-        every { useCase.invoke("") } throws InvalidTaskIdException("Task id must not be empty, blank, or purely numeric")
+    fun `empty raw id triggers InvalidTaskIdException and prints invalid task id`() = runTest {
+        coEvery { reader.read() } returns ""
+        coEvery { useCase.invoke("") } throws InvalidTaskIdException("Task id must not be empty, blank, or purely numeric")
 
         ui.run()
 
         assertThat(printed.last()).contains("Invalid task id")
-        verify(exactly = 1) { useCase.invoke("") }
+        coVerify(exactly = 1) { useCase.invoke("") }
     }
 
     @Test
-    fun `numeric-only raw id throws InvalidTaskIdException`() {
-        every { reader.read() } returns "1234"
-        every { useCase.invoke("1234") } throws InvalidTaskIdException("numeric-only")
+    fun `numeric-only raw id throws InvalidTaskIdException`() = runTest {
+        coEvery { reader.read() } returns "1234"
+        coEvery { useCase.invoke("1234") } throws InvalidTaskIdException("numeric-only")
         ui.run()
 
         assertThat(printed.last()).contains("Invalid task id")

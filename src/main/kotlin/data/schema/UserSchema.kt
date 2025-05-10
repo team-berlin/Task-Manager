@@ -14,17 +14,17 @@ class UserSchema(
         require(fileName.isNotEmpty()&&header.size==NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: User): List<String> {
+    override suspend fun toRow(entity: User): List<String> {
         return if (checkUserIsNotValid(entity)) emptyList()
         else userToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): User? {
+    override suspend fun fromRow(row: List<String>): User? {
         return if (checkRowIsNotValidUser(row)) null
         else stringsListToUser(row)
     }
 
-    override fun getId(entity: User): String? {
+    override suspend fun getId(entity: User): String? {
         return entity.id.ifEmpty { null }
     }
 

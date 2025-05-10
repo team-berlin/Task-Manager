@@ -9,6 +9,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -16,7 +17,7 @@ class DeleteTaskUITest {
 
     private val printed = mutableListOf<String>()
     private val viewer: Viewer = mockk(relaxed = true) {
-        every { show(capture(printed)) } just Runs
+        coEvery { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
     private val deleteUC: DeleteTaskUseCase = mockk()
@@ -42,76 +43,76 @@ class DeleteTaskUITest {
         )
         DummyData.tasks += task
 
-        every { getAllTasks.invoke() } returns listOf(task)
+        coEvery { getAllTasks.invoke() } returns listOf(task)
 
         ui = DeleteTaskUI(deleteUC, getAllTasks, viewer, reader)
     }
 
     @Test
-    fun `deletes task and prints confirmation`() {
-        every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(task.id) } returns Result.success(Unit)
+    fun `deletes task and prints confirmation`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "y")
+        coEvery { deleteUC.invoke(task.id) } returns Result.success(Unit)
 
         ui.run()
 
-        verify(exactly = 1) { deleteUC.invoke(task.id) }
+        coVerify(exactly = 1) { deleteUC.invoke(task.id) }
         assertThat(DummyData.tasks).doesNotContain(task)
         assertThat(printed.last()).contains("Deleted.")
     }
 
     @Test
-    fun `user aborts deletion at confirmation`() {
-        every { reader.read() } returnsMany listOf("1", "n")
+    fun `user aborts deletion at confirmation`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "n")
 
         ui.run()
 
-        verify(exactly = 0) { deleteUC.invoke(any()) }
+        coVerify(exactly = 0) { deleteUC.invoke(any()) }
         assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
-    fun `user cancels in chooser`() {
-        every { reader.read() } returns "X"
+    fun `user cancels in chooser`() = runTest {
+        coEvery { reader.read() } returns "X"
 
         ui.run()
 
-        verify(exactly = 0) { deleteUC.invoke(any()) }
+        coVerify(exactly = 0) { deleteUC.invoke(any()) }
         assertThat(printed.last()).contains("Cancelled.")
     }
 
     @Test
-    fun `failure from use case is shown`() {
-        every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(task.id) } returns Result.failure(IllegalStateException("cannot delete"))
+    fun `failure from use case is shown`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "y")
+        coEvery { deleteUC.invoke(task.id) } returns Result.failure(IllegalStateException("cannot delete"))
 
         ui.run()
 
-        verify(exactly = 1) { deleteUC.invoke(task.id) }
+        coVerify(exactly = 1) { deleteUC.invoke(task.id) }
         assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("cannot delete")
     }
 
     @Test
-    fun `invalid index prints error message`() {
-        every { reader.read() } returns "99"
+    fun `invalid index prints error message`() = runTest {
+        coEvery { reader.read() } returns "99"
 
         ui.run()
 
-        verify(exactly = 0) { deleteUC.invoke(any()) }
+        coVerify(exactly = 0) { deleteUC.invoke(any()) }
         assertThat(printed.last()).contains("Invalid selection")
     }
 
     @Test
-    fun `throws and shows InvalidTaskIdException from use case`() {
-        every { reader.read() } returnsMany listOf("1", "y")
-        every { deleteUC.invoke(task.id) } throws InvalidTaskIdException("bad id")
+    fun `throws and shows InvalidTaskIdException from use case`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "y")
+        coEvery { deleteUC.invoke(task.id) } throws InvalidTaskIdException("bad id")
 
         ui.run()
 
         assertThat(DummyData.tasks).contains(task)
         assertThat(printed.last()).contains("invalid task id")
-        verify(exactly = 1) { deleteUC.invoke(task.id) }
+        coVerify(exactly = 1) { deleteUC.invoke(task.id) }
     }
 
 }

@@ -21,7 +21,7 @@ class AssignTaskUI(
     override val id: Int = 2
     override val label: String = "Assign task"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val task = selectTask()
             val assignee = choose(
@@ -40,7 +40,7 @@ class AssignTaskUI(
         }
     }
 
-    private fun selectTask() = choose(
+    private suspend fun selectTask() = choose(
         title = "Tasks",
         elements = getAllTasks(),
         labelOf = { "${it.id} – ${it.title}" },

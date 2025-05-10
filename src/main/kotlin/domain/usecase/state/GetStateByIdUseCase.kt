@@ -8,7 +8,7 @@ class GetStateByIdUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun getStateById(stateId: String): State {
+    suspend fun getStateById(stateId: String): State {
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State ID must not be empty or blank")
 

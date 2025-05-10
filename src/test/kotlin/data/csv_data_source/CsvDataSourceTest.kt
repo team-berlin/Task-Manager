@@ -4,9 +4,10 @@ import com.berlin.data.BaseSchema
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -42,9 +43,9 @@ class CsvDataSourceTest {
         mockSchema = mockk(relaxed = true)
 
         // Set up mock schema behavior
-        every { mockSchema.fileName } returns "users.csv"
-        every { mockSchema.header } returns listOf("id", "userName", "password", "role")
-        every { mockSchema.getId(any()) } answers {
+        coEvery { mockSchema.fileName } returns "users.csv"
+        coEvery { mockSchema.header } returns listOf("id", "userName", "password", "role")
+        coEvery { mockSchema.getId(any()) } answers {
             val user = firstArg<User>()
             user.id
         }
@@ -68,7 +69,7 @@ class CsvDataSourceTest {
 
     @Disabled
     @Test
-    fun `getAll should throw FileNotFoundException when file does not exist`() {
+    fun `getAll should throw FileNotFoundException when file does not exist`() = runTest {
         // Given: CSV file does not exist
 
         // When // Then: getAll is called
@@ -76,24 +77,24 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `getAll should return list of entities when file exists with valid data`() {
+    fun `getAll should return list of entities when file exists with valid data`() = runTest {
         // Given: CSV file exists with test data
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
 
         // When: getAll is called
         val result = csvDataSource.getAll()
 
         // Then: list of all entities should be returned
         assertThat(result).hasSize(testUsers.size)
-        verify(atLeast = 1) { mockSchema.fromRow(any()) }
+        coVerify(atLeast = 1) { mockSchema.fromRow(any()) }
     }
 
     @Test
-    fun `getAll should filter out null entities from schema conversion`() {
+    fun `getAll should filter out null entities from schema conversion`() = runTest {
         // Given: CSV file exists but some rows will convert to null entities
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returns testUser andThen null andThen testUsers[2]
+        coEvery { mockSchema.fromRow(any()) } returns testUser andThen null andThen testUsers[2]
 
         // When: getAll is called
         val result = csvDataSource.getAll()
@@ -109,7 +110,7 @@ class CsvDataSourceTest {
     //region getById tests
 
     @Test
-    fun `getById should return null when file does not exist`() {
+    fun `getById should return null when file does not exist`() = runTest {
         // Given: CSV file does not exist
 
         // When: getById is called with an id
@@ -120,11 +121,11 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `getById should return entity when file exists and id matches`() {
+    fun `getById should return entity when file exists and id matches`() = runTest {
         // Given: CSV file exists with test data
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
-        every { mockSchema.getId(testUser) } returns testUser.id
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.getId(testUser) } returns testUser.id
         // When: getById is called with an existing id
         val result = csvDataSource.getById("u1")
 
@@ -133,10 +134,10 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `getById should return null when file exists but id does not match`() {
+    fun `getById should return null when file exists but id does not match`() = runTest {
         // Given: CSV file exists with test data
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
 
         // When: getById is called with a non-existent id
         val result = csvDataSource.getById("nonexistent")
@@ -150,10 +151,10 @@ class CsvDataSourceTest {
     //region write tests
 
     @Test
-    fun `write should create file and return true when writing to non-existent file`() {
+    fun `write should create file and return true when writing to non-existent file`() = runTest {
         // Given: file does not exist and schema returns valid row for entity
         val csvFile = File(tempDir.toFile(), mockSchema.fileName)
-        every { mockSchema.toRow(any()) } returns listOf("u1", "testUser", "password123", "MATE")
+        coEvery { mockSchema.toRow(any()) } returns listOf("u1", "testUser", "password123", "MATE")
 
         // When: write is called with a valid entity
         val result = csvDataSource.write(testUser)
@@ -161,28 +162,28 @@ class CsvDataSourceTest {
         // Then: file should be created and operation should succeed
         assertThat(result).isTrue()
         assertThat(csvFile.exists()).isTrue()
-        verify { mockSchema.toRow(testUser) }
+        coVerify { mockSchema.toRow(testUser) }
     }
 
     @Test
-    fun `write should append to file and return true when writing to existing file`() {
+    fun `write should append to file and return true when writing to existing file`() = runTest {
         // Given: file exists with test data
         createCsvWithTestData()
         val newUser = User("u4", "user4", "pass4", UserRole.ADMIN)
-        every { mockSchema.toRow(newUser) } returns listOf("u4", "user4", "pass4", "ADMIN")
+        coEvery { mockSchema.toRow(newUser) } returns listOf("u4", "user4", "pass4", "ADMIN")
 
         // When: write is called with a new entity
         val result = csvDataSource.write(newUser)
 
         // Then: entity should be appended and operation should succeed
         assertThat(result).isTrue()
-        verify { mockSchema.toRow(newUser) }
+        coVerify { mockSchema.toRow(newUser) }
     }
 
     @Test
-    fun `write should return false when schema returns empty row`() {
+    fun `write should return false when schema returns empty row`() = runTest {
         // Given: schema returns empty row for the entity
-        every { mockSchema.toRow(any()) } returns emptyList()
+        coEvery { mockSchema.toRow(any()) } returns emptyList()
 
         // When: write is called with an invalid entity
         val result = csvDataSource.write(testUser)
@@ -196,10 +197,10 @@ class CsvDataSourceTest {
     //region writeAll tests
 
     @Test
-    fun `writeAll should create file and return true when writing to non-existent file`() {
+    fun `writeAll should create file and return true when writing to non-existent file`() = runTest {
         // Given: file does not exist and schema converts entities to rows properly
         val csvFile = File(tempDir.toFile(), mockSchema.fileName)
-        every { mockSchema.toRow(any()) } answers {
+        coEvery { mockSchema.toRow(any()) } answers {
             val user = firstArg<User>()
             listOf(user.id, user.userName, user.password, user.role.toString())
         }
@@ -210,11 +211,11 @@ class CsvDataSourceTest {
         // Then: file should be created and operation should succeed
         assertThat(result).isTrue()
         assertThat(csvFile.exists()).isTrue()
-        verify(exactly = testUsers.size) { mockSchema.toRow(any()) }
+        coVerify(exactly = testUsers.size) { mockSchema.toRow(any()) }
     }
 
     @Test
-    fun `writeAll should return false when list is empty`() {
+    fun `writeAll should return false when list is empty`() = runTest {
         // Given: empty list of entities
 
         // When: writeAll is called with empty list
@@ -225,18 +226,18 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `writeAll should filter out entities that produce empty rows`() {
+    fun `writeAll should filter out entities that produce empty rows`() = runTest {
         // Given: some entities produce empty rows
-        every { mockSchema.toRow(testUsers[0]) } returns listOf("u1", "testUser", "password123", "MATE")
-        every { mockSchema.toRow(testUsers[1]) } returns emptyList()
-        every { mockSchema.toRow(testUsers[2]) } returns listOf("u3", "user3", "pass3", "MATE")
+        coEvery { mockSchema.toRow(testUsers[0]) } returns listOf("u1", "testUser", "password123", "MATE")
+        coEvery { mockSchema.toRow(testUsers[1]) } returns emptyList()
+        coEvery { mockSchema.toRow(testUsers[2]) } returns listOf("u3", "user3", "pass3", "MATE")
 
         // When: writeAll is called with mix of valid/invalid entities
         val result = csvDataSource.writeAll(testUsers)
 
         // Then: operation should succeed with valid entities only
         assertThat(result).isTrue()
-        verify(exactly = testUsers.size) { mockSchema.toRow(any()) }
+        coVerify(exactly = testUsers.size) { mockSchema.toRow(any()) }
     }
 
     //endregion
@@ -244,7 +245,7 @@ class CsvDataSourceTest {
     //region update tests
 
     @Test
-    fun `update should return false when file does not exist`() {
+    fun `update should return false when file does not exist`() = runTest {
         // Given: CSV file does not exist
 
         // When: update is called with an id and entity
@@ -255,10 +256,10 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `update should return false when entity id does not exist`() {
+    fun `update should return false when entity id does not exist`() = runTest {
         // Given: CSV file exists but doesn't contain the entity with specified id
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
 
         // When: update is called with non-existent id
         val result = csvDataSource.update("nonexistent", testUser)
@@ -268,19 +269,19 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `update should return true when update is successful`() {
+    fun `update should return true when update is successful`() = runTest {
         // Given: CSV file exists with entity that matches the id
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
         val updatedUser = testUser.copy(userName = "updatedName")
-        every { mockSchema.toRow(updatedUser) } returns listOf("u1", "updatedName", "password123", "MATE")
+        coEvery { mockSchema.toRow(updatedUser) } returns listOf("u1", "updatedName", "password123", "MATE")
 
         // When: update is called with existing id and modified entity
         val result = csvDataSource.update("u1", updatedUser)
 
         // Then: entity should be updated and operation should succeed
         assertThat(result).isTrue()
-        verify { mockSchema.toRow(updatedUser) }
+        coVerify { mockSchema.toRow(updatedUser) }
     }
 
     //endregion
@@ -288,7 +289,7 @@ class CsvDataSourceTest {
     //region delete tests
 
     @Test
-    fun `delete should return false when file does not exist`() {
+    fun `delete should return false when file does not exist`() = runTest {
         // Given: CSV file does not exist
 
         // When: delete is called with an id
@@ -299,10 +300,10 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `delete should return false when entity id does not exist`() {
+    fun `delete should return false when entity id does not exist`() = runTest {
         // Given: CSV file exists but doesn't contain entity with specified id
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
 
         // When: delete is called with non-existent id
         val result = csvDataSource.delete("nonexistent")
@@ -312,11 +313,11 @@ class CsvDataSourceTest {
     }
 
     @Test
-    fun `delete should return true when delete is successful`() {
+    fun `delete should return true when delete is successful`() = runTest {
         // Given: CSV file exists with entity that matches the id
         createCsvWithTestData()
-        every { mockSchema.fromRow(any()) } returnsMany testUsers
-        every { mockSchema.toRow(any()) } answers {
+        coEvery { mockSchema.fromRow(any()) } returnsMany testUsers
+        coEvery { mockSchema.toRow(any()) } answers {
             val user = firstArg<User>()
             listOf(user.id, user.userName, user.password, user.role.toString())
         }

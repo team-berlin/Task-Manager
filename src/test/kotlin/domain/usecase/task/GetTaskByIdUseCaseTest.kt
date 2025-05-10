@@ -4,9 +4,10 @@ import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -34,8 +35,8 @@ class GetTaskByIdUseCaseTest {
     }
 
     @Test
-    fun `result is success when repository returns a task`() {
-        every { taskRepository.findById(validId) } returns Result.success(stored)
+    fun `result is success when repository returns a task`() = runTest {
+        coEvery { taskRepository.findById(validId) } returns Result.success(stored)
 
         val result = useCase(validId)
 
@@ -44,9 +45,9 @@ class GetTaskByIdUseCaseTest {
     }
 
     @Test
-    fun `result is failure when repository returns failure`() {
+    fun `result is failure when repository returns failure`() = runTest {
         val ex = IllegalStateException("boom")
-        every { taskRepository.findById(validId) } returns Result.failure(ex)
+        coEvery { taskRepository.findById(validId) } returns Result.failure(ex)
 
         val result = useCase(validId)
 
@@ -55,18 +56,18 @@ class GetTaskByIdUseCaseTest {
     }
 
     @Test
-    fun `throws InvalidTaskIdException when id is blank`() {
+    fun `throws InvalidTaskIdException when id is blank`() = runTest {
         assertThrows<InvalidTaskIdException> {
             useCase("   ")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
+        coVerify(exactly = 0) { taskRepository.findById(any()) }
     }
 
     @Test
-    fun `throws InvalidTaskIdException when id is numeric-only`() {
+    fun `throws InvalidTaskIdException when id is numeric-only`() = runTest {
         assertThrows<InvalidTaskIdException> {
             useCase("1234")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
+        coVerify(exactly = 0) { taskRepository.findById(any()) }
     }
 }

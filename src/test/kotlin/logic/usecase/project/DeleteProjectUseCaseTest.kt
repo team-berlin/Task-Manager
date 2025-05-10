@@ -3,8 +3,9 @@ package logic.usecase.project;
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.project.DeleteProjectUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -22,9 +23,9 @@ class DeleteProjectUseCaseTest {
     }
 
     @Test
-    fun `should return success when project deleted successfully`() {
+    fun `should return success when project deleted successfully`() = runTest {
         // Given
-        every { projectRepository.deleteProject(any()) } returns Result.success("")
+        coEvery { projectRepository.deleteProject(any()) } returns Result.success("")
 
         // When
         val result = deleteProjectUseCase.deleteProject("project_1")
@@ -34,9 +35,9 @@ class DeleteProjectUseCaseTest {
     }
 
     @Test
-    fun `should return failure when project deletion fails`() {
+    fun `should return failure when project deletion fails`() = runTest {
         // Given
-        every { projectRepository.deleteProject("P1") } returns Result.failure(Exception())
+        coEvery { projectRepository.deleteProject("P1") } returns Result.failure(Exception())
 
         // When
         val result = deleteProjectUseCase.deleteProject("P1")
@@ -48,9 +49,9 @@ class DeleteProjectUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when project id does not exists`() {
+    fun `should throw exception when project id does not exists`() = runTest {
         // Given
-        every { projectRepository.getProjectById(any()) } returns null
+        coEvery { projectRepository.getProjectById(any()) } returns null
 
         // When
         val result = deleteProjectUseCase.deleteProject("P2")
@@ -63,7 +64,7 @@ class DeleteProjectUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when project ID is invalid`(projectId: String) {
+    fun `should throw exception when project ID is invalid`(projectId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             deleteProjectUseCase.deleteProject(projectId)

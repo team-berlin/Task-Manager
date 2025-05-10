@@ -7,7 +7,7 @@ class DeleteStateUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun deleteState(stateId: String): Result<String> {
+    suspend fun deleteState(stateId: String): Result<String> {
 
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State ID must not be empty or blank")
@@ -26,6 +26,6 @@ class DeleteStateUseCase(
     private fun validateStateId(stateId: String): Boolean =
         stateId.isNotBlank() || !(stateId.all { it.isDigit() })
 
-    fun checkStateExists(stateId: String): Boolean =
+    suspend fun checkStateExists(stateId: String): Boolean =
         stateRepository.getStateById(stateId) != null
 }

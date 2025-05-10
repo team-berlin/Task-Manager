@@ -6,9 +6,10 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -38,21 +39,21 @@ class UpdateTaskUseCaseTest {
     }
 
     @Test
-    fun `success when only title changes`() {
+    fun `success when only title changes`() = runTest {
         primeRepoToSucceed()
         val result = useCase("1", title = "New title")
         assertThat(result.isSuccess).isTrue()
     }
 
     @Test
-    fun `success when only description changes`() {
+    fun `success when only description changes`() = runTest {
         primeRepoToSucceed()
         val result = useCase("1", description = "New description")
         assertThat(result.isSuccess).isTrue()
     }
 
     @Test
-    fun `success when only assignee changes`() {
+    fun `success when only assignee changes`() = runTest {
         primeRepoToSucceed()
         val newUser = mockk<User>(relaxed = true)
         val result = useCase("1", assignedToUserId = newUser.id)
@@ -60,7 +61,7 @@ class UpdateTaskUseCaseTest {
     }
 
     @Test
-    fun `success when nothing changes (default args)`() {
+    fun `success when nothing changes (default args)`() = runTest {
         primeRepoToSucceed()
         val result = useCase("1")
         assertThat(result.isSuccess).isTrue()
@@ -68,46 +69,46 @@ class UpdateTaskUseCaseTest {
 
 
     @Test
-    fun `failure when task is not found`() {
-        every { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
+    fun `failure when task is not found`() = runTest {
+        coEvery { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
         val result = useCase("1", title = "Whatever")
         assertThat(result.isFailure).isTrue()
     }
 
     @Test
-    fun `failure when repository update returns unexpected error`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } returns Result.failure(IllegalStateException("boom"))
+    fun `failure when repository update returns unexpected error`() = runTest {
+        coEvery { taskRepository.findById("1") } returns Result.success(stored)
+        coEvery { taskRepository.update(any()) } returns Result.failure(IllegalStateException("boom"))
         val result = useCase("1", title = "New title")
         assertThat(result.isFailure).isTrue()
     }
 
 
     @Test
-    fun `throws InvalidTaskTitle when new title is blank`() {
+    fun `throws InvalidTaskTitle when new title is blank`() = runTest {
         primeRepoToSucceed()
 
         assertThrows<InvalidTaskTitle> {
             useCase("1", title = "   ")
         }
 
-        verify(exactly = 0) { taskRepository.update(any()) }
+        coVerify(exactly = 0) { taskRepository.update(any()) }
     }
 
     @Test
-    fun `throws InvalidTaskTitle when new title is numeric-only`() {
+    fun `throws InvalidTaskTitle when new title is numeric-only`() = runTest {
         primeRepoToSucceed()
 
         assertThrows<InvalidTaskTitle> {
             useCase("1", title = "123456")
         }
 
-        verify(exactly = 0) { taskRepository.update(any()) }
+        coVerify(exactly = 0) { taskRepository.update(any()) }
     }
 
 
     private fun primeRepoToSucceed() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } answers { Result.success(firstArg()) }
+        coEvery { taskRepository.findById("1") } returns Result.success(stored)
+        coEvery { taskRepository.update(any()) } answers { Result.success(firstArg()) }
     }
 }

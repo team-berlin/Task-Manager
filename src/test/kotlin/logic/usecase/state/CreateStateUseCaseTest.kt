@@ -5,8 +5,9 @@ import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -28,11 +29,11 @@ class CreateStateUseCaseTest {
     }
 
     @Test
-    fun `createNewState should return success when state created successfully`() {
+    fun `createNewState should return success when state created successfully`() = runTest {
         // Given
         val validState = State(id = "S1", name = "TODO", projectId = "P1")
-        every { stateRepository.addState(any()) } returns Result.success("State created successfully")
-        every { stateRepository.getStateById(any()) } returns mockk()
+        coEvery { stateRepository.addState(any()) } returns Result.success("State created successfully")
+        coEvery { stateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = createStateUseCase.createNewState(validState.name,
@@ -45,11 +46,11 @@ class CreateStateUseCaseTest {
     }
 
     @Test
-    fun `createNewState should return failure when state creation fails`() {
+    fun `createNewState should return failure when state creation fails`() = runTest {
         // Given
         val validState = State(id = "S1", name = "S1", projectId = "1")
-        every { stateRepository.addState(any()) } returns Result.failure(Exception())
-        every { stateRepository.getStateById(any()) } returns mockk()
+        coEvery { stateRepository.addState(any()) } returns Result.failure(Exception())
+        coEvery { stateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = createStateUseCase.createNewState(validState.name,
@@ -65,7 +66,7 @@ class CreateStateUseCaseTest {
     @ValueSource(strings = ["", " ", "123"])
     fun `validateStateName should throw exception when state name is invalid`(
         invalidName: String,
-    ) {
+    ) = runTest {
         // Given
         val stateInput = State(id = "S1", name = invalidName, projectId = "P1")
 

@@ -4,9 +4,10 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -43,34 +44,34 @@ class GetAllTasksUseCaseTest {
     }
 
     @Test
-    fun `returns all tasks when repository has tasks`() {
-        every { taskRepository.getAllTasks() } returns listOf(task1, task2)
+    fun `returns all tasks when repository has tasks`() = runTest {
+        coEvery { taskRepository.getAllTasks() } returns listOf(task1, task2)
 
         val result = useCase()
 
         // preserves order
         assertThat(result).containsExactly(task1, task2).inOrder()
-        verify(exactly = 1) { taskRepository.getAllTasks() }
+        coVerify(exactly = 1) { taskRepository.getAllTasks() }
     }
 
     @Test
-    fun `returns empty list when repository has no tasks`() {
-        every { taskRepository.getAllTasks() } returns emptyList()
+    fun `returns empty list when repository has no tasks`() = runTest {
+        coEvery { taskRepository.getAllTasks() } returns emptyList()
 
         val result = useCase()
 
         assertThat(result).isEmpty()
-        verify(exactly = 1) { taskRepository.getAllTasks() }
+        coVerify(exactly = 1) { taskRepository.getAllTasks() }
     }
 
     @Test
-    fun `throws exception when repository throws unexpected error`() {
-        every { taskRepository.getAllTasks() } throws IllegalStateException("boom")
+    fun `throws exception when repository throws unexpected error`() = runTest {
+        coEvery { taskRepository.getAllTasks() } throws IllegalStateException("boom")
 
         assertThrows<IllegalStateException> {
             useCase()
         }
-        verify(exactly = 1) { taskRepository.getAllTasks() }
+        coVerify(exactly = 1) { taskRepository.getAllTasks() }
     }
 
 }

@@ -3,6 +3,7 @@ package data.schema
 import com.berlin.data.schema.TaskSchema
 import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,7 +20,7 @@ class TaskSchemaTest {
     //region create object
 
     @Test
-    fun `should throw IllegalArgumentException when try to create object with blank file name`() {
+    fun `should throw IllegalArgumentException when try to create object with blank file name`() = runTest {
         //when //then
         assertThrows<IllegalArgumentException> {
             taskSchema = TaskSchema("", listOf("a", "b", "c", "d", "e", "f", "g", "h"))
@@ -27,7 +28,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
+    fun `should throw IllegalArgumentException when try to create object with invalid size header`() = runTest {
         //when //then
         assertThrows<IllegalArgumentException> {
             taskSchema = TaskSchema("test.csv", listOf("a", "b"))
@@ -39,7 +40,7 @@ class TaskSchemaTest {
     //region toRow
 
     @Test
-    fun `toRow should return list of valid task attributes when valid task passed`() {
+    fun `toRow should return list of valid task attributes when valid task passed`() = runTest {
         //when
         val result = taskSchema.toRow(validTask)
         //then
@@ -47,7 +48,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return list of valid task attributes when task with empty description passed`() {
+    fun `toRow should return list of valid task attributes when task with empty description passed`() = runTest {
         //when
         val result = taskSchema.toRow(validTaskEmptyDescription)
         //then
@@ -55,7 +56,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss id attribute`() {
+    fun `toRow should return empty list when invalid task passed miss id attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptyId)
         //then
@@ -63,7 +64,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss projectId attribute`() {
+    fun `toRow should return empty list when invalid task passed miss projectId attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptyProjectId)
         //then
@@ -71,7 +72,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss title attribute`() {
+    fun `toRow should return empty list when invalid task passed miss title attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptyTitle)
         //then
@@ -79,7 +80,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss stateId attribute`() {
+    fun `toRow should return empty list when invalid task passed miss stateId attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptyStateId)
         //then
@@ -87,7 +88,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss assign to attribute`() {
+    fun `toRow should return empty list when invalid task passed miss assign to attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptyAssignTo)
         //then
@@ -95,7 +96,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid task passed miss create by attribute`() {
+    fun `toRow should return empty list when invalid task passed miss create by attribute`() = runTest {
         //when
         val result = taskSchema.toRow(invalidTaskEmptycreateByUserId)
         //then
@@ -107,7 +108,7 @@ class TaskSchemaTest {
     //region fromRow
 
     @Test
-    fun `fromRow should return task when valid row full passed`() {
+    fun `fromRow should return task when valid row full passed`() = runTest {
         //when
         val result = taskSchema.fromRow(validRow)
         //then
@@ -115,7 +116,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return task when valid row empty description passed`() {
+    fun `fromRow should return task when valid row empty description passed`() = runTest {
         //when
         val result = taskSchema.fromRow(validRowEmptyDescription)
         //then
@@ -123,7 +124,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss id column`() {
+    fun `fromRow should return null when invalid row passed miss id column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyId)
         //then
@@ -131,7 +132,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss projectId column`() {
+    fun `fromRow should return null when invalid row passed miss projectId column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyProjectId)
         //then
@@ -139,7 +140,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss title column`() {
+    fun `fromRow should return null when invalid row passed miss title column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyTitle)
         //then
@@ -147,7 +148,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss stateId column`() {
+    fun `fromRow should return null when invalid row passed miss stateId column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyStateId)
         //then
@@ -155,7 +156,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss assign to column`() {
+    fun `fromRow should return null when invalid row passed miss assign to column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyAssignToUserId)
         //then
@@ -163,7 +164,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss create by column`() {
+    fun `fromRow should return null when invalid row passed miss create by column`() = runTest {
         //when
         val result = taskSchema.fromRow(invalidRowEmptyCreateByUserId)
         //then
@@ -175,7 +176,7 @@ class TaskSchemaTest {
     //region getId
 
     @Test
-    fun `getId should return id of task passed`() {
+    fun `getId should return id of task passed`() = runTest {
         //when
         val result = taskSchema.getId(validTask)
         //then
@@ -183,7 +184,7 @@ class TaskSchemaTest {
     }
 
     @Test
-    fun `getId should return null when task passed have empty id`() {
+    fun `getId should return null when task passed have empty id`()= runTest {
         //when
         val result = taskSchema.getId(invalidTaskEmptyId)
         //then

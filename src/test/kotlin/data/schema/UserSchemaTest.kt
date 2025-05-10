@@ -4,6 +4,7 @@ import com.berlin.data.schema.UserSchema
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,7 +22,7 @@ class UserSchemaTest {
     //region create object
 
     @Test
-    fun `should throw IllegalArgumentException when try to create object with blank file name`() {
+    fun `should throw IllegalArgumentException when try to create object with blank file name`()= runTest  {
         //when //then
         assertThrows<IllegalArgumentException> {
             userSchema = UserSchema("", listOf("a", "b", "c", "d"))
@@ -29,7 +30,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
+    fun `should throw IllegalArgumentException when try to create object with invalid size header`()= runTest  {
         //when //then
         assertThrows<IllegalArgumentException> {
             userSchema = UserSchema("test.csv", listOf("a", "b"))
@@ -41,7 +42,7 @@ class UserSchemaTest {
     //region toRow
 
     @Test
-    fun `toRow should return list of valid user attributes when valid user passed`() {
+    fun `toRow should return list of valid user attributes when valid user passed`()= runTest  {
         //when
         val result=userSchema.toRow(validUser)
         //then
@@ -49,7 +50,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `toRow should return list of valid user attributes when valid user mate passed`() {
+    fun `toRow should return list of valid user attributes when valid user mate passed`()= runTest {
         //when
         val result=userSchema.toRow(validUserMate)
         //then
@@ -57,7 +58,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid user passed miss id attribute`() {
+    fun `toRow should return empty list when invalid user passed miss id attribute`()= runTest {
         //when
         val result=userSchema.toRow(invalidUserEmptyId)
         //then
@@ -65,7 +66,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid user passed miss userName attribute`() {
+    fun `toRow should return empty list when invalid user passed miss userName attribute`()= runTest {
         //when
         val result=userSchema.toRow(invalidUserEmptyUserName)
         //then
@@ -73,7 +74,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `toRow should return empty list when invalid user passed miss password attribute`() {
+    fun `toRow should return empty list when invalid user passed miss password attribute`()= runTest {
         //when
         val result=userSchema.toRow(invalidUserEmptyPass)
         //then
@@ -85,7 +86,7 @@ class UserSchemaTest {
     //region fromRow
 
     @Test
-    fun `fromRow should return user when valid row admin passed`() {
+    fun `fromRow should return user when valid row admin passed`()= runTest {
         //when
         val result=userSchema.fromRow(validRowAdmin)
         //then
@@ -93,7 +94,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `fromRow should return user when valid row mate passed`() {
+    fun `fromRow should return user when valid row mate passed`() = runTest {
         //when
         val result=userSchema.fromRow(validRowMate)
         //then
@@ -101,7 +102,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid row passed miss id column`() {
+    fun `fromRow should return null when invalid row passed miss id column`()= runTest {
         //when
         val result=userSchema.fromRow(invalidRowEmptyId)
         //then
@@ -109,7 +110,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid user passed miss userName column`() {
+    fun `fromRow should return null when invalid user passed miss userName column`() = runTest {
         //when
         val result=userSchema.fromRow(invalidRowEmptyUserName)
         //then
@@ -117,7 +118,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid user passed miss password column`() {
+    fun `fromRow should return null when invalid user passed miss password column`() = runTest {
         //when
         val result=userSchema.fromRow(invalidRowEmptyPass)
         //then
@@ -125,7 +126,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `fromRow should return null when invalid user passed miss role column`() {
+    fun `fromRow should return null when invalid user passed miss role column`() = runTest {
         //when
         val result=userSchema.fromRow(invalidRowEmptyRole)
         //then
@@ -137,7 +138,7 @@ class UserSchemaTest {
     //region getId
 
     @Test
-    fun `getId should return id of user passed`() {
+    fun `getId should return id of user passed`() = runTest {
         //when
         val result=userSchema.getId(validUser)
         //then
@@ -145,7 +146,7 @@ class UserSchemaTest {
     }
 
     @Test
-    fun `getId should return null when user passed have empty id`() {
+    fun `getId should return null when user passed have empty id`() = runTest {
         //when
         val result=userSchema.getId(invalidUserEmptyId)
         //then

@@ -7,7 +7,7 @@ import com.berlin.domain.repository.AuditRepository
 
 class AuditRepositoryImpl (private val auditLogDataSource: BaseDataSource<AuditLog>) : AuditRepository {
 
-    override fun addAuditLog(auditLog: AuditLog): Result<String> {
+    override suspend fun addAuditLog(auditLog: AuditLog): Result<String> {
         return if (auditLogDataSource.write(auditLog)) {
             Result.success(auditLog.id)
         } else {
@@ -15,15 +15,15 @@ class AuditRepositoryImpl (private val auditLogDataSource: BaseDataSource<AuditL
         }
     }
 
-    override fun getAuditLogsByProjectId(projectId: String): List<AuditLog> {
+    override suspend fun getAuditLogsByProjectId(projectId: String): List<AuditLog> {
         return auditLogDataSource.getAll().filter { it.entityType.name == "PROJECT" && it.entityId == projectId }
     }
 
-    override fun getAuditLogsByTaskId(taskId: String): List<AuditLog> {
+    override suspend fun getAuditLogsByTaskId(taskId: String): List<AuditLog> {
         return auditLogDataSource.getAll().filter { it.entityType.name == "TASK" && it.entityId == taskId }
     }
 
-    override fun getAuditLogsByUserId(userId: String): List<AuditLog> {
+    override suspend fun getAuditLogsByUserId(userId: String): List<AuditLog> {
         return auditLogDataSource.getAll().filter { it.createdByUserId == userId }
     }
 }

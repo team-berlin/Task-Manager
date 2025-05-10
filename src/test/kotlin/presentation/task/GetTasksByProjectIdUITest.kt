@@ -8,6 +8,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -15,7 +16,7 @@ class GetTasksByProjectIdUITest {
 
     private val printed = mutableListOf<String>()
     private val viewer: Viewer = mockk(relaxed = true) {
-        every { show(capture(printed)) } just Runs
+        coEvery { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
     private lateinit var useCase: GetTasksByProjectUseCase
@@ -40,7 +41,7 @@ class GetTasksByProjectIdUITest {
     }
 
     @Test
-    fun `shows swimlane with one task`() {
+    fun `shows swimlane with one task`() = runTest {
         val task = Task(
             id = "T1",
             projectId = "P1",
@@ -50,8 +51,8 @@ class GetTasksByProjectIdUITest {
             assignedToUserId = alice.id,
             createByUserId = alice.id
         )
-        every { reader.read() } returns "1"
-        every { useCase.invoke("P1") } returns Result.success(listOf(task))
+        coEvery { reader.read() } returns "1"
+        coEvery { useCase.invoke("P1") } returns Result.success(listOf(task))
 
         ui.run()
 
@@ -60,10 +61,10 @@ class GetTasksByProjectIdUITest {
     }
 
     @Test
-    fun `prints no states message`() {
+    fun `prints no states message`() = runTest {
         DummyData.states.clear()
-        every { reader.read() } returns "1"
-        every { useCase.invoke("P1") } returns Result.success(emptyList())
+        coEvery { reader.read() } returns "1"
+        coEvery { useCase.invoke("P1") } returns Result.success(emptyList())
 
         ui.run()
 
@@ -71,9 +72,9 @@ class GetTasksByProjectIdUITest {
     }
 
     @Test
-    fun `state with zero tasks prints placeholder`() {
-        every { reader.read() } returns "1"
-        every { useCase.invoke("P1") } returns Result.success(emptyList())
+    fun `state with zero tasks prints placeholder`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { useCase.invoke("P1") } returns Result.success(emptyList())
 
         ui.run()
 
@@ -81,44 +82,44 @@ class GetTasksByProjectIdUITest {
     }
 
     @Test
-    fun `user cancellation prints Cancelled`() {
-        every { reader.read() } returns "X"
+    fun `user cancellation prints Cancelled`() = runTest {
+        coEvery { reader.read() } returns "X"
 
         ui.run()
 
         assertThat(printed.last()).contains("Cancelled.")
-        verify(exactly = 0) { useCase.invoke(any()) }
+        coVerify(exactly = 0) { useCase.invoke(any()) }
     }
 
     @Test
-    fun `invalid choice prints error message`() {
-        every { reader.read() } returns "99"
+    fun `invalid choice prints error message`() = runTest {
+        coEvery { reader.read() } returns "99"
 
         ui.run()
 
         assertThat(printed.last()).contains("Invalid selection")
-        verify(exactly = 0) { useCase.invoke(any()) }
+        coVerify(exactly = 0) { useCase.invoke(any()) }
     }
 
     @Test
-    fun `onFailure from use case is shown to the user`() {
-        every { reader.read() } returns "1"
-        every { useCase.invoke("P1") } returns Result.failure(RuntimeException("boom"))
+    fun `onFailure from use case is shown to the user`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { useCase.invoke("P1") } returns Result.failure(RuntimeException("boom"))
 
         ui.run()
 
         assertThat(printed.last()).contains("boom")
-        verify(exactly = 1) { useCase.invoke("P1") }
+        coVerify(exactly = 1) { useCase.invoke("P1") }
     }
 
     @Test
-    fun `throws InvalidProjectIdException and shows invalid project id`() {
-        every { reader.read() } returns "1"
-        every { useCase.invoke("P1") } throws InvalidProjectIdException("bad id")
+    fun `throws InvalidProjectIdException and shows invalid project id`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { useCase.invoke("P1") } throws InvalidProjectIdException("bad id")
 
         ui.run()
 
         assertThat(printed.last()).contains("invalid project id")
-        verify(exactly = 1) { useCase.invoke("P1") }
+        coVerify(exactly = 1) { useCase.invoke("P1") }
     }
 }

@@ -7,6 +7,7 @@ import com.berlin.presentation.authService.FetchAllUsersUI
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -19,7 +20,7 @@ class FetchAllUsersUseCaseTest {
     @BeforeEach
     fun setUp() {
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         useCase = mockk()
         ui = FetchAllUsersUI(useCase, viewer)
@@ -27,13 +28,13 @@ class FetchAllUsersUseCaseTest {
     }
 
     @Test
-    fun `should print all users when users are available`() {
+    fun `should print all users when users are available`() = runTest {
         // Given
         val users = listOf(
             User(id = "1", userName = "Menna", password = "12345678j",  role =UserRole.ADMIN),
             User(id = "2", userName = "Sarah", password = "1234567890",  role = UserRole.MATE)
         )
-        every { useCase.getAllUsers() } returns Result.success(users)
+        coEvery { useCase.getAllUsers() } returns Result.success(users)
 
         // When
         ui.run()
@@ -51,9 +52,9 @@ class FetchAllUsersUseCaseTest {
     }
 
     @Test
-    fun `should print message when no users are found`() {
+    fun `should print message when no users are found`() = runTest {
         // Given
-        every { useCase.getAllUsers() } returns Result.success(listOf())
+        coEvery { useCase.getAllUsers() } returns Result.success(listOf())
 
         // When
         ui.run()

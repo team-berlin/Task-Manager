@@ -4,8 +4,9 @@ import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -33,11 +34,11 @@ class GetTasksByStateIdUseCaseTest {
     }
 
     @Test
-    fun `should return tasks when tasks are found for the state`() {
+    fun `should return tasks when tasks are found for the state`() = runTest {
         // Given
         val expectedTasks = listOf(task)
-        every { stateRepository.getTasksByStateId("S1") } returns expectedTasks
-        every { stateRepository.getStateById("S1") } returns mockk()
+        coEvery { stateRepository.getTasksByStateId("S1") } returns expectedTasks
+        coEvery { stateRepository.getStateById("S1") } returns mockk()
 
         // When
         val result = getTasksByStateIdUseCase.getAllTasksByStateId("S1")
@@ -47,10 +48,10 @@ class GetTasksByStateIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when no tasks are found for the state`() {
+    fun `should throw exception when no tasks are found for the state`() = runTest {
         // Given
-        every { stateRepository.getTasksByStateId("S2") } returns null
-        every { stateRepository.getStateById("S2") } returns mockk()
+        coEvery { stateRepository.getTasksByStateId("S2") } returns null
+        coEvery { stateRepository.getStateById("S2") } returns mockk()
 
         // When & Then
         val exception = assertThrows<Exception> { getTasksByStateIdUseCase.getAllTasksByStateId("S2") }
@@ -58,9 +59,9 @@ class GetTasksByStateIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when state id does not exist`() {
+    fun `should throw exception when state id does not exist`() = runTest {
         // Given
-        every { stateRepository.getStateById("S2") } returns null
+        coEvery { stateRepository.getStateById("S2") } returns null
 
         // When & Then
         val exception = assertThrows<Exception> { getTasksByStateIdUseCase.getAllTasksByStateId("S2") }
@@ -69,7 +70,7 @@ class GetTasksByStateIdUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when state id is invalid`(stateId: String) {
+    fun `should throw exception when state id is invalid`(stateId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             getTasksByStateIdUseCase.getAllTasksByStateId(stateId)

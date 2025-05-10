@@ -11,7 +11,7 @@ class AddAuditLogUseCase(
     private val idGenerator: IdGenerator
 ) {
 
-    fun addAuditLog(
+    suspend fun addAuditLog(
         createdByUserId:String,
         auditAction: AuditAction,
         changesDescription: String,

@@ -23,7 +23,7 @@ class ChangeTaskStateUI(
     override val id: Int = 6
     override val label: String = "Change task state"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val task = choose(
                 title    = "Tasks",

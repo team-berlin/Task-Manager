@@ -20,7 +20,7 @@ class AuditByUserUI(
     override val id: Int = 3
     override val label: String = "Show audit by user"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val selectedUser = selectUser()
             val logs = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(selectedUser.id)

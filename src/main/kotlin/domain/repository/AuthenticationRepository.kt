@@ -4,10 +4,10 @@ import com.berlin.domain.model.User
 
 
 interface AuthenticationRepository {
-    fun login(userName: String, password: String): Result<User>
-    fun createMate(user: User): Result<User>
-    fun getUserById(userId: String): Result<User>
-    fun getAllUsers(): Result<List<User>>
-    fun getCurrentUser(): Result<User>
+    suspend fun login(userName: String, password: String): Result<User>
+    suspend fun createMate(user: User): Result<User>
+    suspend fun getUserById(userId: String): Result<User>
+    suspend fun getAllUsers(): Result<List<User>>
+    suspend fun getCurrentUser(): Result<User>
 
 }

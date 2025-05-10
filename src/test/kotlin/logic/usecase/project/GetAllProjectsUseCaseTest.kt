@@ -4,8 +4,9 @@ import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,13 +22,13 @@ class GetAllProjectsUseCaseTest {
     }
 
     @Test
-    fun `should return list of projects when projects exist`() {
+    fun `should return list of projects when projects exist`() = runTest {
         // Given
         val expectedProjects = listOf(
             projectHelper(),
             projectHelper()
         )
-        every { projectRepository.getAllProjects() } returns expectedProjects
+        coEvery { projectRepository.getAllProjects() } returns expectedProjects
 
         // When
         val result = getAllProjectsUseCase.getAllProjects()
@@ -37,9 +38,9 @@ class GetAllProjectsUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when no projects are found`() {
+    fun `should throw exception when no projects are found`() = runTest {
         // Given
-        every { projectRepository.getAllProjects() } returns null
+        coEvery { projectRepository.getAllProjects() } returns null
 
         // When & Then
         val exception = assertThrows<Exception> { getAllProjectsUseCase.getAllProjects() }

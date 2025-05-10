@@ -13,17 +13,17 @@ class TaskSchema(
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: Task): List<String> {
+    override suspend fun toRow(entity: Task): List<String> {
         return if (checkTaskIsNotValid(entity)) emptyList()
         else taskToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): Task? {
+    override suspend fun fromRow(row: List<String>): Task? {
         return if (checkRowIsNotValidTask(row)) null
         else stringsListToTask(row)
     }
 
-    override fun getId(entity: Task): String? {
+    override suspend fun getId(entity: Task): String? {
         return entity.id.ifEmpty { null }
     }
 

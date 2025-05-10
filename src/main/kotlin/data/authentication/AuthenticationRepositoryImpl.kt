@@ -18,7 +18,7 @@ class AuthenticationRepositoryImpl(
     private val userDataSource: BaseDataSource<User>
     ): AuthenticationRepository {
 
-    override fun login(userName: String, password: String): Result<User> {
+    override suspend fun login(userName: String, password: String): Result<User> {
         val user = userDataSource.getAll().find { it.userName == userName && it.password == password }
         return if (user != null) {
             Result.success(user)
@@ -27,24 +27,24 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override fun createMate(user: User): Result<User> {
+    override suspend fun createMate(user: User): Result<User> {
         userDataSource.write(user)
         return Result.success(user)
 
     }
 
-    override fun getUserById(userId: String): Result<User> =
+    override suspend fun getUserById(userId: String): Result<User> =
         userDataSource.getById(userId)
             ?.let(Result.Companion::success)
             ?: failure(UserNotFoundException(userId))
 
 
-    override fun getAllUsers(): Result<List<User>> {
+    override suspend fun getAllUsers(): Result<List<User>> {
        return userDataSource.getAll().let(Result.Companion::success)
     }
 
 
-    override fun getCurrentUser(): Result<User> {
+    override suspend fun getCurrentUser(): Result<User> {
         val user = UserCache.currentUser
         return if (user != null) {
             Result.success(user)

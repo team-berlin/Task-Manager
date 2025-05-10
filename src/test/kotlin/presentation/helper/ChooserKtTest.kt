@@ -21,7 +21,7 @@ class ChooseHelperTest {
     @BeforeEach
     fun setUp() {
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
         printed.clear()
@@ -38,7 +38,7 @@ class ChooseHelperTest {
     @Test
     fun `valid numeric choice returns element and prints menu`() {
         val items = listOf("apple", "banana", "cherry")
-        every { reader.read() } returns "2"
+        coEvery { reader.read() } returns "2"
 
         val picked = choose("Fruits", items, { it.uppercase() }, viewer, reader)
 
@@ -52,7 +52,7 @@ class ChooseHelperTest {
     @Test
     fun `trimmed input and lowercase x cancels`() {
         val items = listOf("a", "b")
-        every { reader.read() } returns "  x  "
+        coEvery { reader.read() } returns "  x  "
 
         assertThrows<InputCancelledException> {
             choose("Letters", items, { it }, viewer, reader)
@@ -63,7 +63,7 @@ class ChooseHelperTest {
     @Test
     fun `non-numeric input throws Not a number`() {
         val items = listOf(1, 2, 3)
-        every { reader.read() } returns "foo"
+        coEvery { reader.read() } returns "foo"
 
         val ex = assertThrows<InvalidSelectionException> {
             choose("Numbers", items, { it.toString() }, viewer, reader)
@@ -74,7 +74,7 @@ class ChooseHelperTest {
     @Test
     fun `numeric but out-of-range throws Out of range`() {
         val items = listOf("x", "y")
-        every { reader.read() } returns "5"
+        coEvery { reader.read() } returns "5"
 
         val ex = assertThrows<InvalidSelectionException> {
             choose("Chars", items, { it }, viewer, reader)

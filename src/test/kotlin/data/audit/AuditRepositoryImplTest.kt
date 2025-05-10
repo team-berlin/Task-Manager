@@ -7,8 +7,9 @@ import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -23,9 +24,9 @@ class AuditRepositoryImplTest {
     }
 
     @Test
-    fun `addAuditLog should return success when write succeeds`() {
+    fun `addAuditLog should return success when write succeeds`() = runTest {
         //Given
-        every { csvDataSource.write(any()) } returns true
+        coEvery { csvDataSource.write(any()) } returns true
 
         //When
         val result = repository.addAuditLog(validAuditLog)
@@ -36,9 +37,9 @@ class AuditRepositoryImplTest {
     }
 
     @Test
-    fun `addAuditLog should return failure when write fails`() {
+    fun `addAuditLog should return failure when write fails`() = runTest {
         //Given
-        every { csvDataSource.write(any()) } returns false
+        coEvery { csvDataSource.write(any()) } returns false
 
         //When
         val result = repository.addAuditLog(validAuditLog)
@@ -49,9 +50,9 @@ class AuditRepositoryImplTest {
     }
 
     @Test
-    fun `getAuditLogsByProjectId should return only logs with matching project id`() {
+    fun `getAuditLogsByProjectId should return only logs with matching project id`() = runTest {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        coEvery { csvDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByProjectId("project-1")
@@ -61,9 +62,9 @@ class AuditRepositoryImplTest {
     }
 
     @Test
-    fun `getAuditLogsByTaskId should return only logs with matching task id`() {
+    fun `getAuditLogsByTaskId should return only logs with matching task id`() = runTest {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        coEvery { csvDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByTaskId("task-1")
@@ -73,9 +74,9 @@ class AuditRepositoryImplTest {
     }
 
     @Test
-    fun `getAuditLogsByUserId should return only logs created by given user`() {
+    fun `getAuditLogsByUserId should return only logs created by given user`() = runTest {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        coEvery { csvDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByUserId("user-1")

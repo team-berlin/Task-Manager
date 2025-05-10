@@ -8,7 +8,7 @@ class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         taskId: String,
         title: String? = null,
         description: String? = null,

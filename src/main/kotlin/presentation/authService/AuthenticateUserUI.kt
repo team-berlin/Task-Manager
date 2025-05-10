@@ -15,11 +15,11 @@ class AuthenticateUserUi(
     override val id: Int = 1
     override val label: String = "Log in"
 
-    override fun run() {
+    override suspend fun run() {
         authenticateLoop()
     }
 
-    private fun validateUser(): Result<User> {
+    private suspend fun validateUser(): Result<User> {
         viewer.show("Enter your user name: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter your password: ")
@@ -27,7 +27,7 @@ class AuthenticateUserUi(
         return authenticateUser.login(userName, password)
     }
 
-    private fun authenticateLoop(failedAttemps: Int = 0, maxAttemps: Int = 3) {
+    private suspend fun authenticateLoop(failedAttemps: Int = 0, maxAttemps: Int = 3) {
         validateUser().fold(
             onSuccess = {
                 viewer.show("Welcome ${it.userName}")

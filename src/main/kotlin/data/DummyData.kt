@@ -40,16 +40,16 @@ object DummyData : BaseDataSource<Task> {
 
     /* ------------  BaseDataSource<Task> implementation  ------------ */
 
-    override fun write(item: Task): Boolean =
+    override suspend fun write(item: Task): Boolean =
         tasks.add(item)
 
-    override fun writeAll(entities: List<Task>): Boolean =
+    override suspend fun writeAll(entities: List<Task>): Boolean =
         tasks.addAll(entities)
 
-    override fun getById(id: String): Task? =
+    override suspend fun getById(id: String): Task? =
         tasks.firstOrNull { it.id == id }
 
-    override fun update(id: String, item: Task): Boolean {
+    override suspend fun update(id: String, item: Task): Boolean {
         val idx = tasks.indexOfFirst { it.id == id }
         return if (idx >= 0) {
             tasks[idx] = item
@@ -59,10 +59,10 @@ object DummyData : BaseDataSource<Task> {
         }
     }
 
-    override fun delete(id: String): Boolean =
+    override suspend fun delete(id: String): Boolean =
         tasks.removeIf { it.id == id }
 
-    override fun getAll(): List<Task> =
+    override suspend fun getAll(): List<Task> =
         // return a snapshot so callers can’t mutate directly
         tasks.toList()
 }

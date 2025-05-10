@@ -6,6 +6,7 @@ import com.berlin.domain.hashPassword.HashingPassword
 import com.berlin.domain.hashPassword.MD5Hasher
 import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -23,7 +24,7 @@ class AuthenticationRepositoryInMemoryTest {
 
 
     @Test
-    fun `login should return success when provided with valid credentials`() {
+    fun `login should return success when provided with valid credentials`()= runTest {
         val username = "Fatma"
         val password = "hashed_securePassword"
         inMemoryAuthRepositoryImpl.createMate(AuthServiceTestData.excepctedUser)
@@ -34,7 +35,7 @@ class AuthenticationRepositoryInMemoryTest {
     }
 
     @Test
-    fun `login should return failure when provided with invalid credentials`() {
+    fun `login should return failure when provided with invalid credentials`() = runTest{
         inMemoryAuthRepositoryImpl.createMate(AuthServiceTestData.user)
         val result = inMemoryAuthRepositoryImpl.login("wrong", "pass")
         assertThat(result.isFailure).isTrue()

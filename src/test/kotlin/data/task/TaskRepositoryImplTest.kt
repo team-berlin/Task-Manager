@@ -9,6 +9,7 @@ import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
 import com.berlin.data.DummyData
 import com.berlin.data.task.TaskRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -26,14 +27,14 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `create succeeds for new id`() {
+    fun `create succeeds for new id`()= runTest {
         val result = repo.create(task("1"))
         assertThat(result.isSuccess).isTrue()
         assertThat(repo.getAllTasks()).hasSize(1)
     }
 
     @Test
-    fun `create allows duplicate id (appends second entry)`() {
+    fun `create allows duplicate id (appends second entry)`() = runTest{
         repo.create(task("1"))
         val result2 = repo.create(task("1"))
         assertThat(result2.isSuccess).isTrue()
@@ -43,7 +44,7 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `findById returns task when present`() {
+    fun `findById returns task when present`() = runTest{
         val t = task("1")
         repo.create(t)
 
@@ -53,14 +54,14 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `findById fails when absent`() {
+    fun `findById fails when absent`() = runTest{
         val result = repo.findById("42")
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
     }
 
     @Test
-    fun `update succeeds for existing task`() {
+    fun `update succeeds for existing task`() = runTest{
         val original = task("1")
         repo.create(original)
 
@@ -72,14 +73,14 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `update fails when task not found`() {
+    fun `update fails when task not found`()= runTest {
         val result = repo.update(task("1"))
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(InvalidTaskException::class.java)
     }
 
     @Test
-    fun `findTasksByProjectId returns matching list`() {
+    fun `findTasksByProjectId returns matching list`() = runTest{
         val t1 = task("1", projectId = "P1")
         val t2 = task("2", projectId = "P1")
         val t3 = task("3", projectId = "P2")
@@ -91,7 +92,7 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `delete succeeds when task exists`() {
+    fun `delete succeeds when task exists`() = runTest{
         repo.create(task("1"))
 
         val result = repo.delete("1")
@@ -100,7 +101,7 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `delete fails when task does not exist`() {
+    fun `delete fails when task does not exist`() = runTest{
         val result = repo.delete("46")
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
@@ -121,14 +122,14 @@ class TaskRepositoryImplTest {
     )
 
     @Test
-    fun `create fails when write returns false`() {
+    fun `create fails when write returns false`() = runTest{
         val failingDs = object : BaseDataSource<Task> {
-            override fun write(item: Task) = false
-            override fun writeAll(entities: List<Task>) = false
-            override fun getById(id: String): Task? = null
-            override fun update(id: String, item: Task) = false
-            override fun delete(id: String) = false
-            override fun getAll(): List<Task> = emptyList()
+            override suspend fun  write(item: Task) = false
+            override suspend fun writeAll(entities: List<Task>) = false
+            override suspend fun getById(id: String): Task? = null
+            override suspend fun update(id: String, item: Task) = false
+            override suspend fun delete(id: String) = false
+            override suspend fun getAll(): List<Task> = emptyList()
         }
 
         val repo = TaskRepositoryImpl(failingDs)

@@ -3,9 +3,11 @@ package com.berlin.domain.usecase.auditSystem
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -22,40 +24,40 @@ class GetAuditLogsByUserIdUseCaseTest {
     }
 
     @Test
-    fun `should return list of logs for user ID`() {
+    fun `should return list of logs for user ID`() = runTest {
         // Given
         val userId = "u1"
         val logs = listOf(
             generateAuditLog(createdBy = generateAuditLog().createdByUserId)
         )
-        every { auditRepository.getAuditLogsByUserId(userId) } returns logs
+        coEvery { auditRepository.getAuditLogsByUserId(userId) } returns logs
 
         //When
         val result = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(userId)
 
         //That
         assertThat(result).isEqualTo(logs)
-        verify(exactly = 1) { auditRepository.getAuditLogsByUserId(userId) }
+        coVerify(exactly = 1) { auditRepository.getAuditLogsByUserId(userId) }
 
     }
 
     @Test
-    fun `should return empty list when no audit logs found for user ID`() {
+    fun `should return empty list when no audit logs found for user ID`() = runTest {
         // Given
         val userId = "invalid"
-        every { auditRepository.getAuditLogsByUserId(userId) } returns emptyList()
+        coEvery { auditRepository.getAuditLogsByUserId(userId) } returns emptyList()
 
         //When
         val result = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(userId)
 
         //That
         assertThat(result).isEmpty()
-        verify(exactly = 1) { auditRepository.getAuditLogsByUserId(userId) }
+        coVerify(exactly = 1) { auditRepository.getAuditLogsByUserId(userId) }
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["", "   ","123"])
-    fun `should throw exception when user id is invalid`(invalidId: String) {
+    fun `should throw exception when user id is invalid`(invalidId: String) = runTest {
        //when&then
         assertThrows<IllegalArgumentException> {
             getAuditLogsByUserIdUseCase.getAuditLogsByUserId(invalidId)

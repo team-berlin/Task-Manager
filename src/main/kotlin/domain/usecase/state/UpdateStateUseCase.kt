@@ -7,7 +7,7 @@ import com.berlin.domain.repository.StateRepository
 class UpdateStateUseCase(
     private val stateRepository: StateRepository
 ) {
-    fun updateState(state: State): Result<String> {
+    suspend fun updateState(state: State): Result<String> {
         if(!validateStateName(state.name))
             throw InvalidStateNameException("State Name must not be empty or blank")
 

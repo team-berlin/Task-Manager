@@ -4,8 +4,9 @@ import com.berlin.domain.usecase.state.GetStateByIdUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -23,10 +24,10 @@ class GetStateByIdUseCaseTest {
     }
 
     @Test
-    fun `should return state when valid state id exists`() {
+    fun `should return state when valid state id exists`() = runTest {
         // Given
         val expectedState = State(id = "S1", name = "Active", projectId = "P1")
-        every { stateRepository.getStateById("S1") } returns expectedState
+        coEvery { stateRepository.getStateById("S1") } returns expectedState
 
         // When
         val result = getStateByIdUseCase.getStateById("S1")
@@ -36,10 +37,10 @@ class GetStateByIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when state id does not exist`() {
+    fun `should throw exception when state id does not exist`() = runTest {
         // Given
         val input = "S2"
-        every { stateRepository.getStateById(any()) } returns null
+        coEvery { stateRepository.getStateById(any()) } returns null
 
         // When
         val exception = assertThrows<Exception> { getStateByIdUseCase.getStateById("S2") }
@@ -50,7 +51,7 @@ class GetStateByIdUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when state id is invalid`(stateId: String) {
+    fun `should throw exception when state id is invalid`(stateId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             getStateByIdUseCase.getStateById(stateId)

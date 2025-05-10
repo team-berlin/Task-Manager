@@ -4,9 +4,11 @@ import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.repository.AuthenticationRepository
 import com.berlin.domain.helper.AuthServiceTestData
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,7 +25,7 @@ class GetUserByIDUseCaseTest {
 
 
     @Test
-    fun `getUserById throws InvalidUserIdException when ID is empty`() {
+    fun `getUserById throws InvalidUserIdException when ID is empty`() = runTest {
         // When & Then
         assertThrows<InvalidUserIdException> {
             getUserByIDUseCase.getUserById("")
@@ -31,11 +33,11 @@ class GetUserByIDUseCaseTest {
     }
 
     @Test
-    fun `getUserById returns user when ID exists`() {
+    fun `getUserById returns user when ID exists`() = runTest {
         // Given
         val existingId = AuthServiceTestData.idExist
         val expectedUser = AuthServiceTestData.existingUser
-        every { repository.getUserById(existingId) } returns Result.success(expectedUser)
+        coEvery { repository.getUserById(existingId) } returns Result.success(expectedUser)
 
         // When
         val result = getUserByIDUseCase.getUserById(existingId)
@@ -45,10 +47,10 @@ class GetUserByIDUseCaseTest {
     }
 
     @Test
-    fun `throws Invalid User Id Exception when id is blank`() {
+    fun `throws Invalid User Id Exception when id is blank`() = runTest {
         assertThrows<InvalidUserIdException> {
             getUserByIDUseCase.getUserById("   ")
         }
-        verify(exactly = 0) { repository.getUserById(any()) }
+        coVerify(exactly = 0) { repository.getUserById(any()) }
     }
 }

@@ -5,7 +5,7 @@ import com.berlin.domain.repository.ProjectRepository
 class DeleteProjectUseCase (
     private val projectRepository: ProjectRepository
 ) {
-    fun deleteProject(projectId: String): Result<String> {
+    suspend fun deleteProject(projectId: String): Result<String> {
 
         if(!validateProjectId(projectId))
             throw Exception("Project ID must not be empty or blank")
@@ -24,6 +24,6 @@ class DeleteProjectUseCase (
     private fun validateProjectId(projectId: String): Boolean =
         projectId.isNotBlank() && !(projectId.all { it.isDigit() })
 
-    private fun checkProjectExists(projectId: String): Boolean =
+    private suspend fun checkProjectExists(projectId: String): Boolean =
         projectRepository.getProjectById(projectId) != null
 }

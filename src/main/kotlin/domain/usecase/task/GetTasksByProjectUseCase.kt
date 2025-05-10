@@ -8,7 +8,7 @@ class GetTasksByProjectUseCase(
     private val taskRepository: TaskRepository
 ) {
 
-    operator fun invoke(projectId: String): Result<List<Task>> {
+    suspend operator fun invoke(projectId: String): Result<List<Task>> {
 
         if (!validateProjectId(projectId)) {
             throw InvalidProjectIdException("Project id must not be empty, blank, or purely numeric")

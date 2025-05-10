@@ -14,6 +14,7 @@ import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.task.UpdateTaskUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -54,13 +55,13 @@ class UpdateTaskUITest {
 
         // mock IO and use-case
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
         updateUC = mockk()
         getAllTasks = mockk()
 
-        every { getAllTasks.invoke() } returns listOf(existing)
+        coEvery { getAllTasks.invoke() } returns listOf(existing)
 
         ui = UpdateTaskUI(updateUC, getAllTasks, viewer, reader)
 
@@ -68,99 +69,99 @@ class UpdateTaskUITest {
     }
 
     @Test
-    fun `success when title only changes`() {
-        every { reader.read() } returnsMany listOf(
+    fun `success when title only changes`() = runTest {
+        coEvery { reader.read() } returnsMany listOf(
             "1",
             "NewTitle",
             "",
             "X"
         )
-        every {
+        coEvery {
             updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
         } returns Result.success(existing.copy(title = "NewTitle"))
 
         ui.run()
 
-        verify {
+        coVerify {
             updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
         }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when description only changes`() {
-        every { reader.read() } returnsMany listOf(
+    fun `success when description only changes`() = runTest {
+        coEvery { reader.read() } returnsMany listOf(
             "1",
             "",
             "NewDesc",
             "X"
         )
-        every {
+        coEvery {
             updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
         } returns Result.success(existing.copy(description = "NewDesc"))
 
         ui.run()
 
-        verify {
+        coVerify {
             updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
         }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when assignee only changes`() {
-        every { reader.read() } returnsMany listOf(
+    fun `success when assignee only changes`() = runTest {
+        coEvery { reader.read() } returnsMany listOf(
             "1",
             "",
             "",
             "2"
         )
-        every {
+        coEvery {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
         } returns Result.success(existing.copy(assignedToUserId = "U2"))
 
         ui.run()
 
-        verify {
+        coVerify {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
         }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `success when nothing changes`() {
-        every { reader.read() } returnsMany listOf(
+    fun `success when nothing changes`() = runTest {
+        coEvery { reader.read() } returnsMany listOf(
             "1", "", "", "X"
         )
-        every {
+        coEvery {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
         } returns Result.success(existing)
 
         ui.run()
 
-        verify {
+        coVerify {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
         }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `failure from use case is printed`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
-        every {
+    fun `failure from use case is printed`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "", "", "X")
+        coEvery {
             updateUC.invoke("T1", any(), any(), any())
         } returns Result.failure(IllegalStateException("boom"))
 
         ui.run()
 
         assertThat(printed.last()).contains("boom")
-        verify { updateUC.invoke("T1", null, null, null) }
+        coVerify { updateUC.invoke("T1", null, null, null) }
     }
 
     @Test
-    fun `fallback message when failure message null`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
-        every {
+    fun `fallback message when failure message null`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "", "", "X")
+        coEvery {
             updateUC.invoke("T1", any(), any(), any())
         } returns Result.failure(IllegalStateException("Update failed"))
 
@@ -170,39 +171,39 @@ class UpdateTaskUITest {
     }
 
     @Test
-    fun `cancelling at task chooser prints Cancelled`() {
-        every { reader.read() } returns "X"
+    fun `cancelling at task chooser prints Cancelled`() = runTest {
+        coEvery { reader.read() } returns "X"
 
         ui.run()
 
         assertThat(printed.last()).contains("Cancelled.")
-        verify { updateUC wasNot Called }
+        coVerify { updateUC wasNot Called }
     }
 
     @Test
-    fun `invalid task index prints Invalid selection`() {
-        every { reader.read() } returns "foo"
+    fun `invalid task index prints Invalid selection`() = runTest {
+        coEvery { reader.read() } returns "foo"
 
         ui.run()
 
         assertThat(printed.last()).contains("Invalid selection")
-        verify { updateUC wasNot Called }
+        coVerify { updateUC wasNot Called }
     }
 
     @Test
-    fun `invalid assignee index prints Invalid selection`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "99")
+    fun `invalid assignee index prints Invalid selection`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "", "", "99")
 
         ui.run()
 
         assertThat(printed.last()).contains("Invalid selection")
-        verify { updateUC wasNot Called }
+        coVerify { updateUC wasNot Called }
     }
 
     @Test
-    fun `shows InvalidTaskTitle when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "Bad!", "", "X")
-        every {
+    fun `shows InvalidTaskTitle when use case throws`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "Bad!", "", "X")
+        coEvery {
             updateUC.invoke(any(), any(), any(), any())
         } throws InvalidTaskTitle("no digits")
 
@@ -212,9 +213,9 @@ class UpdateTaskUITest {
     }
 
     @Test
-    fun `shows TaskNotFoundException when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "", "", "X")
-        every {
+    fun `shows TaskNotFoundException when use case throws`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "", "", "X")
+        coEvery {
             updateUC.invoke(any(), any(), any(), any())
         } throws TaskNotFoundException("notfound")
 

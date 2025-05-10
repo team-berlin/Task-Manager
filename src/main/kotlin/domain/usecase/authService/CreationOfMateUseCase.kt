@@ -11,7 +11,7 @@ class CreationOfMateUseCase(
     private val idGenerator: IdGenerator,
     private val hashingPassword: HashingPassword
 ) {
-    fun createMate(userName: String, password: String): Result<User> {
+    suspend fun createMate(userName: String, password: String): Result<User> {
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("Username and password must not be empty"))
         }

@@ -4,8 +4,9 @@ import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -23,10 +24,10 @@ class UpdateStateUseCaseTest {
     }
 
     @Test
-    fun `should return success when state update succeeds`() {
+    fun `should return success when state update succeeds`() = runTest {
         // Given
         val state = State(id = "S1", name = "Active", projectId = "P1")
-        every { stateRepository.updateState(state) } returns Result.success("Updated Successfully")
+        coEvery { stateRepository.updateState(state) } returns Result.success("Updated Successfully")
 
         // When
         val result = updateStateUseCase.updateState(state)
@@ -36,10 +37,10 @@ class UpdateStateUseCaseTest {
     }
 
     @Test
-    fun `should return failure when state update fails`() {
+    fun `should return failure when state update fails`() = runTest {
         // Given
         val state = State(id = "S2", name = "Inactive", projectId = "P2")
-        every { stateRepository.updateState(state) } returns Result.failure(Exception())
+        coEvery { stateRepository.updateState(state) } returns Result.failure(Exception())
 
         // When
         val result = updateStateUseCase.updateState(state)
@@ -52,7 +53,7 @@ class UpdateStateUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ","123"])
-    fun `should throw exception when state ID is invalid`(stateName: String) {
+    fun `should throw exception when state ID is invalid`(stateName: String) = runTest {
         // Given
         val input = State(
             "S1",

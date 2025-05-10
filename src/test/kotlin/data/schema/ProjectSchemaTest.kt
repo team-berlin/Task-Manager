@@ -3,6 +3,7 @@ package data.schema
 import com.berlin.data.schema.ProjectSchema
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,7 +20,7 @@ class ProjectSchemaTest {
  //region create object
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with blank file name`() {
+ fun `should throw IllegalArgumentException when try to create object with blank file name`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    projectSchema = ProjectSchema("", listOf("a", "b", "c", "d", "e"))
@@ -27,7 +28,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
+ fun `should throw IllegalArgumentException when try to create object with invalid size header`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    projectSchema = ProjectSchema("test.csv", listOf("a", "b"))
@@ -39,7 +40,7 @@ class ProjectSchemaTest {
  //region toRow
 
  @Test
- fun `toRow should return list of valid project attributes when valid project passed`() {
+ fun `toRow should return list of valid project attributes when valid project passed`() = runTest {
   //when
   val result = projectSchema.toRow(validProject)
   //then
@@ -47,7 +48,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `toRow should return list of valid project attributes when project with empty statesId passed`() {
+ fun `toRow should return list of valid project attributes when project with empty statesId passed`() = runTest {
   //when
   val result = projectSchema.toRow(validProjectEmptyStatesId)
   //then
@@ -55,7 +56,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `toRow should return list of valid project attributes when project with empty description passed`() {
+ fun `toRow should return list of valid project attributes when project with empty description passed`() = runTest {
   //when
   val result = projectSchema.toRow(validProjectEmptyDescription)
   //then
@@ -63,7 +64,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `toRow should return list of valid project attributes when project with empty tasksId passed`() {
+ fun `toRow should return list of valid project attributes when project with empty tasksId passed`() = runTest {
   //when
   val result = projectSchema.toRow(validProjectEmptyTasksId)
   //then
@@ -71,7 +72,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid project passed miss id attribute`() {
+ fun `toRow should return empty list when invalid project passed miss id attribute`() = runTest {
   //when
   val result = projectSchema.toRow(invalidProjectEmptyId)
   //then
@@ -79,7 +80,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid project passed miss name attribute`() {
+ fun `toRow should return empty list when invalid project passed miss name attribute`() = runTest {
   //when
   val result = projectSchema.toRow(invalidProjectEmptyName)
   //then
@@ -91,7 +92,7 @@ class ProjectSchemaTest {
  //region fromRow
 
  @Test
- fun `fromRow should return project when valid row full passed`() {
+ fun `fromRow should return project when valid row full passed`() = runTest {
   //when
   val result = projectSchema.fromRow(validRow)
   //then
@@ -99,7 +100,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return project when valid row empty description passed`() {
+ fun `fromRow should return project when valid row empty description passed`() = runTest {
   //when
   val result = projectSchema.fromRow(validRowEmptyDescription)
   //then
@@ -107,7 +108,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return project when valid row empty statesId passed`() {
+ fun `fromRow should return project when valid row empty statesId passed`() = runTest {
   //when
   val result = projectSchema.fromRow(validRowEmptyStatesId)
   //then
@@ -115,7 +116,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return project when valid row empty tasksId passed`() {
+ fun `fromRow should return project when valid row empty tasksId passed`() = runTest {
   //when
   val result = projectSchema.fromRow(validRowEmptyTasksId)
   //then
@@ -123,7 +124,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss id column`() {
+ fun `fromRow should return null when invalid row passed miss id column`() = runTest {
   //when
   val result = projectSchema.fromRow(invalidRowEmptyId)
   //then
@@ -131,7 +132,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when empty row passed miss id column`() {
+ fun `fromRow should return null when empty row passed miss id column`() = runTest {
   //when
   val result = projectSchema.fromRow(emptyList())
   //then
@@ -139,7 +140,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid project passed miss name column`() {
+ fun `fromRow should return null when invalid project passed miss name column`() = runTest {
   //when
   val result = projectSchema.fromRow(invalidRowEmptyName)
   //then
@@ -151,7 +152,7 @@ class ProjectSchemaTest {
  //region getId
 
  @Test
- fun `getId should return id of project passed`() {
+ fun `getId should return id of project passed`() = runTest {
   //when
   val result = projectSchema.getId(validProject)
   //then
@@ -159,7 +160,7 @@ class ProjectSchemaTest {
  }
 
  @Test
- fun `getId should return null when project passed have empty id`() {
+ fun `getId should return null when project passed have empty id`() = runTest {
   //when
   val result = projectSchema.getId(invalidProjectEmptyId)
   //then

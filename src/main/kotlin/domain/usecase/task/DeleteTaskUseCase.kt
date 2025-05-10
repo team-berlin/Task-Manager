@@ -6,7 +6,7 @@ import com.berlin.domain.repository.TaskRepository
 class DeleteTaskUseCase(
     private val taskRepository: TaskRepository,
 ) {
-    operator fun invoke(taskId: String): Result<Unit> {
+    suspend operator fun invoke(taskId: String): Result<Unit> {
         if (!validateTaskId(taskId)) throw Exception("Project ID must not be empty or blank")
 
         if (!checkTaskExists(taskId)) {
@@ -20,7 +20,7 @@ class DeleteTaskUseCase(
     private fun validateTaskId(taskId: String): Boolean =
         taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 
-    private fun checkTaskExists(taskId: String): Boolean =
+    private suspend fun checkTaskExists(taskId: String): Boolean =
         taskRepository.findById(taskId).isSuccess
 
 }

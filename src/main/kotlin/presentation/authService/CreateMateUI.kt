@@ -13,17 +13,17 @@ class CreationOfMateUi(
 ): UiRunner {
     override val id: Int = 300
     override val label: String = "Create new mate"
-    override fun run() {
+    override suspend fun run() {
         handleMateCreation()
     }
-    private fun createMate(): Result<User>{
+    private suspend fun createMate(): Result<User>{
         viewer.show("Enter user name: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
         val userPassword = reader.read()?.trim().orEmpty()
         return creationOfMateUseCase.createMate(userName, userPassword)
     }
-    private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
+    private suspend fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
         createMate().onSuccess {
             viewer.show("New mate is successfully created!")
         }.onFailure {

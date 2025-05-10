@@ -3,8 +3,9 @@ package com.berlin.logic.usecase.state
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.usecase.state.DeleteStateUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,10 +22,10 @@ class DeleteStateUseCaseTest {
     }
 
     @Test
-    fun `should return success when state is deleted successfully`() {
+    fun `should return success when state is deleted successfully`() = runTest {
         // Given
-        every { stateRepository.deleteState(any()) } returns Result.success("Deleted Successfully")
-        every { stateRepository.getStateById(any()) } returns mockk()
+        coEvery { stateRepository.deleteState(any()) } returns Result.success("Deleted Successfully")
+        coEvery { stateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = deleteStateUseCase.deleteState("state_1")
@@ -34,10 +35,10 @@ class DeleteStateUseCaseTest {
     }
 
     @Test
-    fun `should return failure when state deletion fails`() {
+    fun `should return failure when state deletion fails`() = runTest {
         // Given
-        every { stateRepository.deleteState(any()) } returns Result.failure(Exception("Deletion Failed"))
-        every { stateRepository.getStateById(any()) } returns mockk()
+        coEvery { stateRepository.deleteState(any()) } returns Result.failure(Exception("Deletion Failed"))
+        coEvery { stateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = deleteStateUseCase.deleteState("state_2")
@@ -49,9 +50,9 @@ class DeleteStateUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when state does not exist`() {
+    fun `should throw exception when state does not exist`() = runTest {
         // Given
-        every { stateRepository.getStateById(any()) } returns null
+        coEvery { stateRepository.getStateById(any()) } returns null
 
         // When
         val result = deleteStateUseCase.deleteState("S2")
@@ -64,7 +65,7 @@ class DeleteStateUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when state ID is invalid`(stateId: String) {
+    fun `should throw exception when state ID is invalid`(stateId: String) = runTest {
         // When & Then
         assertThrows<Exception> {
             deleteStateUseCase.deleteState(stateId)

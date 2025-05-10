@@ -4,8 +4,9 @@ import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.project.UpdateProjectUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -23,10 +24,10 @@ class UpdateProjectUseCaseTest {
     }
 
     @Test
-    fun `should return success when project update succeeds`() {
+    fun `should return success when project update succeeds`() = runTest {
         // Given
         val project = projectHelper()
-        every { projectRepository.updateProject(project) } returns Result.success("Updated Successfully")
+        coEvery { projectRepository.updateProject(project) } returns Result.success("Updated Successfully")
 
         // When
         val result = updateProjectUseCase.updateProject(project)
@@ -36,10 +37,10 @@ class UpdateProjectUseCaseTest {
     }
 
     @Test
-    fun `should return failure when project update fails`() {
+    fun `should return failure when project update fails`() = runTest {
         // Given
         val project = projectHelper()
-        every { projectRepository.updateProject(project) } returns Result.failure(Exception())
+        coEvery { projectRepository.updateProject(project) } returns Result.failure(Exception())
 
         // When
         val result = updateProjectUseCase.updateProject(project)
@@ -54,7 +55,7 @@ class UpdateProjectUseCaseTest {
     @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when project ID is invalid`(
         invalidName: String
-    ) {
+    ) = runTest {
         // When && Then
         assertThrows<Exception> {
             updateProjectUseCase.updateProject(

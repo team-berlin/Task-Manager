@@ -7,6 +7,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -21,7 +22,7 @@ class GetUserByIDUITest {
     @BeforeEach
     fun setUp() {
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
         useCase = mockk()
@@ -31,17 +32,17 @@ class GetUserByIDUITest {
 
 
     @Test
-    fun `should call use case when correct user ID`() {
+    fun `should call use case when correct user ID`()  = runTest {
         // Given
         val id = AuthServiceTestData.idExist
-        every { reader.read() } returns id
-        every { useCase.getUserById(id) } returns Result.success(AuthServiceTestData.existingUser)
+        coEvery { reader.read() } returns id
+        coEvery { useCase.getUserById(id) } returns Result.success(AuthServiceTestData.existingUser)
 
         // When
         ui.run()
 
         // Then
-        verify { useCase.getUserById(id) }
+        coVerify { useCase.getUserById(id) }
         assertThat(printed).contains("Enter the user id: ")
     }
 

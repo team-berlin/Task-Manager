@@ -5,8 +5,9 @@ import com.berlin.domain.model.State
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -28,14 +29,14 @@ class GetAllStatesByProjectIdUseCaseTest {
     }
 
     @Test
-    fun `should return states when states are found for the project`() {
+    fun `should return states when states are found for the project`() = runTest {
         // Given
         val expectedStates = listOf(
             State(id = "S1", name = "Active", projectId = "P1"),
             State(id = "S2", name = "Inactive", projectId = "P1")
         )
-        every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P1") } returns expectedStates
+        coEvery { projectRepository.getProjectById("P1") } returns mockk()
+        coEvery { stateRepository.getStatesByProjectId("P1") } returns expectedStates
 
         // When
         val result = getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1")
@@ -45,10 +46,10 @@ class GetAllStatesByProjectIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when no states are found for the project`() {
+    fun `should throw exception when no states are found for the project`() = runTest {
         // Given
-        every { projectRepository.getProjectById("P1") } returns mockk()
-        every { stateRepository.getStatesByProjectId("P3") } returns null
+        coEvery { projectRepository.getProjectById("P1") } returns mockk()
+        coEvery { stateRepository.getStatesByProjectId("P3") } returns null
 
         // When & Then
         val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P3") }
@@ -56,9 +57,9 @@ class GetAllStatesByProjectIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when project ID does not exist`() {
+    fun `should throw exception when project ID does not exist`() = runTest {
         // Given
-        every { projectRepository.getProjectById("P2") } returns null
+        coEvery { projectRepository.getProjectById("P2") } returns null
 
         // When & Then
         val exception = assertThrows<Exception> { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P2") }
@@ -67,7 +68,7 @@ class GetAllStatesByProjectIdUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when project id is invalid`(projectId: String) {
+    fun `should throw exception when project id is invalid`(projectId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             getAllStatesByProjectIdUseCase.getAllStatesByProjectId(projectId)

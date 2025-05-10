@@ -4,9 +4,11 @@ import com.berlin.domain.model.EntityType
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,27 +25,27 @@ class GetAuditLogsByTaskIdUseCaseTest {
     }
 
     @Test
-    fun `should return list of logs for existing task ID`() {
+    fun `should return list of logs for existing task ID`() = runTest {
         // Given
         val taskId = "T123"
         val logs = listOf(
             generateAuditLog(id = "A3", entityId = taskId, entityType = EntityType.TASK)
         )
-        every { auditRepository.getAuditLogsByProjectId(taskId) } returns logs
+        coEvery { auditRepository.getAuditLogsByProjectId(taskId) } returns logs
 
         //When
         val result = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(taskId)
 
         //That
         assertThat(result).isEqualTo(logs)
-        verify(exactly = 1) { auditRepository.getAuditLogsByProjectId(taskId) }
+        coVerify(exactly = 1) { auditRepository.getAuditLogsByProjectId(taskId) }
 
     }
 
 
     @ParameterizedTest
     @ValueSource(strings = ["", "   ","123"])
-    fun `should throw Exception when task id is invalid`(invalidId: String) {
+    fun `should throw Exception when task id is invalid`(invalidId: String) = runTest {
         //when&then
         assertThrows<IllegalArgumentException> {
             getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(invalidId)

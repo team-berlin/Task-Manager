@@ -6,7 +6,6 @@ import com.berlin.domain.model.Project
 import com.mongodb.client.model.Filters
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 
 class MongoDBProjectDataSource(
     private val mongoConfig: MongoConfig
@@ -16,42 +15,54 @@ class MongoDBProjectDataSource(
     private val database = mongoConfig.getDatabase(client)
     private val collection = mongoConfig.getCollection<Project>(database, "projects")
 
-    override fun getAll(): List<Project> {
-        return runBlocking {
+    override suspend fun getAll(): List<Project> {
+        return try {
             collection.find().toList()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun getById(id: String): Project? {
-        return runBlocking {
+    override suspend fun getById(id: String): Project? {
+        return try {
             collection.find(Filters.eq("_id", id)).firstOrNull()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun update(id: String, entity: Project): Boolean {
-        return runBlocking {
+    override suspend fun update(id: String, entity: Project): Boolean {
+        return try {
             collection.replaceOne(Filters.eq("_id", id), entity).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun delete(id: String): Boolean {
-        return runBlocking {
+    override suspend fun delete(id: String): Boolean {
+        return try {
             collection.deleteOne(Filters.eq("_id", id)).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun write(entity: Project): Boolean {
-        return runBlocking {
+    override suspend fun write(entity: Project): Boolean {
+        return try {
             collection.insertOne(entity).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun writeAll(entities: List<Project>): Boolean {
+    override suspend fun writeAll(entities: List<Project>): Boolean {
         if (entities.isEmpty()) {
             return false
         }
-        return runBlocking {
+        return try {
             collection.insertMany(entities).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

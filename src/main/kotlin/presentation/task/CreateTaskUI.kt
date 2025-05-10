@@ -23,7 +23,7 @@ class CreateTaskUI(
     override val id: Int = 30
     override val label: String = "Create task"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val project = selectProject()
             val state = selectState(project)

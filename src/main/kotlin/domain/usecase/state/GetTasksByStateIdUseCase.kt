@@ -10,7 +10,7 @@ class GetTasksByStateIdUseCase (
     private val stateRepository: StateRepository
 ) {
 
-    fun getAllTasksByStateId(stateId: String): List<Task>? {
+    suspend fun getAllTasksByStateId(stateId: String): List<Task>? {
         if (!validateStateId(stateId)) throw InvalidStateIdException("State ID must not be empty or blank")
 
         if (checkStateExists(stateId)) {
@@ -22,7 +22,7 @@ class GetTasksByStateIdUseCase (
     }
 
 
-    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
+    private suspend fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
 
     private fun validateStateId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

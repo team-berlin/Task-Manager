@@ -20,7 +20,7 @@ class AuditByProjectUI(
     override val id: Int = 1
     override val label: String = "Show audit by project"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val project = selectProject()
             val logs = getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(project.id)

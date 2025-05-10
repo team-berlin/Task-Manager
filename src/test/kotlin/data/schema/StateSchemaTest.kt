@@ -3,6 +3,7 @@ package data.schema
 import com.berlin.data.schema.StateSchema
 import com.berlin.domain.model.State
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,7 +20,7 @@ class StateSchemaTest {
  //region create object
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with blank file name`() {
+ fun `should throw IllegalArgumentException when try to create object with blank file name`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    stateSchema = StateSchema("", listOf("a", "b", "c"))
@@ -27,7 +28,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
+ fun `should throw IllegalArgumentException when try to create object with invalid size header`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    stateSchema = StateSchema("test.csv", listOf("a", "b"))
@@ -39,7 +40,7 @@ class StateSchemaTest {
  //region toRow
 
  @Test
- fun `toRow should return list of valid state attributes when valid state passed`() {
+ fun `toRow should return list of valid state attributes when valid state passed`() = runTest {
   //when
   val result = stateSchema.toRow(validState)
   //then
@@ -47,7 +48,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid state passed miss id attribute`() {
+ fun `toRow should return empty list when invalid state passed miss id attribute`() = runTest {
   //when
   val result = stateSchema.toRow(invalidStateEmptyId)
   //then
@@ -55,7 +56,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid state passed miss name attribute`() {
+ fun `toRow should return empty list when invalid state passed miss name attribute`() = runTest {
   //when
   val result = stateSchema.toRow(invalidStateEmptyName)
   //then
@@ -63,7 +64,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid state passed miss projectId attribute`() {
+ fun `toRow should return empty list when invalid state passed miss projectId attribute`() = runTest {
   //when
   val result = stateSchema.toRow(invalidStateEmptyProjectId)
   //then
@@ -75,7 +76,7 @@ class StateSchemaTest {
  //region fromRow
 
  @Test
- fun `fromRow should return state when valid row passed`() {
+ fun `fromRow should return state when valid row passed`() = runTest {
   //when
   val result = stateSchema.fromRow(validRow)
   //then
@@ -83,7 +84,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss id column`() {
+ fun `fromRow should return null when invalid row passed miss id column`() = runTest {
   //when
   val result = stateSchema.fromRow(invalidRowEmptyId)
   //then
@@ -91,7 +92,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss name column`() {
+ fun `fromRow should return null when invalid row passed miss name column`() = runTest {
   //when
   val result = stateSchema.fromRow(invalidRowEmptyName)
   //then
@@ -99,7 +100,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss projectId column`() {
+ fun `fromRow should return null when invalid row passed miss projectId column`() = runTest {
   //when
   val result = stateSchema.fromRow(invalidRowEmptyProjectId)
   //then
@@ -111,7 +112,7 @@ class StateSchemaTest {
  //region getId
 
  @Test
- fun `getId should return id of state passed`() {
+ fun `getId should return id of state passed`() = runTest {
   //when
   val result = stateSchema.getId(validState)
   //then
@@ -119,7 +120,7 @@ class StateSchemaTest {
  }
 
  @Test
- fun `getId should return null when state passed have empty id`() {
+ fun `getId should return null when state passed have empty id`() = runTest {
   //when
   val result = stateSchema.getId(invalidStateEmptyId)
   //then

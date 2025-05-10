@@ -13,17 +13,17 @@ class ProjectSchema(
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: Project): List<String> {
+    override suspend fun toRow(entity: Project): List<String> {
         return if (checkProjectIsNotValid(entity)) emptyList()
         else projectToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): Project? {
+    override suspend fun fromRow(row: List<String>): Project? {
         return if (checkRowIsNotValidProject(row)) null
         else stringsListToProject(row)
     }
 
-    override fun getId(entity: Project): String? {
+    override suspend fun getId(entity: Project): String? {
         return entity.id.ifEmpty { null }
     }
 

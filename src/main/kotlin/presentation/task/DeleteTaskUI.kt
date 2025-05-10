@@ -21,7 +21,7 @@ class DeleteTaskUI(
     override val id: Int = 3
     override val label: String = "Delete task"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val task = choose(
                 title = "Tasks",

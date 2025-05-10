@@ -9,8 +9,9 @@ import com.berlin.domain.helper.IdGenerator
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -30,7 +31,7 @@ class CreationOfMateUseCaseTest {
     }
 
     @Test
-    fun `createMate fails when username is empty`() {
+    fun `createMate fails when username is empty`() = runTest {
         // Given
         val emptyUsername = AuthServiceTestData.userNameIsEmpty
         val password = AuthServiceTestData.userPassword
@@ -44,7 +45,7 @@ class CreationOfMateUseCaseTest {
     }
 
     @Test
-    fun `createMate fails when password is empty`() {
+    fun `createMate fails when password is empty`() = runTest {
         // Given
         val username = AuthServiceTestData.userName
         val emptyPassword = AuthServiceTestData.userPasswordIsEmpty
@@ -58,7 +59,7 @@ class CreationOfMateUseCaseTest {
     }
 
     @Test
-    fun `createMate fails when password length is less than 8 characters`() {
+    fun `createMate fails when password length is less than 8 characters`() = runTest {
         // Given
         val username = AuthServiceTestData.userName
         val shortPassword = AuthServiceTestData.passwordLessThanEight

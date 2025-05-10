@@ -5,9 +5,10 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -37,8 +38,8 @@ class GetTasksByProjectUseCaseTest {
     }
 
     @Test
-    fun `result is success when repository returns non-empty list`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.success(listOf(task))
+    fun `result is success when repository returns non-empty list`() = runTest {
+        coEvery { taskRepository.findTasksByProjectId("P1") } returns Result.success(listOf(task))
 
         val result = useCase("P1")
 
@@ -46,8 +47,8 @@ class GetTasksByProjectUseCaseTest {
     }
 
     @Test
-    fun `result is success when repository returns empty list`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.success(emptyList())
+    fun `result is success when repository returns empty list`() = runTest {
+        coEvery { taskRepository.findTasksByProjectId("P1") } returns Result.success(emptyList())
 
         val result = useCase("P1")
 
@@ -55,8 +56,8 @@ class GetTasksByProjectUseCaseTest {
     }
 
     @Test
-    fun `result is failure when repository returns unexpected error`() {
-        every { taskRepository.findTasksByProjectId("P1") } returns Result.failure(IllegalStateException("boom"))
+    fun `result is failure when repository returns unexpected error`() = runTest {
+        coEvery { taskRepository.findTasksByProjectId("P1") } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase("P1")
 
@@ -64,20 +65,20 @@ class GetTasksByProjectUseCaseTest {
     }
 
     @Test
-    fun `throws InvalidProjectIdException when projectId is blank`() {
+    fun `throws InvalidProjectIdException when projectId is blank`() = runTest {
         assertThrows<InvalidProjectIdException> {
             useCase("   ")
         }
 
-        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
+        coVerify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
     }
 
     @Test
-    fun `throws InvalidProjectIdException when projectId is numeric-only`() {
+    fun `throws InvalidProjectIdException when projectId is numeric-only`() = runTest {
         assertThrows<InvalidProjectIdException> {
             useCase("12345")
         }
 
-        verify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
+        coVerify(exactly = 0) { taskRepository.findTasksByProjectId(any()) }
     }
 }

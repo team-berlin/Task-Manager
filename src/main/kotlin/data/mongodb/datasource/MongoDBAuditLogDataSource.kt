@@ -6,9 +6,8 @@ import com.berlin.domain.model.AuditLog
 import com.mongodb.client.model.Filters
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 
-class MongoDBauditLogDataSource(
+class MongoDBAuditLogDataSource(
     private val mongoConfig: MongoConfig
 ) : BaseDataSource<AuditLog> {
 
@@ -16,42 +15,54 @@ class MongoDBauditLogDataSource(
     private val database = mongoConfig.getDatabase(client)
     private val collection = mongoConfig.getCollection<AuditLog>(database, "audit_logs")
 
-    override fun getAll(): List<AuditLog> {
-        return runBlocking {
+    override suspend fun getAll(): List<AuditLog> {
+        return try {
             collection.find().toList()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun getById(id: String): AuditLog? {
-        return runBlocking {
+    override suspend fun getById(id: String): AuditLog? {
+        return try {
             collection.find(Filters.eq("_id", id)).firstOrNull()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun update(id: String, entity: AuditLog): Boolean {
-        return runBlocking {
+    override suspend fun update(id: String, entity: AuditLog): Boolean {
+        return try {
             collection.replaceOne(Filters.eq("_id", id), entity).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun delete(id: String): Boolean {
-        return runBlocking {
+    override suspend fun delete(id: String): Boolean {
+        return try {
             collection.deleteOne(Filters.eq("_id", id)).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun write(entity: AuditLog): Boolean {
-        return runBlocking {
+    override suspend fun write(entity: AuditLog): Boolean {
+        return try {
             collection.insertOne(entity).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    override fun writeAll(entities: List<AuditLog>): Boolean {
+    override suspend fun writeAll(entities: List<AuditLog>): Boolean {
         if (entities.isEmpty()) {
             return false
         }
-        return runBlocking {
+        return try {
             collection.insertMany(entities).wasAcknowledged()
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

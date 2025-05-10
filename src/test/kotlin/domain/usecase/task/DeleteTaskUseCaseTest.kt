@@ -4,9 +4,10 @@ import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -33,54 +34,54 @@ class DeleteTaskUseCaseTest {
     }
 
     @Test
-    fun `result is success when repository deletes task`() {
-        every { taskRepository.findById("T1") } returns Result.success(stored)
-        every { taskRepository.delete("T1") } returns Result.success(Unit)
+    fun `result is success when repository deletes task`() = runTest {
+        coEvery { taskRepository.findById("T1") } returns Result.success(stored)
+        coEvery { taskRepository.delete("T1") } returns Result.success(Unit)
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isSuccess).isTrue()
-        verify(exactly = 1) { taskRepository.delete("T1") }
+        coVerify(exactly = 1) { taskRepository.delete("T1") }
     }
 
     @Test
-    fun `result is failure when task is not found`() {
-        every { taskRepository.findById("T1") } returns Result.failure(TaskNotFoundException("T1"))
+    fun `result is failure when task is not found`() = runTest {
+        coEvery { taskRepository.findById("T1") } returns Result.failure(TaskNotFoundException("T1"))
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        coVerify(exactly = 0) { taskRepository.delete(any()) }
     }
 
     @Test
-    fun `result is failure when repository returns unexpected error`() {
-        every { taskRepository.findById("T1") } returns Result.success(stored)
-        every { taskRepository.delete("T1") } returns Result.failure(IllegalStateException("boom"))
+    fun `result is failure when repository returns unexpected error`()  = runTest {
+        coEvery { taskRepository.findById("T1") } returns Result.success(stored)
+        coEvery { taskRepository.delete("T1") } returns Result.failure(IllegalStateException("boom"))
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        verify(exactly = 1) { taskRepository.delete("T1") }
+        coVerify(exactly = 1) { taskRepository.delete("T1") }
     }
 
     @Test
-    fun `throws Exception when id is blank`() {
+    fun `throws Exception when id is blank`() = runTest {
         assertThrows<Exception> {
             deleteTaskUseCase("   ")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        coVerify(exactly = 0) { taskRepository.findById(any()) }
+        coVerify(exactly = 0) { taskRepository.delete(any()) }
     }
 
     @Test
-    fun `throws Exception when id is numeric-only`() {
+    fun `throws Exception when id is numeric-only`() = runTest {
         assertThrows<Exception> {
             deleteTaskUseCase("1234")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        coVerify(exactly = 0) { taskRepository.findById(any()) }
+        coVerify(exactly = 0) { taskRepository.delete(any()) }
     }
 }

@@ -13,7 +13,7 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): List<State> {
+    suspend fun getAllStatesByProjectId(projectId: String): List<State> {
 
         if (!validateProjectId(projectId))
             throw InvalidProjectIdException("Project ID must not be empty or blank")
@@ -26,7 +26,7 @@ class GetAllStatesByProjectIdUseCase(
         }
     }
 
-    private fun checkProjectExists(projectId: String): Boolean =
+    private suspend fun checkProjectExists(projectId: String): Boolean =
         projectRepository.getProjectById(projectId) != null
 
     private fun validateProjectId(projectId: String): Boolean =

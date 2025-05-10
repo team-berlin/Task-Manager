@@ -8,7 +8,7 @@ class ChangeTaskStateUseCase(
     private val taskRepository: TaskRepository
 ) {
 
-    operator fun invoke(taskId: String, newStateId: String): Result<Task> {
+    suspend operator fun invoke(taskId: String, newStateId: String): Result<Task> {
 
         val originalResult = taskRepository.findById(taskId)
         if (originalResult.isFailure) return originalResult

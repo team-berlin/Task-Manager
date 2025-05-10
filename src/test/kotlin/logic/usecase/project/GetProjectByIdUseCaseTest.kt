@@ -4,8 +4,9 @@ import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -23,10 +24,10 @@ class GetProjectByIdUseCaseTest {
     }
 
     @Test
-    fun `should return project when valid project id exists`() {
+    fun `should return project when valid project id exists`() = runTest {
         // Given
         val expectedProject = projectHelper()
-        every { projectRepository.getProjectById("P1") } returns expectedProject
+        coEvery { projectRepository.getProjectById("P1") } returns expectedProject
 
         // When
         val result = getProjectByIdUseCase.getProjectById("P1")
@@ -36,10 +37,10 @@ class GetProjectByIdUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when project id does not exist`() {
+    fun `should throw exception when project id does not exist`() = runTest {
         // Given
         val input = "P2"
-        every { projectRepository.getProjectById(any()) } returns null
+        coEvery { projectRepository.getProjectById(any()) } returns null
 
         // When
         val exception = assertThrows<Exception> { getProjectByIdUseCase.getProjectById("P2") }
@@ -50,7 +51,7 @@ class GetProjectByIdUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when project id is invalid`(projectId: String) {
+    fun `should throw exception when project id is invalid`(projectId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             getProjectByIdUseCase.getProjectById(projectId)

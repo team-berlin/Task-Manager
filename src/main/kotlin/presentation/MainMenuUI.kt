@@ -12,7 +12,7 @@ class MainMenuUI(
     override val id    = 0
     override val label = "Main menu"
 
-    override fun run() {
+    override suspend fun run() {
         while (true) {
             showMenu()
             when (val input = reader.read()?.trim()) {

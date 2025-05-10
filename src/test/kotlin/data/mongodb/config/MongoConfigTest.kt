@@ -43,7 +43,7 @@ class MongoConfigTest {
     @DisplayName("getDatabase should return database with correct name")
     fun `getDatabase returns database with correct name`() {
         // Given
-        every { mockMongoClient.getDatabase(any()) } returns mockMongoDatabase
+        coEvery { mockMongoClient.getDatabase(any()) } returns mockMongoDatabase
 
         // When
         val database = mongoConfig.getDatabase(mockMongoClient)
@@ -57,7 +57,7 @@ class MongoConfigTest {
     @DisplayName("getCollection should return typed collection with correct name")
     fun `getCollection returns typed collection with correct name`() {
         // Given
-        every { mockMongoDatabase.getCollection<TestDocument>(any()) } returns mockCollection
+        coEvery { mockMongoDatabase.getCollection<TestDocument>(any()) } returns mockCollection
 
         // When
         val collection = mongoConfig.getCollection<TestDocument>(mockMongoDatabase, "testCollection")
@@ -88,32 +88,32 @@ class MongoConfigTest {
         // Mock CodecProvider
         val mockProvider = mockk<PojoCodecProvider>()
         val mockBuilder = mockk<PojoCodecProvider.Builder>()
-        every { PojoCodecProvider.builder() } returns mockBuilder
-        every { mockBuilder.automatic(true) } returns mockBuilder
-        every { mockBuilder.build() } returns mockProvider
+        coEvery { PojoCodecProvider.builder() } returns mockBuilder
+        coEvery { mockBuilder.automatic(true) } returns mockBuilder
+        coEvery { mockBuilder.build() } returns mockProvider
 
         // Mock CodecRegistry
         val mockRegistry = mockk<CodecRegistry>()
         val defaultRegistry = mockk<CodecRegistry>()
-        every { MongoClientSettings.getDefaultCodecRegistry() } returns defaultRegistry
+        coEvery { MongoClientSettings.getDefaultCodecRegistry() } returns defaultRegistry
         mockkStatic("org.bson.codecs.configuration.CodecRegistries")
-        every {
+        coEvery {
             org.bson.codecs.configuration.CodecRegistries.fromProviders(mockProvider)
         } returns mockRegistry
-        every {
+        coEvery {
             org.bson.codecs.configuration.CodecRegistries.fromRegistries(defaultRegistry, mockRegistry)
         } returns mockRegistry
 
         // Mock ClientSettings
         val mockSettings = mockk<MongoClientSettings>()
         val mockSettingsBuilder = mockk<MongoClientSettings.Builder>()
-        every { MongoClientSettings.builder() } returns mockSettingsBuilder
-        every { mockSettingsBuilder.applyConnectionString(any()) } returns mockSettingsBuilder
-        every { mockSettingsBuilder.codecRegistry(mockRegistry) } returns mockSettingsBuilder
-        every { mockSettingsBuilder.build() } returns mockSettings
+        coEvery { MongoClientSettings.builder() } returns mockSettingsBuilder
+        coEvery { mockSettingsBuilder.applyConnectionString(any()) } returns mockSettingsBuilder
+        coEvery { mockSettingsBuilder.codecRegistry(mockRegistry) } returns mockSettingsBuilder
+        coEvery { mockSettingsBuilder.build() } returns mockSettings
 
         // Mock MongoClient creation
-        every { MongoClient.create(mockSettings) } returns mockMongoClient
+        coEvery { MongoClient.create(mockSettings) } returns mockMongoClient
 
         // Execute the method
         val result = mongoConfig.createMongoClient()

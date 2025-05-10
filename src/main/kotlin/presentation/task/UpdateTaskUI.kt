@@ -22,7 +22,7 @@ class UpdateTaskUI(
     override val id: Int = 5
     override val label: String = "Update task"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val task = choose(
                 title    = "Tasks to update",

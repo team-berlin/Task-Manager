@@ -7,7 +7,7 @@ class GetProjectByIdUseCase (
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getProjectById(projectId: String): Project {
+    suspend fun getProjectById(projectId: String): Project {
         if(!validateProjectId(projectId))
             throw Exception("Project ID must not be empty or blank")
 

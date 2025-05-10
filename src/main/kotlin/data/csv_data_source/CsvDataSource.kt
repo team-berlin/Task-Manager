@@ -4,6 +4,9 @@ import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
 import com.opencsv.CSVReaderBuilder
 import com.opencsv.CSVWriter
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -16,32 +19,37 @@ open class CsvDataSource<T>(
     val csvFile: File
         get() = File(rootDirectory, schema.fileName)
 
-    override fun getAll(): List<T> = when {
+    override suspend fun getAll(): List<T> = when {
         !csvFile.exists() -> emptyList()
         else -> Result.run {
-            FileReader(csvFile).use { reader ->
-                CSVReaderBuilder(reader)
-                    .withSkipLines(1)
-                    .build()
-                    .use { csvReader ->
-                        csvReader
-                            .asSequence()
-                            .filter { it.isNotEmpty() }
-                            .mapNotNull { schema.fromRow(it.toList()) }
-                            .toList()
-                    }
+            coroutineScope {
+                FileReader(csvFile).use { reader ->
+                    CSVReaderBuilder(reader)
+                        .withSkipLines(1)
+                        .build()
+                        .use { csvReader ->
+                            csvReader
+                                .asSequence()
+                                .filter { it.isNotEmpty() }
+                                .map { it.toList() }
+                                .toList()
+                                .map { row -> async { schema.fromRow(row) } }
+                                .awaitAll()
+                                .filterNotNull()
+                        }
+                }
             }
         }
     }
 
-    override fun getById(id: String): T? = when {
+    override suspend fun getById(id: String): T? = when {
         !csvFile.exists() -> null
         else -> Result.runCatching {
             getAll().find { entity -> schema.getId(entity) == id }
         }.getOrNull()
     }
 
-    override fun update(id: String, entity: T): Boolean = Result.runCatching {
+    override suspend fun update(id: String, entity: T): Boolean = Result.runCatching {
         schema.toRow(entity).takeIf { it.isNotEmpty() } ?: return false
 
         if (!csvFile.exists()) return false
@@ -58,7 +66,7 @@ open class CsvDataSource<T>(
         writeEntitiesToFile(updatedEntities)
     }.getOrDefault(false)
 
-    override fun delete(id: String): Boolean = Result.runCatching {
+    override suspend fun delete(id: String): Boolean = Result.runCatching {
         if (!csvFile.exists()) return false
 
         val entities = getAll()
@@ -71,7 +79,7 @@ open class CsvDataSource<T>(
         writeEntitiesToFile(remainingEntities)
     }.getOrDefault(false)
 
-    override fun write(entity: T): Boolean = Result.runCatching {
+    override suspend fun write(entity: T): Boolean = Result.runCatching {
         val rowToWrite = schema.toRow(entity).takeIf { it.isNotEmpty() } ?: return false
 
         csvFile.parentFile?.mkdirs()
@@ -93,7 +101,7 @@ open class CsvDataSource<T>(
         true
     }.getOrDefault(false)
 
-    override fun writeAll(entities: List<T>): Boolean = when {
+    override suspend fun writeAll(entities: List<T>): Boolean = when {
         entities.isEmpty() -> false
         else -> Result.runCatching {
             csvFile.parentFile?.mkdirs()
@@ -101,7 +109,7 @@ open class CsvDataSource<T>(
         }.getOrDefault(false)
     }
 
-    private fun writeEntitiesToFile(entities: List<T>): Boolean = Result.runCatching {
+    private suspend fun writeEntitiesToFile(entities: List<T>): Boolean = Result.runCatching {
         FileWriter(csvFile).use { writer ->
             CSVWriter(writer).use { csvWriter ->
                 csvWriter.writeNext(schema.header.toTypedArray())

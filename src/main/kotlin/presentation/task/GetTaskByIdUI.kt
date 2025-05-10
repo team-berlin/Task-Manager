@@ -17,7 +17,7 @@ class GetTaskByIdUI(
     override val id: Int = 7
     override val label: String = "Get task by ID"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             viewer.show("Enter task ID:")
             val raw = reader.read()?.trim().orEmpty()

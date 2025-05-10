@@ -10,7 +10,7 @@ class CreateStateUseCase(
     private val stateRepository: StateRepository,
     private val idGenerator: IdGeneratorImplementation,
 ) {
-    fun createNewState(stateName: String, projectId: String): Result<String> {
+    suspend fun createNewState(stateName: String, projectId: String): Result<String> {
         if (validateStateName(stateName)) {
             val newState = State(
                 id = idGenerator.generateId(stateName),

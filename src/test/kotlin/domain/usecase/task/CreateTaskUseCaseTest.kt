@@ -7,9 +7,10 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Called
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -34,23 +35,23 @@ class CreateTaskUseCaseTest {
     }
 
     @Test
-    fun `successful creation when title valid and id unique`() {
+    fun `successful creation when title valid and id unique`() = runTest {
         val rawTitle = "  Demo Task  "
         val trimmed = rawTitle.trim()
         val generated = "T123"
 
-        every { idGenerator.generateId(eq(trimmed), any(), any()) } returns generated
+        coEvery { idGenerator.generateId(eq(trimmed), any(), any()) } returns generated
         // NOW: unique => no existing tasks
-        every { taskRepository.getAllTasks() } returns emptyList()
-        every { taskRepository.create(any()) }.answers { Result.success(firstArg()) }
+        coEvery { taskRepository.getAllTasks() } returns emptyList()
+        coEvery { taskRepository.create(any()) }.answers { Result.success(firstArg()) }
 
         val result = useCase(
             projectId, rawTitle, description, stateId, createByUserId, assignedToUserId
         )
 
         assertThat(result.isSuccess).isTrue()
-        verify { idGenerator.generateId(eq(trimmed), any(), any()) }
-        verify {
+        coVerify { idGenerator.generateId(eq(trimmed), any(), any()) }
+        coVerify {
             taskRepository.create(match {
                 it.id == generated && it.title == trimmed
             })
@@ -58,35 +59,35 @@ class CreateTaskUseCaseTest {
     }
 
     @Test
-    fun `throws InvalidTaskTitle for blank title`() {
+    fun `throws InvalidTaskTitle for blank title`() = runTest {
         assertThrows<InvalidTaskTitle> {
             useCase(
                 projectId, "   ", description, stateId, createByUserId, assignedToUserId
             )
         }
-        verify { idGenerator wasNot Called }
-        verify { taskRepository wasNot Called }
+        coVerify { idGenerator wasNot Called }
+        coVerify { taskRepository wasNot Called }
     }
 
     @Test
-    fun `throws InvalidTaskTitle for numeric-only title`() {
+    fun `throws InvalidTaskTitle for numeric-only title`() = runTest {
         assertThrows<InvalidTaskTitle> {
             useCase(
                 projectId, "12345", description, stateId, createByUserId, assignedToUserId
             )
         }
-        verify { idGenerator wasNot Called }
-        verify { taskRepository wasNot Called }
+        coVerify { idGenerator wasNot Called }
+        coVerify { taskRepository wasNot Called }
     }
 
     @Test
-    fun `throws TaskAlreadyExistsException when id is not unique`() {
+    fun `throws TaskAlreadyExistsException when id is not unique`() = runTest {
         val title = "Unique"
         val generated = "T999"
 
-        every { idGenerator.generateId(eq(title), any(), any()) } returns generated
+        coEvery { idGenerator.generateId(eq(title), any(), any()) } returns generated
         // NOW: not unique => that ID is already in getAllTasks()
-        every { taskRepository.getAllTasks() } returns listOf(
+        coEvery { taskRepository.getAllTasks() } returns listOf(
             Task(generated, projectId, title, description, stateId, assignedToUserId, createByUserId)
         )
 
@@ -96,24 +97,24 @@ class CreateTaskUseCaseTest {
             )
         }
 
-        verify { idGenerator.generateId(eq(title), any(), any()) }
-        verify(exactly = 0) { taskRepository.create(any()) }
+        coVerify { idGenerator.generateId(eq(title), any(), any()) }
+        coVerify(exactly = 0) { taskRepository.create(any()) }
     }
 
     @Test
-    fun `result is failure when repository create fails`() {
+    fun `result is failure when repository create fails`() = runTest {
         val title = "Valid"
         val generated = "T500"
-        every { idGenerator.generateId(eq(title), any(), any()) } returns generated
+        coEvery { idGenerator.generateId(eq(title), any(), any()) } returns generated
         // unique so we proceed to create
-        every { taskRepository.getAllTasks() } returns emptyList()
-        every { taskRepository.create(any()) } returns Result.failure(IllegalStateException("boom"))
+        coEvery { taskRepository.getAllTasks() } returns emptyList()
+        coEvery { taskRepository.create(any()) } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase(
             projectId, title, description, stateId, createByUserId, assignedToUserId
         )
 
         assertThat(result.isFailure).isTrue()
-        verify { taskRepository.create(match { it.id == generated }) }
+        coVerify { taskRepository.create(match { it.id == generated }) }
     }
 }

@@ -13,17 +13,17 @@ class StateSchema(
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: State): List<String> {
+    override suspend fun toRow(entity: State): List<String> {
         return if (checkStateIsNotValid(entity)) emptyList()
         else stateToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): State? {
+    override suspend fun fromRow(row: List<String>): State? {
         return if (checkRowIsNotValidState(row)) null
         else stringsListToState(row)
     }
 
-    override fun getId(entity: State): String? {
+    override suspend fun getId(entity: State): String? {
         return entity.id.ifEmpty { null }
     }
 

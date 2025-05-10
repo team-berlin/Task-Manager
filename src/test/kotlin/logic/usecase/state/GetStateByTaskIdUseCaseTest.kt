@@ -5,8 +5,9 @@ import com.berlin.domain.model.State
 import com.berlin.domain.repository.StateRepository
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -25,11 +26,11 @@ class GetStateByTaskIdUseCaseTest {
     }
 
     @Test
-    fun `should return state when task id exists`() {
+    fun `should return state when task id exists`() = runTest {
         // Given
         val expectedState = State(id = "S1", name = "Active", projectId = "P1")
-        every { taskRepository.findById("T1") } returns mockk()
-        every { stateRepository.getStateByTaskId("T1") } returns expectedState
+        coEvery { taskRepository.findById("T1") } returns mockk()
+        coEvery { stateRepository.getStateByTaskId("T1") } returns expectedState
 
         // When
         val result = getStateByTaskIdUseCase.getStateByTaskId("T1")
@@ -40,7 +41,7 @@ class GetStateByTaskIdUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["", " ", "123"])
-    fun `should throw exception when state id is invalid`(taskId: String) {
+    fun `should throw exception when state id is invalid`(taskId: String) = runTest {
         // When && Then
         assertThrows<Exception> {
             getStateByTaskIdUseCase.getStateByTaskId(taskId)

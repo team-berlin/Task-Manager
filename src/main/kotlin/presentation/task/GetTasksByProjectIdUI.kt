@@ -21,7 +21,7 @@ class GetTasksByProjectIdUI(
     override val id: Int = 4
     override val label: String = "View tasks by project"
 
-    override fun run() {
+    override suspend fun run() {
         try {
             val project = choose(
                 title = "Projects",

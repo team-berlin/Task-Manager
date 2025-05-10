@@ -6,6 +6,7 @@ import com.berlin.domain.repository.AuditRepository
 import com.berlin.helper.generateAuditLog
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -22,12 +23,12 @@ class AddAuditLogUseCaseTest {
     }
 
     @Test
-    fun `should return success when audit log is added successfully`() {
+    fun `should return success when audit log is added successfully`() = runTest {
         // Given
         val generatedId = "AUDIT_12345"
         val auditLog = generateAuditLog(id = generatedId)
-        every { idGenerator.generateId("AUDIT", any(), any()) } returns generatedId
-        every { auditRepository.addAuditLog(any()) } returns Result.success("Audit log added successfully")
+        coEvery { idGenerator.generateId("AUDIT", any(), any()) } returns generatedId
+        coEvery { auditRepository.addAuditLog(any()) } returns Result.success("Audit log added successfully")
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
@@ -43,16 +44,16 @@ class AddAuditLogUseCaseTest {
         assertThat(result.getOrNull()).isEqualTo("Audit log added successfully")
 
         verify(exactly = 1) { idGenerator.generateId("AUDIT", any(), any()) }
-        verify(exactly = 1) { auditRepository.addAuditLog(match { it.id == generatedId }) }
+        coVerify(exactly = 1) { auditRepository.addAuditLog(match { it.id == generatedId }) }
     }
 
     @Test
-    fun `should return failure when audit log failed to add`() {
+    fun `should return failure when audit log failed to add`() = runTest {
         // Given
         val generatedId = "AUDIT_12345"
         val auditLog = generateAuditLog(id = generatedId)
-        every { idGenerator.generateId("AUDIT", any(), any()) } returns generatedId
-        every { auditRepository.addAuditLog(any()) } returns Result.failure(Exception("audit log failed to add"))
+        coEvery { idGenerator.generateId("AUDIT", any(), any()) } returns generatedId
+        coEvery { auditRepository.addAuditLog(any()) } returns Result.failure(Exception("audit log failed to add"))
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
@@ -68,14 +69,14 @@ class AddAuditLogUseCaseTest {
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Audit log failed to add")
 
         verify(exactly = 1) { idGenerator.generateId("AUDIT", any(), any()) }
-        verify(exactly = 1) { auditRepository.addAuditLog(match { it.id == generatedId }) }
+        coVerify(exactly = 1) { auditRepository.addAuditLog(match { it.id == generatedId }) }
     }
 
 
     @Test
-    fun `should return failure when id generator throws exception`() {
+    fun `should return failure when id generator throws exception`() = runTest {
         // Given
-        every { idGenerator.generateId("AUDIT", any(), any()) } throws IllegalArgumentException("Invalid prefix")
+        coEvery { idGenerator.generateId("AUDIT", any(), any()) } throws IllegalArgumentException("Invalid prefix")
 
         // When
         val result = addAuditLogUseCase.addAuditLog(
@@ -91,7 +92,7 @@ class AddAuditLogUseCaseTest {
         assertThat(result.exceptionOrNull()?.message).isEqualTo("Audit log failed to add")
 
         verify(exactly = 1) { idGenerator.generateId("AUDIT", any(), any()) }
-        verify(exactly = 0) { auditRepository.addAuditLog(any()) }
+        coVerify(exactly = 0) { auditRepository.addAuditLog(any()) }
     }
 
 

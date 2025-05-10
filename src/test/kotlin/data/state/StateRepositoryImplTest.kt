@@ -6,8 +6,9 @@ import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.model.State
 import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -24,9 +25,9 @@ class StateRepositoryImplTest {
     // region addState
 
     @Test
-    fun `addState should return success when added succeeds`() {
+    fun `addState should return success when added succeeds`() = runTest {
         // Given
-        every { stateDataSource.write(any()) } returns true
+        coEvery { stateDataSource.write(any()) } returns true
         // When
         val result = repository.addState(validState)
         // Then
@@ -34,9 +35,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `addState should return success with state id when added succeeds`() {
+    fun `addState should return success with state id when added succeeds`()= runTest  {
         // Given
-        every { stateDataSource.write(any()) } returns true
+        coEvery { stateDataSource.write(any()) } returns true
         // When
         val result = repository.addState(validState)
         // Then
@@ -44,9 +45,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `addState should return failure when added fails`() {
+    fun `addState should return failure when added fails`() = runTest {
         // Given
-        every { stateDataSource.write(any()) } returns false
+        coEvery { stateDataSource.write(any()) } returns false
         // When
         val result = repository.addState(validState)
         // Then
@@ -54,9 +55,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `addState should return failure with InvalidStateException when added fails`() {
+    fun `addState should return failure with InvalidStateException when added fails`() = runTest {
         // Given
-        every { stateDataSource.write(any()) } returns false
+        coEvery { stateDataSource.write(any()) } returns false
         // When
         val result = repository.addState(validState)
         // Then
@@ -67,9 +68,9 @@ class StateRepositoryImplTest {
     // region getStateById
 
     @Test
-    fun `getStateById should return state when data source returns state`() {
+    fun `getStateById should return state when data source returns state`() = runTest {
         // Given
-        every { stateDataSource.getById(any()) } returns validState
+        coEvery { stateDataSource.getById(any()) } returns validState
         // When
         val result = repository.getStateById(validState.id)
         // Then
@@ -77,9 +78,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `getStateById should return null when data source returns null`() {
+    fun `getStateById should return null when data source returns null`() = runTest {
         // Given
-        every { stateDataSource.getById(any()) } returns null
+        coEvery { stateDataSource.getById(any()) } returns null
         // When
         val result = repository.getStateById(validState.id)
         // Then
@@ -89,9 +90,9 @@ class StateRepositoryImplTest {
 
     // region getStatesByProjectId
     @Test
-    fun `getStatesByProjectId should return list of states match this project`() {
+    fun `getStatesByProjectId should return list of states match this project`() = runTest {
         // Given
-        every { stateDataSource.getAll() } returns states
+        coEvery { stateDataSource.getAll() } returns states
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
@@ -99,9 +100,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `getStatesByProjectId should null when data source returns empty list or no matches project`() {
+    fun `getStatesByProjectId should null when data source returns empty list or no matches project`() = runTest {
         // Given
-        every { stateDataSource.getAll() } returns emptyList()
+        coEvery { stateDataSource.getAll() } returns emptyList()
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
@@ -111,9 +112,9 @@ class StateRepositoryImplTest {
 
     // region getTasksByStateId
     @Test
-    fun `getTasksByStateId should return list of matches tasks when data source returns tasks`() {
+    fun `getTasksByStateId should return list of matches tasks when data source returns tasks`() = runTest {
         // Given
-        every { taskDataSource.getAll() } returns tasks
+        coEvery { taskDataSource.getAll() } returns tasks
         // When
         val result = repository.getTasksByStateId(validState.id)
         // Then
@@ -121,9 +122,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `getTasksByStateId should null when data source returns empty list or no matches tasks`() {
+    fun `getTasksByStateId should null when data source returns empty list or no matches tasks`() = runTest {
         // Given
-        every { taskDataSource.getAll() } returns emptyList()
+        coEvery { taskDataSource.getAll() } returns emptyList()
         // When
         val result = repository.getTasksByStateId(validState.id)
         // Then
@@ -133,9 +134,9 @@ class StateRepositoryImplTest {
 
     // region updateState
     @Test
-    fun `updateState should return success when update succeeds`() {
+    fun `updateState should return success when update succeeds`() = runTest {
         // Given
-        every { stateDataSource.update(any(), any()) } returns true
+        coEvery { stateDataSource.update(any(), any()) } returns true
         // When
         val result = repository.updateState(validState)
         // Then
@@ -143,9 +144,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `updateState should return success with state id when update succeeds`() {
+    fun `updateState should return success with state id when update succeeds`() = runTest {
         // Given
-        every { stateDataSource.update(any(), any()) } returns true
+        coEvery { stateDataSource.update(any(), any()) } returns true
         // When
         val result = repository.updateState(validState)
         // Then
@@ -153,9 +154,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `updateState should return failure when update fails`() {
+    fun `updateState should return failure when update fails`()= runTest {
         // Given
-        every { stateDataSource.update(any(), any()) } returns false
+        coEvery { stateDataSource.update(any(), any()) } returns false
         // When
         val result = repository.updateState(validState)
         // Then
@@ -163,9 +164,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `updateState should return failure with InvalidStateException when update fails`() {
+    fun `updateState should return failure with InvalidStateException when update fails`()= runTest {
         // Given
-        every { stateDataSource.update(any(), any()) } returns false
+        coEvery { stateDataSource.update(any(), any()) } returns false
         // When
         val result = repository.updateState(validState)
         // Then
@@ -175,9 +176,9 @@ class StateRepositoryImplTest {
 
     // region deleteState
     @Test
-    fun `deleteState should return success when delete succeeds`() {
+    fun `deleteState should return success when delete succeeds`()= runTest  {
         // Given
-        every { stateDataSource.delete(any()) } returns true
+        coEvery { stateDataSource.delete(any()) } returns true
         // When
         val result = repository.deleteState(validState.id)
         // Then
@@ -185,9 +186,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `deleteState should return success with state id when delete succeeds`() {
+    fun `deleteState should return success with state id when delete succeeds`()= runTest {
         // Given
-        every { stateDataSource.delete(any()) } returns true
+        coEvery { stateDataSource.delete(any()) } returns true
         // When
         val result = repository.deleteState(validState.id)
         // Then
@@ -195,9 +196,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `deleteState should return failure when delete fails`() {
+    fun `deleteState should return failure when delete fails`()= runTest {
         // Given
-        every { stateDataSource.delete(any()) } returns false
+        coEvery { stateDataSource.delete(any()) } returns false
         // When
         val result = repository.deleteState(validState.id)
         // Then
@@ -205,9 +206,9 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `deleteState should return failure with InvalidStateException when delete fails`() {
+    fun `deleteState should return failure with InvalidStateException when delete fails`() = runTest{
         // Given
-        every { stateDataSource.delete(any()) } returns false
+        coEvery { stateDataSource.delete(any()) } returns false
         // When
         val result = repository.deleteState(validState.id)
         // Then
@@ -217,10 +218,10 @@ class StateRepositoryImplTest {
 
     // region getStateByTaskId
     @Test
-    fun `getStateByTaskId should return state when data sources returns state matches task`() {
+    fun `getStateByTaskId should return state when data sources returns state matches task`() = runTest{
         // Given
-        every { taskDataSource.getById(any()) } returns validTask
-        every { stateDataSource.getById(any()) } returns validState
+        coEvery { taskDataSource.getById(any()) } returns validTask
+        coEvery { stateDataSource.getById(any()) } returns validState
         // When
         val result = repository.getStateByTaskId(validTask.id)
         // Then
@@ -228,10 +229,10 @@ class StateRepositoryImplTest {
     }
 
     @Test
-    fun `getStateByTaskId should return null when data sources returns null no match state and no task`() {
+    fun `getStateByTaskId should return null when data sources returns null no match state and no task`() = runTest{
         // Given
-        every { taskDataSource.getById(any()) } returns null
-        every { stateDataSource.getById(any()) } returns null
+        coEvery { taskDataSource.getById(any()) } returns null
+        coEvery { stateDataSource.getById(any()) } returns null
         // When
         val result = repository.getStateByTaskId(validTask.id)
         // Then

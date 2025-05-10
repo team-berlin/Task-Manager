@@ -16,17 +16,17 @@ class AuditSchema(
         )
     }
 
-    override fun toRow(entity: AuditLog): List<String> {
+    override suspend fun toRow(entity: AuditLog): List<String> {
         return if (checkAuditLogIsNotValid(entity)) emptyList()
         else auditLogToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): AuditLog? {
+    override suspend fun fromRow(row: List<String>): AuditLog? {
         return if (checkRowIsNotValidAuditLog(row)) null
         else stringsListToAuditLog(row)
     }
 
-    override fun getId(entity: AuditLog): String? {
+    override suspend fun getId(entity: AuditLog): String? {
         return entity.id.ifEmpty { null }
     }
 

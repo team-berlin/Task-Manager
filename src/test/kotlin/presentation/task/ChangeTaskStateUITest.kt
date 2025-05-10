@@ -12,6 +12,7 @@ import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.task.ChangeTaskStateUI
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -48,32 +49,32 @@ class ChangeTaskStateUITest {
         DummyData.states += State("S2", "DONE", "P1")
 
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
         changeUC = mockk()
         getAllTasks = mockk()
         ui = ChangeTaskStateUI(changeUC, getAllTasks, viewer, reader)
-        every { getAllTasks.invoke() } returns listOf(task)
+        coEvery { getAllTasks.invoke() } returns listOf(task)
         printed.clear()
     }
 
     @Test
-    fun `success moves to chosen state`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { changeUC.invoke("T1", "S1") } returns Result.success(task.copy(stateId = "S1"))
+    fun `success moves to chosen state`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { changeUC.invoke("T1", "S1") } returns Result.success(task.copy(stateId = "S1"))
 
         ui.run()
 
         assertThat(printed.last()).contains("Task T1 moved to TODO")
-        verify { changeUC.invoke("T1", "S1") }
+        coVerify { changeUC.invoke("T1", "S1") }
     }
 
     @Test
-    fun `no states defined prints message and returns`() {
+    fun `no states defined prints message and returns`() = runTest {
         // clear states so possible.isEmpty() triggers
         DummyData.states.clear()
-        every { reader.read() } returns "1"
+        coEvery { reader.read() } returns "1"
 
         ui.run()
 
@@ -82,8 +83,8 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `cancelling at task chooser prints Cancelled`() {
-        every { reader.read() } returns "X"
+    fun `cancelling at task chooser prints Cancelled`() = runTest {
+        coEvery { reader.read() } returns "X"
 
         ui.run()
 
@@ -92,8 +93,8 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `invalid task index prints Invalid selection`() {
-        every { reader.read() } returns "99"
+    fun `invalid task index prints Invalid selection`() = runTest {
+        coEvery { reader.read() } returns "99"
 
         ui.run()
 
@@ -102,8 +103,8 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `cancelling at state chooser prints Cancelled`() {
-        every { reader.read() } returnsMany listOf("1", "X")
+    fun `cancelling at state chooser prints Cancelled`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "X")
 
         ui.run()
 
@@ -112,8 +113,8 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `invalid state index prints Invalid selection`() {
-        every { reader.read() } returnsMany listOf("1", "99")
+    fun `invalid state index prints Invalid selection`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "99")
 
         ui.run()
 
@@ -122,9 +123,9 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `onFailure with real message shows it`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { changeUC.invoke("T1", "S1") } returns Result.failure(IllegalStateException("boom"))
+    fun `onFailure with real message shows it`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { changeUC.invoke("T1", "S1") } returns Result.failure(IllegalStateException("boom"))
 
         ui.run()
 
@@ -132,9 +133,9 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `onFailure with null message shows default`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { changeUC.invoke("T1", "S1") } returns Result.failure(IllegalStateException("Failed to change state"))
+    fun `onFailure with null message shows default`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { changeUC.invoke("T1", "S1") } returns Result.failure(IllegalStateException("Failed to change state"))
 
         ui.run()
 
@@ -142,9 +143,9 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `shows InvalidTaskStateException when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { changeUC.invoke("T1", "S1") } throws InvalidTaskStateException("bad state")
+    fun `shows InvalidTaskStateException when use case throws`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { changeUC.invoke("T1", "S1") } throws InvalidTaskStateException("bad state")
 
         ui.run()
 
@@ -152,9 +153,9 @@ class ChangeTaskStateUITest {
     }
 
     @Test
-    fun `shows TaskNotFoundException when use case throws`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { changeUC.invoke("T1", "S1") } throws TaskNotFoundException("notfound")
+    fun `shows TaskNotFoundException when use case throws`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { changeUC.invoke("T1", "S1") } throws TaskNotFoundException("notfound")
 
         ui.run()
 

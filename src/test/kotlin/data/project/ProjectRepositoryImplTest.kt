@@ -6,8 +6,9 @@ import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -23,9 +24,9 @@ class ProjectRepositoryImplTest {
     //region createProject
 
     @Test
-    fun `createProject should return success when created succeeds`() {
+    fun `createProject should return success when created succeeds`() = runTest {
         // Given
-        every { csvDataSource.write(any()) } returns true
+        coEvery { csvDataSource.write(any()) } returns true
         // When
         val result = repository.createProject(validProject)
         // Then
@@ -33,9 +34,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `createProject should return success with project id when created succeeds`() {
+    fun `createProject should return success with project id when created succeeds`() = runTest {
         // Given
-        every { csvDataSource.write(any()) } returns true
+        coEvery { csvDataSource.write(any()) } returns true
         // When
         val result = repository.createProject(validProject)
         // Then
@@ -43,9 +44,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `createProject should return failure when created fails`() {
+    fun `createProject should return failure when created fails`() = runTest {
         // Given
-        every { csvDataSource.write(any()) } returns false
+        coEvery { csvDataSource.write(any()) } returns false
         // When
         val result = repository.createProject(validProject)
         // Then
@@ -53,9 +54,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `createProject should return failure with InvalidProjectException when created fails`() {
+    fun `createProject should return failure with InvalidProjectException when created fails`() = runTest {
         // Given
-        every { csvDataSource.write(any()) } returns false
+        coEvery { csvDataSource.write(any()) } returns false
         // When
         val result = repository.createProject(validProject)
         // Then
@@ -66,9 +67,9 @@ class ProjectRepositoryImplTest {
     //region getProjectById
 
     @Test
-    fun `getProjectById should return project when data source return project`() {
+    fun `getProjectById should return project when data source return project`() = runTest {
         // Given
-        every { csvDataSource.getById(any()) } returns validProject
+        coEvery { csvDataSource.getById(any()) } returns validProject
         // When
         val result = repository.getProjectById("projectId")
         // Then
@@ -76,9 +77,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `getProjectById should return null when data source return null`() {
+    fun `getProjectById should return null when data source return null`() = runTest {
         // Given
-        every { csvDataSource.getById(any()) } returns null
+        coEvery { csvDataSource.getById(any()) } returns null
         // When
         val result = repository.getProjectById("projectId")
         // Then
@@ -89,9 +90,9 @@ class ProjectRepositoryImplTest {
     //region getAllProjects
 
     @Test
-    fun `getAllProjects should return null when data source return empty list`() {
+    fun `getAllProjects should return null when data source return empty list`() = runTest {
         // Given
-        every { csvDataSource.getAll() } returns emptyList()
+        coEvery { csvDataSource.getAll() } returns emptyList()
         // When
         val result = repository.getAllProjects()
         // Then
@@ -99,9 +100,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `getAllProjects should return list of projects when data source return list of projects`() {
+    fun `getAllProjects should return list of projects when data source return list of projects`() = runTest {
         // Given
-        every { csvDataSource.getAll() } returns projects
+        coEvery { csvDataSource.getAll() } returns projects
         // When
         val result = repository.getAllProjects()
         // Then
@@ -112,9 +113,9 @@ class ProjectRepositoryImplTest {
     //region updateProject
 
     @Test
-    fun `updateProject should return success when updated succeeds`() {
+    fun `updateProject should return success when updated succeeds`() = runTest {
         // Given
-        every { csvDataSource.update(any(), any()) } returns true
+        coEvery { csvDataSource.update(any(), any()) } returns true
         // When
         val result = repository.updateProject(validProject)
         // Then
@@ -122,9 +123,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `updateProject should return success with project id when updated succeeds`() {
+    fun `updateProject should return success with project id when updated succeeds`() = runTest {
         // Given
-        every { csvDataSource.update(any(), any()) } returns true
+        coEvery { csvDataSource.update(any(), any()) } returns true
         // When
         val result = repository.updateProject(validProject)
         // Then
@@ -132,9 +133,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `updateProject should return failure when updated fails`() {
+    fun `updateProject should return failure when updated fails`() = runTest {
         // Given
-        every { csvDataSource.update(any(), any()) } returns false
+        coEvery { csvDataSource.update(any(), any()) } returns false
         // When
         val result = repository.updateProject(validProject)
         // Then
@@ -142,9 +143,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `updateProject should return failure with InvalidProjectException when updated fails`() {
+    fun `updateProject should return failure with InvalidProjectException when updated fails`() = runTest {
         // Given
-        every { csvDataSource.update(any(), any()) } returns false
+        coEvery { csvDataSource.update(any(), any()) } returns false
         // When
         val result = repository.updateProject(validProject)
         // Then
@@ -154,9 +155,9 @@ class ProjectRepositoryImplTest {
 
     //region deleteProject
     @Test
-    fun `deleteProject should return success when deleted succeeds`() {
+    fun `deleteProject should return success when deleted succeeds`() = runTest {
         // Given
-        every { csvDataSource.delete(any()) } returns true
+        coEvery { csvDataSource.delete(any()) } returns true
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
@@ -164,9 +165,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `deleteProject should return success with project id when deleted succeeds`() {
+    fun `deleteProject should return success with project id when deleted succeeds`() = runTest {
         // Given
-        every { csvDataSource.delete(any()) } returns true
+        coEvery { csvDataSource.delete(any()) } returns true
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
@@ -174,9 +175,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `deleteProject should return failure when deleted fails`() {
+    fun `deleteProject should return failure when deleted fails`() = runTest {
         // Given
-        every { csvDataSource.delete(any()) } returns false
+        coEvery { csvDataSource.delete(any()) } returns false
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
@@ -184,9 +185,9 @@ class ProjectRepositoryImplTest {
     }
 
     @Test
-    fun `deleteProject should return failure with InvalidProjectException when deleted fails`() {
+    fun `deleteProject should return failure with InvalidProjectException when deleted fails`() = runTest {
         // Given
-        every { csvDataSource.delete(any()) } returns false
+        coEvery { csvDataSource.delete(any()) } returns false
         // When
         val result = repository.deleteProject(validProject.id)
         // Then

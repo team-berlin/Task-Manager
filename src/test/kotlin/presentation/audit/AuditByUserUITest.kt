@@ -6,9 +6,10 @@ import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
 import com.berlin.presentation.audit.AuditByUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -32,9 +33,9 @@ class AuditByUserUITest {
     }
 
     @Test
-    fun `should display audit logs for selected user`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
+    fun `should display audit logs for selected user`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
             AuditLog(
                 id = "A1",
                 timestamp = 1111L,
@@ -63,9 +64,9 @@ class AuditByUserUITest {
     }
 
     @Test
-    fun `should show 'null' for missing changes description`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
+    fun `should show 'null' for missing changes description`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
             AuditLog(
                 id = "A2",
                 timestamp = 2222L,
@@ -85,9 +86,9 @@ class AuditByUserUITest {
     }
 
     @Test
-    fun `should display message when no logs are found`() {
-        every { reader.read() } returns "1"
-        every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns emptyList()
+    fun `should display message when no logs are found`() = runTest {
+        coEvery { reader.read() } returns "1"
+        coEvery { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns emptyList()
 
         ui.run()
 
@@ -97,8 +98,8 @@ class AuditByUserUITest {
     }
 
     @Test
-    fun `should handle InputCancelledException gracefully`() {
-        every { reader.read() } returns "x"
+    fun `should handle InputCancelledException gracefully`() = runTest {
+        coEvery { reader.read() } returns "x"
 
         ui.run()
 
@@ -106,8 +107,8 @@ class AuditByUserUITest {
     }
 
     @Test
-    fun `should handle InvalidSelectionException gracefully`() {
-        every { reader.read() } returns "invalid"
+    fun `should handle InvalidSelectionException gracefully`() = runTest {
+        coEvery { reader.read() } returns "invalid"
 
         ui.run()
 

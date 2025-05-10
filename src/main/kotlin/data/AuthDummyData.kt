@@ -9,16 +9,16 @@ object AuthDummyData: BaseDataSource<User> {
 
     /* ------------  BaseDataSource<Task> implementation  ------------ */
 
-    override fun write(entity: User): Boolean =
+    override suspend fun write(entity: User): Boolean =
         users.add(entity)
 
-    override fun writeAll(entities: List<User>): Boolean =
+    override suspend fun writeAll(entities: List<User>): Boolean =
         users.addAll(entities)
 
-    override fun getById(id: String): User? =
+    override suspend fun getById(id: String): User? =
         users.firstOrNull { it.id == id }
 
-    override fun update(id: String, entity: User): Boolean {
+    override suspend fun update(id: String, entity: User): Boolean {
         val idx = users.indexOfFirst { it.id == id }
         return if (idx >= 0) {
             users[idx] = entity
@@ -28,9 +28,9 @@ object AuthDummyData: BaseDataSource<User> {
         }
     }
 
-    override fun delete(id: String): Boolean =
+    override suspend fun delete(id: String): Boolean =
         users.removeIf { it.id == id }
 
-    override fun getAll(): List<User> =
+    override suspend fun getAll(): List<User> =
         users.toList()
 }

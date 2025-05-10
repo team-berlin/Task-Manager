@@ -6,7 +6,7 @@ import com.berlin.domain.model.Project
 class UpdateProjectUseCase (
     private val projectRepository: ProjectRepository
 ) {
-    fun updateProject(project: Project): Result<String> {
+    suspend fun updateProject(project: Project): Result<String> {
         if(!validateProjectName(project.name))
             throw Exception("Project Name must not be empty or blank")
 

@@ -6,9 +6,10 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -24,14 +25,14 @@ class MainMenuUITest {
     @BeforeEach
     fun setUp() {
         viewer = mockk(relaxed = true) {
-            every { show(capture(printed)) } just Runs
+            coEvery { show(capture(printed)) } just Runs
         }
         reader = mockk()
     }
 
     @Test
-    fun `exit immediately on blank input without running any runner`() {
-        every { reader.read() } returns ""
+    fun `exit immediately on blank input without running any runner`() = runTest {
+        coEvery { reader.read() } returns ""
         menu = MainMenuUI(emptyList(), viewer, reader)
 
         menu.run()
@@ -41,12 +42,12 @@ class MainMenuUITest {
     }
 
     @Test
-    fun `runs matching runner then exits on X`() {
+    fun `runs matching runner then exits on X`() = runTest {
         val r0 = object : UiRunner {
             override val id = 0
             override val label = "zero"
             var invoked = 0
-            override fun run() {
+            override suspend fun run() {
                 invoked++
             }
         }
@@ -54,12 +55,12 @@ class MainMenuUITest {
             override val id = 1
             override val label = "one"
             var invoked = 0
-            override fun run() {
+            override suspend fun run() {
                 invoked++
             }
         }
 
-        every { reader.read() } returnsMany listOf("1", "X")
+        coEvery { reader.read() } returnsMany listOf("1", "X")
         menu = MainMenuUI(listOf(r0, r1), viewer, reader)
 
         menu.run()
@@ -72,14 +73,14 @@ class MainMenuUITest {
     }
 
     @Test
-    fun `invalid choice prints error then exits`() {
+    fun `invalid choice prints error then exits`() = runTest {
         val dummy = object : UiRunner {
             override val id = 5
             override val label = "five"
-            override fun run() = fail("should not run")
+            override suspend fun run() = fail("should not run")
         }
 
-        every { reader.read() } returnsMany listOf("99", "")
+        coEvery { reader.read() } returnsMany listOf("99", "")
         menu = MainMenuUI(listOf(dummy), viewer, reader)
 
         menu.run()
@@ -88,8 +89,8 @@ class MainMenuUITest {
     }
 
     @Test
-    fun `trimmed lowercase x also exits`() {
-        every { reader.read() } returnsMany listOf("  x  ")
+    fun `trimmed lowercase x also exits`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("  x  ")
         menu = MainMenuUI(emptyList(), viewer, reader)
 
         menu.run()
@@ -98,14 +99,14 @@ class MainMenuUITest {
     }
 
     @Test
-    fun `exit on null input`() {
-        every { reader.read() } returns null
+    fun `exit on null input`() = runTest {
+        coEvery { reader.read() } returns null
 
         val dummy = object : UiRunner {
             override val id = 1
             override val label = "one"
             var ran = false
-            override fun run() { ran = true }
+            override suspend fun run() { ran = true }
         }
         menu = MainMenuUI(listOf(dummy), viewer, reader)
 
@@ -117,7 +118,7 @@ class MainMenuUITest {
 
     @Test
     fun `menu has correct id and label`() {
-        every { reader.read() } returns ""
+        coEvery { reader.read() } returns ""
         menu = MainMenuUI(emptyList(), viewer, reader)
 
         assertThat(menu.id).isEqualTo(0)

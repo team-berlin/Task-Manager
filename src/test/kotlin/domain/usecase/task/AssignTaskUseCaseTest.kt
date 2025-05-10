@@ -7,9 +7,11 @@ import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.TaskRepository
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -41,18 +43,18 @@ class AssignTaskUseCaseTest {
 
 
     @Test
-    fun `result is success when assignee changes`() {
+    fun `result is success when assignee changes`() = runTest {
         stubHappyPath()
         val result = useCase("1", anotherAssignee.id)
         assertThat(result.isSuccess).isTrue()
     }
 
     @Test
-    fun `repository update is called with new assignee`() {
+    fun `repository update is called with new assignee`() = runTest {
         stubHappyPath()
         useCase("1", anotherAssignee.id)
 
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             taskRepository.update(
                 match { it.id == "1" && it.assignedToUserId == anotherAssignee.id })
         }
@@ -60,35 +62,35 @@ class AssignTaskUseCaseTest {
 
 
     @Test
-    fun `result is failure when task is not found`() {
-        every { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
+    fun `result is failure when task is not found`() = runTest {
+        coEvery { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
 
         val result = useCase("1", anotherAssignee.id)
         assertThat(result.isFailure).isTrue()
     }
 
     @Test
-    fun `result is failure when repository update returns unexpected error`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } returns Result.failure(IllegalStateException("boom"))
+    fun `result is failure when repository update returns unexpected error`() = runTest {
+        coEvery { taskRepository.findById("1") } returns Result.success(stored)
+        coEvery { taskRepository.update(any()) } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase("1", anotherAssignee.id)
         assertThat(result.isFailure).isTrue()
     }
 
     @Test
-    fun `throws InvalidAssigneeException when assignee id is blank`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
+    fun `throws InvalidAssigneeException when assignee id is blank`() = runTest {
+        coEvery { taskRepository.findById("1") } returns Result.success(stored)
 
         assertThrows<InvalidAssigneeException> {
             useCase("1", "   ")
         }
 
-        verify(exactly = 0) { taskRepository.update(any()) }
+        coVerify(exactly = 0) { taskRepository.update(any()) }
     }
 
     private fun stubHappyPath() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } answers { Result.success(firstArg()) }
+        coEvery { taskRepository.findById("1") } returns Result.success(stored)
+        coEvery { taskRepository.update(any()) } answers { Result.success(firstArg()) }
     }
 }

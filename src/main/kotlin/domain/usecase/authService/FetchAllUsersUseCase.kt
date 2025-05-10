@@ -5,7 +5,7 @@ import com.berlin.domain.repository.AuthenticationRepository
 class FetchAllUsersUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getAllUsers(): Result<List<User>> {
+    suspend fun getAllUsers(): Result<List<User>> {
         return repository.getAllUsers()
     }
 }

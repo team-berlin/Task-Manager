@@ -5,8 +5,9 @@ import com.berlin.helper.projectHelper
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -26,10 +27,10 @@ class CreateProjectUseCaseTest {
     }
 
     @Test
-    fun `createNewProject should return success when project created successfully`() {
+    fun `createNewProject should return success when project created successfully`() = runTest {
         // Given
         val validProject = projectHelper()
-        every { projectRepository.createProject(any()) } returns Result.success("Creation Successfully")
+        coEvery { projectRepository.createProject(any()) } returns Result.success("Creation Successfully")
 
         // When
         val result = createProjectUseCase.createNewProject(
@@ -44,10 +45,10 @@ class CreateProjectUseCaseTest {
     }
 
     @Test
-    fun `createNewProject should return failure when project creation fails`() {
+    fun `createNewProject should return failure when project creation fails`() = runTest {
         // Given
         val validProject = projectHelper()
-        every { projectRepository.createProject(any()) } returns Result.failure(Exception())
+        coEvery { projectRepository.createProject(any()) } returns Result.failure(Exception())
 
         // When
         val result = createProjectUseCase.createNewProject(
@@ -68,7 +69,7 @@ class CreateProjectUseCaseTest {
     @ValueSource(strings = ["", " ", "123"])
     fun `validateProjectName should throw exception when project name is invalid`(
         invalidName: String
-    ) {
+    ) = runTest {
         // When && Then
         assertThrows<Exception> {
             createProjectUseCase.createNewProject(invalidName,

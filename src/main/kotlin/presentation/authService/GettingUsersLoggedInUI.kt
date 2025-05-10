@@ -11,7 +11,7 @@ class GettingUsersLoggedInUI(
 ) : UiRunner {
     override val id: Int = 100
     override val label: String = "get user logged in"
-    override fun run() {
+    override suspend fun run() {
         val user = getUserLoggedIn.getCurrentUser()
         user.fold(
             onSuccess = { showUserInfo(it) },

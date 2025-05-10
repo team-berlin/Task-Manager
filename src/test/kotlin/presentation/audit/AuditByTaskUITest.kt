@@ -6,9 +6,10 @@ import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
 import com.berlin.presentation.audit.AuditByTaskUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -40,9 +41,9 @@ class AuditByTaskUITest {
     }
 
     @Test
-    fun `should display audit logs for selected task`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns listOf(
+    fun `should display audit logs for selected task`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns listOf(
             AuditLog(
                 id = "A1",
                 timestamp = 111,
@@ -72,9 +73,9 @@ class AuditByTaskUITest {
     }
 
     @Test
-    fun `should display null for missing changes description`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns listOf(
+    fun `should display null for missing changes description`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns listOf(
             AuditLog(
                 id = "A2",
                 timestamp = 999,
@@ -94,9 +95,9 @@ class AuditByTaskUITest {
     }
 
     @Test
-    fun `should display message when no logs are found`() {
-        every { reader.read() } returnsMany listOf("1", "1")
-        every { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns emptyList()
+    fun `should display message when no logs are found`() = runTest {
+        coEvery { reader.read() } returnsMany listOf("1", "1")
+        coEvery { getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId("T1") } returns emptyList()
 
         ui.run()
 
@@ -104,8 +105,8 @@ class AuditByTaskUITest {
     }
 
     @Test
-    fun `should handle InputCancelledException gracefully`() {
-        every { reader.read() } returns "x"
+    fun `should handle InputCancelledException gracefully`() = runTest {
+        coEvery { reader.read() } returns "x"
 
         ui.run()
 
@@ -113,8 +114,8 @@ class AuditByTaskUITest {
     }
 
     @Test
-    fun `should handle InvalidSelectionException when user input is invalid`() {
-        every { reader.read() } returns "invalid"
+    fun `should handle InvalidSelectionException when user input is invalid`() = runTest {
+        coEvery { reader.read() } returns "invalid"
 
         ui.run()
 

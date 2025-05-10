@@ -5,6 +5,7 @@ import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,7 +22,7 @@ class AuditSchemaTest {
  //region create object
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with blank file name`() {
+ fun `should throw IllegalArgumentException when try to create object with blank file name`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    auditSchema = AuditSchema("", listOf("a", "b", "c", "d", "e", "f", "g"))
@@ -29,7 +30,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
+ fun `should throw IllegalArgumentException when try to create object with invalid size header`() = runTest {
   //when //then
   assertThrows<IllegalArgumentException> {
    auditSchema = AuditSchema("test.csv", listOf("a", "b"))
@@ -41,7 +42,7 @@ class AuditSchemaTest {
  //region toRow
 
  @Test
- fun `toRow should return list of valid audit log attributes when valid audit log passed`() {
+ fun `toRow should return list of valid audit log attributes when valid audit log passed`() = runTest {
   //when
   val result = auditSchema.toRow(validAuditLog)
   //then
@@ -49,7 +50,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `toRow should return list of valid audit log attributes when audit log with empty changesDescription passed`() {
+ fun `toRow should return list of valid audit log attributes when audit log with empty changesDescription passed`() = runTest {
   //when
   val result = auditSchema.toRow(validAuditLogEmptyChangesDescription)
   //then
@@ -57,7 +58,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid audit log passed miss id attribute`() {
+ fun `toRow should return empty list when invalid audit log passed miss id attribute`() = runTest {
   //when
   val result = auditSchema.toRow(invalidAuditLogEmptyId)
   //then
@@ -65,7 +66,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid audit log passed miss timestamp attribute`() {
+ fun `toRow should return empty list when invalid audit log passed miss timestamp attribute`() = runTest {
   //when
   val result = auditSchema.toRow(invalidAuditLogZeroTimestamp)
   //then
@@ -73,7 +74,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid audit log passed miss createdBy attribute`() {
+ fun `toRow should return empty list when invalid audit log passed miss createdBy attribute`() = runTest {
   //when
   val result = auditSchema.toRow(invalidAuditLogEmptyCreatedBy)
   //then
@@ -81,7 +82,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `toRow should return empty list when invalid audit log passed miss entityId attribute`() {
+ fun `toRow should return empty list when invalid audit log passed miss entityId attribute`() = runTest {
   //when
   val result = auditSchema.toRow(invalidAuditLogEmptyEntityId)
   //then
@@ -93,7 +94,7 @@ class AuditSchemaTest {
  //region fromRow
 
  @Test
- fun `fromRow should return audit log when valid row task full passed`() {
+ fun `fromRow should return audit log when valid row task full passed`() = runTest {
   //when
   val result = auditSchema.fromRow(validRow)
   //then
@@ -101,7 +102,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return audit log when valid row project full passed`() {
+ fun `fromRow should return audit log when valid row project full passed`() = runTest {
   //when
   val result = auditSchema.fromRow(validRowProject)
   //then
@@ -109,7 +110,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return audit log when valid row empty changesDescription passed`() {
+ fun `fromRow should return audit log when valid row empty changesDescription passed`() = runTest {
   //when
   val result = auditSchema.fromRow(validRowEmptyChangesDescription)
   //then
@@ -117,7 +118,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss id column`() {
+ fun `fromRow should return null when invalid row passed miss id column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyId)
   //then
@@ -125,7 +126,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss timestamp column`() {
+ fun `fromRow should return null when invalid row passed miss timestamp column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyTimestamp)
   //then
@@ -133,7 +134,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss createdBy column`() {
+ fun `fromRow should return null when invalid row passed miss createdBy column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyCreatedBy)
   //then
@@ -141,7 +142,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss auditAction column`() {
+ fun `fromRow should return null when invalid row passed miss auditAction column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyAuditAction)
   //then
@@ -149,7 +150,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed wrong auditAction column`() {
+ fun `fromRow should return null when invalid row passed wrong auditAction column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowWrongAuditAction)
   //then
@@ -157,7 +158,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss entityType column`() {
+ fun `fromRow should return null when invalid row passed miss entityType column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyEntityType)
   //then
@@ -165,7 +166,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `fromRow should return null when invalid row passed miss entityId column`() {
+ fun `fromRow should return null when invalid row passed miss entityId column`() = runTest {
   //when
   val result = auditSchema.fromRow(invalidRowEmptyEntityId)
   //then
@@ -177,7 +178,7 @@ class AuditSchemaTest {
  //region getId
 
  @Test
- fun `getId should return id of audit log passed`() {
+ fun `getId should return id of audit log passed`() = runTest {
   //when
   val result = auditSchema.getId(validAuditLog)
   //then
@@ -185,7 +186,7 @@ class AuditSchemaTest {
  }
 
  @Test
- fun `getId should return null when audit log passed have empty id`() {
+ fun `getId should return null when audit log passed have empty id`() = runTest {
   //when
   val result = auditSchema.getId(invalidAuditLogEmptyId)
   //then

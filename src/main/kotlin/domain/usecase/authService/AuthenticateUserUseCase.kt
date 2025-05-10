@@ -10,7 +10,7 @@ class AuthenticateUserUseCase(
     private val repository: AuthenticationRepository,
     private val hashingPassword: HashingPassword
 ) {
-    fun login(userName: String, password: String): Result<User> {
+    suspend fun login(userName: String, password: String): Result<User> {
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("No user found"))
         }

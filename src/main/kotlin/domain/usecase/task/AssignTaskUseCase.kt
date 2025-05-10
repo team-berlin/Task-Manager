@@ -8,7 +8,7 @@ class AssignTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
 
-    operator fun invoke(taskId: String, newAssigneeId: String): Result<Task> {
+    suspend operator fun invoke(taskId: String, newAssigneeId: String): Result<Task> {
 
         val originalResult = taskRepository.findById(taskId)
         if (originalResult.isFailure) {

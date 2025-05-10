@@ -8,7 +8,7 @@ import com.berlin.presentation.authService.AuthenticateUserUi
 import org.koin.core.context.startKoin
 import org.koin.mp.KoinPlatform.getKoin
 
-fun main() {
+suspend fun main() {
 
     startKoin {
         printLogger()

@@ -25,6 +25,8 @@ dependencies {
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
     implementation("org.mongodb:bson-kotlin:4.10.1")
 
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
 }
 
 kover {

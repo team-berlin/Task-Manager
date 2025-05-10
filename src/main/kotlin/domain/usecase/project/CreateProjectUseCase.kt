@@ -8,7 +8,7 @@ class CreateProjectUseCase(
     private val projectRepository: ProjectRepository,
     private val idGenerator: IdGenerator,
     ) {
-        fun createNewProject(projectName: String, description: String?, stateId: List<String>?, taskId: List<String>?):
+        suspend fun createNewProject(projectName: String, description: String?, stateId: List<String>?, taskId: List<String>?):
                 Result<String> {
             if (validateProjectName(projectName)) {
                 val newProject = Project(
