@@ -1,9 +1,8 @@
 package com.berlin.di
 
-import AuditRepositoryImpl
-import TaskRepositoryImpl
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
+import com.berlin.data.audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.schema.*
 import com.berlin.data.mongodb.config.MongoConfig

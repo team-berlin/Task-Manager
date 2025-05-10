@@ -2,7 +2,7 @@ package com.berlin.data.mongodb.datasource
 
 import com.berlin.data.BaseDataSource
 import com.berlin.data.mongodb.config.MongoConfig
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.mongodb.client.model.Filters
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
@@ -10,25 +10,25 @@ import kotlinx.coroutines.runBlocking
 
 class MongoDBStateDataSource(
     private val mongoConfig: MongoConfig
-) : BaseDataSource<State> {
+) : BaseDataSource<TaskState> {
 
     private val client = mongoConfig.createMongoClient()
     private val database = mongoConfig.getDatabase(client)
-    private val collection = mongoConfig.getCollection<State>(database, "states")
+    private val collection = mongoConfig.getCollection<TaskState>(database, "states")
 
-    override fun getAll(): List<State> {
+    override fun getAll(): List<TaskState> {
         return runBlocking {
             collection.find().toList()
         }
     }
 
-    override fun getById(id: String): State? {
+    override fun getById(id: String): TaskState? {
         return runBlocking {
             collection.find(Filters.eq("_id", id)).firstOrNull()
         }
     }
 
-    override fun update(id: String, entity: State): Boolean {
+    override fun update(id: String, entity: TaskState): Boolean {
         return runBlocking {
             collection.replaceOne(Filters.eq("_id", id), entity).wasAcknowledged()
         }
@@ -40,13 +40,13 @@ class MongoDBStateDataSource(
         }
     }
 
-    override fun write(entity: State): Boolean {
+    override fun write(entity: TaskState): Boolean {
         return runBlocking {
             collection.insertOne(entity).wasAcknowledged()
         }
     }
 
-    override fun writeAll(entities: List<State>): Boolean {
+    override fun writeAll(entities: List<TaskState>): Boolean {
         if (entities.isEmpty()) {
             return false
         }
