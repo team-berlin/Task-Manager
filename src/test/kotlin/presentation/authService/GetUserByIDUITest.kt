@@ -1,4 +1,4 @@
-package presentation.authService
+package com.berlin.presentation.authService
 
 import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.helper.AuthServiceTestData

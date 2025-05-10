@@ -1,3 +1,5 @@
+package com.berlin.presentation.audit
+
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase

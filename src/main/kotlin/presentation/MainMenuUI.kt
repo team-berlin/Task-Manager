@@ -1,6 +1,5 @@
 package com.berlin.presentation
 
-import com.berlin.domain.model.UserRole
 import com.berlin.domain.permission.assignPermissions
 import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader

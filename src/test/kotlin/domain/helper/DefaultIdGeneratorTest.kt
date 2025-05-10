@@ -1,4 +1,4 @@
-package domain.helper
+package com.berlin.domain.helper
 
 
 import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation

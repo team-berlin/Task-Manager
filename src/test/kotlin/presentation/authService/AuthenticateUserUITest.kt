@@ -1,4 +1,4 @@
-package presentation.authService
+package com.berlin.presentation.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.fakeData.FakeHashingString

@@ -1,4 +1,3 @@
-// src/main/kotlin/com/berlin/presentation/task/GetTasksByProjectIdUI.kt
 package com.berlin.presentation.task
 
 import com.berlin.domain.exception.InputCancelledException

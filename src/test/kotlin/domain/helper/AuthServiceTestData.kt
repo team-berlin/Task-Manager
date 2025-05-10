@@ -1,7 +1,6 @@
 package com.berlin.domain.helper
 
 import com.berlin.domain.model.UserRole
-import com.berlin.logic.helper.userDummyData
 import com.berlin.domain.model.User
 
 object AuthServiceTestData {

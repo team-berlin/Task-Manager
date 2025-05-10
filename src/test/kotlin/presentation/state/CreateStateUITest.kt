@@ -1,4 +1,4 @@
-package presentation.state
+package com.berlin.presentation.state
 
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase

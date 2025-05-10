@@ -1,14 +1,11 @@
-package presentation.audit
+package com.berlin.presentation.audit
 
 import com.berlin.data.DummyData
-import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.*
 import com.berlin.domain.usecase.auditSystem.GetAuditLogsByTaskIdUseCase
 import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
-import com.berlin.presentation.audit.AuditByTaskUI
-import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -18,7 +15,6 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class AuditByTaskUITest {
 

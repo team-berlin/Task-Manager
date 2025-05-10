@@ -1,6 +1,5 @@
 package com.berlin.presentation.task
 
-import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
@@ -17,120 +16,121 @@ import org.junit.jupiter.api.Test
 
 class AssignTaskUITest {
 
-    private val printed = mutableListOf<String>()
-    private val viewer: Viewer = mockk(relaxed = true) {
-        every { show(capture(printed)) } just Runs
-    }
-    private val reader: Reader = mockk()
-    private val assignTaskUC: AssignTaskUseCase = mockk()
-    private val getAllTasks: GetAllTasksUseCase = mockk()
+    private lateinit var viewer: Viewer
+    private lateinit var reader: Reader
+    private lateinit var assignTaskUC: AssignTaskUseCase
+    private lateinit var getAllTasks: GetAllTasksUseCase
+    private lateinit var fetchUsers: FetchAllUsersUseCase
+    private lateinit var ui: AssignTaskUI
 
-    private lateinit var task: Task
-    private lateinit var newAssignee: User
-    private lateinit var fetchAllUsersUseCase: FetchAllUsersUseCase
+    // capture all calls to viewer.show(...)
+    private val printed = mutableListOf<String>()
+
+    // shared test data
+    private val task = Task(
+        id = "T1",
+        projectId = "P1",
+        title = "Demo",
+        description = null,
+        stateId = "TODO",
+        assignedToUserId = "U1",
+        createByUserId = "U1"
+    )
+    private val user1 = User(id = "U1", userName = "alice", password = "pw", role = UserRole.MATE)
+    private val user2 = User(id = "U2", userName = "bob", password = "pw", role = UserRole.MATE)
 
     @BeforeEach
     fun setUp() {
-        fetchAllUsersUseCase= mockk()
-        every { fetchAllUsersUseCase.getAllUsers() }returns Result.success(DummyData.users)
-        // reset in-memory data
-        DummyData.tasks.clear()
-        DummyData.users.clear()
+        viewer = mockk(relaxed = true) {
+            every { show(capture(printed)) } just Runs
+        }
+        reader = mockk()
+        assignTaskUC = mockk()
+        getAllTasks = mockk()
+        fetchUsers = mockk()
 
-        // populate two users so choose(...) can pick index "1" and "2"
-        DummyData.users += User("U1", "alice", "pw", UserRole.MATE)
-        DummyData.users += User("U2", "bob",   "pw", UserRole.MATE)
-
-        newAssignee = DummyData.users[1]
-
-        // create one task assigned initially to alice
-        task = Task(
-            id                 = "1",
-            projectId          = "P1",
-            title              = "Demo",
-            description        = null,
-            stateId            = "TODO",
-            assignedToUserId   = DummyData.users[0].id,
-            createByUserId     = DummyData.users[0].id
-        )
-        DummyData.tasks += task
+        // stub out task‐list and user‐list
         every { getAllTasks.invoke() } returns listOf(task)
+        every { fetchUsers.getAllUsers() } returns Result.success(listOf(user1, user2))
+
+        ui = AssignTaskUI(assignTaskUC, getAllTasks, fetchUsers, viewer, reader)
         printed.clear()
     }
 
-    @Test
-    fun `repository update is called with new assignee`() {
-        every { reader.read() } returnsMany listOf("1", "2")
-        every {
-            assignTaskUC.invoke(task.id, newAssignee.id)
-        } returns Result.success(task.copy(assignedToUserId = newAssignee.id))
-
-        AssignTaskUI(assignTaskUC, getAllTasks, fetchAllUsersUseCase,viewer, reader).run()
-
-        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
-        assertThat(printed.last()).contains("Assigned to ${newAssignee.userName}")
+    /** drive the two reader.read() calls: task‐choice, then assignee‐choice */
+    private fun stubReads(vararg inputs: String) {
+        every { reader.read() } returnsMany inputs.toList()
     }
 
     @Test
-    fun `user cancels in first chooser`() {
-        every { reader.read() } returns "X"
-        AssignTaskUI(assignTaskUC, getAllTasks, fetchAllUsersUseCase,viewer, reader).run()
+    fun `success prints Assigned to userName`() {
+        stubReads("1", "2")
+        every { assignTaskUC.invoke(task.id, user2.id) }.returns(Result.success(task.copy(assignedToUserId = user2.id)))
 
-        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
-        assertThat(printed.last()).contains("Cancelled.")
+        ui.run()
+
+        verify(exactly = 1) { assignTaskUC.invoke("T1", "U2") }
+        assertThat(printed.last()).isEqualTo("Assigned to bob")
     }
 
     @Test
-    fun `user cancels in second chooser`() {
-        every { reader.read() } returnsMany listOf("1", "X")
+    fun `failure with message prints that message`() {
+        stubReads("1", "2")
+        every { assignTaskUC.invoke(any(), any()) }.returns(Result.failure(IllegalStateException("cant assign")))
 
-        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
+        ui.run()
 
-        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
-        assertThat(printed.last()).contains("Cancelled.")
+        assertThat(printed.last()).isEqualTo("cant assign")
     }
 
     @Test
-    fun `error from use case is shown to the user`() {
-        every { reader.read() } returnsMany listOf("1", "2")
-        val boom = IllegalStateException("cant assign")
-        every { assignTaskUC.invoke(task.id, newAssignee.id) } returns Result.failure(boom)
+    fun `failure without message prints default`() {
+        stubReads("1", "2")
+        every { assignTaskUC.invoke(any(), any()) }.returns(Result.failure(RuntimeException()))
 
-        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
+        ui.run()
 
-        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
-        assertThat(printed.last()).contains("cant assign")
-    }
-
-    @Test
-    fun `invalid index prints error message`() {
-        every { reader.read() } returns "36"
-
-        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
-
-        verify(exactly = 0) { assignTaskUC.invoke(any(), any()) }
-        assertThat(printed.last()).contains("Invalid selection")
-    }
-
-    @Test
-    fun `throws and shows InvalidAssigneeException`() {
-        every { reader.read() } returnsMany listOf("1", "2")
-        every { assignTaskUC.invoke(task.id, newAssignee.id) } throws InvalidAssigneeException("nope")
-
-        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
-
-        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
-        assertThat(printed.last()).contains("Invalid assignee")
-    }
-
-    @Test
-    fun `on failure with null message shows default assignment failed`() {
-        every { reader.read() } returnsMany listOf("1", "2")
-        every { assignTaskUC.invoke(task.id, newAssignee.id) } returns Result.failure(RuntimeException("Assignment failed"))
-
-        AssignTaskUI(assignTaskUC, getAllTasks,fetchAllUsersUseCase, viewer, reader).run()
-
-        verify(exactly = 1) { assignTaskUC.invoke(task.id, newAssignee.id) }
         assertThat(printed.last()).isEqualTo("Assignment failed")
+    }
+
+    @Test
+    fun `throws InvalidAssigneeException prints Invalid assignee`() {
+        stubReads("1", "2")
+        every { assignTaskUC.invoke(task.id, user2.id) }.throws(InvalidAssigneeException("nope"))
+
+        ui.run()
+
+        assertThat(printed.last()).isEqualTo("Invalid assignee")
+        verify(exactly = 1) { assignTaskUC.invoke("T1", "U2") }
+    }
+
+    @Test
+    fun `cancel in task chooser prints Cancelled`() {
+        every { reader.read() } returns "X"
+
+        ui.run()
+
+        assertThat(printed.last()).isEqualTo("Cancelled.")
+        verify { assignTaskUC wasNot Called }
+    }
+
+    @Test
+    fun `cancel in assignee chooser prints Cancelled`() {
+        stubReads("1", "X")
+
+        ui.run()
+
+        assertThat(printed.last()).isEqualTo("Cancelled.")
+        verify { assignTaskUC wasNot Called }
+    }
+
+    @Test
+    fun `invalid task index prints Invalid selection`() {
+        every { reader.read() } returns "99"
+
+        ui.run()
+
+        assertThat(printed.last()).isEqualTo("Invalid selection")
+        verify { assignTaskUC wasNot Called }
     }
 }
