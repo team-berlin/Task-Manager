@@ -2,8 +2,11 @@ package com.berlin.di
 
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
+import com.berlin.data.audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.schema.*
+import com.berlin.data.mongodb.config.MongoConfig
+import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.repository.*
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.usecase.utils.hash_algorithm.MD5Hasher
@@ -14,7 +17,6 @@ import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-
 
 
 val dataModule = module {
@@ -57,6 +59,16 @@ val dataModule = module {
             )
         )
     }
+
+    single { MongoConfig() }
+
+    single<BaseDataSource<Task>>(named("mongoDbTaskDataSource")) { MongoDBTaskDataSource(get()) }
+    single<BaseDataSource<TaskState>>(named("mongoDbStateDataSource")) { MongoDBStateDataSource(get()) }
+    single<BaseDataSource<Project>>(named("mongoDbProjectDataSource")) { MongoDBProjectDataSource(get()) }
+    single<BaseDataSource<AuditLog>>(named("mongoDbAuditLogDataSource")) { MongoDBauditLogDataSource(get()) }
+    single<BaseDataSource<User>>(named("mongoDbUserDataSource")) { MongoDBUserDataSource(get()) }
+
+    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
     single<BaseDataSource<User>>(named("UserDataSource")) { CsvDataSource("csv_files", get(named("UserSchema"))) }
     single<BaseDataSource<Project>>(named("ProjectDataSource")) {

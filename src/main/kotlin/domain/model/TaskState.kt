@@ -1,7 +1,10 @@
 package com.berlin.domain.model
 
+import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.codecs.pojo.annotations.BsonProperty
+
 data class TaskState(
-    val id: String,
+    @BsonId  val id: String,
     val name: String,
-    val projectId: String,
+    @BsonProperty("project_id") val projectId: String,
 )
