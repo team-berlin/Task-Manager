@@ -4,7 +4,7 @@ import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.AssignTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
@@ -20,7 +20,7 @@ class AssignTaskUITest {
     private lateinit var reader: Reader
     private lateinit var assignTaskUC: AssignTaskUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
-    private lateinit var fetchUsers: FetchAllUsersUseCase
+    private lateinit var fetchUsers: GetAllUsersUseCase
     private lateinit var ui: AssignTaskUI
 
     // capture all calls to viewer.show(...)

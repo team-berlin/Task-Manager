@@ -4,7 +4,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
@@ -14,7 +13,7 @@ class GetUserByIDUI(
     private val reader: Reader,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 900
+    override val id: Int = 4
     override val label: String = "get user by id"
 
     override fun isAllowed(permission: Permission) = permission.getUserById

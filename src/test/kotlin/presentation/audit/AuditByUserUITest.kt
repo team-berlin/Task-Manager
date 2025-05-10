@@ -1,9 +1,8 @@
 package com.berlin.presentation.audit
 
 import com.berlin.domain.model.*
-import com.berlin.domain.usecase.auditSystem.GetAuditLogsByUserIdUseCase
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
-import com.berlin.presentation.audit.AuditByUserUI
+import com.berlin.domain.usecase.audit_system.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -17,19 +16,19 @@ class AuditByUserUITest {
     private val viewer = mockk<Viewer>(relaxed = true)
     private val reader = mockk<Reader>()
     private val getAuditLogsByUserIdUseCase = mockk<GetAuditLogsByUserIdUseCase>()
-    private val fetchAllUsersUseCase = mockk<FetchAllUsersUseCase>()
+    private val getAllUsersUseCase = mockk<GetAllUsersUseCase>()
     private lateinit var ui: AuditByUserUI
 
     private val testUser = User("U1", "alice", "secret", UserRole.ADMIN)
 
     @BeforeEach
     fun setup() {
-        ui = AuditByUserUI(getAuditLogsByUserIdUseCase, fetchAllUsersUseCase, viewer, reader)
+        ui = AuditByUserUI(getAuditLogsByUserIdUseCase, getAllUsersUseCase, viewer, reader)
     }
 
     @Test
     fun `should display audit logs for selected user`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "1"
         every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
             AuditLog("A1", 1111L, "U1", AuditAction.CREATE, "Initial setup", EntityType.PROJECT, "P1")
@@ -51,7 +50,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should show 'null' for missing changes description`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "1"
         every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
             AuditLog("A2", 2222L, "U1", AuditAction.DELETE, null, EntityType.TASK, "T1")
@@ -64,7 +63,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should display message when no logs are found`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "1"
         every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns emptyList()
 
@@ -75,7 +74,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should handle InputCancelledException gracefully`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "x"
 
         ui.run()
@@ -85,7 +84,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should handle InvalidSelectionException gracefully`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "invalid"
 
         ui.run()
@@ -95,7 +94,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should handle failure result from fetchAllUsersUseCase`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.failure(Exception("DB error"))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.failure(Exception("DB error"))
         every { reader.read() } returns "1"
 
         ui.run()
@@ -105,7 +104,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should handle empty user list from fetchAllUsersUseCase`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(emptyList())
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(emptyList())
         every { reader.read() } returns "1"
 
         ui.run()
@@ -115,7 +114,7 @@ class AuditByUserUITest {
 
     @Test
     fun `should sort logs by timestamp ascending before display`() {
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(listOf(testUser))
         every { reader.read() } returns "1"
         every { getAuditLogsByUserIdUseCase.getAuditLogsByUserId("U1") } returns listOf(
             AuditLog("A3", 3000L, "U1", AuditAction.UPDATE, "Updated project", EntityType.PROJECT, "P2"),

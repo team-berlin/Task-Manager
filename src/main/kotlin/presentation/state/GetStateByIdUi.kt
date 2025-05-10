@@ -2,10 +2,9 @@ package com.berlin.presentation.state
 
 import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
@@ -15,7 +14,7 @@ class GetStateByIdUi(
     private val reader: Reader,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 200000
+    override val id: Int = 4
     override val label: String = "Get state by ID"
 
     override fun isAllowed(permission: Permission) = permission.getStateById
@@ -37,7 +36,7 @@ class GetStateByIdUi(
 
     }
 
-    private fun showState(state: State) {
+    private fun showState(state: TaskState) {
         viewer.show("ID: ${state.id}")
         viewer.show("Title: ${state.name}")
         viewer.show("Project ID: ${state.projectId}")

@@ -7,7 +7,7 @@ import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.*
@@ -87,15 +87,15 @@ class UpdateTaskUseCaseTest {
 
     @Test
     fun `failure when task is not found`() {
-        every { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
+        every { taskRepository.getTaskById("1") } returns Result.failure(TaskNotFoundException("1"))
         val result = useCase("1", title = "Whatever")
         assertThat(result.isFailure).isTrue()
     }
 
     @Test
     fun `failure when repository create returns unexpected error`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.create(any()) } returns Result.failure(IllegalStateException("boom"))
+        every { taskRepository.getTaskById("1") } returns Result.success(stored)
+        every { taskRepository.createTask(any()) } returns Result.failure(IllegalStateException("boom"))
         val result = useCase("1", title = "New title")
         assertThat(result.isFailure).isTrue()
     }
@@ -106,7 +106,7 @@ class UpdateTaskUseCaseTest {
         assertThrows<InvalidTaskTitle> {
             useCase("1", title = "   ")
         }
-        verify(exactly = 0) { taskRepository.create(any()) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
@@ -115,12 +115,12 @@ class UpdateTaskUseCaseTest {
         assertThrows<InvalidTaskTitle> {
             useCase("1", title = "123456")
         }
-        verify(exactly = 0) { taskRepository.create(any()) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     private fun primeRepoToSucceed() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.create(any()) } answers { Result.success(firstArg()) }
+        every { taskRepository.getTaskById("1") } returns Result.success(stored)
+        every { taskRepository.createTask(any()) } answers { Result.success(firstArg()) }
     }
 
     private fun verifyAudit() {

@@ -12,7 +12,6 @@ import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.state.GetAllStatesByProjectIdUI
 
 class GetTasksByProjectIdUI(
     private val getTasks: GetTasksByProjectUseCase,

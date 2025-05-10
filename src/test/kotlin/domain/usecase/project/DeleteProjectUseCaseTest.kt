@@ -1,7 +1,7 @@
 package com.berlin.domain.usecase.project;
 
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.every

@@ -7,12 +7,11 @@ import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.User
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -22,13 +21,13 @@ class CreateTaskUI(
     private val createTask: CreateTaskUseCase,
     private val cashedUser: UserCache,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val fetchAllUsersUseCase: FetchAllUsersUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase,
     private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 30
+    override val id: Int = 1
     override val label: String = "Create task"
 
     override fun isAllowed(permission: Permission) = permission.createTask
@@ -69,7 +68,7 @@ class CreateTaskUI(
     )
 
     private fun selectUser(): User = choose(
-        title = "Users", elements = fetchAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
+        title = "Users", elements = getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
     )
 
     private fun askTitleAndDescription(): Pair<String, String?> {

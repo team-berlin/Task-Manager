@@ -5,7 +5,7 @@ import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
 import com.berlin.presentation.io.Reader
@@ -21,7 +21,7 @@ class UpdateTaskUITest {
     private lateinit var reader: Reader
     private lateinit var updateUC: UpdateTaskUseCase
     private lateinit var getAllTasks: GetAllTasksUseCase
-    private lateinit var fetchUsers: FetchAllUsersUseCase
+    private lateinit var fetchUsers: GetAllUsersUseCase
     private lateinit var ui: UpdateTaskUI
 
     // Capture every call to viewer.show(...)
@@ -58,7 +58,7 @@ class UpdateTaskUITest {
         ui = UpdateTaskUI(
             updateTask = updateUC,
             getAllTasks = getAllTasks,
-            fetchAllUsersUseCase = fetchUsers,
+            getAllUsersUseCase = fetchUsers,
             viewer = viewer,
             reader = reader
         )

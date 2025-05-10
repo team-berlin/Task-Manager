@@ -1,12 +1,11 @@
 package com.berlin.domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.hashPassword.HashingString
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.domain.usecase.authService.CreateMateUseCase
-import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.Test
 class CreateMateUseCaseTest {
 
     private lateinit var authRepository: AuthenticationRepository
-    private val idGenerator: IdGenerator    = mockk()
+    private val idGenerator: IdGenerator = mockk()
     private lateinit var hashingString: HashingString
     private lateinit var createMateUseCase: CreateMateUseCase
 

@@ -6,7 +6,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.model.Project
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
@@ -15,7 +14,7 @@ class GetProjectByIdUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : PermissionedUiRunner {
-    override val id: Int = 14
+    override val id: Int = 4
     override val label: String = "View Project Details"
 
     override fun isAllowed(permission: Permission) = permission.getTasksByProjectId

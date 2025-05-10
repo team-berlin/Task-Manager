@@ -35,7 +35,7 @@ class GetTaskByIdUseCaseTest {
 
     @Test
     fun `result is success when repository returns a task`() {
-        every { taskRepository.findById(validId) } returns Result.success(stored)
+        every { taskRepository.getTaskById(validId) } returns Result.success(stored)
 
         val result = useCase(validId)
 
@@ -46,7 +46,7 @@ class GetTaskByIdUseCaseTest {
     @Test
     fun `result is failure when repository returns failure`() {
         val ex = IllegalStateException("boom")
-        every { taskRepository.findById(validId) } returns Result.failure(ex)
+        every { taskRepository.getTaskById(validId) } returns Result.failure(ex)
 
         val result = useCase(validId)
 
@@ -59,7 +59,7 @@ class GetTaskByIdUseCaseTest {
         assertThrows<InvalidTaskIdException> {
             useCase("   ")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
+        verify(exactly = 0) { taskRepository.getTaskById(any()) }
     }
 
     @Test
@@ -67,6 +67,6 @@ class GetTaskByIdUseCaseTest {
         assertThrows<InvalidTaskIdException> {
             useCase("1234")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
+        verify(exactly = 0) { taskRepository.getTaskById(any()) }
     }
 }

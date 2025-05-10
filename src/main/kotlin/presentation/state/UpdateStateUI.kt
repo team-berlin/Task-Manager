@@ -17,7 +17,7 @@ class UpdateStateUI(
     private val reader: Reader,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 50
+    override val id: Int = 5
     override val label: String = "Update State"
 
     override fun isAllowed(permission: Permission) = permission.updateState

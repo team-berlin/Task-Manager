@@ -6,7 +6,7 @@ import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.*
@@ -52,13 +52,13 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `result is success when repository deletes task`() {
-        every { taskRepository.findById("T1") } returns Result.success(stored)
-        every { taskRepository.delete("T1") } returns Result.success(Unit)
+        every { taskRepository.getTaskById("T1") } returns Result.success(stored)
+        every { taskRepository.deleteTask("T1") } returns Result.success(Unit)
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isSuccess).isTrue()
-        verify { taskRepository.delete("T1") }
+        verify { taskRepository.deleteTask("T1") }
         verify {
             addAuditLogUseCase.addAuditLog(
                 createdByUserId = "U1",
@@ -72,25 +72,25 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `result is failure when task is not found`() {
-        every { taskRepository.findById("T1") } returns Result.failure(TaskNotFoundException("T1"))
+        every { taskRepository.getTaskById("T1") } returns Result.failure(TaskNotFoundException("T1"))
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(TaskNotFoundException::class.java)
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        verify(exactly = 0) { taskRepository.deleteTask(any()) }
     }
 
     @Test
     fun `result is failure when repository returns unexpected error`() {
-        every { taskRepository.findById("T1") } returns Result.success(stored)
-        every { taskRepository.delete("T1") } returns Result.failure(IllegalStateException("boom"))
+        every { taskRepository.getTaskById("T1") } returns Result.success(stored)
+        every { taskRepository.deleteTask("T1") } returns Result.failure(IllegalStateException("boom"))
 
         val result = deleteTaskUseCase("T1")
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
-        verify { taskRepository.delete("T1") }
+        verify { taskRepository.deleteTask("T1") }
     }
 
     @Test
@@ -98,8 +98,8 @@ class DeleteTaskUseCaseTest {
         assertThrows<Exception> {
             deleteTaskUseCase("   ")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        verify(exactly = 0) { taskRepository.getTaskById(any()) }
+        verify(exactly = 0) { taskRepository.deleteTask(any()) }
     }
 
     @Test
@@ -107,7 +107,7 @@ class DeleteTaskUseCaseTest {
         assertThrows<Exception> {
             deleteTaskUseCase("1234")
         }
-        verify(exactly = 0) { taskRepository.findById(any()) }
-        verify(exactly = 0) { taskRepository.delete(any()) }
+        verify(exactly = 0) { taskRepository.getTaskById(any()) }
+        verify(exactly = 0) { taskRepository.deleteTask(any()) }
     }
 }

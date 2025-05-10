@@ -5,7 +5,7 @@ import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
-import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer

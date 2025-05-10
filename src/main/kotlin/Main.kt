@@ -1,7 +1,5 @@
 package com.berlin
 
-import com.berlin.di.uiModule
-import com.berlin.di.useCaseModule
 import com.berlin.di.*
 import com.berlin.presentation.MainMenuUI
 import org.koin.core.context.startKoin
@@ -10,7 +8,7 @@ import org.koin.mp.KoinPlatform.getKoin
 fun startApp() {
     if (org.koin.core.context.GlobalContext.getOrNull() == null) {
         startKoin {
-            modules(appModule, dataModule, useCaseModule, uiModule)
+            modules(appModule)
         }
     }
 }

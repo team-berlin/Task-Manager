@@ -3,7 +3,7 @@ package com.berlin.domain.usecase.project
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
 
 class DeleteProjectUseCase (

@@ -13,7 +13,7 @@ class GetTasksByProjectUseCase(
         if (!validateProjectId(projectId)) {
             throw InvalidProjectIdException("Project id must not be empty, blank, or purely numeric")
         }
-        return taskRepository.findTasksByProjectId(projectId)
+        return taskRepository.getTasksByProjectId(projectId)
     }
 
     private fun validateProjectId(id: String): Boolean =

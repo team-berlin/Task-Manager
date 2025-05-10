@@ -14,7 +14,7 @@ class GetTaskByIdUseCase(
             throw InvalidTaskIdException("Task id must not be empty, blank, or purely numeric")
         }
 
-        return taskRepository.findById(taskId)
+        return taskRepository.getTaskById(taskId)
     }
 
     private fun validateTaskId(id: String): Boolean =

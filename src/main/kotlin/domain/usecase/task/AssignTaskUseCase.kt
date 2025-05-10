@@ -4,9 +4,8 @@ import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
-import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
 
 class AssignTaskUseCase(
@@ -17,7 +16,7 @@ class AssignTaskUseCase(
 
     operator fun invoke(taskId: String, newAssigneeId: String): Result<Task> {
 
-        val originalResult = taskRepository.findById(taskId)
+        val originalResult = taskRepository.getTaskById(taskId)
         if (originalResult.isFailure) {
             return originalResult
         }
@@ -29,7 +28,7 @@ class AssignTaskUseCase(
 
         val updated = original.copy(assignedToUserId = newAssigneeId)
 
-        val updatedTask = taskRepository.update(updated)
+        val updatedTask = taskRepository.updateTask(updated)
 
         if (updatedTask.isSuccess) {
             addAuditLogUseCase.addAuditLog(

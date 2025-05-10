@@ -1,21 +1,32 @@
 package com.berlin.di
 
-import com.berlin.data.Audit.AuditRepositoryImpl
 import com.berlin.data.BaseDataSource
 import com.berlin.data.BaseSchema
-import com.berlin.data.authentication.AuthenticationRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.task.TaskRepositoryImpl
-import com.berlin.data.project.ProjectRepositoryImpl
 import com.berlin.data.schema.*
-import com.berlin.data.state.StateRepositoryImpl
+import com.berlin.data.repository.*
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
+import com.berlin.domain.usecase.utils.hash_algorithm.MD5Hasher
 import com.berlin.domain.model.*
 import com.berlin.domain.repository.*
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
+import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
+
 val dataModule = module {
+    single<IdGenerator> { IdGeneratorImplementation() }
+    single<IdGeneratorImplementation> { IdGeneratorImplementation() }
+    single <HashingString> { MD5Hasher() }
+
+    single {
+        UserCache(
+            User("user1234", "admin", "1212", UserRole.ADMIN)
+        )
+    }
 
     single<BaseSchema<User>>(named("UserSchema")) {
         UserSchema(
@@ -34,7 +45,7 @@ val dataModule = module {
             )
         )
     }
-    single<BaseSchema<State>>(named("StateSchema")) {
+    single<BaseSchema<TaskState>>(named("StateSchema")) {
         StateSchema(
             fileName = "state.csv", header = listOf("State Id", "Name", "Project Id")
         )
@@ -54,7 +65,7 @@ val dataModule = module {
         )
     }
     single<BaseDataSource<Task>>(named("TaskDataSource")) { CsvDataSource("csv_files", get(named("TaskSchema"))) }
-    single<BaseDataSource<State>>(named("StateDataSource")) { CsvDataSource("csv_files", get(named("StateSchema"))) }
+    single<BaseDataSource<TaskState>>(named("StateDataSource")) { CsvDataSource("csv_files", get(named("StateSchema"))) }
     single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
 

@@ -4,9 +4,8 @@ import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
-import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
 
 class UpdateTaskUseCase(
@@ -22,7 +21,7 @@ class UpdateTaskUseCase(
         assignedToUserId: String? = null,
     ): Result<Task> {
 
-        val originalResult = taskRepository.findById(taskId)
+        val originalResult = taskRepository.getTaskById(taskId)
         if (originalResult.isFailure) return originalResult
         val original = originalResult.getOrThrow()
 
@@ -35,7 +34,7 @@ class UpdateTaskUseCase(
         if (!validateTaskTitle(updated.title.trim()))
             throw InvalidTaskTitle("task title must be not empty or plank")
 
-        val updatedTask = taskRepository.create(updated)
+        val updatedTask = taskRepository.createTask(updated)
 
         if (updatedTask.isSuccess) {
             addAuditLogUseCase.addAuditLog(

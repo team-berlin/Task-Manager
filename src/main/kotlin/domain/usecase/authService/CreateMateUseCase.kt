@@ -1,7 +1,7 @@
 package com.berlin.domain.usecase.authService
 import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.hashPassword.HashingString
-import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository

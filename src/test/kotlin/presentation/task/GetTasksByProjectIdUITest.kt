@@ -2,7 +2,7 @@ package com.berlin.presentation.task
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
@@ -29,8 +29,8 @@ class GetTasksByProjectIdUITest {
     // shared test data
     private val project =
         Project(id = "P1", name = "Core", description = null, statesId = listOf("S1"), emptyList())
-    private val stateTodo = State(id = "S1", name = "TODO", projectId = "P1")
-    private val stateInProg = State(id = "S2", name = "IN_PROGRESS", projectId = "P1")
+    private val stateTodo = TaskState(id = "S1", name = "TODO", projectId = "P1")
+    private val stateInProg = TaskState(id = "S2", name = "IN_PROGRESS", projectId = "P1")
     private val task = Task(
         id = "T1",
         projectId = "P1",

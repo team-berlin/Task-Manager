@@ -3,12 +3,11 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
-import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
@@ -37,7 +36,7 @@ class CreateTaskUseCase(
                 throw TaskAlreadyExistsException("Task with id= ${newTask.id} and title = ${newTask.title} already exists")
             }
 
-            val createdTask = taskRepository.create(newTask)
+            val createdTask = taskRepository.createTask(newTask)
 
             if (createdTask.isSuccess) {
                 addAuditLogUseCase.addAuditLog(

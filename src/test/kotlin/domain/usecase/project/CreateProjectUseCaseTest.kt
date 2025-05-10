@@ -1,8 +1,8 @@
 package com.berlin.domain.usecase.project
 
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
-import com.berlin.domain.usecase.utils.IDGenerator.IdGenerator
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat
 import data.UserCache

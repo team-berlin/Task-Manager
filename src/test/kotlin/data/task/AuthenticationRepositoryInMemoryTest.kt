@@ -1,7 +1,7 @@
 package com.berlin.data.task
 
 import com.berlin.data.AuthDummyData
-import com.berlin.data.authentication.AuthenticationRepositoryImpl
+import com.berlin.data.repository.AuthenticationRepositoryImpl
 import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.model.User

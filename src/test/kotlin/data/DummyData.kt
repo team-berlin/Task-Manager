@@ -19,14 +19,14 @@ object DummyData : BaseDataSource<Task> {
     )
 
     val states = mutableListOf(
-        State("Q1","Menna","P5"),
-        State("S1", "TODO", "P1"),
-        State("S2", "IN_PROGRESS", "P1"),
-        State("S3", "REVIEW", "P1"),
-        State("S4", "DONE", "P1"),
-        State("S5", "IDEA", "P2"),
-        State("S6", "DEV", "P2"),
-        State("S7", "QA", "P2")
+        TaskState("Q1","Menna","P5"),
+        TaskState("S1", "TODO", "P1"),
+        TaskState("S2", "IN_PROGRESS", "P1"),
+        TaskState("S3", "REVIEW", "P1"),
+        TaskState("S4", "DONE", "P1"),
+        TaskState("S5", "IDEA", "P2"),
+        TaskState("S6", "DEV", "P2"),
+        TaskState("S7", "QA", "P2")
     )
 
     val initialDemoTasks = mutableListOf(

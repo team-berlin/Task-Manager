@@ -3,8 +3,8 @@ package com.berlin.domain.usecase.state
 
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.repository.StateRepository
-import com.berlin.domain.model.State
-import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
+import com.berlin.domain.model.TaskState
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 
 class CreateStateUseCase(
     private val stateRepository: StateRepository,
@@ -12,7 +12,7 @@ class CreateStateUseCase(
 ) {
     fun createNewState(stateName: String, projectId: String): Result<String> {
         if (validateStateName(stateName)) {
-            val newState = State(
+            val newState = TaskState(
                 id = idGenerator.generateId(stateName),
                 name = stateName,
                 projectId = projectId
