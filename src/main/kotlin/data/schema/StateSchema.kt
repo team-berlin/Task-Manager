@@ -2,32 +2,32 @@ package com.berlin.data.schema
 
 import com.berlin.data.BaseSchema
 import com.berlin.data.StateIndex
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 
 class StateSchema(
     override val fileName: String,
     override val header: List<String>
-) : BaseSchema<State> {
+) : BaseSchema<TaskState> {
 
     init {
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: State): List<String> {
+    override fun toRow(entity: TaskState): List<String> {
         return if (checkStateIsNotValid(entity)) emptyList()
         else stateToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): State? {
+    override fun fromRow(row: List<String>): TaskState? {
         return if (checkRowIsNotValidState(row)) null
         else stringsListToState(row)
     }
 
-    override fun getId(entity: State): String? {
+    override fun getId(entity: TaskState): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun stateToStringsList(state: State): List<String> {
+    private fun stateToStringsList(state: TaskState): List<String> {
         return listOf(
             state.id,
             state.name,
@@ -35,8 +35,8 @@ class StateSchema(
         )
     }
 
-    private fun stringsListToState(row: List<String>): State {
-        return State(
+    private fun stringsListToState(row: List<String>): TaskState {
+        return TaskState(
             id = row[StateIndex.ID],
             name = row[StateIndex.NAME],
             projectId = row[StateIndex.PROJECT_ID]
@@ -49,7 +49,7 @@ class StateSchema(
                 row[StateIndex.PROJECT_ID].isEmpty())
     }
 
-    private fun checkStateIsNotValid(state: State): Boolean {
+    private fun checkStateIsNotValid(state: TaskState): Boolean {
         return (state.id.isEmpty() ||
                 state.name.isEmpty() ||
                 state.projectId.isEmpty())

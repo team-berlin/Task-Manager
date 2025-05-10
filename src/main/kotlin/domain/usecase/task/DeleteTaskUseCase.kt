@@ -3,9 +3,8 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
-import com.berlin.domain.model.User
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
 
 class DeleteTaskUseCase(
@@ -22,7 +21,7 @@ class DeleteTaskUseCase(
             )
         }
 
-        val deleteTask = taskRepository.delete(taskId)
+        val deleteTask = taskRepository.deleteTask(taskId)
 
         if (deleteTask.isSuccess) {
             addAuditLogUseCase.addAuditLog(
@@ -40,6 +39,6 @@ class DeleteTaskUseCase(
         taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 
     private fun checkTaskExists(taskId: String): Boolean =
-        taskRepository.findById(taskId).isSuccess
+        taskRepository.getTaskById(taskId).isSuccess
 
 }

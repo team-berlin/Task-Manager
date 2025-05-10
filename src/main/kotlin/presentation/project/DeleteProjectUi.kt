@@ -7,7 +7,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.DeleteProjectUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -18,7 +17,7 @@ class DeleteProjectUi(
     private val viewer: Viewer,
     private val reader: Reader
 ) : PermissionedUiRunner {
-    override val id: Int = 12
+    override val id: Int = 2
     override val label: String = "Delete Project"
 
     override fun isAllowed(permission: Permission) = permission.deleteProject

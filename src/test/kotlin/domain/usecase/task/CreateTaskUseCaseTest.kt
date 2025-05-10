@@ -6,8 +6,8 @@ import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
-import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -43,7 +43,7 @@ class CreateTaskUseCaseTest {
 
         every { idGenerator.generateId(trimmed, any(), any()) } returns generated
         every { taskRepository.getAllTasks() } returns emptyList()
-        every { taskRepository.create(any()) } answers { Result.success(firstArg()) }
+        every { taskRepository.createTask(any()) } answers { Result.success(firstArg()) }
 
         every {
             addAuditLogUseCase.addAuditLog(
@@ -60,7 +60,7 @@ class CreateTaskUseCaseTest {
         assertThat(result.isSuccess).isTrue()
         verify { idGenerator.generateId(trimmed, any(), any()) }
         verify {
-            taskRepository.create(match {
+            taskRepository.createTask(match {
                 it.id == generated && it.title == trimmed
             })
         }
@@ -109,7 +109,7 @@ class CreateTaskUseCaseTest {
         }
 
         verify { idGenerator.generateId(title, any(), any()) }
-        verify(exactly = 0) { taskRepository.create(any()) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
@@ -120,13 +120,13 @@ class CreateTaskUseCaseTest {
 
         every { idGenerator.generateId(trimmed, any(), any()) } returns generated
         every { taskRepository.getAllTasks() } returns emptyList()
-        every { taskRepository.create(any()) } returns Result.failure(IllegalStateException("boom"))
+        every { taskRepository.createTask(any()) } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase(projectId, trimmed, description, stateId, createByUserId, assignedToUserId)
 
         assertThat(result.isFailure).isTrue()
         verify {
-            taskRepository.create(match {
+            taskRepository.createTask(match {
                 it.id == generated &&
                         it.projectId == projectId &&
                         it.title == trimmed &&

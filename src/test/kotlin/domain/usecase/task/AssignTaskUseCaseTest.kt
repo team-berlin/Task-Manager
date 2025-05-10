@@ -8,7 +8,7 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.TaskRepository
-import com.berlin.domain.usecase.auditSystem.AddAuditLogUseCase
+import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.*
@@ -60,7 +60,7 @@ class AssignTaskUseCaseTest {
         stubHappyPath()
         useCase("1", anotherAssignee.id)
         verify {
-            taskRepository.update(
+            taskRepository.updateTask(
                 match { it.id == "1" && it.assignedToUserId == anotherAssignee.id }
             )
         }
@@ -68,18 +68,18 @@ class AssignTaskUseCaseTest {
 
     @Test
     fun `result is failure when task is not found`() {
-        every { taskRepository.findById("1") } returns Result.failure(TaskNotFoundException("1"))
+        every { taskRepository.getTaskById("1") } returns Result.failure(TaskNotFoundException("1"))
 
         val result = useCase("1", anotherAssignee.id)
 
         assertThat(result.isFailure).isTrue()
-        verify(exactly = 0) { taskRepository.update(any()) }
+        verify(exactly = 0) { taskRepository.updateTask(any()) }
     }
 
     @Test
     fun `result is failure when repository update returns unexpected error`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } returns Result.failure(IllegalStateException("boom"))
+        every { taskRepository.getTaskById("1") } returns Result.success(stored)
+        every { taskRepository.updateTask(any()) } returns Result.failure(IllegalStateException("boom"))
 
         val result = useCase("1", anotherAssignee.id)
 
@@ -88,18 +88,18 @@ class AssignTaskUseCaseTest {
 
     @Test
     fun `throws InvalidAssigneeException when assignee id is blank`() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
+        every { taskRepository.getTaskById("1") } returns Result.success(stored)
 
         assertThrows<InvalidAssigneeException> {
             useCase("1", "   ")
         }
 
-        verify(exactly = 0) { taskRepository.update(any()) }
+        verify(exactly = 0) { taskRepository.updateTask(any()) }
     }
 
     private fun stubHappyPath() {
-        every { taskRepository.findById("1") } returns Result.success(stored)
-        every { taskRepository.update(any()) } answers { Result.success(firstArg()) }
+        every { taskRepository.getTaskById("1") } returns Result.success(stored)
+        every { taskRepository.updateTask(any()) } answers { Result.success(firstArg()) }
         every {
             addAuditLogUseCase.addAuditLog(
                 createdByUserId = creator.id,

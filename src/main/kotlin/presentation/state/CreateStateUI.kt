@@ -17,7 +17,7 @@ class CreateStateUI(
     private val reader: Reader
 ) : PermissionedUiRunner {
 
-    override val id: Int = 1000
+    override val id: Int = 1
     override val label: String = "Create New State"
 
     override fun isAllowed(permission: Permission) = permission.createState

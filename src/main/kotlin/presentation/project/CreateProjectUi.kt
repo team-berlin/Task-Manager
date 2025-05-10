@@ -3,7 +3,6 @@ package com.berlin.presentation.project
 import com.berlin.domain.model.Permission
 import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 

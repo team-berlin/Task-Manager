@@ -5,7 +5,7 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
 import com.berlin.presentation.PermissionedUiRunner
@@ -16,7 +16,7 @@ import com.berlin.presentation.io.Viewer
 class UpdateTaskUI(
     private val updateTask: UpdateTaskUseCase,
     private val getAllTasks: GetAllTasksUseCase,
-    private val fetchAllUsersUseCase: FetchAllUsersUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : PermissionedUiRunner {
@@ -48,7 +48,7 @@ class UpdateTaskUI(
             val newAssigneeId = try {
                 val user = choose(
                     title    = "Users",
-                    elements =  fetchAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(),
+                    elements =  getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(),
                     labelOf  = { it.userName },
                     viewer   = viewer,
                     reader   = reader

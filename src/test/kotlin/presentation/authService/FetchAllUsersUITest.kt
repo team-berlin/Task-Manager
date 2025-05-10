@@ -2,8 +2,7 @@ package com.berlin.presentation.authService
 
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
-import com.berlin.presentation.authService.FetchAllUsersUI
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 class FetchAllUsersUITest {
     private lateinit var viewer: Viewer
-    private lateinit var useCase: FetchAllUsersUseCase
+    private lateinit var useCase: GetAllUsersUseCase
     private lateinit var ui: FetchAllUsersUI
     private val printed = mutableListOf<String>()
 

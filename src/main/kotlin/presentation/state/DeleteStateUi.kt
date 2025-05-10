@@ -18,7 +18,7 @@ class DeleteStateUi(
     private val reader: Reader
 ) : PermissionedUiRunner {
 
-    override val id: Int = 2000
+    override val id: Int = 2
     override val label: String = "Delete State"
 
     override fun isAllowed(permission: Permission) = permission.deleteState

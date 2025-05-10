@@ -1,6 +1,6 @@
 package com.berlin.domain.usecase.state
 
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.StateRepository
 import com.google.common.truth.Truth.assertThat
@@ -30,8 +30,8 @@ class GetAllStatesByProjectIdUseCaseTest {
     fun `should return states when states are found for the project`() {
         // Given
         val expectedStates = listOf(
-            State(id = "S1", name = "Active", projectId = "P1"),
-            State(id = "S2", name = "Inactive", projectId = "P1")
+            TaskState(id = "S1", name = "Active", projectId = "P1"),
+            TaskState(id = "S2", name = "Inactive", projectId = "P1")
         )
         every { projectRepository.getProjectById("P1") } returns mockk()
         every { stateRepository.getStatesByProjectId("P1") } returns Result.success(expectedStates)

@@ -4,7 +4,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
@@ -14,7 +13,7 @@ class CreateMateUI(
     private val reader: Reader,
 ): PermissionedUiRunner {
 
-    override val id: Int = 300
+    override val id: Int = 1
     override val label: String = "Create new mate"
 
     override fun isAllowed(permission: Permission) = permission.createMate

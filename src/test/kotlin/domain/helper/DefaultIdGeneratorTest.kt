@@ -1,7 +1,7 @@
 package com.berlin.domain.helper
 
 
-import com.berlin.domain.usecase.utils.IDGenerator.IdGeneratorImplementation
+import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows

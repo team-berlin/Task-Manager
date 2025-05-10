@@ -2,13 +2,12 @@ package com.berlin.presentation.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.fakeData.FakeHashingString
-import com.berlin.domain.hashPassword.HashingString
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.helper.AuthServiceTestData.CACHEUSER
 import com.berlin.domain.helper.AuthServiceTestData.EMPTY_USER
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
-import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat

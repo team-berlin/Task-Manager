@@ -4,10 +4,9 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -20,7 +19,7 @@ class GetAllStatesByProjectIdUI(
     private val reader: Reader,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 3000
+    override val id: Int = 3
     override val label: String = "Get current states for a specific project"
 
     override fun isAllowed(permission: Permission) = permission.getAllStatesByProjectId
@@ -49,7 +48,7 @@ class GetAllStatesByProjectIdUI(
         }
     }
 
-    private fun showSwimLaneFor(projectId: String, states: List<State>) {
+    private fun showSwimLaneFor(projectId: String, states: List<TaskState>) {
         val projects = getAllProjectsUseCase.getAllProjects().filter { it.id == projectId }
         if (projects.isEmpty()) {
             viewer.show("No projects found")
@@ -64,7 +63,7 @@ class GetAllStatesByProjectIdUI(
         }
     }
 
-    private fun stateInProject(all: List<State>, projectId: String): List<String> {
+    private fun stateInProject(all: List<TaskState>, projectId: String): List<String> {
         val here = all.filter { it.projectId == projectId }
         if (here.isEmpty()) return listOf("  (no states)")
         return here.map { "- ${it.id}: ${it.name}" }

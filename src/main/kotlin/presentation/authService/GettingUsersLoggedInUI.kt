@@ -4,7 +4,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Viewer
 
 class GettingUsersLoggedInUI(
@@ -12,7 +11,7 @@ class GettingUsersLoggedInUI(
     private val viewer: Viewer,
 ) : PermissionedUiRunner {
 
-    override val id: Int = 100
+    override val id: Int = 3
     override val label: String = "get user logged in"
 
     override fun isAllowed(permission: Permission) = permission.getLoggedInUsers

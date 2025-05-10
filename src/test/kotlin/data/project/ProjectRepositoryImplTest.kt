@@ -1,8 +1,7 @@
 package com.berlin.data.project
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.project.ProjectRepositoryImpl
+import com.berlin.data.repository.ProjectRepositoryImpl
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat

@@ -6,7 +6,6 @@ import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.task.GetTaskByIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 

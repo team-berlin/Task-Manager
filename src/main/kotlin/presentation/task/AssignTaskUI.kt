@@ -4,7 +4,7 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidAssigneeException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.AssignTaskUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.PermissionedUiRunner
@@ -15,7 +15,7 @@ import com.berlin.presentation.io.Viewer
 class AssignTaskUI(
     private val assignTask: AssignTaskUseCase,
     private val getAllTasks: GetAllTasksUseCase,
-    private val fetchAllUsersUseCase: FetchAllUsersUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -29,7 +29,7 @@ class AssignTaskUI(
         try {
             val task = selectTask()
             val assignee = choose(
-                title = "Users", elements = fetchAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
+                title = "Users", elements = getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
             )
 
             assignTask(task.id, assignee.id).onSuccess { viewer.show("Assigned to ${assignee.userName}") }

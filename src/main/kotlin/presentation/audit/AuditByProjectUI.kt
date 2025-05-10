@@ -5,10 +5,9 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
-import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.PermissionedUiRunner
-import com.berlin.presentation.UiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -20,7 +19,7 @@ class AuditByProjectUI(
     private val reader: Reader
 ) : PermissionedUiRunner {
 
-    override val id: Int = 24390823
+    override val id: Int = 1
     override val label: String = "Show audit by project"
 
     override fun isAllowed(permission: Permission) = permission.getAuditByProject

@@ -3,10 +3,10 @@ package com.berlin.presentation.task
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.User
-import com.berlin.domain.usecase.authService.FetchAllUsersUseCase
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
@@ -25,7 +25,7 @@ class CreateTaskUITest {
         every { show(capture(printed)) } just Runs
     }
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
-    private lateinit var fetchAllUsersUseCase: FetchAllUsersUseCase
+    private lateinit var getAllUsersUseCase: GetAllUsersUseCase
     private lateinit var getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase
     private val reader: Reader = mockk()
     private val createUC: CreateTaskUseCase = mockk()
@@ -39,8 +39,8 @@ class CreateTaskUITest {
         printed.clear()
         // Stub the cache to return our test user
         every { userCache.currentUser } returns currentUser
-        fetchAllUsersUseCase = mockk()
-        every { fetchAllUsersUseCase.getAllUsers() } returns Result.success(DummyData.users)
+        getAllUsersUseCase = mockk()
+        every { getAllUsersUseCase.getAllUsers() } returns Result.success(DummyData.users)
         getAllProjectsUseCase = mockk()
         getAllStatesByProjectIdUseCase = mockk()
         every { getAllProjectsUseCase.getAllProjects() } returns DummyData.projects
@@ -48,7 +48,7 @@ class CreateTaskUITest {
             createUC,
             userCache,
             getAllProjectsUseCase,
-            fetchAllUsersUseCase,
+            getAllUsersUseCase,
             getAllStatesByProjectIdUseCase,
             viewer,
             reader
@@ -60,10 +60,10 @@ class CreateTaskUITest {
     fun `creates task and prints success`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "Feature X", "")
@@ -102,10 +102,10 @@ class CreateTaskUITest {
         // project, state, user selected; then blank title
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "")
@@ -120,10 +120,10 @@ class CreateTaskUITest {
     fun `failure from use case is printed`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "Bug fix", "")
@@ -141,10 +141,10 @@ class CreateTaskUITest {
     fun `invalid user index prints error message`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         // project=1, state=1, then bad user index=99
@@ -160,10 +160,10 @@ class CreateTaskUITest {
     fun `invalid state index prints error message`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "57")
@@ -188,10 +188,10 @@ class CreateTaskUITest {
     fun `shows InvalidTaskTitle when use case throws that exception`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "BadTitle", "")
@@ -209,10 +209,10 @@ class CreateTaskUITest {
     fun `shows TaskAlreadyExistsException when use case returns failure`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "MyTask", "")
@@ -230,10 +230,10 @@ class CreateTaskUITest {
     fun `use case throwing TaskAlreadyExistsException is caught and shows existed message`() {
         every { getAllStatesByProjectIdUseCase.getAllStatesByProjectId("P1") } returns Result.success(
             listOf(
-                State("S1", "TODO", "P1"),
-                State("S2", "IN_PROGRESS", "P1"),
-                State("S3", "REVIEW", "P1"),
-                State("S4", "DONE", "P1")
+                TaskState("S1", "TODO", "P1"),
+                TaskState("S2", "IN_PROGRESS", "P1"),
+                TaskState("S3", "REVIEW", "P1"),
+                TaskState("S4", "DONE", "P1")
             )
         )
         every { reader.read() } returnsMany listOf("1", "1", "1", "MyTitle", "")

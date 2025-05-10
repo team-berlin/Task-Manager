@@ -3,7 +3,7 @@ package com.berlin.presentation.state
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Project
-import com.berlin.domain.model.State
+import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.presentation.io.Reader
@@ -131,8 +131,8 @@ class GetAllStatesByProjectIdUITest {
 
     private companion object {
         val projectP1 = Project("P1", "Core", null, emptyList(), emptyList())
-        val stateTodo = State("S1", "TODO", "P1")
-        val stateDone = State("S2", "DONE", "P1")
+        val stateTodo = TaskState("S1", "TODO", "P1")
+        val stateDone = TaskState("S2", "DONE", "P1")
         const val projectIdWithNoStates = "P1"
     }
 }
