@@ -35,6 +35,7 @@ kover {
                     "**.model.**",
                     "**.di.**",
                     "**.exception.**",
+                    "**.io.**",
                 )
             }
         }
@@ -62,5 +63,5 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(22)
 }

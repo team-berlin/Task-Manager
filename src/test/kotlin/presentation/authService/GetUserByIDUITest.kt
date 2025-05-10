@@ -1,5 +1,6 @@
-package presentation.authService
+package com.berlin.presentation.authService
 
+import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.authService.GetUserByIDUI
@@ -43,6 +44,74 @@ class GetUserByIDUITest {
         // Then
         verify { useCase.getUserById(id) }
         assertThat(printed).contains("Enter the user id: ")
+    }
+    @Test
+    fun `should call use case when correct user ID with regardless to spaces in begin of id`() {
+        // Given
+        val id = AuthServiceTestData.idWithSpacesExist
+        every { reader.read() } returns id.trim()
+        every { useCase.getUserById(id.trim()) } returns Result.success(AuthServiceTestData.existingUser)
+
+        // When
+        ui.run()
+
+        // Then
+        verify { useCase.getUserById(id.trim()) }
+        assertThat(printed).contains("Enter the user id: ")
+
+    }
+
+    @Test
+    fun `should throw exception when id not exists`() {
+        val id = AuthServiceTestData.idNotExist
+        every { reader.read() } returns id
+        every { useCase.getUserById(id) } returns Result.failure(InvalidUserIdException("User ID can't be empty or just digits"))
+
+        // When
+        ui.run()
+
+        // Then
+        assertThat(useCase.getUserById(id).isFailure).isTrue()
+    }
+    @Test
+    fun `getUserById should return User ID can't be  blank `(){
+        //Given
+        every { reader.read() } returns " "
+        every { useCase.getUserById("") } returns Result.failure(InvalidUserIdException("User ID can't be empty or just digits"))
+
+        //When
+        ui.run()
+
+        //Then
+        assertThat(printed.last()).isEqualTo("User ID can't be empty or just digits")
+
+    }
+
+    @Test
+    fun `getUserById should return User ID can't be  empty `(){
+        //Given
+        every { reader.read() } returns ""
+        every { useCase.getUserById("") } returns Result.failure(InvalidUserIdException("User ID can't be empty or just digits"))
+
+        //When
+        ui.run()
+
+        //Then
+        assertThat(printed.last()).isEqualTo("User ID can't be empty or just digits")
+
+    }
+    @Test
+    fun `getUserById should return error when there is un expected error `(){
+        //Given
+        every { reader.read() } returns ""
+        every { useCase.getUserById("") } returns Result.failure(Exception())
+
+        //When
+        ui.run()
+
+        //Then
+        assertThat(printed.last()).isEqualTo("invalid user id")
+
     }
 
 

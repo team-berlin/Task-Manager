@@ -1,28 +1,29 @@
 package domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.hashPassword.HashingPassword
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
 
 class AuthenticateUserUseCase(
+    private val userCache: UserCache,
     private val repository: AuthenticationRepository,
-    private val hashingPassword: HashingPassword
+    private val hashingString: HashingString
 ) {
     fun login(userName: String, password: String): Result<User> {
         if (userName.isEmpty() || password.isEmpty()) {
             return Result.failure(InvalidCredentialsException("No user found"))
         }
 
-        val cachedUser = UserCache.currentUser
-        if (cachedUser != null && cachedUser.userName == userName)
+        val cachedUser = userCache.currentUser
+        if (cachedUser.userName == userName)
             return Result.success(cachedUser)
 
-        val hashedPassword=hashingPassword.hashPassword(password)
+        val hashedPassword=hashingString.hashPassword(password)
         return  repository.login(userName, hashedPassword).fold(
             onSuccess = { user ->
-                UserCache.currentUser = user
+                userCache.currentUser = user
                 Result.success(user)
             },
             onFailure = { exception ->

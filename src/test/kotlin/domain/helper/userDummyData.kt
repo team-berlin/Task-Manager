@@ -1,4 +1,4 @@
-package com.berlin.logic.helper
+package com.berlin.domain.helper
 
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole

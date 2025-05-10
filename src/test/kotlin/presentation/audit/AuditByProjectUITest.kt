@@ -1,12 +1,12 @@
-package presentation.audit
+package com.berlin.presentation.audit
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
-import com.berlin.domain.usecase.auditSystem.GetAuditLogsByProjectIdUseCase
-import com.berlin.presentation.audit.AuditByProjectUI
+import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -18,6 +18,7 @@ import kotlin.test.Test
 class AuditByProjectUITest {
 
     private lateinit var getAuditLogsByProjectIdUseCase: GetAuditLogsByProjectIdUseCase
+    private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
     private lateinit var ui: AuditByProjectUI
@@ -38,9 +39,10 @@ class AuditByProjectUITest {
     @BeforeEach
     fun setup() {
         getAuditLogsByProjectIdUseCase = mockk()
+        getAllProjectsUseCase = mockk()
         viewer = mockk(relaxed = true)
         reader = mockk()
-        ui = AuditByProjectUI(getAuditLogsByProjectIdUseCase, viewer, reader)
+        ui = AuditByProjectUI(getAuditLogsByProjectIdUseCase, getAllProjectsUseCase, viewer, reader)
 
         DummyData.projects.clear()
         DummyData.projects.add(sampleProject)
@@ -50,7 +52,7 @@ class AuditByProjectUITest {
     fun `displays audit logs for selected project`() {
         every { reader.read() } returns "1"
         every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns sampleLogs
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -64,7 +66,7 @@ class AuditByProjectUITest {
     fun `displays message when no logs exist for project`() {
         every { reader.read() } returns "1"
         every { getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId("P1") } returns emptyList()
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -75,7 +77,7 @@ class AuditByProjectUITest {
     @Test
     fun `displays cancelled message when input is x`() {
         every { reader.read() } returns "x"
-
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
         ui.run()
 
         verify {
@@ -96,6 +98,7 @@ class AuditByProjectUITest {
                 entityId = "P1"
             )
         )
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
 
         ui.run()
 
@@ -107,6 +110,7 @@ class AuditByProjectUITest {
     @Test
     fun `displays invalid selection for non-number input`() {
         every { reader.read() } returns "not-a-number"
+        every { getAllProjectsUseCase.getAllProjects() } returns listOf(sampleProject)
 
         ui.run()
 

@@ -1,21 +1,20 @@
 package com.berlin
 
-import com.berlin.di.uiModule
-import com.berlin.di.useCaseModule
 import com.berlin.di.*
 import com.berlin.presentation.MainMenuUI
-import com.berlin.presentation.authService.AuthenticateUserUi
 import org.koin.core.context.startKoin
 import org.koin.mp.KoinPlatform.getKoin
 
-fun main() {
-
-    startKoin {
-        printLogger()
-        modules(dataModule, appModule, useCaseModule, uiModule)
+fun startApp() {
+    if (org.koin.core.context.GlobalContext.getOrNull() == null) {
+        startKoin {
+            modules(appModule)
+        }
     }
+}
 
-    val mainMenu: MainMenuUI = getKoin().get()
-    mainMenu.run()
-
+fun main() {
+    startApp()
+    val mainMenuUi: MainMenuUI = getKoin().get()
+    mainMenuUi.run()
 }

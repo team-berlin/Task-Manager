@@ -11,11 +11,11 @@ class AssignPermissionsKtTest {
         val permissions = assignPermissions(UserRole.MATE)
 
         assertThat(permissions.createTask).isTrue()
-        assertThat(permissions.editTask).isTrue()
+        assertThat(permissions.updateTask).isTrue()
         assertThat(permissions.deleteTask).isTrue()
         assertThat(permissions.viewAuditLogs).isTrue()
         assertThat(permissions.createProject).isFalse()
-        assertThat(permissions.editProject).isFalse()
+        assertThat(permissions.updateProject).isFalse()
         assertThat(permissions.deleteProject).isFalse()
         assertThat(permissions.assignTask).isFalse()
     }
@@ -25,10 +25,10 @@ class AssignPermissionsKtTest {
         val permissions = assignPermissions(UserRole.ADMIN)
 
         assertThat(permissions.createProject).isTrue()
-        assertThat(permissions.editProject).isTrue()
+        assertThat(permissions.updateProject).isTrue()
         assertThat(permissions.deleteProject).isTrue()
         assertThat(permissions.createTask).isTrue()
-        assertThat(permissions.editTask).isTrue()
+        assertThat(permissions.updateTask).isTrue()
         assertThat(permissions.deleteTask).isTrue()
         assertThat(permissions.assignTask).isTrue()
         assertThat(permissions.viewAuditLogs).isTrue()

@@ -6,11 +6,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 fun <T> choose(
-    title    : String,
-    elements : List<T>,
-    labelOf  : (T) -> String,
-    viewer   : Viewer,
-    reader   : Reader
+    title: String, elements: List<T>, labelOf: (T) -> String, viewer: Viewer, reader: Reader
 ): T {
     if (elements.isEmpty()) throw InvalidSelectionException("No $title available.")
 
@@ -21,8 +17,6 @@ fun <T> choose(
     val input = reader.read()?.trim().orEmpty()
     if (input.equals("x", true)) throw InputCancelledException("")
 
-    val idx = input.toIntOrNull()?.minus(1)
-        ?: throw InvalidSelectionException("Not a number.")
-    return elements.getOrNull(idx)
-        ?: throw InvalidSelectionException("Out of range.")
+    val idx = input.toIntOrNull()?.minus(1) ?: throw InvalidSelectionException("Not a number.")
+    return elements.getOrNull(idx) ?: throw InvalidSelectionException("Out of range.")
 }

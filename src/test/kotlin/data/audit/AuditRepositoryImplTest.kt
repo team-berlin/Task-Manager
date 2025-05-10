@@ -1,6 +1,5 @@
-package data.audit
+package com.berlin.data.audit
 
-import com.berlin.data.audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.domain.exception.InvalidAuditLogException
 import com.berlin.domain.model.AuditAction

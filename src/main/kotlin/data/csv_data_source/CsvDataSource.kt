@@ -13,7 +13,7 @@ open class CsvDataSource<T>(
     private val schema: BaseSchema<T>,
 ) : BaseDataSource<T> {
 
-    val csvFile: File
+    private val csvFile: File
         get() = File(rootDirectory, schema.fileName)
 
     override fun getAll(): List<T> = when {
