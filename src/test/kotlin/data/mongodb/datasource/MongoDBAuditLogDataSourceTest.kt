@@ -4,10 +4,10 @@ import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.mongodb.client.result.DeleteResult
@@ -79,7 +79,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.getAll()
 
         // Then
-        assertEquals(mockAuditLogs, result)
+        assertThat(result).isEqualTo(mockAuditLogs)
     }
 
     @Test
@@ -95,7 +95,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.getById("log1")
 
         // Then
-        assertEquals(mockAuditLog, result)
+        assertThat(result).isEqualTo(mockAuditLog)
     }
 
     @Test
@@ -108,7 +108,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.getById("nonexistent")
 
         // Then
-        assertNull(result)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -129,7 +129,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.update("log1", mockAuditLog)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -143,7 +143,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.update("log1", mockAuditLog)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -157,7 +157,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.delete("log1")
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -171,7 +171,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.delete("log1")
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -185,7 +185,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.write(mockAuditLog)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -199,7 +199,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.write(mockAuditLog)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -213,7 +213,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.writeAll(mockAuditLogs)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -227,7 +227,7 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.writeAll(mockAuditLogs)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -236,6 +236,6 @@ class MongoDBAuditLogDataSourceTest {
         val result = dataSource.writeAll(emptyList())
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 }

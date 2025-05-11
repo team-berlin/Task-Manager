@@ -3,10 +3,10 @@ package com.berlin.data.mongodb.datasource
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.mongodb.client.result.DeleteResult
@@ -72,7 +72,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.getAll()
 
         // Then
-        assertEquals(mockUsers, result)
+        assertThat(result).isEqualTo(mockUsers)
     }
 
     @Test
@@ -88,7 +88,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.getById("user1")
 
         // Then
-        assertEquals(mockUser, result)
+        assertThat(result).isEqualTo(mockUser)
     }
 
     @Test
@@ -101,7 +101,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.getById("nonexistent")
 
         // Then
-        assertNull(result)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -122,7 +122,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.update("user1", mockUser)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -136,7 +136,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.update("user1", mockUser)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -150,7 +150,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.delete("user1")
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -164,7 +164,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.delete("user1")
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -178,7 +178,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.write(mockUser)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -192,7 +192,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.write(mockUser)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -206,7 +206,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.writeAll(mockUsers)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -220,7 +220,7 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.writeAll(mockUsers)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -229,6 +229,6 @@ class MongoDBUserDataSourceTest {
         val result = dataSource.writeAll(emptyList())
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 }

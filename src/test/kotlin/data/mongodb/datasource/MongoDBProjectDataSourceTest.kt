@@ -2,10 +2,10 @@ package com.berlin.data.mongodb.datasource
 
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.domain.model.Project
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.mongodb.client.result.DeleteResult
@@ -73,7 +73,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.getAll()
 
         // Then
-        assertEquals(mockProjects, result)
+        assertThat(result).isEqualTo(mockProjects)
     }
 
     @Test
@@ -89,7 +89,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.getById("project1")
 
         // Then
-        assertEquals(mockProject, result)
+        assertThat(result).isEqualTo(mockProject)
     }
 
     @Test
@@ -102,7 +102,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.getById("nonexistent")
 
         // Then
-        assertNull(result)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -123,7 +123,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.update("project1", mockProject)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -137,7 +137,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.update("project1", mockProject)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -151,7 +151,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.delete("project1")
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -165,7 +165,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.delete("project1")
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -179,7 +179,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.write(mockProject)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -193,7 +193,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.write(mockProject)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -207,7 +207,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.writeAll(mockProjects)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -221,7 +221,7 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.writeAll(mockProjects)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -230,6 +230,6 @@ class MongoDBProjectDataSourceTest {
         val result = dataSource.writeAll(emptyList())
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 }

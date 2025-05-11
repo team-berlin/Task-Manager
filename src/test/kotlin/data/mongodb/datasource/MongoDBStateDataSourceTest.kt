@@ -2,10 +2,10 @@ package com.berlin.data.mongodb.datasource
 
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.domain.model.TaskState
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import com.mongodb.client.result.DeleteResult
@@ -69,7 +69,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.getAll()
 
         // Then
-        assertEquals(mockStates, result)
+        assertThat(result).isEqualTo(mockStates)
     }
 
     @Test
@@ -85,7 +85,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.getById("state1")
 
         // Then
-        assertEquals(mockState, result)
+        assertThat(result).isEqualTo(mockState)
     }
 
     @Test
@@ -98,7 +98,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.getById("nonexistent")
 
         // Then
-        assertNull(result)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -119,7 +119,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.update("state1", mockState)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -133,7 +133,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.update("state1", mockState)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -147,7 +147,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.delete("state1")
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -161,7 +161,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.delete("state1")
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -175,7 +175,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.write(mockState)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -189,7 +189,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.write(mockState)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -203,7 +203,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.writeAll(mockStates)
 
         // Then
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
@@ -217,7 +217,7 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.writeAll(mockStates)
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 
     @Test
@@ -226,6 +226,6 @@ class MongoDBStateDataSourceTest {
         val result = dataSource.writeAll(emptyList())
 
         // Then
-        assertFalse(result)
+        assertThat(result).isFalse()
     }
 }
