@@ -1,6 +1,7 @@
 package com.berlin.data.schema
 
 import com.berlin.data.csv_data_source.schema.TaskSchema
+import com.berlin.data.dto.TaskDto
 import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -41,7 +42,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return list of valid task attributes when valid task passed`() {
         //when
-        val result = taskSchema.toRow(validTask)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEqualTo(validRow)
     }
@@ -49,7 +50,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return list of valid task attributes when task with empty description passed`() {
         //when
-        val result = taskSchema.toRow(validTaskEmptyDescription)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEqualTo(validRowEmptyDescription)
     }
@@ -57,7 +58,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss id attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyId)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -65,7 +66,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss projectId attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyProjectId)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -73,7 +74,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss title attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyTitle)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -81,7 +82,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss stateId attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyStateId)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -89,7 +90,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss assign to attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptyAssignTo)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -97,7 +98,7 @@ class TaskSchemaTest {
     @Test
     fun `toRow should return empty list when invalid task passed miss create by attribute`() {
         //when
-        val result = taskSchema.toRow(invalidTaskEmptycreateByUserId)
+        val result = taskSchema.toRow(validTaskDto)
         //then
         assertThat(result).isEmpty()
     }
@@ -177,7 +178,7 @@ class TaskSchemaTest {
     @Test
     fun `getId should return id of task passed`() {
         //when
-        val result = taskSchema.getId(validTask)
+        val result = taskSchema.getId(validTaskDto)
         //then
         assertThat(result).isEqualTo(validTask.id)
     }
@@ -185,7 +186,7 @@ class TaskSchemaTest {
     @Test
     fun `getId should return null when task passed have empty id`() {
         //when
-        val result = taskSchema.getId(invalidTaskEmptyId)
+        val result = taskSchema.getId(validTaskDto)
         //then
         assertThat(result).isNull()
     }
@@ -202,6 +203,16 @@ class TaskSchemaTest {
         val testUserId2 ="u2"
 
         //endregion
+
+        val validTaskDto = TaskDto(
+            id = "t1",
+            projectId = "p1",
+            title = "task1",
+            description = "desc",
+            stateId = "s1",
+            assignedToUserId = testUserId,
+            createByUserId = testUserId2
+        )
 
         //region Some Tasks
         val validTask = Task(

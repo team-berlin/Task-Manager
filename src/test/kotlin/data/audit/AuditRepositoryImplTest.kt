@@ -1,6 +1,9 @@
 package com.berlin.data.audit
 
+import com.berlin.data.BaseDataSource
 import com.berlin.data.csv_data_source.CsvDataSource
+import com.berlin.data.dto.AuditLogDto
+import com.berlin.data.mapper.AuditLogMapper
 import com.berlin.domain.exception.InvalidAuditLogException
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
@@ -9,48 +12,51 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
 class AuditRepositoryImplTest {
 
     private lateinit var repository: AuditRepositoryImpl
-    private val csvDataSource: CsvDataSource<AuditLog> = mockk()
+    private val auditLogDataSource: BaseDataSource<AuditLogDto> = mockk()
 
     @BeforeEach
     fun setUp() {
-        repository = AuditRepositoryImpl(csvDataSource)
+        val auditLogMapper: AuditLogMapper = mockk()
+        repository = AuditRepositoryImpl(auditLogDataSource, auditLogMapper)
     }
 
     @Test
     fun `addAuditLog should return success when write succeeds`() {
         //Given
-        every { csvDataSource.write(any()) } returns true
+        every { auditLogDataSource.write(any()) } returns true
 
         //When
         val result = repository.addAuditLog(validAuditLog)
 
         //Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(validAuditLog.id)
+        assertThat(result).isEqualTo(validAuditLog.id)
     }
 
     @Test
     fun `addAuditLog should return failure when write fails`() {
         //Given
-        every { csvDataSource.write(any()) } returns false
+        every { auditLogDataSource.write(any()) } returns false
 
         //When
         val result = repository.addAuditLog(validAuditLog)
 
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidAuditLogException::class.java)
+        assertThrows<InvalidAuditLogException> {
+            repository.addAuditLog(validAuditLog)
+        }
+        assertThat(result).isEqualTo("fail to add audit log")
     }
 
     @Test
     fun `getAuditLogsByProjectId should return only logs with matching project id`() {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        every { auditLogDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByProjectId("project-1")
@@ -62,7 +68,7 @@ class AuditRepositoryImplTest {
     @Test
     fun `getAuditLogsByTaskId should return only logs with matching task id`() {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        every { auditLogDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByTaskId("task-1")
@@ -74,7 +80,7 @@ class AuditRepositoryImplTest {
     @Test
     fun `getAuditLogsByUserId should return only logs created by given user`() {
         //Given
-        every { csvDataSource.getAll() } returns auditLogs
+        every { auditLogDataSource.getAll() } returns auditLogs
 
         //When
         val result = repository.getAuditLogsByUserId("user-1")
@@ -95,7 +101,7 @@ class AuditRepositoryImplTest {
         )
 
         private val auditLogs = listOf(
-            AuditLog(
+            AuditLogDto(
                 id = "log-1",
                 timestamp = 1000L,
                 createdByUserId = "user-1",
@@ -104,7 +110,7 @@ class AuditRepositoryImplTest {
                 entityType = EntityType.PROJECT,
                 entityId = "project-1"
             ),
-            AuditLog(
+            AuditLogDto(
                 id = "log-2",
                 timestamp = 2000L,
                 createdByUserId = "user-1",
@@ -113,7 +119,7 @@ class AuditRepositoryImplTest {
                 entityType = EntityType.TASK,
                 entityId = "task-1"
             ),
-            AuditLog(
+            AuditLogDto(
                 id = "log-3",
                 timestamp = 3000L,
                 createdByUserId = "user-2",

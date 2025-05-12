@@ -1,6 +1,7 @@
 package com.berlin.data.schema
 
 import com.berlin.data.csv_data_source.schema.UserSchema
+import com.berlin.data.dto.UserDto
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
 import com.google.common.truth.Truth.assertThat
@@ -43,7 +44,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return list of valid user attributes when valid user passed`() {
         //when
-        val result=userSchema.toRow(validUser)
+        val result = userSchema.toRow(validUser)
         //then
         assertThat(result).isEqualTo(validRowAdmin)
     }
@@ -51,7 +52,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return list of valid user attributes when valid user mate passed`() {
         //when
-        val result=userSchema.toRow(validUserMate)
+        val result = userSchema.toRow(validUserMateDto)
         //then
         assertThat(result).isEqualTo(validRowMate)
     }
@@ -59,7 +60,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return empty list when invalid user passed miss id attribute`() {
         //when
-        val result=userSchema.toRow(invalidUserEmptyId)
+        val result = userSchema.toRow(invalidUserEmptyId)
         //then
         assertThat(result).isEmpty()
     }
@@ -67,7 +68,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return empty list when invalid user passed miss userName attribute`() {
         //when
-        val result=userSchema.toRow(invalidUserEmptyUserName)
+        val result = userSchema.toRow(invalidUserEmptyUserName)
         //then
         assertThat(result).isEmpty()
     }
@@ -75,7 +76,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return empty list when invalid user passed miss password attribute`() {
         //when
-        val result=userSchema.toRow(invalidUserEmptyPass)
+        val result = userSchema.toRow(invalidUserEmptyPass)
         //then
         assertThat(result).isEmpty()
     }
@@ -87,7 +88,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return user when valid row admin passed`() {
         //when
-        val result=userSchema.fromRow(validRowAdmin)
+        val result = userSchema.fromRow(validRowAdmin)
         //then
         assertThat(result).isEqualTo(validUser)
     }
@@ -95,7 +96,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return user when valid row mate passed`() {
         //when
-        val result=userSchema.fromRow(validRowMate)
+        val result = userSchema.fromRow(validRowMate)
         //then
         assertThat(result).isEqualTo(validUserMate)
     }
@@ -103,7 +104,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid row passed miss id column`() {
         //when
-        val result=userSchema.fromRow(invalidRowEmptyId)
+        val result = userSchema.fromRow(invalidRowEmptyId)
         //then
         assertThat(result).isNull()
     }
@@ -111,7 +112,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss userName column`() {
         //when
-        val result=userSchema.fromRow(invalidRowEmptyUserName)
+        val result = userSchema.fromRow(invalidRowEmptyUserName)
         //then
         assertThat(result).isNull()
     }
@@ -119,7 +120,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss password column`() {
         //when
-        val result=userSchema.fromRow(invalidRowEmptyPass)
+        val result = userSchema.fromRow(invalidRowEmptyPass)
         //then
         assertThat(result).isNull()
     }
@@ -127,7 +128,7 @@ class UserSchemaTest {
     @Test
     fun `fromRow should return null when invalid user passed miss role column`() {
         //when
-        val result=userSchema.fromRow(invalidRowEmptyRole)
+        val result = userSchema.fromRow(invalidRowEmptyRole)
         //then
         assertThat(result).isNull()
     }
@@ -139,7 +140,7 @@ class UserSchemaTest {
     @Test
     fun `getId should return id of user passed`() {
         //when
-        val result=userSchema.getId(validUser)
+        val result = userSchema.getId(validUser)
         //then
         assertThat(result).isEqualTo(validUser.id)
     }
@@ -147,7 +148,7 @@ class UserSchemaTest {
     @Test
     fun `getId should return null when user passed have empty id`() {
         //when
-        val result=userSchema.getId(invalidUserEmptyId)
+        val result = userSchema.getId(invalidUserEmptyId)
         //then
         assertThat(result).isNull()
     }
@@ -158,21 +159,25 @@ class UserSchemaTest {
 
     private companion object {
 
+        val validUserMate = User(
+            id = "abcs123", userName = "marwanMahmoud", role = UserRole.MATE
+        )
+
         //region Some Users
 
-        val validUserMate = User(
+        val validUserMateDto = UserDto(
             id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.MATE
         )
-        val validUser = User(
+        val validUser = UserDto(
             id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.ADMIN
         )
-        val invalidUserEmptyId = User(
+        val invalidUserEmptyId = UserDto(
             id = "", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.ADMIN
         )
-        val invalidUserEmptyUserName = User(
+        val invalidUserEmptyUserName = UserDto(
             id = "abcs123", userName = "", password = "ui76654898", role = UserRole.ADMIN
         )
-        val invalidUserEmptyPass = User(
+        val invalidUserEmptyPass = UserDto(
             id = "abcs123", userName = "marwanMahmoud", password = "", role = UserRole.ADMIN
         )
 

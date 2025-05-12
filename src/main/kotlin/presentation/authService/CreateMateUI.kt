@@ -12,7 +12,7 @@ class CreateMateUI(
     private val createMateUseCase: CreateMateUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
-): PermissionedUiRunner {
+) : PermissionedUiRunner {
 
     override val id: Int = 1
     override val label: String = "Create new mate"
@@ -22,24 +22,25 @@ class CreateMateUI(
     override fun run() {
         handleMateCreation()
     }
-    private fun createMate(): User{
+    private fun createMate(): User {
         viewer.show("Enter user name or x to exit: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
         val userPassword = reader.read()?.trim().orEmpty()
-        return createMateUseCase.createMate(userName, userPassword)
+        val user = createMateUseCase.createMate(userName, userPassword)
+        return user
     }
     private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
-       try {
-           if (createMate().userName.isNotEmpty()){
-               viewer.show("$createMateUseCase is successfully created!")
-           }
-       }catch (ex: InvalidCredentialsException){
-           viewer.show(ex.message ?: "some thing went wrong please try again!")
+        try {
+            if (createMate().userName.isNotEmpty()) {
+                viewer.show("successfully created!")
+            }
+        } catch (ex: InvalidCredentialsException) {
+            viewer.show(ex.message ?: "some thing went wrong please try again!")
             if (attempt < maxAttempts) {
                 handleMateCreation(attempt + 1, maxAttempts)
             }
-       }
+        }
     }
 
 }

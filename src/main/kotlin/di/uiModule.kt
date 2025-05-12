@@ -63,7 +63,7 @@ val uiModule = module {
                 get<UpdateTaskUI>(),
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -75,7 +75,7 @@ val uiModule = module {
                 get<GetAllProjectsUi>(),
                 get<GetProjectByIdUi>(),
                 get<UpdateProjectUi>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -87,7 +87,7 @@ val uiModule = module {
                 get<GetAllStatesByProjectIdUI>(),
                 get<GetStateByIdUi>(),
                 get<UpdateStateUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -95,7 +95,7 @@ val uiModule = module {
         CategoryUI(
             id = 4, label = "Audit Logs", children = listOf(
                 get<AuditByProjectUI>(), get<AuditByTaskUI>(), get<AuditByUserUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -103,7 +103,7 @@ val uiModule = module {
         CategoryUI(
             id = 5, label = "Users", children = listOf(
                 get<CreateMateUI>(), get<FetchAllUsersUI>(), get<GettingUsersLoggedInUI>(), get<GetUserByIDUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ),viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -115,7 +115,7 @@ val uiModule = module {
                 get(named("statesCategory")),
                 get(named("auditCategory")),
                 get(named("usersCategory"))
-            ), viewer = get(), reader = get(), authUi = get<AuthenticateUserUI>(), userCache = get<UserCache>()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), authUi = get<AuthenticateUserUI>(), userCache = get<UserCache>()
         )
     }
 }

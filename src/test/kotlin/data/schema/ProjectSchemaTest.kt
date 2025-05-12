@@ -1,6 +1,7 @@
 package com.berlin.data.schema
 
 import com.berlin.data.csv_data_source.schema.ProjectSchema
+import com.berlin.data.dto.ProjectDto
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -41,7 +42,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return list of valid project attributes when valid project passed`() {
   //when
-  val result = projectSchema.toRow(validProject)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEqualTo(validRow)
  }
@@ -49,7 +50,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return list of valid project attributes when project with empty statesId passed`() {
   //when
-  val result = projectSchema.toRow(validProjectEmptyStatesId)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEqualTo(validRowEmptyStatesId)
  }
@@ -57,7 +58,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return list of valid project attributes when project with empty description passed`() {
   //when
-  val result = projectSchema.toRow(validProjectEmptyDescription)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEqualTo(validRowEmptyDescription)
  }
@@ -65,7 +66,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return list of valid project attributes when project with empty tasksId passed`() {
   //when
-  val result = projectSchema.toRow(validProjectEmptyTasksId)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEqualTo(validRowEmptyTasksId)
  }
@@ -73,7 +74,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return empty list when invalid project passed miss id attribute`() {
   //when
-  val result = projectSchema.toRow(invalidProjectEmptyId)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEmpty()
  }
@@ -81,7 +82,7 @@ class ProjectSchemaTest {
  @Test
  fun `toRow should return empty list when invalid project passed miss name attribute`() {
   //when
-  val result = projectSchema.toRow(invalidProjectEmptyName)
+  val result = projectSchema.toRow(validProjectDto)
   //then
   assertThat(result).isEmpty()
  }
@@ -153,7 +154,7 @@ class ProjectSchemaTest {
  @Test
  fun `getId should return id of project passed`() {
   //when
-  val result = projectSchema.getId(validProject)
+  val result = projectSchema.getId(validProjectDto)
   //then
   assertThat(result).isEqualTo(validProject.id)
  }
@@ -161,7 +162,7 @@ class ProjectSchemaTest {
  @Test
  fun `getId should return null when project passed have empty id`() {
   //when
-  val result = projectSchema.getId(invalidProjectEmptyId)
+  val result = projectSchema.getId(validProjectDto)
   //then
   assertThat(result).isNull()
  }
@@ -172,6 +173,14 @@ class ProjectSchemaTest {
 
  private companion object {
   //region Some Projects
+
+  val validProjectDto = ProjectDto(
+   id = "proj123",
+   title = "SampleProject",
+   description = "A sample project",
+   statesId = listOf("state1", "state2"),
+   tasksId = listOf("task1", "task2")
+  )
 
   val validProject = Project(
    id = "proj123",

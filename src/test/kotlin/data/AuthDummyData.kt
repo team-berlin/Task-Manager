@@ -5,7 +5,8 @@ import com.berlin.domain.model.UserRole
 import java.util.*
 
 object AuthDummyData: BaseDataSource<User> {
-    val users: MutableList<User> = Collections.synchronizedList(mutableListOf(User("U1", "alice", "secret", UserRole.ADMIN)))
+    val users: MutableList<User> = Collections.synchronizedList(mutableListOf(
+        User("U1", "alice",  UserRole.ADMIN)))
 
     /* ------------  BaseDataSource<Task> implementation  ------------ */
 

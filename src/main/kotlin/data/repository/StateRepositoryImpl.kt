@@ -18,7 +18,7 @@ class StateRepositoryImpl(
     private val taskMapper: TaskMapper
 ) : StateRepository {
 
-    override fun addState(state: TaskState):String {
+    override fun addState(state: TaskState): String {
         val stateDto = taskStateMapper.mapToDataModel(state)
         if (stateDataSource.write(stateDto))
             return "State created successfully"

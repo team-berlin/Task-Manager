@@ -1,9 +1,9 @@
 package domain.usecase.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import data.UserCache
 
 class AuthenticateUserUseCase(
@@ -17,10 +17,9 @@ class AuthenticateUserUseCase(
         }
 
         val cachedUser = userCache.currentUser
-        if (cachedUser.userName == userName)
-            return cachedUser
+        if (cachedUser.userName == userName) return cachedUser
 
-        val hashedPassword=hashingString.hashPassword(password)
+        val hashedPassword = hashingString.hashPassword(password)
         val user = repository.login(userName, hashedPassword)
         userCache.currentUser = user
         return user

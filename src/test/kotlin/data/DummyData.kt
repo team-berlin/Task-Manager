@@ -7,9 +7,9 @@ object DummyData : BaseDataSource<Task> {
 
     /* ------------  Static demo data  ------------ */
     val users = mutableListOf(
-        User("U1", "alice", "secret", UserRole.ADMIN),
-        User("U2", "bob", "secret12345", UserRole.MATE),
-        User("U3", "carol", "secret", UserRole.MATE)
+        User("U1", "alice", UserRole.ADMIN),
+        User("U2", "bob", UserRole.MATE),
+        User("U3", "carol",  UserRole.MATE)
     )
 
     val projects = mutableListOf(

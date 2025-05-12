@@ -1,6 +1,8 @@
 package com.berlin.data.project
 
 import com.berlin.data.BaseDataSource
+import com.berlin.data.dto.ProjectDto
+import com.berlin.data.mapper.ProjectMapper
 import com.berlin.data.repository.ProjectRepositoryImpl
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Project
@@ -12,11 +14,12 @@ import kotlin.test.Test
 
 class ProjectRepositoryImplTest {
     private lateinit var repository: ProjectRepositoryImpl
-    private val csvDataSource: BaseDataSource<Project> = mockk()
+    private val csvDataSource: BaseDataSource<ProjectDto> = mockk()
+    private val projectMapper: ProjectMapper = mockk()
 
     @BeforeEach
     fun setUp() {
-        repository = ProjectRepositoryImpl(csvDataSource)
+        repository = ProjectRepositoryImpl(csvDataSource, projectMapper)
     }
 
     //region createProject
@@ -28,7 +31,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.createProject(validProject)
         // Then
-        assertThat(result.isSuccess).isTrue()
+            assertThat(result).isEqualTo("Creation Successfully")
     }
 
     @Test
@@ -38,18 +41,9 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.createProject(validProject)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validProject.id)
+        assertThat(result).isEqualTo(validProject)
     }
 
-    @Test
-    fun `createProject should return failure when created fails`() {
-        // Given
-        every { csvDataSource.write(any()) } returns false
-        // When
-        val result = repository.createProject(validProject)
-        // Then
-        assertThat(result.isFailure).isTrue()
-    }
 
     @Test
     fun `createProject should return failure with InvalidProjectException when created fails`() {
@@ -58,7 +52,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.createProject(validProject)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidProjectException::class.java)
+        assertThat(result).isInstanceOf(InvalidProjectException::class.java)
     }
     //endregion
 
@@ -67,7 +61,7 @@ class ProjectRepositoryImplTest {
     @Test
     fun `getProjectById should return project when data source return project`() {
         // Given
-        every { csvDataSource.getById(any()) } returns validProject
+        every { csvDataSource.getById(any()) } returns validProjectDto
         // When
         val result = repository.getProjectById("projectId")
         // Then
@@ -100,7 +94,7 @@ class ProjectRepositoryImplTest {
     @Test
     fun `getAllProjects should return list of projects when data source return list of projects`() {
         // Given
-        every { csvDataSource.getAll() } returns projects
+        every { csvDataSource.getAll() } returns listOf(validProjectDto)
         // When
         val result = repository.getAllProjects()
         // Then
@@ -117,7 +111,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isEqualTo("Updated Successfully")
     }
 
     @Test
@@ -127,7 +121,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validProject.id)
+        assertThat(result).isEqualTo(validProject.id)
     }
 
     @Test
@@ -137,7 +131,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isEqualTo("can not update project")
     }
 
     @Test
@@ -147,7 +141,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.updateProject(validProject)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidProjectException::class.java)
+        assertThat(result).isInstanceOf(InvalidProjectException::class.java)
     }
     //endregion
 
@@ -159,7 +153,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isEqualTo("Deleted Successfully")
     }
 
     @Test
@@ -169,7 +163,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validProject.id)
+        assertThat(result).isEqualTo(validProject.id)
     }
 
     @Test
@@ -179,7 +173,7 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isEqualTo("can not delete project")
     }
 
     @Test
@@ -189,16 +183,24 @@ class ProjectRepositoryImplTest {
         // When
         val result = repository.deleteProject(validProject.id)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidProjectException::class.java)
+        assertThat(result).isInstanceOf(InvalidProjectException::class.java)
     }
     //endregion
 
     companion object {
-        val validProject = Project(id = "tt", title = "aaa", null, null, null)
+        val validProject = Project(id = "tt", title = "aaa", null,
+            null, null)
+
+        val validProjectDto = ProjectDto(id = "tt", title = "aaa", null,
+            null, null)
+
         val projects = listOf(
-            Project(id = "tt", title = "aaa", null, null, null),
-            Project(id = "dd", title = "eds", null, null, null),
-            Project(id = "dds", title = "fsd", null, null, null)
+            Project(id = "tt", title = "aaa", null, null,
+                null),
+            Project(id = "dd", title = "eds", null, null,
+                null),
+            Project(id = "dds", title = "fsd", null, null,
+                null)
         )
     }
 

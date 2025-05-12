@@ -1,24 +1,33 @@
 package com.berlin.data.state
 
 import com.berlin.data.BaseDataSource
+import com.berlin.data.dto.TaskDto
+import com.berlin.data.dto.TaskStateDto
+import com.berlin.data.mapper.TaskMapper
+import com.berlin.data.mapper.TaskStateMapper
 import com.berlin.data.repository.StateRepositoryImpl
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class TaskStateRepositoryImplTest {
     private lateinit var repository: StateRepositoryImpl
-    private val stateDataSource: BaseDataSource<TaskState> = mockk()
-    private val taskDataSource: BaseDataSource<Task> = mockk()
+    private val stateDataSource: BaseDataSource<TaskStateDto> = mockk()
+    private val taskDataSource: BaseDataSource<TaskDto> = mockk()
+
 
     @BeforeEach
     fun setUp() {
-        repository = StateRepositoryImpl(stateDataSource, taskDataSource)
+        val taskStateMapper: TaskStateMapper = mockk()
+        val taskMapper: TaskMapper = mockk()
+        repository = StateRepositoryImpl(stateDataSource, taskDataSource,
+            taskStateMapper, taskMapper)
     }
 
     // region addState
@@ -30,7 +39,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.addState(validState)
         // Then
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isEqualTo("State created successfully")
     }
 
     @Test
@@ -40,17 +49,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.addState(validState)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validState.id)
-    }
-
-    @Test
-    fun `addState should return failure when added fails`() {
-        // Given
-        every { stateDataSource.write(any()) } returns false
-        // When
-        val result = repository.addState(validState)
-        // Then
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isEqualTo(validState.id)
     }
 
     @Test
@@ -60,7 +59,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.addState(validState)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidStateException::class.java)
+        assertThat(result).isInstanceOf(InvalidStateException::class.java)
     }
     // endregion
 
@@ -69,11 +68,11 @@ class TaskStateRepositoryImplTest {
     @Test
     fun `getStateById should return state when data source returns state`() {
         // Given
-        every { stateDataSource.getById(any()) } returns validState
+        every { stateDataSource.getById(any()) } returns validStateDto
         // When
         val result = repository.getStateById(validState.id)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validState)
+        assertThat(result).isEqualTo(validState)
     }
 
     @Test
@@ -83,7 +82,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.getStateById(validState.id)
         // Then
-        assertThat(result.getOrNull()).isNull()
+        assertThat(result).isNull()
     }
     // endregion
 
@@ -91,22 +90,22 @@ class TaskStateRepositoryImplTest {
     @Test
     fun `getStatesByProjectId should return list of states match this project`() {
         // Given
-        every { stateDataSource.getAll() } returns states
+        every { stateDataSource.getAll() } returns listOf()
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isEqualTo(states)
+        assertThat(result).isEqualTo(states)
     }
 
     @Test
     fun `getStatesByProjectId should null when data source returns empty list or no matches project`() {
         // Given
-        every { stateDataSource.getAll() } returns emptyList()
+        every { stateDataSource.getAll() } returns states
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
-        assertThat(result.getOrNull()).isEmpty()    }
+        assertThat(result).isEmpty()
+    }
     // endregion
 
     // region getTasksByStateId
@@ -139,7 +138,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.updateState(validState)
         // Then
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isEqualTo("Updated Successfully")
     }
 
     @Test
@@ -149,7 +148,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.updateState(validState)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validState.id)
+        assertThat(result).isEqualTo(validState.id)
     }
 
     @Test
@@ -159,7 +158,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.updateState(validState)
         // Then
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isEqualTo("can not update state")
     }
 
     @Test
@@ -169,7 +168,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.updateState(validState)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidStateException::class.java)
+        assertThat(result).isInstanceOf(InvalidStateException::class.java)
     }
     // endregion
 
@@ -181,7 +180,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.deleteState(validState.id)
         // Then
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isEqualTo("Deleted Successfully")
     }
 
     @Test
@@ -191,7 +190,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.deleteState(validState.id)
         // Then
-        assertThat(result.getOrNull()).isEqualTo(validState.id)
+        assertThat(result).isEqualTo(validState.id)
     }
 
     @Test
@@ -201,7 +200,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.deleteState(validState.id)
         // Then
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isEqualTo("can not delete state")
     }
 
     @Test
@@ -211,7 +210,7 @@ class TaskStateRepositoryImplTest {
         // When
         val result = repository.deleteState(validState.id)
         // Then
-        assertThat(result.exceptionOrNull()).isInstanceOf(InvalidStateException::class.java)
+        assertThat(result).isInstanceOf(InvalidStateException::class.java)
     }
     // endregion
 
@@ -220,7 +219,7 @@ class TaskStateRepositoryImplTest {
     fun `getStateByTaskId should return state when data sources returns state matches task`() {
         // Given
         every { taskDataSource.getById(any()) } returns validTask
-        every { stateDataSource.getById(any()) } returns validState
+        every { stateDataSource.getById(any()) } returns validStateDto
         // When
         val result = repository.getStateByTaskId(validTask.id)
         // Then
@@ -240,10 +239,15 @@ class TaskStateRepositoryImplTest {
     // endregion
 
     companion object {
+
+        val validStateDto = TaskStateDto(
+            id = "st123", name = "ToDo", projectId = "pppppp"
+        )
+
         val validState = TaskState(
             id = "st123", name = "ToDo", projectId = "pppppp"
         )
-        val validTask = Task(
+        val validTask = TaskDto(
             id = "t6665",
             projectId = "hhhhh",
             title = "zzzz",
@@ -253,12 +257,12 @@ class TaskStateRepositoryImplTest {
             createByUserId = "r444"
         )
         val states = listOf(
-            TaskState(id = "st123", name = "ToDo", projectId = "pppppp"),
-            TaskState(id = "st456", name = "InProgress", projectId = "pppppp"),
-            TaskState(id = "st789", name = "Done", projectId = "pppppp")
+            TaskStateDto(id = "st123", name = "ToDo", projectId = "pppppp"),
+            TaskStateDto(id = "st456", name = "InProgress", projectId = "pppppp"),
+            TaskStateDto(id = "st789", name = "Done", projectId = "pppppp")
         )
         val tasks = listOf(
-            Task(
+            TaskDto(
                 id = "t6665",
                 projectId = "hhhhh",
                 title = "zzzz",
@@ -266,7 +270,7 @@ class TaskStateRepositoryImplTest {
                 stateId = "st123",
                 assignedToUserId = "57r",
                 createByUserId = "r444"
-            ), Task(
+            ), TaskDto(
                 id = "t4576",
                 projectId = "p657",
                 title = "Task1",
@@ -274,7 +278,7 @@ class TaskStateRepositoryImplTest {
                 stateId = "st123",
                 assignedToUserId = "u66",
                 createByUserId = "t4"
-            ), Task(
+            ), TaskDto(
                 id = "t897",
                 projectId = "p4566",
                 title = "Task2",
@@ -282,7 +286,7 @@ class TaskStateRepositoryImplTest {
                 stateId = "st123",
                 assignedToUserId = "y66",
                 createByUserId = "l99"
-            ), Task(
+            ), TaskDto(
                 id = "t3555",
                 projectId = "p45",
                 title = "Task3",

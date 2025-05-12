@@ -3,6 +3,7 @@ import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.model.User
+import com.berlin.domain.model.UserDataInput
 import com.berlin.domain.model.UserRole
 import com.berlin.domain.repository.AuthenticationRepository
 
@@ -18,8 +19,7 @@ class CreateMateUseCase(
         if (password.length < MAIN_PASSWORD_LENGTH) {
             throw InvalidCredentialsException("Password less than 8 characters")
         }
-
-        val hashedPassword=hashingString.hashPassword(password)
+        val hashedPassword = hashingString.hashPassword(password)
         val newUser = User(
             id = idGenerator.generateId(userName),
             userName = userName,

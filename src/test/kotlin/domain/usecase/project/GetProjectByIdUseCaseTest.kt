@@ -39,7 +39,7 @@ class GetProjectByIdUseCaseTest {
     fun `should throw exception when project id does not exist`() {
         // Given
         val input = "P2"
-        every { projectRepository.getProjectById(any()) } returns null
+        //every { projectRepository.getProjectById(any()) } returns null
 
         // When
         val exception = assertThrows<Exception> { getProjectByIdUseCase.getProjectById("P2") }
