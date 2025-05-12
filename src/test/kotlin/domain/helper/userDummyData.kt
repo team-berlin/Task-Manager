@@ -1,8 +1,5 @@
 package com.berlin.domain.helper
 
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
-
 //fun userDummyData(
 //    id: String = "1",
 //    userName: String,

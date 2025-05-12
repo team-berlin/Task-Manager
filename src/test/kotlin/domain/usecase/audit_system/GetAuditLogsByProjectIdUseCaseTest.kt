@@ -1,6 +1,5 @@
 package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.domain.model.EntityType
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase

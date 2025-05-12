@@ -1,7 +1,7 @@
 package com.berlin.presentation.authService
 
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.io.Reader

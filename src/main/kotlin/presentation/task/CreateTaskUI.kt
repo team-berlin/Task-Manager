@@ -6,7 +6,7 @@ import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase

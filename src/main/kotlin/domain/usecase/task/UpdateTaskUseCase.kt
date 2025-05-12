@@ -1,8 +1,7 @@
 package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
@@ -35,8 +34,8 @@ class UpdateTaskUseCase(
 
         addAuditLogUseCase.addAuditLog(
             createdByUserId = cashedUser.currentUser.id,
-            auditAction = AuditAction.UPDATE,
-            entityType = EntityType.TASK,
+            auditAction = AuditLog.AuditAction.UPDATE,
+            entityType = AuditLog.EntityType.TASK,
             entityId = updated.id,
         )
 

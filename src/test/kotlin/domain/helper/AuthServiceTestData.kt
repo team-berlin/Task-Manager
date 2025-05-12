@@ -1,8 +1,5 @@
 package com.berlin.domain.helper
 
-import com.berlin.domain.model.UserRole
-import com.berlin.domain.model.User
-
 //object AuthServiceTestData {
 //    val inValidUserName = "Ahmed"
 //    val inValidUserPassword = "00000000"

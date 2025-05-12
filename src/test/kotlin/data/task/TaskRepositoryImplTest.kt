@@ -4,7 +4,7 @@
 //import com.berlin.domain.exception.InvalidTaskException
 //import com.berlin.domain.exception.TaskNotFoundException
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.google.common.truth.Truth.assertThat
 //import com.berlin.data.DummyData

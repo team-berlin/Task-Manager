@@ -5,9 +5,7 @@ import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.dto.AuditLogDto
 import com.berlin.data.mapper.AuditLogMapper
 import com.berlin.domain.exception.InvalidAuditLogException
-import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
-import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -94,9 +92,9 @@ class AuditRepositoryImplTest {
             id = "log-1",
             timestamp = System.currentTimeMillis(),
             createdByUserId = "user-1",
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "Created something",
-            entityType = EntityType.PROJECT,
+            entityType = AuditLog.EntityType.PROJECT,
             entityId = "project-1"
         )
 
@@ -105,27 +103,27 @@ class AuditRepositoryImplTest {
                 id = "log-1",
                 timestamp = 1000L,
                 createdByUserId = "user-1",
-                auditAction = AuditAction.CREATE,
+                auditAction = AuditLog.AuditAction.CREATE,
                 changesDescription = "Created project",
-                entityType = EntityType.PROJECT,
+                entityType = AuditLog.EntityType.PROJECT,
                 entityId = "project-1"
             ),
             AuditLogDto(
                 id = "log-2",
                 timestamp = 2000L,
                 createdByUserId = "user-1",
-                auditAction = AuditAction.UPDATE,
+                auditAction = AuditLog.AuditAction.UPDATE,
                 changesDescription = "Updated task",
-                entityType = EntityType.TASK,
+                entityType = AuditLog.EntityType.TASK,
                 entityId = "task-1"
             ),
             AuditLogDto(
                 id = "log-3",
                 timestamp = 3000L,
                 createdByUserId = "user-2",
-                auditAction = AuditAction.DELETE,
+                auditAction = AuditLog.AuditAction.DELETE,
                 changesDescription = "Deleted something",
-                entityType = EntityType.PROJECT,
+                entityType = AuditLog.EntityType.PROJECT,
                 entityId = "project-2"
             )
         )

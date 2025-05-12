@@ -1,6 +1,6 @@
 //package com.berlin.presentation
 //
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.permission.assignPermissions
 //import com.berlin.presentation.io.Reader

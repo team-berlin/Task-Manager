@@ -4,7 +4,7 @@
 //import com.berlin.domain.model.AuditAction
 //import com.berlin.domain.model.EntityType
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.repository.TaskRepository
 //import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 //import com.google.common.truth.Truth.assertThat

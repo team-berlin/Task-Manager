@@ -2,8 +2,7 @@ package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.AuditLogIndex
 import com.berlin.data.dto.AuditLogDto
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 
 class AuditSchema(
     override val fileName: String, override val header: List<String>
@@ -59,25 +58,25 @@ class AuditSchema(
                 row[AuditLogIndex.CREATE_BY].isEmpty() ||
                 row[AuditLogIndex.AUDIT_ACTION].isEmpty() ||
                 row[AuditLogIndex.ENTITY_ID].isEmpty() ||
-                row[AuditLogIndex.AUDIT_ACTION] !in enumValues<AuditAction>().map { it.name } ||
-                row[AuditLogIndex.ENTITY_TYPE] !in enumValues<EntityType>().map { it.name }
+                row[AuditLogIndex.AUDIT_ACTION] !in enumValues<AuditLog.AuditAction>().map { it.name } ||
+                row[AuditLogIndex.ENTITY_TYPE] !in enumValues<AuditLog.EntityType>().map { it.name }
                 )
     }
 
-    private fun stringToAuditAction(auditAction: String): AuditAction {
+    private fun stringToAuditAction(auditAction: String): AuditLog.AuditAction {
         return when (auditAction) {
-            AuditAction.CREATE.toString() -> AuditAction.CREATE
-            AuditAction.UPDATE.toString() -> AuditAction.UPDATE
-            AuditAction.DELETE.toString() -> AuditAction.DELETE
-            else -> AuditAction.CREATE
+            AuditLog.AuditAction.CREATE.toString() -> AuditLog.AuditAction.CREATE
+            AuditLog.AuditAction.UPDATE.toString() -> AuditLog.AuditAction.UPDATE
+            AuditLog.AuditAction.DELETE.toString() -> AuditLog.AuditAction.DELETE
+            else -> AuditLog.AuditAction.CREATE
         }
     }
 
-    private fun stringToEntityType(entityType: String): EntityType {
+    private fun stringToEntityType(entityType: String): AuditLog.EntityType {
         return when (entityType) {
-            EntityType.TASK.toString() -> EntityType.TASK
-            EntityType.PROJECT.toString() -> EntityType.PROJECT
-            else -> EntityType.TASK
+            AuditLog.EntityType.TASK.toString() -> AuditLog.EntityType.TASK
+            AuditLog.EntityType.PROJECT.toString() -> AuditLog.EntityType.PROJECT
+            else -> AuditLog.EntityType.TASK
         }
     }
 

@@ -2,9 +2,7 @@ package com.berlin.data.schema
 
 import com.berlin.data.csv_data_source.schema.AuditSchema
 import com.berlin.data.dto.AuditLogDto
-import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
-import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -205,9 +203,9 @@ class AuditSchemaTest {
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
 
@@ -217,63 +215,63 @@ class AuditSchemaTest {
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
         val validAuditLogProject = AuditLog(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.DELETE,
+            auditAction = AuditLog.AuditAction.DELETE,
             changesDescription = "create",
-            entityType = EntityType.PROJECT,
+            entityType = AuditLog.EntityType.PROJECT,
             entityId = "e1"
         )
         val validAuditLogEmptyChangesDescription = AuditLog(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = null,
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
         val invalidAuditLogEmptyId = AuditLog(
             id = "",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
         val invalidAuditLogZeroTimestamp = AuditLog(
             id = "a1",
             timestamp = 0L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
         val invalidAuditLogEmptyCreatedBy = AuditLog(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = "",
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
         val invalidAuditLogEmptyEntityId = AuditLog(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "create",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = ""
         )
 

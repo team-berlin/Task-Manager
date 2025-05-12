@@ -2,7 +2,7 @@ package com.berlin.presentation.authService
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.io.Reader
@@ -32,15 +32,14 @@ class CreateMateUI(
     }
     private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
         try {
-            if (createMate().userName.isNotEmpty()) {
-                viewer.show("successfully created!")
+            if (createMate().userName.isNotEmpty()){
+                viewer.show("$createMateUseCase is successfully created!")
             }
-        } catch (ex: InvalidCredentialsException) {
+        }catch (ex: InvalidCredentialsException){
             viewer.show(ex.message ?: "some thing went wrong please try again!")
             if (attempt < maxAttempts) {
                 handleMateCreation(attempt + 1, maxAttempts)
             }
         }
     }
-
 }

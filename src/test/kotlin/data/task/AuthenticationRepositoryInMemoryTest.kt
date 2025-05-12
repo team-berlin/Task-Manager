@@ -7,7 +7,7 @@
 //import com.berlin.data.repository.AuthenticationRepositoryImpl
 //import com.berlin.domain.exception.UserNotFoundException
 //import com.berlin.domain.helper.AuthServiceTestData
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import data.UserCache
 //import org.junit.jupiter.api.BeforeEach

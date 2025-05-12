@@ -5,11 +5,10 @@ import com.berlin.data.dto.UserDto
 import com.berlin.data.mapper.UserMapper
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.exception.UserNotFoundException
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserDataInput
+import com.berlin.domain.model.user.User
+import com.berlin.domain.model.user.UserCreation
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
-
 
 class AuthenticationRepositoryImpl(
     private val userCache: UserCache,
@@ -26,30 +25,30 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override fun createMate(user: User, password: String): User {
+    override fun createMate(user: UserCreation): User {
         val userDto = UserDto(
             id = user.id,
             userName = user.userName,
-            password = password,
+            password = user.hashedPassword,
             role = user.role
         )
         userDataSource.write(userDto)
-        return user
+        return userMapper.mapToDomainModel(userDto)
     }
 
-    override fun getUserById(userId: String): com.berlin.domain.model.User {
+    override fun getUserById(userId: String): User {
         return userDataSource.getById(userId)?.let {
             userMapper.mapToDomainModel(it)
         } ?: throw UserNotFoundException(userId)
     }
 
-    override fun getAllUsers(): List<com.berlin.domain.model.User> {
+    override fun getAllUsers(): List<User> {
         return userDataSource.getAll().map {
             userMapper.mapToDomainModel(it)
         }
     }
 
-    override fun getCurrentUser(): com.berlin.domain.model.User {
+    override fun getCurrentUser(): User {
         val user = userCache.currentUser
         return user
     }

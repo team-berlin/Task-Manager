@@ -2,7 +2,7 @@
 //
 //import com.berlin.domain.exception.InvalidProjectIdException
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.repository.TaskRepository
 //import com.google.common.truth.Truth.assertThat
 //import io.mockk.every

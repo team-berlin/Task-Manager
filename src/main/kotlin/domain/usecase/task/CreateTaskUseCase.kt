@@ -2,8 +2,7 @@ package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
@@ -40,8 +39,8 @@ class CreateTaskUseCase(
 
             addAuditLogUseCase.addAuditLog(
                 createdByUserId = createByUserId,
-                auditAction = AuditAction.CREATE,
-                entityType = EntityType.TASK,
+                auditAction = AuditLog.AuditAction.CREATE,
+                entityType = AuditLog.EntityType.TASK,
                 entityId = newTask.id,
             )
 

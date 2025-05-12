@@ -3,7 +3,7 @@ package com.berlin.data.csvDataSource
 import com.berlin.data.csv_data_source.schema.BaseSchema
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.dto.UserDto
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -23,13 +23,13 @@ class CsvDataSourceTest {
         id = "u1",
         userName = "testUser",
         password = "password123",
-        role = UserRole.MATE
+        role = User.UserRole.MATE
     )
 
     private val testUsers = listOf(
         testUser,
-        UserDto("u2", "user2", "pass2" ,UserRole.ADMIN),
-        UserDto("u3", "user3", "pass3",  UserRole.MATE)
+        UserDto("u2", "user2", "pass2" , User.UserRole.ADMIN),
+        UserDto("u3", "user3", "pass3",  User.UserRole.MATE)
     )
 
     @TempDir
@@ -43,7 +43,7 @@ class CsvDataSourceTest {
         every { mockSchema.fileName } returns "users.csv"
         every { mockSchema.header } returns listOf("id", "userName", "password", "role")
         every { mockSchema.getId(any()) } answers {
-            val user = firstArg<com.berlin.domain.model.User>()
+            val user = firstArg<User>()
             user.id
         }
 
@@ -158,7 +158,7 @@ class CsvDataSourceTest {
     fun `write should append to file and return true when writing to existing file`() {
         // Given: file exists with test data
         createCsvWithTestData()
-        val newUser = UserDto("u4", "user4", "pass4", UserRole.ADMIN)
+        val newUser = UserDto("u4", "user4", "pass4", User.UserRole.ADMIN)
         every { mockSchema.toRow(newUser) } returns listOf("u4", "user4", "pass4", "ADMIN")
 
         // When: write is called with a new entity

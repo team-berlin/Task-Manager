@@ -1,7 +1,7 @@
 //package com.berlin.presentation.authService
 //
 //import com.berlin.domain.exception.UserNotLoggedInException
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 //import com.berlin.presentation.io.Reader

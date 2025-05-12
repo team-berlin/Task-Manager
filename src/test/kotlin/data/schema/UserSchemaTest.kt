@@ -2,8 +2,7 @@ package com.berlin.data.schema
 
 import com.berlin.data.csv_data_source.schema.UserSchema
 import com.berlin.data.dto.UserDto
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -160,25 +159,25 @@ class UserSchemaTest {
     private companion object {
 
         val validUserMate = User(
-            id = "abcs123", userName = "marwanMahmoud", role = UserRole.MATE
+            id = "abcs123", userName = "marwanMahmoud", role = User.UserRole.MATE
         )
 
         //region Some Users
 
         val validUserMateDto = UserDto(
-            id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.MATE
+            id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = User.UserRole.MATE
         )
         val validUser = UserDto(
-            id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.ADMIN
+            id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = User.UserRole.ADMIN
         )
         val invalidUserEmptyId = UserDto(
-            id = "", userName = "marwanMahmoud", password = "ui76654898", role = UserRole.ADMIN
+            id = "", userName = "marwanMahmoud", password = "ui76654898", role = User.UserRole.ADMIN
         )
         val invalidUserEmptyUserName = UserDto(
-            id = "abcs123", userName = "", password = "ui76654898", role = UserRole.ADMIN
+            id = "abcs123", userName = "", password = "ui76654898", role = User.UserRole.ADMIN
         )
         val invalidUserEmptyPass = UserDto(
-            id = "abcs123", userName = "marwanMahmoud", password = "", role = UserRole.ADMIN
+            id = "abcs123", userName = "marwanMahmoud", password = "", role = User.UserRole.ADMIN
         )
 
         //endregion
@@ -186,19 +185,19 @@ class UserSchemaTest {
         //region Some Rows
 
         val validRowAdmin = listOf(
-            "abcs123", "marwanMahmoud", "ui76654898", UserRole.ADMIN.toString()
+            "abcs123", "marwanMahmoud", "ui76654898", User.UserRole.ADMIN.toString()
         )
         val validRowMate = listOf(
-            "abcs123", "marwanMahmoud", "ui76654898", UserRole.MATE.toString()
+            "abcs123", "marwanMahmoud", "ui76654898", User.UserRole.MATE.toString()
         )
         val invalidRowEmptyId = listOf(
-            "", "marwanMahmoud", "ui76654898", UserRole.ADMIN.toString()
+            "", "marwanMahmoud", "ui76654898", User.UserRole.ADMIN.toString()
         )
         val invalidRowEmptyUserName = listOf(
-            "abcs123", "", "ui76654898", UserRole.ADMIN.toString()
+            "abcs123", "", "ui76654898", User.UserRole.ADMIN.toString()
         )
         val invalidRowEmptyPass = listOf(
-            "abcs123", "marwanMahmoud", "", UserRole.ADMIN.toString()
+            "abcs123", "marwanMahmoud", "", User.UserRole.ADMIN.toString()
         )
         val invalidRowEmptyRole = listOf(
             "abcs123", "marwanMahmoud", "ui76654898", ""

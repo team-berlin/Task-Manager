@@ -1,15 +1,16 @@
 package com.berlin.data
 
 import com.berlin.domain.model.*
+import com.berlin.domain.model.user.User
 import java.util.*
 
 object DummyData : BaseDataSource<Task> {
 
     /* ------------  Static demo data  ------------ */
     val users = mutableListOf(
-        User("U1", "alice", UserRole.ADMIN),
-        User("U2", "bob", UserRole.MATE),
-        User("U3", "carol",  UserRole.MATE)
+        User("U1", "alice", User.UserRole.ADMIN),
+        User("U2", "bob", User.UserRole.MATE),
+        User("U3", "carol",  User.UserRole.MATE)
     )
 
     val projects = mutableListOf(

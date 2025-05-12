@@ -4,7 +4,7 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByUserIdUseCase
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.presentation.PermissionedUiRunner

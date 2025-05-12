@@ -1,8 +1,7 @@
 package com.berlin.domain.usecase.project
 
 import com.berlin.domain.exception.InvalidProjectException
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Project
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
@@ -20,8 +19,8 @@ class UpdateProjectUseCase(
 
         addAuditLogUseCase.addAuditLog(
             createdByUserId = cashedUser.currentUser.id,
-            auditAction = AuditAction.UPDATE,
-            entityType = EntityType.PROJECT,
+            auditAction = AuditLog.AuditAction.UPDATE,
+            entityType = AuditLog.EntityType.PROJECT,
             entityId = project.id,
         )
 

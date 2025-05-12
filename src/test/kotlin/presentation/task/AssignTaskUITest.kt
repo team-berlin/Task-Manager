@@ -2,7 +2,7 @@
 //
 //import com.berlin.domain.exception.InvalidAssigneeException
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 //import com.berlin.domain.usecase.task.AssignTaskUseCase

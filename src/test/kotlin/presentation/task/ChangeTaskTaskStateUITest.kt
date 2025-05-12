@@ -5,7 +5,7 @@
 //import com.berlin.domain.exception.TaskNotFoundException
 //import com.berlin.domain.model.TaskState
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.usecase.state.GetAllStatesUseCase
 //import com.berlin.domain.usecase.task.ChangeTaskStateUseCase

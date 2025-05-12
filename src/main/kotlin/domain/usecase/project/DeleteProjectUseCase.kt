@@ -2,8 +2,7 @@ package com.berlin.domain.usecase.project
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.ProjectNotFoundException
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
@@ -27,8 +26,8 @@ class DeleteProjectUseCase(
 
         addAuditLogUseCase.addAuditLog(
             createdByUserId = cashedUser.currentUser.id,
-            auditAction = AuditAction.DELETE,
-            entityType = EntityType.PROJECT,
+            auditAction = AuditLog.AuditAction.DELETE,
+            entityType = AuditLog.EntityType.PROJECT,
             entityId = projectId,
         )
 

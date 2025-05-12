@@ -1,7 +1,6 @@
 package com.berlin.domain.usecase.project
 
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Project
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
@@ -33,8 +32,8 @@ class CreateProjectUseCase(
 
             addAuditLogUseCase.addAuditLog(
                 createdByUserId = cashedUser.currentUser.id,
-                auditAction = AuditAction.CREATE,
-                entityType = EntityType.PROJECT,
+                auditAction = AuditLog.AuditAction.CREATE,
+                entityType = AuditLog.EntityType.PROJECT,
                 entityId = newProject.id,
             )
 

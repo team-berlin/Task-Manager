@@ -1,9 +1,7 @@
 package com.berlin.presentation.audit
 
 import com.berlin.data.DummyData
-import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
-import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase

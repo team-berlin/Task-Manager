@@ -2,7 +2,7 @@ package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.UserIndex
 import com.berlin.data.dto.UserDto
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 
 class UserSchema(
     override val fileName: String,
@@ -49,7 +49,7 @@ class UserSchema(
         return (row[UserIndex.ID].isEmpty() ||
                 row[UserIndex.USER_NAME].isEmpty() ||
                 row[UserIndex.PASSWORD].isEmpty() ||
-                row[UserIndex.ROLE] !in enumValues<UserRole>().map { it.name })
+                row[UserIndex.ROLE] !in enumValues<User.UserRole>().map { it.name })
     }
 
     private fun checkUserIsNotValid(user: UserDto): Boolean {
@@ -58,11 +58,11 @@ class UserSchema(
                 user.password.isEmpty())
     }
 
-    private fun stringToUserRole(roleString: String): UserRole {
+    private fun stringToUserRole(roleString: String): User.UserRole {
         return when (roleString) {
-            UserRole.ADMIN.toString() -> UserRole.ADMIN
-            UserRole.MATE.toString() -> UserRole.MATE
-            else -> UserRole.MATE
+            User.UserRole.ADMIN.toString() -> User.UserRole.ADMIN
+            User.UserRole.MATE.toString() -> User.UserRole.MATE
+            else -> User.UserRole.MATE
         }
     }
 

@@ -8,4 +8,12 @@ data class AuditLog(
     val changesDescription: String?,
     val entityType: EntityType,
     val entityId: String
-)
+) {
+    enum class AuditAction {
+        CREATE, UPDATE, DELETE
+    }
+
+    enum class EntityType {
+        PROJECT,TASK
+    }
+}

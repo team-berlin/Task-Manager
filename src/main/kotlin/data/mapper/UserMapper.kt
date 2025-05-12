@@ -3,7 +3,7 @@ package com.berlin.data.mapper
 import com.berlin.data.BaseDataSource
 import com.berlin.data.dto.UserDto
 import com.berlin.domain.exception.UserNotFoundException
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 
 class UserMapper(
     private val userDataSource: BaseDataSource<UserDto>,

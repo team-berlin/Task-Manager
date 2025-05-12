@@ -3,7 +3,7 @@
 //import com.berlin.domain.exception.InvalidCredentialsException
 //import com.berlin.domain.fakeData.FakeHashingString
 //import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.repository.AuthenticationRepository
 //import com.berlin.presentation.io.Reader

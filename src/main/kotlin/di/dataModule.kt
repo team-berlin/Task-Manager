@@ -13,11 +13,13 @@ import com.berlin.data.repository.ProjectRepositoryImpl
 import com.berlin.data.repository.StateRepositoryImpl
 import com.berlin.data.repository.TaskRepositoryImpl
 import com.berlin.domain.model.*
+import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.*
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.usecase.utils.hash_algorithm.MD5Hasher
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
+import data.AdminUserProvider
 import data.UserCache
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -29,11 +31,8 @@ val dataModule = module {
     single<IdGeneratorImplementation> { IdGeneratorImplementation() }
     single<HashingString> { MD5Hasher() }
 
-    single {
-        UserCache(
-            User("user1234", "admin", UserRole.ADMIN)
-        )
-    }
+    single { AdminUserProvider(get(named("UserDtoDataSource")), get()) }
+    single { UserCache(get<AdminUserProvider>().load()) }
 
     single<BaseSchema<UserDto>>(named("UserSchema")) {
         UserSchema(
@@ -98,7 +97,7 @@ val dataModule = module {
     single { TaskMapper() }.bind<EntityMapper<TaskDto, Task>>()
     single { ProjectMapper() }.bind<EntityMapper<ProjectDto, Project>>()
     single { TaskStateMapper() }.bind<EntityMapper<TaskStateDto, TaskState>>()
-    single { UserMapper(get()) }.bind<EntityMapper<UserDto, com.berlin.domain.model.User>>()
+    single { UserMapper(get()) }.bind<EntityMapper<UserDto, User>>()
     single { AuditLogMapper() }.bind<EntityMapper<AuditLogDto, AuditLog>>()
 
     single<ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource")), get<ProjectMapper>()) }

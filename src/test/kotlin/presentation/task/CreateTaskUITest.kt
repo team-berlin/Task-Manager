@@ -5,7 +5,7 @@
 //import com.berlin.domain.exception.TaskAlreadyExistsException
 //import com.berlin.domain.model.TaskState
 //import com.berlin.domain.model.Task
-//import com.berlin.domain.model.User
+//import com.berlin.domain.model.user.User
 //import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 //import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 //import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase

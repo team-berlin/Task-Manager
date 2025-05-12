@@ -1,12 +1,12 @@
 package com.berlin.data
 
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import java.util.*
 
 object AuthDummyData: BaseDataSource<User> {
     val users: MutableList<User> = Collections.synchronizedList(mutableListOf(
-        User("U1", "alice",  UserRole.ADMIN)))
+        User("U1", "alice",  User.UserRole.ADMIN)
+    ))
 
     /* ------------  BaseDataSource<Task> implementation  ------------ */
 

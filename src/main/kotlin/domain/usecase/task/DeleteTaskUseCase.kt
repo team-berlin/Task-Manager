@@ -1,7 +1,6 @@
 package com.berlin.domain.usecase.task
 
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import data.UserCache
@@ -19,8 +18,8 @@ class DeleteTaskUseCase(
 
         addAuditLogUseCase.addAuditLog(
             createdByUserId = cashedUser.currentUser.id,
-            auditAction = AuditAction.DELETE,
-            entityType = EntityType.TASK,
+            auditAction = AuditLog.AuditAction.DELETE,
+            entityType = AuditLog.EntityType.TASK,
             entityId = taskId,
         )
 
