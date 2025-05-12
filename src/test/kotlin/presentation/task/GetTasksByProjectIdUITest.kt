@@ -28,7 +28,7 @@ class GetTasksByProjectIdUITest {
 
     // shared test data
     private val project =
-        Project(id = "P1", name = "Core", description = null, statesId = listOf("S1"), emptyList())
+        Project(id = "P1", title = "Core", description = null, statesId = listOf("S1"), emptyList())
     private val stateTodo = TaskState(id = "S1", name = "TODO", projectId = "P1")
     private val stateInProg = TaskState(id = "S2", name = "IN_PROGRESS", projectId = "P1")
     private val task = Task(

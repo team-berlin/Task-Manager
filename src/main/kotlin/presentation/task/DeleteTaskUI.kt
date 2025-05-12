@@ -36,9 +36,8 @@ class DeleteTaskUI(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            deleteTask(task.id).onSuccess {
-                    viewer.show("Deleted.")
-                }.onFailure { viewer.show(it.message ?: "Deletion failed") }
+            val result = deleteTask(task.id)
+            viewer.show(result)
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

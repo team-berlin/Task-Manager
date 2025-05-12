@@ -10,7 +10,7 @@ class CreateStateUseCase(
     private val stateRepository: StateRepository,
     private val idGenerator: IdGeneratorImplementation,
 ) {
-    fun createNewState(stateName: String, projectId: String): Result<String> {
+    fun createNewState(stateName: String, projectId: String): String {
         if (validateStateName(stateName)) {
             val newState = TaskState(
                 id = idGenerator.generateId(stateName),
@@ -18,8 +18,6 @@ class CreateStateUseCase(
                 projectId = projectId
             )
             return stateRepository.addState(newState)
-                .map { "State created successfully" }
-                .recover { "Creation Failed" }
         } else {
             throw InvalidStateNameException("State Name must not be empty or blank")
         }
@@ -27,5 +25,4 @@ class CreateStateUseCase(
 
     private fun validateStateName(stateName: String): Boolean =
         stateName.isNotBlank() && !(stateName.all { it.isDigit() })
-
 }

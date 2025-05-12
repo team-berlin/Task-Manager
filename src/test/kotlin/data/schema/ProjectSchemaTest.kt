@@ -1,5 +1,6 @@
 package com.berlin.data.schema
 
+import com.berlin.data.csv_data_source.schema.ProjectSchema
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -174,42 +175,42 @@ class ProjectSchemaTest {
 
   val validProject = Project(
    id = "proj123",
-   name = "SampleProject",
+   title = "SampleProject",
    description = "A sample project",
    statesId = listOf("state1", "state2"),
    tasksId = listOf("task1", "task2")
   )
   val validProjectEmptyDescription = Project(
    id = "proj123",
-   name = "SampleProject",
+   title = "SampleProject",
    description = null,
    statesId = listOf("state1", "state2"),
    tasksId = listOf("task1", "task2")
   )
   val validProjectEmptyStatesId = Project(
    id = "proj123",
-   name = "SampleProject",
+   title = "SampleProject",
    description = "A sample project",
    statesId = null,
    tasksId = listOf("task1", "task2")
   )
   val validProjectEmptyTasksId = Project(
    id = "proj123",
-   name = "SampleProject",
+   title = "SampleProject",
    description = "A sample project",
    statesId = listOf("state1", "state2"),
    tasksId = null
   )
   val invalidProjectEmptyId = Project(
    id = "",
-   name = "SampleProject",
+   title = "SampleProject",
    description = "A sample project",
    statesId = listOf("state1", "state2"),
    tasksId = listOf("task1", "task2")
   )
   val invalidProjectEmptyName = Project(
    id = "proj123",
-   name = "",
+   title = "",
    description = "A sample project",
    statesId = listOf("state1", "state2"),
    tasksId = listOf("task1", "task2")

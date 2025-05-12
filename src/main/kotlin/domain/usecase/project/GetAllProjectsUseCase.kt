@@ -8,6 +8,5 @@ class GetAllProjectsUseCase(
 ) {
     fun getAllProjects(): List<Project> {
         return projectRepository.getAllProjects()
-            ?: throw Exception("No projects found")
     }
 }

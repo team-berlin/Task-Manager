@@ -21,7 +21,7 @@ class GetTasksByStateIdUseCase (
     }
 
 
-    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId).isSuccess
+    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
 
     private fun validateStateId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

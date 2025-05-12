@@ -71,7 +71,7 @@ class AuditByTaskUI(
         return choose(
             title = "Choose a project",
             elements = getAllProjectsUseCase.getAllProjects(),
-            labelOf = { project -> project.name },
+            labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader
         )

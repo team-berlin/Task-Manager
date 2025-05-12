@@ -7,14 +7,11 @@ import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.DeleteProjectUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.Test
 
 
@@ -50,7 +47,7 @@ class DeleteProjectUiTest {
         // Then
         verifySequence {
             viewer.show("--- Projects ---")
-            viewer.show("1. ${project.id} – ${project.name}")
+            viewer.show("1. ${project.id} – ${project.title}")
             viewer.show("X – Cancel\nSelect:")
             reader.read()
             viewer.show("Type Y to confirm deletion:")

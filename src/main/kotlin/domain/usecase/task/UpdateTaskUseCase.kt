@@ -11,7 +11,7 @@ import data.UserCache
 class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,
     private val addAuditLogUseCase: AddAuditLogUseCase,
-    private val cashedUser: UserCache
+    private val cashedUser: UserCache,
 ) {
 
     operator fun invoke(
@@ -19,11 +19,9 @@ class UpdateTaskUseCase(
         title: String? = null,
         description: String? = null,
         assignedToUserId: String? = null,
-    ): Result<Task> {
+    ): Task {
 
-        val originalResult = taskRepository.getTaskById(taskId)
-        if (originalResult.isFailure) return originalResult
-        val original = originalResult.getOrThrow()
+        val original = taskRepository.getTaskById(taskId)
 
         val updated = original.copy(
             title = title ?: original.title,
@@ -31,19 +29,16 @@ class UpdateTaskUseCase(
             assignedToUserId = assignedToUserId ?: original.assignedToUserId
         )
 
-        if (!validateTaskTitle(updated.title.trim()))
-            throw InvalidTaskTitle("task title must be not empty or plank")
+        if (!validateTaskTitle(updated.title.trim())) throw InvalidTaskTitle("task title must be not empty or plank")
 
         val updatedTask = taskRepository.createTask(updated)
 
-        if (updatedTask.isSuccess) {
-            addAuditLogUseCase.addAuditLog(
-                createdByUserId = cashedUser.currentUser.id,
-                auditAction = AuditAction.UPDATE,
-                entityType = EntityType.TASK,
-                entityId = updated.id,
-            )
-        }
+        addAuditLogUseCase.addAuditLog(
+            createdByUserId = cashedUser.currentUser.id,
+            auditAction = AuditAction.UPDATE,
+            entityType = EntityType.TASK,
+            entityId = updated.id,
+        )
 
         return updatedTask
     }

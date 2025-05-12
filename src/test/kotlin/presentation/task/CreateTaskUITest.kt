@@ -113,7 +113,7 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last()).contains("Invalid selection")
+        assertThat(printed.last()).contains("Title cannot be empty.")
     }
 
     @Test
@@ -153,7 +153,7 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last().lowercase()).contains("invalid selection")
+        assertThat(printed.last().lowercase()).contains("out of range.")
     }
 
     @Test
@@ -171,7 +171,7 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last().lowercase()).contains("invalid selection")
+        assertThat(printed.last().lowercase()).contains("out of range.")
     }
 
     @Test
@@ -181,7 +181,7 @@ class CreateTaskUITest {
         ui.run()
 
         verify(exactly = 0) { createUC.invoke(any(), any(), any(), any(), any(), any()) }
-        assertThat(printed.last().lowercase()).contains("invalid selection")
+        assertThat(printed.last().lowercase()).contains("out of range.")
     }
 
     @Test

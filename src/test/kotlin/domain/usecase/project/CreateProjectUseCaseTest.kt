@@ -37,7 +37,7 @@ class CreateProjectUseCaseTest {
 
         // When
         val result = createProjectUseCase.createNewProject(
-            validProject.name, validProject.description, validProject.statesId, validProject.tasksId
+            validProject.title, validProject.description, validProject.statesId, validProject.tasksId
         )
 
         // Then
@@ -56,7 +56,7 @@ class CreateProjectUseCaseTest {
         every { projectRepository.createProject(any()) } returns Result.failure(Exception())
         // When
         val result = createProjectUseCase.createNewProject(
-            validProject.name, validProject.description, validProject.statesId, validProject.tasksId
+            validProject.title, validProject.description, validProject.statesId, validProject.tasksId
         )
         // Then
         result.onFailure { exception -> assertThat(exception.message).isEqualTo("Creation Failed") }

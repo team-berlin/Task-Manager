@@ -194,11 +194,11 @@ class ProjectRepositoryImplTest {
     //endregion
 
     companion object {
-        val validProject = Project(id = "tt", name = "aaa", null, null, null)
+        val validProject = Project(id = "tt", title = "aaa", null, null, null)
         val projects = listOf(
-            Project(id = "tt", name = "aaa", null, null, null),
-            Project(id = "dd", name = "eds", null, null, null),
-            Project(id = "dds", name = "fsd", null, null, null)
+            Project(id = "tt", title = "aaa", null, null, null),
+            Project(id = "dd", title = "eds", null, null, null),
+            Project(id = "dds", title = "fsd", null, null, null)
         )
     }
 

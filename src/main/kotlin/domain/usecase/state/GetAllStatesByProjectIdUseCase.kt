@@ -11,7 +11,7 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): Result<List<TaskState>> {
+    fun getAllStatesByProjectId(projectId: String): List<TaskState> {
 
         if (!validateProjectId(projectId))
             throw InvalidProjectIdException("Project ID must not be empty or blank")
@@ -19,7 +19,7 @@ class GetAllStatesByProjectIdUseCase(
         return if (checkProjectExists(projectId)) {
             stateRepository.getStatesByProjectId(projectId)
         } else {
-            Result.failure(Exception("Project with ID $projectId does not exist"))
+            throw Exception("Project with ID $projectId does not exist")
         }
     }
 

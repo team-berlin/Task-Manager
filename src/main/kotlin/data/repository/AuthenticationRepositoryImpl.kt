@@ -1,48 +1,55 @@
 package com.berlin.data.repository
 
 import com.berlin.data.BaseDataSource
+import com.berlin.data.dto.UserDto
+import com.berlin.data.mapper.UserMapper
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.model.User
 import com.berlin.domain.repository.AuthenticationRepository
 import data.UserCache
-import kotlin.Result.Companion.failure
 
 
 class AuthenticationRepositoryImpl(
     private val userCache: UserCache,
-    private val userDataSource: BaseDataSource<User>
-    ): AuthenticationRepository {
+    private val userDataSource: BaseDataSource<UserDto>,
+    private val userMapper: UserMapper
+) : AuthenticationRepository {
 
-    override fun login(userName: String, password: String): Result<User> {
+    override fun login(userName: String, password: String): User {
         val user = userDataSource.getAll().find { it.userName == userName && it.password == password }
         return if (user != null) {
-            Result.success(user)
+            userMapper.mapToDomainModel(user)
         } else {
-            failure(Exception("Invalid credentials"))
+            throw InvalidCredentialsException("Invalid credentials")
         }
     }
 
-    override fun createMate(user: User): Result<User> {
-        userDataSource.write(user)
-        return Result.success(user)
-
+    override fun createMate(user: User, password: String): User {
+        val userDto = UserDto(
+            id = user.id,
+            userName = user.userName,
+            password = password,
+            role = user.role
+        )
+        userDataSource.write(userDto)
+        return user
     }
 
-    override fun getUserById(userId: String): Result<User> =
-        userDataSource.getById(userId)
-            ?.let(Result.Companion::success)
-            ?: failure(UserNotFoundException(userId))
-
-
-    override fun getAllUsers(): Result<List<User>> {
-       return userDataSource.getAll().let(Result.Companion::success)
+    override fun getUserById(userId: String): User {
+        return userDataSource.getById(userId)?.let {
+            userMapper.mapToDomainModel(it)
+        } ?: throw UserNotFoundException(userId)
     }
 
+    override fun getAllUsers(): List<User> {
+        return userDataSource.getAll().map {
+            userMapper.mapToDomainModel(it)
+        }
+    }
 
-    override fun getCurrentUser(): Result<User> {
+    override fun getCurrentUser(): User {
         val user = userCache.currentUser
-        return Result.success(user)
-
+        return user
     }
-
 }

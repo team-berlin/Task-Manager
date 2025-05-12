@@ -4,14 +4,14 @@ import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskAlreadyExistsException
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
-import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
-    private val defaultIdGenerator: IdGeneratorImplementation,
+    private val defaultIdGenerator: IdGenerator,
     private val addAuditLogUseCase: AddAuditLogUseCase
 ) {
     operator fun invoke(
@@ -21,7 +21,7 @@ class CreateTaskUseCase(
         stateId: String,
         createByUserId: String,
         assignedToUserId: String,
-    ): Result<Task> {
+    ): Task {
         if (validateTaskTitle(title.trim())) {
             val newTask = Task(
                 id = defaultIdGenerator.generateId(title.trim()),
@@ -38,14 +38,12 @@ class CreateTaskUseCase(
 
             val createdTask = taskRepository.createTask(newTask)
 
-            if (createdTask.isSuccess) {
-                addAuditLogUseCase.addAuditLog(
-                    createdByUserId = createByUserId,
-                    auditAction = AuditAction.CREATE,
-                    entityType = EntityType.TASK,
-                    entityId = newTask.id,
-                )
-            }
+            addAuditLogUseCase.addAuditLog(
+                createdByUserId = createByUserId,
+                auditAction = AuditAction.CREATE,
+                entityType = EntityType.TASK,
+                entityId = newTask.id,
+            )
 
             return createdTask
         } else {

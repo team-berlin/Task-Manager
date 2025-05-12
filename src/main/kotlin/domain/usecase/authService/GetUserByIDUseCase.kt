@@ -7,9 +7,9 @@ import com.berlin.domain.repository.AuthenticationRepository
 class GetUserByIDUseCase(
     private val repository: AuthenticationRepository,
 ) {
-    fun getUserById(id: String): Result<User> {
+    fun getUserById(id: String): User {
         if (!isIDValid(id))
-            return Result.failure(InvalidUserIdException("User ID can't be empty or just digits"))
+            throw InvalidUserIdException("User ID can't be empty or just digits")
         return repository.getUserById(id)
     }
 

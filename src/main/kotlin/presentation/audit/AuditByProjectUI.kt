@@ -40,10 +40,10 @@ class AuditByProjectUI(
 
     private fun showProjectLogs(project: Project, logs: List<AuditLog>) {
         if (logs.isEmpty()) {
-            viewer.show("No audit logs found for project ${project.name}.")
+            viewer.show("No audit logs found for project ${project.title}.")
             return
         }
-        viewer.show("=== Audit Logs for ${project.name} ===")
+        viewer.show("=== Audit Logs for ${project.title} ===")
         logs.forEach { log ->
             viewer.show(
                 """
@@ -61,7 +61,7 @@ class AuditByProjectUI(
         return choose(
             title = "Choose a project",
             elements = getAllProjectsUseCase.getAllProjects(),
-            labelOf = { project -> project.name },
+            labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader
         )

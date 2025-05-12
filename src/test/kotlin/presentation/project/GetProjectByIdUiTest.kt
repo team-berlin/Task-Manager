@@ -6,7 +6,6 @@ import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.model.Project
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.GetProjectByIdUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,7 +22,7 @@ class GetProjectByIdUiTest {
 
     private val project = Project(
         id = "proj-1",
-        name = "Test Project",
+        title = "Test Project",
         description = "Sample description",
         statesId = listOf("S1", "S2"),
         tasksId = listOf("T1", "T2")
@@ -31,7 +30,7 @@ class GetProjectByIdUiTest {
 
     private val project2 = Project(
         id = "proj-2",
-        name = "Test Project",
+        title = "Test Project",
         description = "Sample description",
         statesId = emptyList(),
         tasksId = emptyList()
@@ -39,7 +38,7 @@ class GetProjectByIdUiTest {
 
     private val project3 = Project(
         id = "proj-3",
-        name = "Test Project",
+        title = "Test Project",
         description = null,
         statesId = listOf("S1", "S2"),
         tasksId = listOf("T1", "T2")
@@ -47,7 +46,7 @@ class GetProjectByIdUiTest {
 
     private val project4 = Project(
         id = "proj-4",
-        name = "Test Project",
+        title = "Test Project",
         description = "Sample description",
         statesId = listOf("S1", "S2"),
         tasksId = null
@@ -55,7 +54,7 @@ class GetProjectByIdUiTest {
 
     private val project5 = Project(
         id = "proj-5",
-        name = "Test Project",
+        title = "Test Project",
         description = "Sample description",
         statesId = null,
         tasksId = listOf("T1", "T2")
@@ -83,7 +82,7 @@ class GetProjectByIdUiTest {
             viewer.show("Enter project ID:")
             reader.read()
             viewer.show("ID: ${project.id}")
-            viewer.show("Title: ${project.name}")
+            viewer.show("Title: ${project.title}")
             viewer.show("Description: ${project.description}")
             viewer.show("States:")
             viewer.show(" - [S1] S1")

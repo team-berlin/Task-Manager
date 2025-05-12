@@ -14,13 +14,9 @@ class AssignTaskUseCase(
     private val cashedUser: UserCache
 ) {
 
-    operator fun invoke(taskId: String, newAssigneeId: String): Result<Task> {
+    operator fun invoke(taskId: String, newAssigneeId: String): Task {
 
-        val originalResult = taskRepository.getTaskById(taskId)
-        if (originalResult.isFailure) {
-            return originalResult
-        }
-        val original = originalResult.getOrThrow()
+        val original= taskRepository.getTaskById(taskId)
 
         if (!validateAssignee(newAssigneeId)) {
             throw InvalidAssigneeException("Assignee must have a non-blank id")
@@ -30,18 +26,15 @@ class AssignTaskUseCase(
 
         val updatedTask = taskRepository.updateTask(updated)
 
-        if (updatedTask.isSuccess) {
-            addAuditLogUseCase.addAuditLog(
-                createdByUserId = cashedUser.currentUser.id,
-                auditAction = AuditAction.UPDATE,
-                entityType = EntityType.TASK,
-                entityId = updated.id,
-            )
-        }
+        addAuditLogUseCase.addAuditLog(
+            createdByUserId = cashedUser.currentUser.id,
+            auditAction = AuditAction.UPDATE,
+            entityType = EntityType.TASK,
+            entityId = updated.id,
+        )
 
         return updatedTask
     }
 
-    private fun validateAssignee(id: String): Boolean =
-        id.isNotBlank()
+    private fun validateAssignee(id: String): Boolean = id.isNotBlank()
 }

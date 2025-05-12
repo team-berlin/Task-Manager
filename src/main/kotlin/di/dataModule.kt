@@ -1,10 +1,10 @@
 package com.berlin.di
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.BaseSchema
+import com.berlin.data.csv_data_source.schema.BaseSchema
 import com.berlin.data.audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.data.schema.*
+import com.berlin.data.csv_data_source.schema.*
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.repository.*

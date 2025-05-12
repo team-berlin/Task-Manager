@@ -57,7 +57,7 @@ class UpdateProjectUiTest {
         verify { getProjectByIdUseCase.getProjectById(projectId) }
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         verify { viewer.show(match { it.contains("Project updated successfully") }) }
     }
 
@@ -115,7 +115,7 @@ class UpdateProjectUiTest {
         verify { getProjectByIdUseCase.getProjectById(projectId) }
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
         verify { viewer.show(match { it.contains("Project updated successfully") }) }
     }
@@ -171,7 +171,7 @@ class UpdateProjectUiTest {
         verify { getProjectByIdUseCase.getProjectById(projectId) }
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(validTitle, projectSlot.captured.name)
+        assertEquals(validTitle, projectSlot.captured.title)
         verify { viewer.show(match { it.contains("Project title cannot be empty") }) }
     }
 
@@ -201,7 +201,7 @@ class UpdateProjectUiTest {
         // Then
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
     }
 
@@ -309,7 +309,7 @@ class UpdateProjectUiTest {
         // Then
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
         verify(exactly = 1) { updateProjectUseCase.updateProject(any()) }
     }
@@ -340,7 +340,7 @@ class UpdateProjectUiTest {
         // Then
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
     }
 
@@ -370,7 +370,7 @@ class UpdateProjectUiTest {
         // Then
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
     }
 
@@ -483,7 +483,7 @@ class UpdateProjectUiTest {
         // Then
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
         assertEquals(newDescription, projectSlot.captured.description)
     }
 
@@ -526,7 +526,7 @@ class UpdateProjectUiTest {
         verify { viewer.show("Project title cannot be empty. Please enter a valid title: ") }
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(validTitle, projectSlot.captured.name)
+        assertEquals(validTitle, projectSlot.captured.title)
     }
 
     @Test
@@ -589,7 +589,7 @@ class UpdateProjectUiTest {
         verify { viewer.show("Please enter 1 or 2: ") }
         val projectSlot = slot<Project>()
         verify { updateProjectUseCase.updateProject(capture(projectSlot)) }
-        assertEquals(newTitle, projectSlot.captured.name)
+        assertEquals(newTitle, projectSlot.captured.title)
     }
 
     @Test

@@ -26,7 +26,7 @@ class CreateStateUI(
 
         try {
             val project = selectProject()
-            viewer.show("-- Enter a state in project ${project.name} --")
+            viewer.show("-- Enter a state in project ${project.title} --")
             addStateName(project)
         } catch (_: InputCancelledException) {
             viewer.show("Cancelled!")
@@ -63,7 +63,7 @@ class CreateStateUI(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = getAllProjectUseCase.getAllProjects(), labelOf = { it.name }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectUseCase.getAllProjects(), labelOf = { it.title }, viewer = viewer, reader = reader
     )
 
 }

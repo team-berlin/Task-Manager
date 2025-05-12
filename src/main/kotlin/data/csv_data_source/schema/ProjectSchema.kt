@@ -1,6 +1,5 @@
-package com.berlin.data.schema
+package com.berlin.data.csv_data_source.schema
 
-import com.berlin.data.BaseSchema
 import com.berlin.data.ProjectIndex
 import com.berlin.domain.model.Project
 
@@ -30,7 +29,7 @@ class ProjectSchema(
     private fun projectToStringsList(project: Project): List<String> {
         return listOf(
             project.id,
-            project.name,
+            project.title,
             project.description ?: "",
             project.statesId?.joinToString(",", "[", "]") ?: "[]",
             project.tasksId?.joinToString(",", "[", "]") ?: "[]"
@@ -40,7 +39,7 @@ class ProjectSchema(
     private fun stringsListToProject(row: List<String>): Project {
         return Project(
             id = row[ProjectIndex.ID],
-            name = row[ProjectIndex.NAME],
+            title = row[ProjectIndex.NAME],
             description = row[ProjectIndex.DESCRIPTION].ifEmpty { null },
             statesId = row[ProjectIndex.STATES_ID].let { if (it == "[]") null else stringListToList(it) },
             tasksId = row[ProjectIndex.TASKS_ID].let { if (it == "[]") null else stringListToList(it) }
@@ -55,7 +54,7 @@ class ProjectSchema(
 
     private fun checkProjectIsNotValid(project: Project): Boolean {
         return project.id.isEmpty() ||
-                project.name.isEmpty()
+                project.title.isEmpty()
     }
 
     private fun stringListToList(listString: String): List<String> {

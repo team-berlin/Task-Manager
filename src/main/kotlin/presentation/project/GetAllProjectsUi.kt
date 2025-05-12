@@ -23,7 +23,7 @@ class GetAllProjectsUi(
             when {
                 projects.isNotEmpty() -> {
                     projects.forEach { project ->
-                        viewer.show("Project ID: ${project.id}, Title: ${project.name}")
+                        viewer.show("Project ID: ${project.id}, Title: ${project.title}")
                     }
                 }
                 else -> {

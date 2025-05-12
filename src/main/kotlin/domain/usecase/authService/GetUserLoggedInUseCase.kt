@@ -4,7 +4,7 @@ import com.berlin.domain.repository.AuthenticationRepository
 class GetUserLoggedInUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getCurrentUser(): Result<User>{
+    fun getCurrentUser(): User {
 
         return repository.getCurrentUser()
     }

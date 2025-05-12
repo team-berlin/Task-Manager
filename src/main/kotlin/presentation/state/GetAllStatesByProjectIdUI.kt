@@ -29,7 +29,7 @@ class GetAllStatesByProjectIdUI(
             val project = choose(
                 title = "Projects",
                 elements = getAllProjectsUseCase.getAllProjects(),
-                labelOf = { it.name },
+                labelOf = { it.title },
                 viewer = viewer,
                 reader = reader
             )
@@ -56,7 +56,7 @@ class GetAllStatesByProjectIdUI(
         }
         viewer.show("\n=== States for project $projectId ===")
         projects.forEach { project ->
-            viewer.show("\n[${project.name}]")
+            viewer.show("\n[${project.title}]")
             stateInProject(states, project.id).forEach { line ->
                 viewer.show(line)
             }

@@ -43,7 +43,7 @@ class UpdateProjectUi(
     private fun displayAvailableProjects() {
         viewer.show("Available Projects:\n")
         getAllProjectsUseCase.getAllProjects().forEach { project ->
-            viewer.show("Project ID: ${project.id}, Title: ${project.name}")
+            viewer.show("Project ID: ${project.id}, Title: ${project.title}")
         }
     }
 
@@ -78,7 +78,7 @@ class UpdateProjectUi(
     fun displayCurrentProjectDetails(project: Project) {
         viewer.show("Current Project Details:\n")
         viewer.show("Project ID: ${project.id}\n")
-        viewer.show("Title: ${project.name}\n")
+        viewer.show("Title: ${project.title}\n")
         viewer.show("Description: ${project.description ?: "No description"}\n")
     }
 
@@ -142,7 +142,7 @@ class UpdateProjectUi(
                 continue
             }
 
-            return project.copy(name = title)
+            return project.copy(title = title)
         }
     }
 

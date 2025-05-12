@@ -1,7 +1,6 @@
-package com.berlin.data.schema
+package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.AuditLogIndex
-import com.berlin.data.BaseSchema
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType

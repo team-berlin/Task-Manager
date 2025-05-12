@@ -13,10 +13,8 @@ class GetAuditLogsByProjectIdUseCase(
             throw IllegalArgumentException("Project ID must not be empty, blank, or purely numeric")
 
         return auditRepository.getAuditLogsByProjectId(projectId)
-
     }
 
     private fun validateProjectId(projectId: String): Boolean =
         projectId.isNotBlank() && !(projectId.all { it.isDigit() })
-
 }

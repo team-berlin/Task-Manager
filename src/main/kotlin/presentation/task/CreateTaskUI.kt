@@ -39,15 +39,13 @@ class CreateTaskUI(
             val assignee = selectUser()
             val (title, desc) = askTitleAndDescription()
 
-            createTask(
-                project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id
-            ).onSuccess { viewer.show("Task created: id=${it.id}") }
-                .onFailure { viewer.show(it.message ?: "Creation failed") }
+            val task = createTask(project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id)
+            viewer.show("Task created: id=${task.id}")
 
         } catch (ex: InputCancelledException) {
-            viewer.show("Cancelled.")
+            viewer.show(ex.message ?: "Cancelled.")
         } catch (ex: InvalidSelectionException) {
-            viewer.show("Invalid selection")
+            viewer.show(ex.message!!)
         } catch (ex: InvalidTaskTitle) {
             viewer.show("Invalid task title")
         } catch (ex: TaskAlreadyExistsException) {
@@ -56,19 +54,19 @@ class CreateTaskUI(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = getAllProjectsUseCase.getAllProjects(), labelOf = { it.name }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectsUseCase.getAllProjects(), labelOf = { it.title }, viewer = viewer, reader = reader
     )
 
     private fun selectState(project: Project) = choose(
-        title = "States for ${project.name}",
-        elements = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id).getOrNull() ?: emptyList(),
+        title = "States for ${project.title}",
+        elements = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id),
         labelOf = { it.name },
         viewer = viewer,
         reader = reader
     )
 
     private fun selectUser(): User = choose(
-        title = "Users", elements = getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
+        title = "Users", elements = getAllUsersUseCase.getAllUsers(), labelOf = { it.userName }, viewer = viewer, reader = reader
     )
 
     private fun askTitleAndDescription(): Pair<String, String?> {

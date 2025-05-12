@@ -1,4 +1,4 @@
-package com.berlin.data
+package com.berlin.data.csv_data_source.schema
 
 interface BaseSchema<T> {
     val fileName: String

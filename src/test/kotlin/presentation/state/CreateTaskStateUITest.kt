@@ -6,7 +6,6 @@ import com.berlin.domain.usecase.state.CreateStateUseCase
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.state.CreateStateUI
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -24,7 +23,7 @@ class CreateTaskStateUITest {
 
     private val testProject = Project(
         id = "P1",
-        name = "Berlin Core",
+        title = "Berlin Core",
         description = "The back-end",
         statesId = listOf("S1", "S2", "S3", "S4"),
         tasksId = mutableListOf()

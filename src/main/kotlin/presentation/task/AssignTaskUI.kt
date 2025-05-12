@@ -29,11 +29,11 @@ class AssignTaskUI(
         try {
             val task = selectTask()
             val assignee = choose(
-                title = "Users", elements = getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(), labelOf = { it.userName }, viewer = viewer, reader = reader
+                title = "Users", elements = getAllUsersUseCase.getAllUsers(), labelOf = { it.userName }, viewer = viewer, reader = reader
             )
 
-            assignTask(task.id, assignee.id).onSuccess { viewer.show("Assigned to ${assignee.userName}") }
-                .onFailure { viewer.show(it.message ?: "Assignment failed") }
+            assignTask(task.id, assignee.id)
+            viewer.show("Assigned to ${assignee.userName}")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

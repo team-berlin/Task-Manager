@@ -1,6 +1,6 @@
 package com.berlin.data.csvDataSource
 
-import com.berlin.data.BaseSchema
+import com.berlin.data.csv_data_source.schema.BaseSchema
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.domain.model.User
 import com.berlin.domain.model.UserRole
@@ -9,12 +9,9 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import java.io.FileNotFoundException
 import java.nio.file.Path
 
 class CsvDataSourceTest {

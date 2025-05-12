@@ -13,7 +13,6 @@ class GetProjectByIdUseCase (
             throw InvalidProjectIdException("project id must not be empty, blank, or purely numeric")
 
         return projectRepository.getProjectById(projectId)
-            ?: throw Exception("Project with ID $projectId does not exist")
     }
 
     private fun validateProjectId(projectId: String): Boolean =

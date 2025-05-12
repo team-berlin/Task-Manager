@@ -22,7 +22,7 @@ class GetStateByTaskIdUseCase(
     }
 
 
-    private fun checkTaskExists(taskId: String): Boolean = taskRepository.getTaskById(taskId).isSuccess
+    private fun checkTaskExists(taskId: String): Boolean = taskRepository.getTaskById(taskId) != null
 
     private fun validateTaskId(taskId: String): Boolean = taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 

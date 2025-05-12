@@ -27,7 +27,7 @@ class DeleteProjectUi(
             val project = choose(
                 title = "Projects",
                 elements = getAllProjects.getAllProjects(),
-                labelOf = { "${it.id} – ${it.name}" },
+                labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
             )

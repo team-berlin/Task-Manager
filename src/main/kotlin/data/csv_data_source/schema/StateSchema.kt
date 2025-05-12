@@ -1,6 +1,5 @@
-package com.berlin.data.schema
+package com.berlin.data.csv_data_source.schema
 
-import com.berlin.data.BaseSchema
 import com.berlin.data.StateIndex
 import com.berlin.domain.model.TaskState
 

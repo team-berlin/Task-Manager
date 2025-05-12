@@ -11,14 +11,12 @@ import data.UserCache
 class ChangeTaskStateUseCase(
     private val taskRepository: TaskRepository,
     private val addAuditLogUseCase: AddAuditLogUseCase,
-    private val cashedUser: UserCache
+    private val cashedUser: UserCache,
 ) {
 
-    operator fun invoke(taskId: String, newStateId: String): Result<Task> {
+    operator fun invoke(taskId: String, newStateId: String): Task {
 
-        val originalResult = taskRepository.getTaskById(taskId)
-        if (originalResult.isFailure) return originalResult
-        val original = originalResult.getOrThrow()
+        val original = taskRepository.getTaskById(taskId)
 
         if (!validateStateId(newStateId)) {
             throw InvalidTaskStateException("State id must not be empty, blank, or purely numeric")
@@ -27,14 +25,12 @@ class ChangeTaskStateUseCase(
         val updated = original.copy(stateId = newStateId)
         val updatedTask = taskRepository.updateTask(updated)
 
-        if (updatedTask.isSuccess) {
-            addAuditLogUseCase.addAuditLog(
-                createdByUserId = cashedUser.currentUser.id,
-                auditAction = AuditAction.UPDATE,
-                entityType = EntityType.TASK,
-                entityId = updated.id,
-            )
-        }
+        addAuditLogUseCase.addAuditLog(
+            createdByUserId = cashedUser.currentUser.id,
+            auditAction = AuditAction.UPDATE,
+            entityType = EntityType.TASK,
+            entityId = updated.id,
+        )
 
         return updatedTask
     }

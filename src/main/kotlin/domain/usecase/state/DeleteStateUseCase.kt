@@ -7,25 +7,14 @@ class DeleteStateUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun deleteState(stateId: String): Result<String> {
+    fun deleteState(stateId: String): String {
 
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State ID must not be empty or blank")
 
-        if (!checkStateExists(stateId)) {
-            return Result.failure(
-                InvalidStateIdException("State with ID $stateId does not exist")
-            )
-        }
-
         return stateRepository.deleteState(stateId)
-            .map { "Deleted Successfully" }
-            .recover { "Deletion Failed" }
     }
 
     private fun validateStateId(stateId: String): Boolean =
         stateId.isNotBlank() || !(stateId.all { it.isDigit() })
-
-    private fun checkStateExists(stateId: String): Boolean =
-        stateRepository.getStateById(stateId).isSuccess
 }

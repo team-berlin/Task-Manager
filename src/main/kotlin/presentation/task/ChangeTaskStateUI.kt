@@ -18,7 +18,7 @@ class ChangeTaskStateUI(
     private val getAllTasks: GetAllTasksUseCase,
     private val getAllStates: GetAllStatesUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
+    private val reader: Reader,
 ) : PermissionedUiRunner {
 
     override val id: Int = 6
@@ -26,14 +26,14 @@ class ChangeTaskStateUI(
 
     override fun isAllowed(permission: Permission) = permission.changeTaskState
 
-     override fun run() {
+    override fun run() {
         try {
             val task = choose(
-                title    = "Tasks",
+                title = "Tasks",
                 elements = getAllTasks(),
-                labelOf  = { "${it.id} – ${it.title} [${it.stateId}]" },
-                viewer   = viewer,
-                reader   = reader
+                labelOf = { "${it.id} – ${it.title} [${it.stateId}]" },
+                viewer = viewer,
+                reader = reader
             )
 
             val possible = getAllStates().filter { it.projectId == task.projectId }
@@ -42,16 +42,15 @@ class ChangeTaskStateUI(
                 return
             }
             val state = choose(
-                title    = "States for project ${task.projectId}",
+                title = "States for project ${task.projectId}",
                 elements = possible,
-                labelOf  = { (it ).name },
-                viewer   = viewer,
-                reader   = reader
+                labelOf = { (it).name },
+                viewer = viewer,
+                reader = reader
             )
 
-            changeState(task.id, state.id)
-                .onSuccess { viewer.show("Task ${task.id} moved to ${state.name}") }
-                .onFailure { viewer.show(it.message ?: "Failed to change state") }
+            val updatedTask = changeState(task.id, state.id)
+            viewer.show("Task ${updatedTask.id} moved to ${state.name}")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

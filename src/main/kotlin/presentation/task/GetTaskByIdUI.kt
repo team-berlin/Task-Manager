@@ -24,17 +24,8 @@ class GetTaskByIdUI(
         try {
             viewer.show("Enter task ID:")
             val raw = reader.read()?.trim().orEmpty()
-            getTaskById(raw)
-                .onSuccess { showTask(it) }
-                .onFailure { ex ->
-                    when (ex) {
-                        is TaskNotFoundException ->
-                            viewer.show("No task found with ID “$raw”")
-                        else ->
-                            viewer.show(ex.message ?: "Lookup failed")
-                    }
-                }
-
+            val task = getTaskById(raw)
+            showTask(task)
         } catch (ex: InvalidTaskIdException) {
             viewer.show("Invalid task id")
         }
