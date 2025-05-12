@@ -66,14 +66,6 @@ class CreateProjectUi(
             null,
             null
         )
-
-        creationResult.fold(
-            onSuccess = { message ->
-                viewer.show(message)
-            },
-            onFailure = { error ->
-                viewer.show("Error: ${error.message ?: "Project creation failed!"}\n")
-            }
-        )
+        viewer.show(creationResult)
     }
 }

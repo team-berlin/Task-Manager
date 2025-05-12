@@ -33,9 +33,11 @@ class AuditByTaskUI(
             val selectedProject = selectProject()
 
             val selectedTask = selectTask(selectedProject)
+            selectedTask.forEach { task ->
+                val logs = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(task.id)
+                showAuditLogs(logs)
+            }
 
-            val logs = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(selectedTask.id)
-            showAuditLogs(logs)
         } catch (e: InputCancelledException) {
             viewer.show("Cancelled.")
         } catch (e: InvalidSelectionException) {
@@ -77,14 +79,15 @@ class AuditByTaskUI(
         )
     }
 
-    private fun selectTask (selectedProject : Project) : Task {
-        return choose(
+    private fun selectTask (selectedProject : Project) : List<Task> {
+       val tasks =  choose(
             title = "Choose a task",
-            elements = getTasksByProjectUseCase( selectedProject.id).getOrNull() ?: emptyList() ,
+            elements = getTasksByProjectUseCase( selectedProject.id),
             labelOf = { task -> task.title },
             viewer = viewer,
             reader = reader
         )
+        return listOf(tasks)
     }
 }
 

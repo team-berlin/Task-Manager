@@ -18,12 +18,7 @@ class GettingUsersLoggedInUI(
 
     override fun run() {
         val user = getUserLoggedIn.getCurrentUser()
-        user.fold(
-            onSuccess = { showUserInfo(it) },
-
-            onFailure = { viewer.show("no user logged in,please log in") }
-        )
-
+          showUserInfo(user)
     }
 
     private fun showUserInfo(user: User) {

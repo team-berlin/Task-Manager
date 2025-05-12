@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.User
 import com.berlin.domain.usecase.authService.CreateMateUseCase
@@ -21,7 +22,7 @@ class CreateMateUI(
     override fun run() {
         handleMateCreation()
     }
-    private fun createMate(): Result<User>{
+    private fun createMate(): User{
         viewer.show("Enter user name or x to exit: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
@@ -29,14 +30,16 @@ class CreateMateUI(
         return createMateUseCase.createMate(userName, userPassword)
     }
     private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {
-        createMate().onSuccess {
-            viewer.show("New mate is successfully created!")
-        }.onFailure {
-            viewer.show(it.message ?: "some thing went wrong please try again!")
+       try {
+           if (createMate().userName.isNotEmpty()){
+               viewer.show("$createMateUseCase is successfully created!")
+           }
+       }catch (ex: InvalidCredentialsException){
+           viewer.show(ex.message ?: "some thing went wrong please try again!")
             if (attempt < maxAttempts) {
                 handleMateCreation(attempt + 1, maxAttempts)
             }
-        }
+       }
     }
 
 }

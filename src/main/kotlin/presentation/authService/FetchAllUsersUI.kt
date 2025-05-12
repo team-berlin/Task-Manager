@@ -18,10 +18,8 @@ class FetchAllUsersUI(
 
     override fun run() {
         val users = fetchAllUsers.getAllUsers()
-        users.onSuccess { usersList ->
-            if (usersList.isEmpty())
-                viewer.show("No users found.")
-            else usersList.forEach { user -> showUserInfo(user) }
+        users.forEach { user ->
+            showUserInfo(user)
         }
     }
 

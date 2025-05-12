@@ -50,9 +50,9 @@ class CreateStateUI(
 
             else -> {
                 try {
-                    createStateUseCase.createNewState(stateName, project.id)
-                        .onSuccess { viewer.show(it) }
-                        .onFailure { viewer.show(it.message ?: "Creation failed") }
+                   val createStateResult  =  createStateUseCase.createNewState(stateName, project.id)
+                 viewer.show(createStateResult)
+
 
                 } catch (_: Exception) {
                     viewer.show("Invalid State Name, Try Again")

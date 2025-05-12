@@ -1,6 +1,5 @@
 package com.berlin.presentation.state
 
-import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
@@ -22,18 +21,8 @@ class GetStateByIdUi(
     override fun run() {
         viewer.show("Enter state ID: ")
         val stateId = reader.read()?.trim().orEmpty()
-        getStateById.getStateById(stateId)
-            .onSuccess { showState(it) }
-            .onFailure { ex ->
-            when (ex) {
-                is StateNotFoundException ->
-                    viewer.show("No state found with ID “$stateId”")
-
-                else ->
-                    viewer.show(ex.message ?: "Lookup failed")
-            }
-        }
-
+        val state = getStateById.getStateById(stateId)
+        showState(state)
     }
 
     private fun showState(state: TaskState) {

@@ -27,9 +27,10 @@ class AuditByUserUI(
     override fun run() {
         try {
             val selectedUser = selectUser()
-            val logs = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(selectedUser.id)
-
-            showUserLogs(selectedUser, logs)
+            selectedUser.forEach { user ->
+                val logs = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(user.id)
+                showUserLogs(user, logs)
+            }
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
@@ -38,14 +39,15 @@ class AuditByUserUI(
         }
     }
 
-    private fun selectUser(): User {
-        return choose(
+    private fun selectUser(): List<User> {
+        val user =  choose(
             title = "Choose a user",
-            elements = fetchAllUsers.getAllUsers().getOrNull()?: emptyList(),
+            elements = fetchAllUsers.getAllUsers(),
             labelOf = { user -> user.userName },
             viewer = viewer,
             reader = reader
         )
+        return listOf(user)
     }
 
     private fun showUserLogs(user: User, logs: List<AuditLog>) {

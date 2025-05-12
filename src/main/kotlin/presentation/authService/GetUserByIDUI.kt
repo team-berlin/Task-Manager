@@ -21,12 +21,9 @@ class GetUserByIDUI(
     override fun run() {
         viewer.show("Enter the user id: ")
         val id = reader.read()?.trim().orEmpty()
-        getUserByIDUseCase.getUserById(id).fold(
-            onSuccess = { showUserInfo(it) },
-            onFailure = { viewer.show(it.message ?: "invalid user id") }
-        )
+       val user =  getUserByIDUseCase.getUserById(id)
+          showUserInfo(user)
     }
-
     private fun showUserInfo(user: User) {
         viewer.show("ID: ${user.id}")
         viewer.show(" Name: ${user.userName}")

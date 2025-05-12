@@ -34,10 +34,8 @@ class GetAllStatesByProjectIdUI(
                 reader = reader
             )
 
-            getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id)
-                .onSuccess { state -> showSwimLaneFor(project.id, state) }
-                .onFailure { viewer.show(it.message ?: "Failed to load states") }
-
+            val getAllStates = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id)
+               showSwimLaneFor(project.id, getAllStates)
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

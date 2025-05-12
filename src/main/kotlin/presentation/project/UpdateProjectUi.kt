@@ -173,12 +173,9 @@ class UpdateProjectUi(
     private fun submitProjectUpdate(project: Project) {
         viewer.show("Updating project...\n")
 
-        val result = updateProjectUseCase.updateProject(project)
-
-        if (result.isSuccess) {
+        val updateMessage = updateProjectUseCase.updateProject(project)
+        if (updateMessage.isNotEmpty()) {
             viewer.show("Project updated successfully!\n")
-        } else {
-            viewer.show("Project update failed!\n")
         }
     }
 }

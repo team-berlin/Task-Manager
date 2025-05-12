@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.model.User
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
@@ -18,7 +19,7 @@ class AuthenticateUserUI(
         authenticateLoop()
     }
 
-    fun validateUser(): Result<User> {
+    fun validateUser(): User {
         viewer.show("Enter your user name: ")
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter your password: ")
@@ -27,16 +28,16 @@ class AuthenticateUserUI(
     }
 
     private fun authenticateLoop(failedAttempts: Int = 0, maxAttempts: Int = 3) {
-        validateUser().fold(
-            onSuccess = {
-                viewer.show("Welcome ${it.userName}")
-            },
-            onFailure = {
-                viewer.show("Try again")
-                if (failedAttempts < maxAttempts) {
-                    authenticateLoop(failedAttempts + 1, maxAttempts)
-                }
+        try {
+            if (validateUser().userName.isNotEmpty()) {
+                viewer.show("Welcome ${validateUser().userName}")
             }
-        )
+        } catch (ex: InvalidCredentialsException) {
+            viewer.show("Try again")
+            if (failedAttempts < maxAttempts) {
+                authenticateLoop(failedAttempts + 1, maxAttempts)
+            }
+
+        }
     }
 }

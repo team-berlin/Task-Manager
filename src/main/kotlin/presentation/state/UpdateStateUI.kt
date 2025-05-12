@@ -40,8 +40,7 @@ class UpdateStateUI(
                 newName,
                 state.projectId
             )
-                .onSuccess { viewer.show("Updated Successfully") }
-                .onFailure { viewer.show("Update Failed") }
+            viewer.show(" $newName is updated Successfully")
 
         } catch (ex: InvalidStateNameException) {
             viewer.show("State Name must not be empty or blank")

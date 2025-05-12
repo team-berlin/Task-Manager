@@ -35,13 +35,8 @@ class DeleteProjectUi(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            deleteProject.deleteProject(project.id)
-                .onSuccess {
-                    viewer.show("Deleted.")
-                }
-                .onFailure {
-                    viewer.show(it.message ?: "Deletion failed")
-                }
+            val projectName = deleteProject.deleteProject(project.id)
+                    viewer.show("$projectName is Deleted.")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
