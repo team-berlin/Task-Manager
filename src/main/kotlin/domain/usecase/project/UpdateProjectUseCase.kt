@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.EntityType
 import com.berlin.domain.model.Project
@@ -13,7 +14,7 @@ class UpdateProjectUseCase(
     private val cashedUser: UserCache,
 ) {
     fun updateProject(project: Project): String {
-        if (!validateProjectName(project.title)) throw InvalidProject("Project Name must not be empty or blank")
+        if (!validateProjectName(project.title)) throw InvalidProjectException("Project Name must not be empty or blank")
 
         val updatedProject = projectRepository.updateProject(project)
 

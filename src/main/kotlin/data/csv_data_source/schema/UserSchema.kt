@@ -1,33 +1,33 @@
 package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.UserIndex
-import com.berlin.domain.model.User
+import com.berlin.data.dto.UserDto
 import com.berlin.domain.model.UserRole
 
 class UserSchema(
     override val fileName: String,
     override val header: List<String>
-) : BaseSchema<User> {
+) : BaseSchema<UserDto> {
 
     init {
         require(fileName.isNotEmpty()&&header.size== NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: User): List<String> {
+    override fun toRow(entity: UserDto): List<String> {
         return if (checkUserIsNotValid(entity)) emptyList()
         else userToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): User? {
+    override fun fromRow(row: List<String>): UserDto? {
         return if (checkRowIsNotValidUser(row)) null
         else stringsListToUser(row)
     }
 
-    override fun getId(entity: User): String? {
+    override fun getId(entity: UserDto): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun userToStringsList(user: User): List<String> {
+    private fun userToStringsList(user: UserDto): List<String> {
         return listOf(
             user.id,
             user.userName,
@@ -36,8 +36,8 @@ class UserSchema(
         )
     }
 
-    private fun stringsListToUser(row: List<String>): User {
-        return User(
+    private fun stringsListToUser(row: List<String>): UserDto{
+        return UserDto(
             id = row[UserIndex.ID],
             userName = row[UserIndex.USER_NAME],
             password = row[UserIndex.PASSWORD],
@@ -52,7 +52,7 @@ class UserSchema(
                 row[UserIndex.ROLE] !in enumValues<UserRole>().map { it.name })
     }
 
-    private fun checkUserIsNotValid(user: User): Boolean {
+    private fun checkUserIsNotValid(user: UserDto): Boolean {
         return (user.id.isEmpty() ||
                 user.userName.isEmpty() ||
                 user.password.isEmpty())

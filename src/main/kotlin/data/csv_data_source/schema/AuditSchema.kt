@@ -1,13 +1,13 @@
 package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.AuditLogIndex
+import com.berlin.data.dto.AuditLogDto
 import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.EntityType
 
 class AuditSchema(
     override val fileName: String, override val header: List<String>
-) : BaseSchema<AuditLog> {
+) : BaseSchema<AuditLogDto> {
 
     init {
         require(
@@ -15,21 +15,21 @@ class AuditSchema(
         )
     }
 
-    override fun toRow(entity: AuditLog): List<String> {
+    override fun toRow(entity: AuditLogDto): List<String> {
         return if (checkAuditLogIsNotValid(entity)) emptyList()
         else auditLogToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): AuditLog? {
+    override fun fromRow(row: List<String>): AuditLogDto? {
         return if (checkRowIsNotValidAuditLog(row)) null
         else stringsListToAuditLog(row)
     }
 
-    override fun getId(entity: AuditLog): String? {
+    override fun getId(entity: AuditLogDto): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun auditLogToStringsList(auditLog: AuditLog): List<String> {
+    private fun auditLogToStringsList(auditLog: AuditLogDto): List<String> {
         return listOf(
             auditLog.id,
             auditLog.timestamp.toString(),
@@ -41,8 +41,8 @@ class AuditSchema(
         )
     }
 
-    private fun stringsListToAuditLog(row: List<String>): AuditLog {
-        return AuditLog(
+    private fun stringsListToAuditLog(row: List<String>): AuditLogDto {
+        return AuditLogDto(
             id = row[AuditLogIndex.ID],
             timestamp = row[AuditLogIndex.TIMES_TAMP].toLong() ,
             createdByUserId = row[AuditLogIndex.CREATE_BY],
@@ -81,7 +81,7 @@ class AuditSchema(
         }
     }
 
-    private fun checkAuditLogIsNotValid(auditLog: AuditLog): Boolean {
+    private fun checkAuditLogIsNotValid(auditLog: AuditLogDto): Boolean {
         return (auditLog.id.isEmpty() ||
                 auditLog.timestamp <= 0 ||
                 auditLog.createdByUserId.isEmpty() ||

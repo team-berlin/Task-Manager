@@ -1,32 +1,32 @@
 package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.TaskIndex
-import com.berlin.domain.model.Task
+import com.berlin.data.dto.TaskDto
 
 class TaskSchema(
     override val fileName: String,
     override val header: List<String>
-) : BaseSchema<Task> {
+) : BaseSchema<TaskDto> {
 
     init {
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: Task): List<String> {
+    override fun toRow(entity: TaskDto): List<String> {
         return if (checkTaskIsNotValid(entity)) emptyList()
         else taskToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): Task? {
+    override fun fromRow(row: List<String>): TaskDto? {
         return if (checkRowIsNotValidTask(row)) null
         else stringsListToTask(row)
     }
 
-    override fun getId(entity: Task): String? {
+    override fun getId(entity: TaskDto): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun taskToStringsList(task: Task): List<String> {
+    private fun taskToStringsList(task: TaskDto): List<String> {
         return listOf(
             task.id,
             task.projectId,
@@ -38,8 +38,8 @@ class TaskSchema(
         )
     }
 
-    private fun stringsListToTask(row: List<String>): Task {
-        return Task(
+    private fun stringsListToTask(row: List<String>): TaskDto {
+        return TaskDto(
             id = row[TaskIndex.ID],
             projectId = row[TaskIndex.PROJECT_ID],
             title = row[TaskIndex.TITLE],
@@ -59,7 +59,7 @@ class TaskSchema(
                 row[TaskIndex.CREATE_BY_USER_ID].isEmpty())
     }
 
-    private fun checkTaskIsNotValid(task: Task): Boolean {
+    private fun checkTaskIsNotValid(task: TaskDto): Boolean {
         return (task.id.isEmpty() ||
                 task.projectId.isEmpty() ||
                 task.title.isEmpty() ||

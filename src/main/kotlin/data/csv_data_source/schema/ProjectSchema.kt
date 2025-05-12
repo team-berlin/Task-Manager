@@ -1,32 +1,32 @@
 package com.berlin.data.csv_data_source.schema
 
 import com.berlin.data.ProjectIndex
-import com.berlin.domain.model.Project
+import com.berlin.data.dto.ProjectDto
 
 class ProjectSchema(
     override val fileName: String,
     override val header: List<String>
-) : BaseSchema<Project> {
+) : BaseSchema<ProjectDto> {
 
     init {
         require(fileName.isNotEmpty() && header.size == NUMBER_OF_ATTRIBUTES)
     }
 
-    override fun toRow(entity: Project): List<String> {
+    override fun toRow(entity: ProjectDto): List<String> {
         return if (checkProjectIsNotValid(entity)) emptyList()
         else projectToStringsList(entity)
     }
 
-    override fun fromRow(row: List<String>): Project? {
+    override fun fromRow(row: List<String>): ProjectDto? {
         return if (checkRowIsNotValidProject(row)) null
         else stringsListToProject(row)
     }
 
-    override fun getId(entity: Project): String? {
+    override fun getId(entity: ProjectDto): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun projectToStringsList(project: Project): List<String> {
+    private fun projectToStringsList(project: ProjectDto): List<String> {
         return listOf(
             project.id,
             project.title,
@@ -36,8 +36,8 @@ class ProjectSchema(
         )
     }
 
-    private fun stringsListToProject(row: List<String>): Project {
-        return Project(
+    private fun stringsListToProject(row: List<String>): ProjectDto {
+        return ProjectDto(
             id = row[ProjectIndex.ID],
             title = row[ProjectIndex.NAME],
             description = row[ProjectIndex.DESCRIPTION].ifEmpty { null },
@@ -52,7 +52,7 @@ class ProjectSchema(
                 row[ProjectIndex.NAME].isEmpty())
     }
 
-    private fun checkProjectIsNotValid(project: Project): Boolean {
+    private fun checkProjectIsNotValid(project: ProjectDto): Boolean {
         return project.id.isEmpty() ||
                 project.title.isEmpty()
     }

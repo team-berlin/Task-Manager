@@ -5,6 +5,8 @@ import com.berlin.data.csv_data_source.schema.BaseSchema
 import com.berlin.data.audit.AuditRepositoryImpl
 import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.csv_data_source.schema.*
+import com.berlin.data.dto.*
+import com.berlin.data.mapper.*
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.repository.*
@@ -16,6 +18,7 @@ import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import data.UserCache
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 
@@ -26,33 +29,33 @@ val dataModule = module {
 
     single {
         UserCache(
-            User("user1234", "admin", "1212", UserRole.ADMIN)
+            User("user1234", "admin",  UserRole.ADMIN)
         )
     }
 
-    single<BaseSchema<User>>(named("UserSchema")) {
+    single<BaseSchema<UserDto>>(named("UserSchema")) {
         UserSchema(
             fileName = "user.csv", header = listOf("User Id", "UserName", "Password", "User Role")
         )
     }
-    single<BaseSchema<Project>>(named("ProjectSchema")) {
+    single<BaseSchema<ProjectDto>>(named("ProjectSchema")) {
         ProjectSchema(
             fileName = "project.csv", header = listOf("Project Id", "Project Name", "Description", "States", "Tasks")
         )
     }
-    single<BaseSchema<AuditLog>>(named("AuditSchema")) {
+    single<BaseSchema<AuditLogDto>>(named("AuditSchema")) {
         AuditSchema(
             fileName = "audit.csv", header = listOf(
                 "Audit Id", "Timestamp", "CreatedBy", "Audit Action", "Changes Description", "Entity Type", "Entity Id"
             )
         )
     }
-    single<BaseSchema<TaskState>>(named("StateSchema")) {
+    single<BaseSchema<TaskStateDto>>(named("StateSchema")) {
         StateSchema(
             fileName = "state.csv", header = listOf("State Id", "Name", "Project Id")
         )
     }
-    single<BaseSchema<Task>>(named("TaskSchema")) {
+    single<BaseSchema<TaskDto>>(named("TaskSchema")) {
         TaskSchema(
             fileName = "task.csv", header = listOf(
                 "Task Id", "Project Id", "Title", "Description", "State Id", "Assigned To User Id", "Create By User Id"
@@ -76,15 +79,24 @@ val dataModule = module {
             "csv_files", get(named("ProjectSchema"))
         )
     }
+
+    single<BaseDataSource<UserDto>>(named("UserDtoDataSource")) {
+        CsvDataSource("csv_files", get(named("UserSchema")))
+    }
+
     single<BaseDataSource<Task>>(named("TaskDataSource")) { CsvDataSource("csv_files", get(named("TaskSchema"))) }
     single<BaseDataSource<TaskState>>(named("StateDataSource")) { CsvDataSource("csv_files", get(named("StateSchema"))) }
     single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
+    single { TaskMapper() }.bind<EntityMapper<TaskDto, Task>>()
+    single { ProjectMapper() }.bind<EntityMapper<ProjectDto, Project>>()
+    single { TaskStateMapper() }.bind<EntityMapper<TaskStateDto, TaskState>>()
+    single { UserMapper( get() ) }.bind<EntityMapper<UserDto, User>>()
+    single { AuditLogMapper() }.bind<EntityMapper<AuditLogDto, AuditLog>>()
 
-
-    single<ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource"))) }
-    single<TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource"))) }
-    single<AuditRepository> { AuditRepositoryImpl(get(named("AuditDataSource"))) }
-    single<StateRepository> { StateRepositoryImpl(get(named("StateDataSource")), get(named("TaskDataSource"))) }
-    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get(named("UserDataSource"))) }
+    single<ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource")), get<ProjectMapper>() )}
+    single<TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource")), get<TaskMapper>() )}
+    single<AuditRepository> { AuditRepositoryImpl(get(named("AuditDataSource")), get<AuditLogMapper>()) }
+    single<StateRepository> { StateRepositoryImpl(get(named("StateDataSource")), get(),  get<TaskStateMapper>(),  get<TaskMapper>()) }
+    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get(named("UserDataSource")),  get<UserMapper>()) }
 }
