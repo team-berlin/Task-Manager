@@ -18,10 +18,6 @@ class DeleteProjectUseCase(
             throw InvalidProjectIdException("Project ID must not be empty or blank")
         }
 
-        if (!checkProjectExists(projectId)) {
-            throw ProjectNotFoundException("Project with ID $projectId does not exist")
-        }
-
         val deletedProject = projectRepository.deleteProject(projectId)
 
         addAuditLogUseCase(
@@ -37,5 +33,4 @@ class DeleteProjectUseCase(
     private fun validateProjectId(projectId: String): Boolean =
         projectId.isNotBlank() && !(projectId.all { it.isDigit() })
 
-    private fun checkProjectExists(projectId: String): Boolean = projectRepository.getProjectById(projectId) != null
 }

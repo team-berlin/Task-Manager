@@ -1,8 +1,8 @@
-package com.berlin.domain.usecase.project;
+package com.berlin.domain.usecase.project
 
-import com.berlin.helper.projectHelper
+import com.berlin.domain.exception.ProjectNotFoundException
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.usecase.project.GetProjectByIdUseCase
+import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -38,14 +38,9 @@ class GetProjectByIdUseCaseTest {
     @Test
     fun `should throw exception when project id does not exist`() {
         // Given
-        val input = "P2"
-        //every { projectRepository.getProjectById(any()) } returns null
-
-        // When
-        val exception = assertThrows<Exception> { getProjectByIdUseCase("P2") }
-
-        // Then
-        assertThat(exception.message).isEqualTo("Project with ID $input does not exist")
+        every { projectRepository.getProjectById(any()) } throws ProjectNotFoundException("")
+        // When // Then
+        assertThrows<ProjectNotFoundException> { getProjectByIdUseCase("P2") }
     }
 
     @ParameterizedTest

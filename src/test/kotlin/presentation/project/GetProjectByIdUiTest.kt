@@ -2,8 +2,8 @@ package com.berlin.presentation.project
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.ProjectNotFoundException
-import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.project.GetProjectByIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every

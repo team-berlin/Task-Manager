@@ -3,7 +3,6 @@ package com.berlin.presentation.project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.helper.projectHelper
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.GetAllProjectsUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -26,9 +25,7 @@ class GetAllProjectsUiTest {
     fun `Should display all projects list`() {
         // Given
         every { getAllProjectsUseCase() } returns listOf(
-            projectHelper(),
-            projectHelper(),
-            projectHelper()
+            projectHelper(), projectHelper(), projectHelper()
         )
 
         // When
