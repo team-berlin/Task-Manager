@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
@@ -21,8 +22,13 @@ class GetUserByIDUI(
     override fun run() {
         viewer.show("Enter the user id: ")
         val id = reader.read()?.trim().orEmpty()
-       val user =  getUserByIDUseCase.getUserById(id)
-          showUserInfo(user)
+        try {
+            val user =  getUserByIDUseCase.getUserById(id)
+            showUserInfo(user)
+        }catch (_: UserNotFoundException){
+            viewer.show("User not found")
+        }
+
     }
     private fun showUserInfo(user: User) {
         viewer.show("ID: ${user.id}")
