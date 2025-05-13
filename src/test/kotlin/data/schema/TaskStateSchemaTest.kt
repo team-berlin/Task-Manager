@@ -1,5 +1,7 @@
 package com.berlin.data.schema
 
+import com.berlin.data.csv_data_source.schema.TaskStateSchema
+import com.berlin.data.dto.TaskStateDto
 import com.berlin.domain.model.TaskState
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -8,11 +10,11 @@ import org.junit.jupiter.api.assertThrows
 
 class TaskStateSchemaTest {
 
- private lateinit var stateSchema: StateSchema
+ private lateinit var taskStateSchema: TaskStateSchema
 
  @BeforeEach
  fun setup() {
-  stateSchema = fakeStateSchema()
+  taskStateSchema = fakeStateSchema()
  }
 
  //region create object
@@ -21,7 +23,7 @@ class TaskStateSchemaTest {
  fun `should throw IllegalArgumentException when try to create object with blank file name`() {
   //when //then
   assertThrows<IllegalArgumentException> {
-   stateSchema = StateSchema("", listOf("a", "b", "c"))
+   taskStateSchema = TaskStateSchema("", listOf("a", "b", "c"))
   }
  }
 
@@ -29,7 +31,7 @@ class TaskStateSchemaTest {
  fun `should throw IllegalArgumentException when try to create object with invalid size header`() {
   //when //then
   assertThrows<IllegalArgumentException> {
-   stateSchema = StateSchema("test.csv", listOf("a", "b"))
+   taskStateSchema = TaskStateSchema("test.csv", listOf("a", "b"))
   }
  }
 
@@ -40,7 +42,7 @@ class TaskStateSchemaTest {
  @Test
  fun `toRow should return list of valid state attributes when valid state passed`() {
   //when
-  val result = stateSchema.toRow(validState)
+  val result = taskStateSchema.toRow(validStateDto)
   //then
   assertThat(result).isEqualTo(validRow)
  }
@@ -48,7 +50,7 @@ class TaskStateSchemaTest {
  @Test
  fun `toRow should return empty list when invalid state passed miss id attribute`() {
   //when
-  val result = stateSchema.toRow(invalidStateEmptyId)
+  val result = taskStateSchema.toRow(invalidStateDto)
   //then
   assertThat(result).isEmpty()
  }
@@ -56,7 +58,7 @@ class TaskStateSchemaTest {
  @Test
  fun `toRow should return empty list when invalid state passed miss name attribute`() {
   //when
-  val result = stateSchema.toRow(invalidStateEmptyName)
+  val result = taskStateSchema.toRow(invalidStateDtonName)
   //then
   assertThat(result).isEmpty()
  }
@@ -64,7 +66,7 @@ class TaskStateSchemaTest {
  @Test
  fun `toRow should return empty list when invalid state passed miss projectId attribute`() {
   //when
-  val result = stateSchema.toRow(invalidStateEmptyProjectId)
+  val result = taskStateSchema.toRow(invalidStateDto)
   //then
   assertThat(result).isEmpty()
  }
@@ -76,15 +78,15 @@ class TaskStateSchemaTest {
  @Test
  fun `fromRow should return state when valid row passed`() {
   //when
-  val result = stateSchema.fromRow(validRow)
+  val result = taskStateSchema.fromRow(validRow)
   //then
-  assertThat(result).isEqualTo(validState)
+  assertThat(result).isEqualTo(validStateDto)
  }
 
  @Test
  fun `fromRow should return null when invalid row passed miss id column`() {
   //when
-  val result = stateSchema.fromRow(invalidRowEmptyId)
+  val result = taskStateSchema.fromRow(invalidRowEmptyId)
   //then
   assertThat(result).isNull()
  }
@@ -92,7 +94,7 @@ class TaskStateSchemaTest {
  @Test
  fun `fromRow should return null when invalid row passed miss name column`() {
   //when
-  val result = stateSchema.fromRow(invalidRowEmptyName)
+  val result = taskStateSchema.fromRow(invalidRowEmptyName)
   //then
   assertThat(result).isNull()
  }
@@ -100,7 +102,7 @@ class TaskStateSchemaTest {
  @Test
  fun `fromRow should return null when invalid row passed miss projectId column`() {
   //when
-  val result = stateSchema.fromRow(invalidRowEmptyProjectId)
+  val result = taskStateSchema.fromRow(invalidRowEmptyProjectId)
   //then
   assertThat(result).isNull()
  }
@@ -112,7 +114,7 @@ class TaskStateSchemaTest {
  @Test
  fun `getId should return id of state passed`() {
   //when
-  val result = stateSchema.getId(validState)
+  val result = taskStateSchema.getId(validStateDto)
   //then
   assertThat(result).isEqualTo(validState.id)
  }
@@ -120,16 +122,37 @@ class TaskStateSchemaTest {
  @Test
  fun `getId should return null when state passed have empty id`() {
   //when
-  val result = stateSchema.getId(invalidStateEmptyId)
+  val result = taskStateSchema.getId(invalidStateDto)
   //then
   assertThat(result).isNull()
  }
 
  //endregion
 
- private fun fakeStateSchema() = StateSchema("test.csv", listOf("a", "b", "c"))
+ private fun fakeStateSchema() = TaskStateSchema("test.csv", listOf("a", "b", "c"))
 
  private companion object {
+  val invalidStateDto = TaskStateDto(
+  id = "",
+  name = "n1",
+  projectId = "p1"
+  )
+  val invalidStateDtonName = TaskStateDto(
+   id = "5t",
+   name = "",
+   projectId = "p1"
+  )
+  val invalidStateDtoProjectId = TaskStateDto(
+   id = "5t",
+   name = "uu",
+   projectId = ""
+  )
+  val validStateDto = TaskStateDto(
+   id = "s1",
+   name = "n1",
+   projectId = "p1"
+  )
+
   //region Some States
   val validState = TaskState(
    id = "s1",

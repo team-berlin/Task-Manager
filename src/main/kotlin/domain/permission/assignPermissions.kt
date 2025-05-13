@@ -1,10 +1,10 @@
 package com.berlin.domain.permission
 
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 
-fun assignPermissions(role: UserRole): Permission = when (role) {
-    UserRole.MATE -> Permission(
+fun assignPermissions(role: User.UserRole): Permission = when (role) {
+    User.UserRole.MATE -> Permission(
         createProject = false,
         updateProject = false,
         deleteProject = false,
@@ -39,7 +39,7 @@ fun assignPermissions(role: UserRole): Permission = when (role) {
         getUserById = false
     )
 
-    UserRole.ADMIN -> Permission(
+    User.UserRole.ADMIN -> Permission(
         createProject = true,
         updateProject = true,
         deleteProject = true,

@@ -1,0 +1,32 @@
+package com.berlin.domain.usecase.auth_service
+
+import com.berlin.domain.helper.AuthServiceTestData
+import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.authService.GetAllUsersUseCase
+import com.google.common.truth.Truth.assertThat
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+
+class GetAllUsersUseCaseTest {
+
+    private lateinit var repository: AuthenticationRepository
+    private lateinit var getAllUsersUseCase: GetAllUsersUseCase
+
+    @BeforeEach
+    fun setup() {
+        repository = mockk()
+        getAllUsersUseCase = GetAllUsersUseCase(repository)
+    }
+
+    @Test
+    fun `getAllUsers returns admin as first user when no mates exist`() {
+        val expectedAdminUser = AuthServiceTestData.adminIsFirstUser
+        every { repository.getAllUsers() } returns listOf(expectedAdminUser)
+
+        val result = getAllUsersUseCase()
+
+        assertThat(result).isEqualTo(listOf(expectedAdminUser))
+    }
+}

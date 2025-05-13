@@ -1,6 +1,7 @@
 package com.berlin.data.schema
 
-import com.berlin.domain.model.Task
+import com.berlin.data.csv_data_source.schema.TaskSchema
+import com.berlin.data.dto.TaskDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -196,14 +197,14 @@ class TaskSchemaTest {
     private companion object {
 
         //region Some Users id
-        val testUserId ="u1"
+        val testUserId = "u1"
 
-        val testUserId2 ="u2"
+        val testUserId2 = "u2"
 
         //endregion
 
         //region Some Tasks
-        val validTask = Task(
+        val validTask = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "task1",
@@ -212,7 +213,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2
         )
-        val validTaskEmptyDescription = Task(
+        val validTaskEmptyDescription = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "task1",
@@ -221,7 +222,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptyId = Task(
+        val invalidTaskEmptyId = TaskDto(
             id = "",
             projectId = "p1",
             title = "task1",
@@ -230,7 +231,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptyProjectId = Task(
+        val invalidTaskEmptyProjectId = TaskDto(
             id = "t1",
             projectId = "",
             title = "task1",
@@ -239,7 +240,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptyTitle = Task(
+        val invalidTaskEmptyTitle = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "",
@@ -248,7 +249,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptyStateId = Task(
+        val invalidTaskEmptyStateId = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "task1",
@@ -257,7 +258,7 @@ class TaskSchemaTest {
             assignedToUserId = testUserId,
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptyAssignTo = Task(
+        val invalidTaskEmptyAssignTo = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "task1",
@@ -266,7 +267,7 @@ class TaskSchemaTest {
             assignedToUserId = "",
             createByUserId = testUserId2,
         )
-        val invalidTaskEmptycreateByUserId = Task(
+        val invalidTaskEmptycreateByUserId = TaskDto(
             id = "t1",
             projectId = "p1",
             title = "task1",

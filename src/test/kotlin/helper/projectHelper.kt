@@ -11,7 +11,7 @@ fun projectHelper(
 ): Project {
     return Project(
         id = id,
-        name = name,
+        title = name,
         description = description,
         statesId = statesId,
         tasksId = tasksId

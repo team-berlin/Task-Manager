@@ -1,5 +1,6 @@
-package com.berlin.domain.usecase.project;
+package com.berlin.domain.usecase.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.google.common.truth.Truth.assertThat
@@ -22,55 +23,53 @@ class DeleteProjectUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        deleteProjectUseCase = DeleteProjectUseCase(projectRepository, addAuditLogUseCase,
-            cashedUser)
+        deleteProjectUseCase = DeleteProjectUseCase(
+            projectRepository, addAuditLogUseCase, cashedUser
+        )
     }
 
     @Test
-    fun `should return success when project deleted successfully`() {
+    fun `should return Deleted Successfully when project deleted successfully`() {
         // Given
-        every { projectRepository.deleteProject(any()) } returns Result.success("")
+        every { projectRepository.deleteProject(any()) } returns "Deleted Successfully"
         every { cashedUser.currentUser.id } returns "user_123"
 
         // When
-        val result = deleteProjectUseCase.deleteProject("project_1")
+        val result = deleteProjectUseCase("project_1")
 
         // Then
-        assertThat(result).isEqualTo(Result.success("Deleted Successfully"))
-        verify(exactly = 1) { addAuditLogUseCase.addAuditLog(
-            createdByUserId = "user_123",
-            auditAction = any(),
-            entityType = any(),
-            entityId = any()
-        ) }
+        assertThat(result).isEqualTo("Deleted Successfully")
+        verify(exactly = 1) {
+            addAuditLogUseCase(
+                createdByUserId = "user_123", auditAction = any(), entityType = any(), entityId = any()
+            )
+        }
     }
 
     @Test
-    fun `should return failure when project deletion fails`() {
+    fun `should return throw ProjectNotFoundException when project deletion fails`() {
         // Given
-        every { projectRepository.deleteProject("P1") } returns Result.failure(Exception())
+        every { projectRepository.deleteProject("P1") } throws InvalidProjectException("")
 
-        // When
-        val result = deleteProjectUseCase.deleteProject("P1")
-
-        // Then
-        result.onFailure { exception ->
-            assertThat(exception.message).isEqualTo("Deletion Failed")
+        // When// Then
+        assertThrows<InvalidProjectException> {
+            deleteProjectUseCase("P1")
         }
+
+
     }
 
     @Test
     fun `should throw exception when project id does not exists`() {
         // Given
-        every { projectRepository.getProjectById(any()) } returns null
+        every { projectRepository.deleteProject(any()) } throws InvalidProjectException("")
 
-        // When
-        val result = deleteProjectUseCase.deleteProject("P2")
-
-        // Then
-        result.onFailure { exception ->
-            assertThat(exception.message).isEqualTo("Project with ID P2 does not exist")
+        // When// Then
+        assertThrows<InvalidProjectException> {
+            deleteProjectUseCase("P2")
         }
+
+
     }
 
     @ParameterizedTest
@@ -78,7 +77,7 @@ class DeleteProjectUseCaseTest {
     fun `should throw exception when project ID is invalid`(projectId: String) {
         // When && Then
         assertThrows<Exception> {
-            deleteProjectUseCase.deleteProject(projectId)
+            deleteProjectUseCase(projectId)
         }
     }
 

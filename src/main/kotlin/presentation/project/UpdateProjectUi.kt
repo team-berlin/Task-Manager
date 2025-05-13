@@ -1,5 +1,6 @@
 package com.berlin.presentation.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
@@ -26,7 +27,7 @@ class UpdateProjectUi(
         displayAvailableProjects()
 
         val projectId = getValidProjectId()
-        var project = getProjectByIdUseCase.getProjectById(projectId)
+        var project = getProjectByIdUseCase(projectId)
 
         displayCurrentProjectDetails(project)
 
@@ -42,8 +43,8 @@ class UpdateProjectUi(
 
     private fun displayAvailableProjects() {
         viewer.show("Available Projects:\n")
-        getAllProjectsUseCase.getAllProjects().forEach { project ->
-            viewer.show("Project ID: ${project.id}, Title: ${project.name}")
+        getAllProjectsUseCase().forEach { project ->
+            viewer.show("Project ID: ${project.id}, Title: ${project.title}")
         }
     }
 
@@ -68,7 +69,7 @@ class UpdateProjectUi(
 
     private fun isProjectIdValid(projectId: String): Boolean {
         return try {
-            getProjectByIdUseCase.getProjectById(projectId)
+            getProjectByIdUseCase(projectId)
             true
         } catch (e: Exception) {
             false
@@ -78,7 +79,7 @@ class UpdateProjectUi(
     fun displayCurrentProjectDetails(project: Project) {
         viewer.show("Current Project Details:\n")
         viewer.show("Project ID: ${project.id}\n")
-        viewer.show("Title: ${project.name}\n")
+        viewer.show("Title: ${project.title}\n")
         viewer.show("Description: ${project.description ?: "No description"}\n")
     }
 
@@ -142,7 +143,7 @@ class UpdateProjectUi(
                 continue
             }
 
-            return project.copy(name = title)
+            return project.copy(title = title)
         }
     }
 
@@ -173,12 +174,14 @@ class UpdateProjectUi(
     private fun submitProjectUpdate(project: Project) {
         viewer.show("Updating project...\n")
 
-        val result = updateProjectUseCase.updateProject(project)
-
-        if (result.isSuccess) {
-            viewer.show("Project updated successfully!\n")
-        } else {
-            viewer.show("Project update failed!\n")
+        try {
+            val updateMessage = updateProjectUseCase(project)
+            if (updateMessage.isNotEmpty()) {
+                viewer.show("Project updated successfully!\n")
+            }
+        }catch (_: InvalidProjectException){
+            viewer.show("invalid project details")
         }
+
     }
 }

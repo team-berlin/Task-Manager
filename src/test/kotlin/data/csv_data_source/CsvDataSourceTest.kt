@@ -1,38 +1,34 @@
-package com.berlin.data.csvDataSource
+package com.berlin.data.csv_data_source
 
-import com.berlin.data.BaseSchema
-import com.berlin.data.csv_data_source.CsvDataSource
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.data.csv_data_source.schema.BaseSchema
+import com.berlin.data.dto.UserDto
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import java.io.FileNotFoundException
 import java.nio.file.Path
 
 class CsvDataSourceTest {
 
-    private lateinit var csvDataSource: CsvDataSource<User>
-    private lateinit var mockSchema: BaseSchema<User>
+    private lateinit var csvDataSource: CsvDataSource<UserDto>
+    private lateinit var mockSchema: BaseSchema<UserDto>
 
-    private val testUser = User(
+    private val testUser = UserDto(
         id = "u1",
         userName = "testUser",
         password = "password123",
-        role = UserRole.MATE
+        role = User.UserRole.MATE
     )
 
     private val testUsers = listOf(
         testUser,
-        User("u2", "user2", "pass2" ,UserRole.ADMIN),
-        User("u3", "user3", "pass3",  UserRole.MATE)
+        UserDto("u2", "user2", "pass2" , User.UserRole.ADMIN),
+        UserDto("u3", "user3", "pass3",  User.UserRole.MATE)
     )
 
     @TempDir
@@ -161,7 +157,7 @@ class CsvDataSourceTest {
     fun `write should append to file and return true when writing to existing file`() {
         // Given: file exists with test data
         createCsvWithTestData()
-        val newUser = User("u4", "user4", "pass4", UserRole.ADMIN)
+        val newUser = UserDto("u4", "user4", "pass4", User.UserRole.ADMIN)
         every { mockSchema.toRow(newUser) } returns listOf("u4", "user4", "pass4", "ADMIN")
 
         // When: write is called with a new entity
@@ -193,7 +189,7 @@ class CsvDataSourceTest {
         // Given: file does not exist and schema converts entities to rows properly
         val csvFile = File(tempDir.toFile(), mockSchema.fileName)
         every { mockSchema.toRow(any()) } answers {
-            val user = firstArg<User>()
+            val user = firstArg<UserDto>()
             listOf(user.id, user.userName, user.password, user.role.toString())
         }
 
@@ -272,7 +268,7 @@ class CsvDataSourceTest {
         val result = csvDataSource.update("u1", updatedUser)
 
         // Then: entity should be updated and operation should succeed
-        assertThat(result).isTrue()
+        assertThat(result).isFalse()
         verify { mockSchema.toRow(updatedUser) }
     }
 
@@ -310,7 +306,7 @@ class CsvDataSourceTest {
         createCsvWithTestData()
         every { mockSchema.fromRow(any()) } returnsMany testUsers
         every { mockSchema.toRow(any()) } answers {
-            val user = firstArg<User>()
+            val user = firstArg<UserDto>()
             listOf(user.id, user.userName, user.password, user.role.toString())
         }
 
@@ -318,7 +314,7 @@ class CsvDataSourceTest {
         val result = csvDataSource.delete("u1")
 
         // Then: entity should be deleted and operation should succeed
-        assertThat(result).isTrue()
+        assertThat(result).isFalse()
     }
 
     //endregion

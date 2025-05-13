@@ -1,0 +1,41 @@
+package com.berlin.presentation.authService
+
+import com.berlin.domain.exception.InvalidUserIdException
+import com.berlin.domain.exception.UserNotFoundException
+import com.berlin.domain.model.Permission
+import com.berlin.domain.model.user.User
+import com.berlin.domain.usecase.authService.GetUserByIDUseCase
+import com.berlin.presentation.PermissionedUiRunner
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
+
+class GetUserByIDUI(
+    private val getUserByIDUseCase: GetUserByIDUseCase,
+    private val viewer: Viewer,
+    private val reader: Reader,
+) : PermissionedUiRunner {
+
+    override val id: Int = 4
+    override val label: String = "get user by id"
+
+    override fun isAllowed(permission: Permission) = permission.getUserById
+
+    override fun run() {
+        viewer.show("Enter the user id: ")
+        val id = reader.read()?.trim().orEmpty()
+        try {
+            val user =  getUserByIDUseCase(id)
+            showUserInfo(user)
+        }catch (_: UserNotFoundException){
+            viewer.show("User not found")
+        }catch (_: InvalidUserIdException){
+            viewer.show("invalid user id")
+        }
+
+    }
+    private fun showUserInfo(user: User) {
+        viewer.show("ID: ${user.id}")
+        viewer.show(" Name: ${user.userName}")
+        viewer.show(" role: ${user.role}")
+    }
+}

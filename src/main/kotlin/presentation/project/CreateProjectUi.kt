@@ -24,7 +24,10 @@ class CreateProjectUi(
 
         val projectDescription = getProjectDescription()
 
-        createProject(projectName, projectDescription)
+        try {
+            createProject(projectName, projectDescription)
+        }catch (_:Exception){viewer.show("invalid project details")}
+
     }
 
     private fun displayHeader() {
@@ -60,20 +63,12 @@ class CreateProjectUi(
     private fun createProject(projectName: String, projectDescription: String?) {
         viewer.show("Creating project...\n")
 
-        val creationResult = createProjectUseCase.createNewProject(
+        val creationResult = createProjectUseCase(
             projectName,
             projectDescription,
             null,
             null
         )
-
-        creationResult.fold(
-            onSuccess = { message ->
-                viewer.show(message)
-            },
-            onFailure = { error ->
-                viewer.show("Error: ${error.message ?: "Project creation failed!"}\n")
-            }
-        )
+        viewer.show(creationResult)
     }
 }

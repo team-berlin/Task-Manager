@@ -8,12 +8,11 @@ class GetProjectByIdUseCase (
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getProjectById(projectId: String): Project {
+    operator fun invoke(projectId: String): Project {
         if(!validateProjectId(projectId))
             throw InvalidProjectIdException("project id must not be empty, blank, or purely numeric")
 
         return projectRepository.getProjectById(projectId)
-            ?: throw Exception("Project with ID $projectId does not exist")
     }
 
     private fun validateProjectId(projectId: String): Boolean =
