@@ -13,8 +13,8 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class AssignTaskUI(
-    private val assignTask: AssignTaskUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
+    private val assignTaskUseCase: AssignTaskUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
@@ -32,7 +32,7 @@ class AssignTaskUI(
                 title = "Users", elements = getAllUsersUseCase(), labelOf = { it.userName }, viewer = viewer, reader = reader
             )
 
-            assignTask(task.id, assignee.id)
+            assignTaskUseCase(task.id, assignee.id)
             viewer.show("Assigned to ${assignee.userName}")
 
         } catch (ex: InputCancelledException) {
@@ -46,7 +46,7 @@ class AssignTaskUI(
 
     private fun selectTask() = choose(
         title = "Tasks",
-        elements = getAllTasks(),
+        elements = getAllTasksUseCase(),
         labelOf = { "${it.id} – ${it.title}" },
         viewer = viewer,
         reader = reader

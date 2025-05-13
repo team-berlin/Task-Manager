@@ -14,8 +14,8 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class UpdateTaskUI(
-    private val updateTask: UpdateTaskUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
@@ -30,7 +30,7 @@ class UpdateTaskUI(
         try {
             val task = choose(
                 title = "Tasks to update",
-                elements = getAllTasks(),
+                elements = getAllTasksUseCase(),
                 labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
@@ -58,7 +58,7 @@ class UpdateTaskUI(
                 null
             }
 
-            val updatedTasks = updateTask(task.id, title = newTitle, description = newDesc, assignedToUserId = newAssigneeId)
+            val updatedTasks = updateTaskUseCase(task.id, title = newTitle, description = newDesc, assignedToUserId = newAssigneeId)
             viewer.show("Task updated: ${updatedTasks.id}")
 
         } catch (ex: InputCancelledException) {

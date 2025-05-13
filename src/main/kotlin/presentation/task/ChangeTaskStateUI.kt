@@ -14,9 +14,9 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class ChangeTaskStateUI(
-    private val changeState: ChangeTaskStateUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
-    private val getAllStates: GetAllStatesUseCase,
+    private val changeTaskStateUseCase: ChangeTaskStateUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
+    private val getAllStatesUseCase: GetAllStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -30,13 +30,13 @@ class ChangeTaskStateUI(
         try {
             val task = choose(
                 title = "Tasks",
-                elements = getAllTasks(),
+                elements = getAllTasksUseCase(),
                 labelOf = { "${it.id} – ${it.title} [${it.stateId}]" },
                 viewer = viewer,
                 reader = reader
             )
 
-            val possible = getAllStates().filter { it.projectId == task.projectId }
+            val possible = getAllStatesUseCase().filter { it.projectId == task.projectId }
             if (possible.isEmpty()) {
                 viewer.show("No states defined for project ${task.projectId}")
                 return
@@ -49,7 +49,7 @@ class ChangeTaskStateUI(
                 reader = reader
             )
 
-            val updatedTask = changeState(task.id, state.id)
+            val updatedTask = changeTaskStateUseCase(task.id, state.id)
             viewer.show("Task ${updatedTask.id} moved to ${state.name}")
 
         } catch (ex: InputCancelledException) {
