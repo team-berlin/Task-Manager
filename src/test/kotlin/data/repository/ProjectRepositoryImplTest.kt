@@ -1,9 +1,8 @@
-package com.berlin.data.project
+package com.berlin.data.repository
 
 import com.berlin.data.BaseDataSource
 import com.berlin.data.dto.ProjectDto
 import com.berlin.data.mapper.ProjectMapper
-import com.berlin.data.repository.ProjectRepositoryImpl
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.exception.ProjectNotFoundException
 import com.berlin.domain.model.Project

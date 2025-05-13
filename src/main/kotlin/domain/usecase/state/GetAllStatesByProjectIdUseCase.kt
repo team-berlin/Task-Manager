@@ -14,9 +14,11 @@ class GetAllStatesByProjectIdUseCase(
     operator fun invoke(projectId: String): List<TaskState> {
 
         return if (!validateProjectId(projectId)) {
-            stateRepository.getStatesByProjectId(projectId)
-        } else {
             throw InvalidProjectIdException("Project ID must not be empty or blank")
+
+        } else {
+            stateRepository.getStatesByProjectId(projectId)
+
         }
     }
 

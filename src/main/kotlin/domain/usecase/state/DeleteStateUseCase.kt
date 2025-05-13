@@ -16,5 +16,5 @@ class DeleteStateUseCase(
     }
 
     private fun validateStateId(stateId: String): Boolean =
-        stateId.isNotBlank() || !(stateId.all { it.isDigit() })
+        stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

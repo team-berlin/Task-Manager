@@ -11,7 +11,7 @@ import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.StateRepository
 
-class StateRepositoryImpl(
+class TaskStateRepositoryImpl(
     private val stateDataSource: BaseDataSource<TaskStateDto>,
     private val taskDataSource: BaseDataSource<TaskDto>,
     private val taskStateMapper: TaskStateMapper,

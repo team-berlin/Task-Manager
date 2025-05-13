@@ -1,4 +1,4 @@
-package com.berlin.domain.hashAlgorithm
+package com.berlin.domain.usecase.utils.hashAlgorithm
 
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.usecase.utils.hash_algorithm.MD5Hasher

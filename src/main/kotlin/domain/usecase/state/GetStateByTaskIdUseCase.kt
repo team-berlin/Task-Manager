@@ -13,9 +13,10 @@ class GetStateByTaskIdUseCase(
 
     operator fun invoke(taskId: String): TaskState? {
         if (!validateTaskId(taskId)) {
-            return stateRepository.getStateByTaskId(taskId)
-        } else {
             throw InvalidTaskIdException("Task ID must not be empty or blank")
+
+        } else {
+            return stateRepository.getStateByTaskId(taskId)
         }
     }
 

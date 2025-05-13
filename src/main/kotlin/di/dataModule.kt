@@ -10,7 +10,7 @@ import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.repository.AuthenticationRepositoryImpl
 import com.berlin.data.repository.ProjectRepositoryImpl
-import com.berlin.data.repository.StateRepositoryImpl
+import com.berlin.data.repository.TaskStateRepositoryImpl
 import com.berlin.data.repository.TaskRepositoryImpl
 import com.berlin.domain.model.*
 import com.berlin.domain.model.user.User
@@ -104,7 +104,7 @@ val dataModule = module {
     single<TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource")), get<TaskMapper>()) }
     single<AuditRepository> { AuditRepositoryImpl(get(named("AuditDataSource")), get<AuditLogMapper>()) }
     single<StateRepository> {
-        StateRepositoryImpl(
+        TaskStateRepositoryImpl(
             get(named("StateDataSource")),
             get(),
             get<TaskStateMapper>(),

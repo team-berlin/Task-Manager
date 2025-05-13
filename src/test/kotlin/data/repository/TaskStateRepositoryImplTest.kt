@@ -1,65 +1,59 @@
-package com.berlin.data.state
+package com.berlin.data.repository
 
 import com.berlin.data.BaseDataSource
 import com.berlin.data.dto.TaskDto
 import com.berlin.data.dto.TaskStateDto
 import com.berlin.data.mapper.TaskMapper
 import com.berlin.data.mapper.TaskStateMapper
-import com.berlin.data.repository.StateRepositoryImpl
 import com.berlin.domain.exception.InvalidStateException
-import com.berlin.domain.model.TaskState
+import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.Task
+import com.berlin.domain.model.TaskState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class TaskStateRepositoryImplTest {
-    private lateinit var repository: StateRepositoryImpl
+    private lateinit var repository: TaskStateRepositoryImpl
+    private lateinit var taskStateMapper: TaskStateMapper
+    private lateinit var taskMapper: TaskMapper
     private val stateDataSource: BaseDataSource<TaskStateDto> = mockk()
     private val taskDataSource: BaseDataSource<TaskDto> = mockk()
 
-
     @BeforeEach
     fun setUp() {
-        val taskStateMapper: TaskStateMapper = mockk()
-        val taskMapper: TaskMapper = mockk()
-        repository = StateRepositoryImpl(stateDataSource, taskDataSource,
+        taskStateMapper = mockk()
+        taskMapper= mockk()
+        repository = TaskStateRepositoryImpl(stateDataSource, taskDataSource,
             taskStateMapper, taskMapper)
     }
 
     // region addState
 
     @Test
-    fun `addState should return success when added succeeds`() {
+    fun `addState should return State created successfully when added succeeds`() {
         // Given
-        every { stateDataSource.write(any()) } returns true
+        every { taskStateMapper.mapToDataModel(validState) } returns validStateDto
+        every { stateDataSource.write(validStateDto) } returns true
+
         // When
         val result = repository.addState(validState)
+
         // Then
         assertThat(result).isEqualTo("State created successfully")
     }
 
     @Test
-    fun `addState should return success with state id when added succeeds`() {
+    fun `addState should return InvalidStateException when added fails`() {
         // Given
-        every { stateDataSource.write(any()) } returns true
-        // When
-        val result = repository.addState(validState)
-        // Then
-        assertThat(result).isEqualTo(validState.id)
-    }
-
-    @Test
-    fun `addState should return failure with InvalidStateException when added fails`() {
-        // Given
+        every { taskStateMapper.mapToDataModel(invalidState) } returns invalidStateDto
         every { stateDataSource.write(any()) } returns false
-        // When
-        val result = repository.addState(validState)
-        // Then
-        assertThat(result).isInstanceOf(InvalidStateException::class.java)
+
+        // When & Then
+       assertThrows<InvalidStateException> { repository.addState(invalidState) }
     }
     // endregion
 
@@ -69,38 +63,46 @@ class TaskStateRepositoryImplTest {
     fun `getStateById should return state when data source returns state`() {
         // Given
         every { stateDataSource.getById(any()) } returns validStateDto
+        every { taskStateMapper.mapToDomainModel(validStateDto) } returns validState
+
         // When
         val result = repository.getStateById(validState.id)
+
         // Then
         assertThat(result).isEqualTo(validState)
     }
 
     @Test
-    fun `getStateById should return null when data source returns null`() {
+    fun `getStateById should return null when data source returns StateNotFoundException exception`() {
         // Given
         every { stateDataSource.getById(any()) } returns null
-        // When
-        val result = repository.getStateById(validState.id)
-        // Then
-        assertThat(result).isNull()
+        every { taskStateMapper.mapToDomainModel(validStateDto) } returns validState
+
+        // When & Then
+        assertThrows<StateNotFoundException> { repository.getStateById(validState.id) }
     }
     // endregion
 
+
     // region getStatesByProjectId
+
     @Test
-    fun `getStatesByProjectId should return list of states match this project`() {
+    fun `getStatesByProjectId should return list of states match project id`() {
         // Given
-        every { stateDataSource.getAll() } returns listOf()
+        every { stateDataSource.getAll() } returns listOf(validStateDto)
+        every { taskStateMapper.mapToDomainModel(validStateDto) } returns validState
+
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
+
         // Then
-        assertThat(result).isEqualTo(states)
+        assertThat(result).isEqualTo(listOf(validState))
     }
 
     @Test
-    fun `getStatesByProjectId should null when data source returns empty list or no matches project`() {
+    fun `getStatesByProjectId should return empty when data source returns empty list or no matches project`() {
         // Given
-        every { stateDataSource.getAll() } returns states
+        every { stateDataSource.getAll() } returns emptyList()
         // When
         val result = repository.getStatesByProjectId(validState.projectId)
         // Then
@@ -108,15 +110,17 @@ class TaskStateRepositoryImplTest {
     }
     // endregion
 
+
     // region getTasksByStateId
     @Test
     fun `getTasksByStateId should return list of matches tasks when data source returns tasks`() {
         // Given
-        every { taskDataSource.getAll() } returns tasks
+        every { taskDataSource.getAll() } returns listOf(validTaskDto)
+        every { taskMapper.mapToDomainModel(validTaskDto) } returns task
         // When
         val result = repository.getTasksByStateId(validState.id)
         // Then
-        assertThat(result).isEqualTo(tasks)
+        assertThat(result).isEqualTo(listOf(task))
     }
 
     @Test
@@ -130,10 +134,12 @@ class TaskStateRepositoryImplTest {
     }
     // endregion
 
+
     // region updateState
     @Test
-    fun `updateState should return success when update succeeds`() {
+    fun `updateState should return Updated Successfully when update succeeds`() {
         // Given
+        every { taskStateMapper.mapToDataModel(validState) } returns validStateDto
         every { stateDataSource.update(any(), any()) } returns true
         // When
         val result = repository.updateState(validState)
@@ -142,35 +148,16 @@ class TaskStateRepositoryImplTest {
     }
 
     @Test
-    fun `updateState should return success with state id when update succeeds`() {
+    fun `updateState should return InvalidStateException when update fails`() {
         // Given
-        every { stateDataSource.update(any(), any()) } returns true
-        // When
-        val result = repository.updateState(validState)
-        // Then
-        assertThat(result).isEqualTo(validState.id)
-    }
-
-    @Test
-    fun `updateState should return failure when update fails`() {
-        // Given
+        every { taskStateMapper.mapToDataModel(invalidState) } returns invalidStateDto
         every { stateDataSource.update(any(), any()) } returns false
-        // When
-        val result = repository.updateState(validState)
-        // Then
-        assertThat(result).isEqualTo("can not update state")
-    }
 
-    @Test
-    fun `updateState should return failure with InvalidStateException when update fails`() {
-        // Given
-        every { stateDataSource.update(any(), any()) } returns false
-        // When
-        val result = repository.updateState(validState)
-        // Then
-        assertThat(result).isInstanceOf(InvalidStateException::class.java)
+        // When & Then
+        assertThrows<InvalidStateException> { repository.updateState(invalidState) }
     }
     // endregion
+
 
     // region deleteState
     @Test
@@ -184,44 +171,27 @@ class TaskStateRepositoryImplTest {
     }
 
     @Test
-    fun `deleteState should return success with state id when delete succeeds`() {
-        // Given
-        every { stateDataSource.delete(any()) } returns true
-        // When
-        val result = repository.deleteState(validState.id)
-        // Then
-        assertThat(result).isEqualTo(validState.id)
-    }
-
-    @Test
-    fun `deleteState should return failure when delete fails`() {
+    fun `deleteState should return InvalidStateException exception when delete fails`() {
         // Given
         every { stateDataSource.delete(any()) } returns false
-        // When
-        val result = repository.deleteState(validState.id)
-        // Then
-        assertThat(result).isEqualTo("can not delete state")
+        // When & Then
+        assertThrows<InvalidStateException> { repository.deleteState(invalidState.id) }
     }
 
-    @Test
-    fun `deleteState should return failure with InvalidStateException when delete fails`() {
-        // Given
-        every { stateDataSource.delete(any()) } returns false
-        // When
-        val result = repository.deleteState(validState.id)
-        // Then
-        assertThat(result).isInstanceOf(InvalidStateException::class.java)
-    }
     // endregion
+
 
     // region getStateByTaskId
     @Test
     fun `getStateByTaskId should return state when data sources returns state matches task`() {
         // Given
-        every { taskDataSource.getById(any()) } returns validTask
+        every { taskDataSource.getById(any()) } returns validTaskDto
         every { stateDataSource.getById(any()) } returns validStateDto
+        every { taskStateMapper.mapToDomainModel(validStateDto) } returns validState
+
         // When
-        val result = repository.getStateByTaskId(validTask.id)
+        val result = repository.getStateByTaskId(task.id)
+
         // Then
         assertThat(result).isEqualTo(validState)
     }
@@ -229,16 +199,51 @@ class TaskStateRepositoryImplTest {
     @Test
     fun `getStateByTaskId should return null when data sources returns null no match state and no task`() {
         // Given
+        every { taskMapper.mapToDataModel(invalidtask) } returns invalidtaskDto
         every { taskDataSource.getById(any()) } returns null
         every { stateDataSource.getById(any()) } returns null
-        // When
-        val result = repository.getStateByTaskId(validTask.id)
-        // Then
+        // When & Then
+        val result=repository.getStateByTaskId(invalidtask.id)
         assertThat(result).isNull()
     }
     // endregion
 
+
+    //region getAllStates
+    @Test
+    fun `getAllStates should return states when there is states stored`(){
+        //Given
+        every { stateDataSource.getAll() } returns listOf(validStateDto)
+        every { taskStateMapper.mapToDomainModel(validStateDto) } returns validState
+
+        //when
+        val result=repository.getAllStates()
+
+        //Then
+        assertThat(result).isEqualTo(listOf(validState))
+    }
+
+    @Test
+    fun `getAllStates should return null when there is no states`(){
+        //Given
+        every { stateDataSource.getAll() } returns emptyList()
+
+        //when
+        val result=repository.getAllStates()
+
+        //Then
+        assertThat(result).isEmpty()
+
+    }
+    //endregion
+
     companion object {
+        val invalidStateDto=TaskStateDto(
+            id = "st123", name = "Doing", projectId = "pppppp"
+        )
+        val invalidState=TaskState(
+        id = "st123", name = "Doing", projectId = "pppppp"
+        )
 
         val validStateDto = TaskStateDto(
             id = "st123", name = "ToDo", projectId = "pppppp"
@@ -247,7 +252,34 @@ class TaskStateRepositoryImplTest {
         val validState = TaskState(
             id = "st123", name = "ToDo", projectId = "pppppp"
         )
-        val validTask = TaskDto(
+        val invalidtask=Task(
+            id = "invalid123",
+            projectId = "hhhhh",
+            title = "zzzz",
+            description = null,
+            stateId = "st123",
+            assignedToUserId = "57r",
+            createByUserId = "r444"
+        )
+        val invalidtaskDto=TaskDto(
+            id = "invalid123",
+            projectId = "hhhhh",
+            title = "zzzz",
+            description = null,
+            stateId = "st123",
+            assignedToUserId = "57r",
+            createByUserId = "r444"
+        )
+        val task= Task(
+            id = "t6665",
+            projectId = "hhhhh",
+            title = "zzzz",
+            description = null,
+            stateId = "st123",
+            assignedToUserId = "57r",
+            createByUserId = "r444"
+        )
+        val validTaskDto = TaskDto(
             id = "t6665",
             projectId = "hhhhh",
             title = "zzzz",
