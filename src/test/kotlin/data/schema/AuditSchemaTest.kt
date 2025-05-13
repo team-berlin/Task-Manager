@@ -42,7 +42,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return list of valid audit log attributes when valid audit log passed`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(validAuditLog)
         //then
         assertThat(result).isEqualTo(validRow)
     }
@@ -50,7 +50,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return list of valid audit log attributes when audit log with empty changesDescription passed`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(validAuditLogEmptyChangesDescription)
         //then
         assertThat(result).isEqualTo(validRowEmptyChangesDescription)
     }
@@ -58,7 +58,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return empty list when invalid audit log passed miss id attribute`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(invalidAuditLogEmptyId)
         //then
         assertThat(result).isEmpty()
     }
@@ -66,7 +66,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return empty list when invalid audit log passed miss timestamp attribute`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(invalidAuditLogZeroTimestamp)
         //then
         assertThat(result).isEmpty()
     }
@@ -74,7 +74,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return empty list when invalid audit log passed miss createdBy attribute`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(invalidAuditLogEmptyCreatedBy)
         //then
         assertThat(result).isEmpty()
     }
@@ -82,7 +82,7 @@ class AuditSchemaTest {
     @Test
     fun `toRow should return empty list when invalid audit log passed miss entityId attribute`() {
         //when
-        val result = auditSchema.toRow(validAuditLogDto)
+        val result = auditSchema.toRow(invalidAuditLogEmptyEntityId)
         //then
         assertThat(result).isEmpty()
     }
@@ -178,7 +178,7 @@ class AuditSchemaTest {
     @Test
     fun `getId should return id of audit log passed`() {
         //when
-        val result = auditSchema.getId(validAuditLogDto)
+        val result = auditSchema.getId(validAuditLog)
         //then
         assertThat(result).isEqualTo(validAuditLog.id)
     }
@@ -186,7 +186,7 @@ class AuditSchemaTest {
     @Test
     fun `getId should return null when audit log passed have empty id`() {
         //when
-        val result = auditSchema.getId(validAuditLogDto)
+        val result = auditSchema.getId(invalidAuditLogEmptyId)
         //then
         assertThat(result).isNull()
     }
@@ -199,19 +199,9 @@ class AuditSchemaTest {
 
         val testUserId = "u1"
 
-        val validAuditLogDto = AuditLogDto(
-            id = "a1",
-            timestamp = 1000L,
-            createdByUserId = testUserId,
-            auditAction = AuditLog.AuditAction.CREATE,
-            changesDescription = "create",
-            entityType = AuditLog.EntityType.TASK,
-            entityId = "e1"
-        )
-
         //region Some AuditLogs
 
-        val validAuditLog = AuditLog(
+        val validAuditLog = AuditLogDto(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
@@ -220,7 +210,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
-        val validAuditLogProject = AuditLog(
+        val validAuditLogProject = AuditLogDto(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
@@ -229,7 +219,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.PROJECT,
             entityId = "e1"
         )
-        val validAuditLogEmptyChangesDescription = AuditLog(
+        val validAuditLogEmptyChangesDescription = AuditLogDto(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,
@@ -238,7 +228,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
-        val invalidAuditLogEmptyId = AuditLog(
+        val invalidAuditLogEmptyId = AuditLogDto(
             id = "",
             timestamp = 1000L,
             createdByUserId = testUserId,
@@ -247,7 +237,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
-        val invalidAuditLogZeroTimestamp = AuditLog(
+        val invalidAuditLogZeroTimestamp = AuditLogDto(
             id = "a1",
             timestamp = 0L,
             createdByUserId = testUserId,
@@ -256,7 +246,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
-        val invalidAuditLogEmptyCreatedBy = AuditLog(
+        val invalidAuditLogEmptyCreatedBy = AuditLogDto(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = "",
@@ -265,7 +255,7 @@ class AuditSchemaTest {
             entityType = AuditLog.EntityType.TASK,
             entityId = "e1"
         )
-        val invalidAuditLogEmptyEntityId = AuditLog(
+        val invalidAuditLogEmptyEntityId = AuditLogDto(
             id = "a1",
             timestamp = 1000L,
             createdByUserId = testUserId,

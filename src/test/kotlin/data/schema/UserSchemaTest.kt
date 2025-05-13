@@ -51,7 +51,7 @@ class UserSchemaTest {
     @Test
     fun `toRow should return list of valid user attributes when valid user mate passed`() {
         //when
-        val result = userSchema.toRow(validUserMateDto)
+        val result = userSchema.toRow(validUserMate)
         //then
         assertThat(result).isEqualTo(validRowMate)
     }
@@ -158,13 +158,9 @@ class UserSchemaTest {
 
     private companion object {
 
-        val validUserMate = User(
-            id = "abcs123", userName = "marwanMahmoud", role = User.UserRole.MATE
-        )
-
         //region Some Users
 
-        val validUserMateDto = UserDto(
+        val validUserMate = UserDto(
             id = "abcs123", userName = "marwanMahmoud", password = "ui76654898", role = User.UserRole.MATE
         )
         val validUser = UserDto(
