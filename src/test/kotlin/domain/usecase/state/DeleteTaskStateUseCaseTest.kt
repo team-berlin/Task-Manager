@@ -11,12 +11,12 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
 class DeleteTaskStateUseCaseTest {
-    private lateinit var deleteStateUseCase: DeleteStateUseCase
+    private lateinit var deleteTaskStateUseCase: DeleteTaskStateUseCase
     private val stateRepository: StateRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        deleteStateUseCase = DeleteStateUseCase(stateRepository)
+        deleteTaskStateUseCase = DeleteTaskStateUseCase(stateRepository)
     }
 
     @Test
@@ -26,7 +26,7 @@ class DeleteTaskStateUseCaseTest {
         every { stateRepository.getStateById(any()) } returns mockk()
 
         // When
-        val result = deleteStateUseCase("state_1")
+        val result = deleteTaskStateUseCase("state_1")
 
         // Then
         assertThat(result).isEqualTo("Deleted Successfully")
@@ -39,7 +39,7 @@ class DeleteTaskStateUseCaseTest {
         every { stateRepository.getStateById(any()) } returns mockk()
 
         // When
-        val result = deleteStateUseCase("state_2")
+        val result = deleteTaskStateUseCase("state_2")
 
         // Then
         assertThat(result).isEqualTo("Deletion Failed")
@@ -53,7 +53,7 @@ class DeleteTaskStateUseCaseTest {
         every { stateRepository.deleteState(any()) } throws InvalidStateException(stateId)
 
         // When & Then
-        assertThrows<InvalidStateException> {  deleteStateUseCase(stateId)}
+        assertThrows<InvalidStateException> {  deleteTaskStateUseCase(stateId)}
 
     }
 
@@ -63,7 +63,7 @@ class DeleteTaskStateUseCaseTest {
         every { stateRepository.deleteState(stateId) } throws InvalidStateException(stateId)
 
         assertThrows<InvalidStateException> {
-            deleteStateUseCase(stateId)
+            deleteTaskStateUseCase(stateId)
         }
     }
 
@@ -72,7 +72,7 @@ class DeleteTaskStateUseCaseTest {
         val stateId = ""
 
         assertThrows<InvalidStateIdException> {
-            deleteStateUseCase(stateId)
+            deleteTaskStateUseCase(stateId)
         }
     }
 
@@ -80,7 +80,7 @@ class DeleteTaskStateUseCaseTest {
     fun `should throw InvalidStateIdException when id is blank`() {
         val stateId = "  "
         assertThrows<InvalidStateIdException> {
-            deleteStateUseCase(stateId)
+            deleteTaskStateUseCase(stateId)
         }
     }
 
@@ -89,7 +89,7 @@ class DeleteTaskStateUseCaseTest {
         val stateId = "123"
 
         assertThrows<InvalidStateIdException> {
-            deleteStateUseCase(stateId)
+            deleteTaskStateUseCase(stateId)
         }
     }
 

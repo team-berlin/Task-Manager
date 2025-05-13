@@ -3,7 +3,7 @@ package com.berlin.domain.usecase.state
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.repository.StateRepository
 
-class DeleteStateUseCase(
+class DeleteTaskStateUseCase(
     private val stateRepository: StateRepository
 ) {
 

@@ -10,7 +10,7 @@ import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.domain.usecase.project.*
 import com.berlin.domain.usecase.state.CreateStateUseCase
-import com.berlin.domain.usecase.state.DeleteStateUseCase
+import com.berlin.domain.usecase.state.DeleteTaskStateUseCase
 import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.state.GetAllStatesUseCase
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
@@ -50,7 +50,7 @@ val useCaseModule = module {
     single { CreateMateUseCase(get(), get(), get()) }
 
     single { CreateStateUseCase(get(),get())}
-    single { DeleteStateUseCase(get()) }
+    single { DeleteTaskStateUseCase(get()) }
     single { GetAllStatesByProjectIdUseCase(get(),get()) }
     single { GetStateByIdUseCase(get()) }
     single { GetStateByTaskIdUseCase(get(),get()) }

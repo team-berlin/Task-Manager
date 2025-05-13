@@ -3,7 +3,7 @@ package com.berlin.data.csv_data_source.schema
 import com.berlin.data.StateIndex
 import com.berlin.data.dto.TaskStateDto
 
-class StateSchema(
+class TaskStateSchema(
     override val fileName: String,
     override val header: List<String>
 ) : BaseSchema<TaskStateDto> {

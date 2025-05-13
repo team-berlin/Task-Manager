@@ -52,7 +52,7 @@ val dataModule = module {
         )
     }
     single<BaseSchema<TaskStateDto>>(named("StateSchema")) {
-        StateSchema(
+        TaskStateSchema(
             fileName = "state.csv", header = listOf("State Id", "Name", "Project Id")
         )
     }
