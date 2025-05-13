@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
+import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByTaskIdUseCase
@@ -26,7 +27,7 @@ class GetAuditLogsByTaskIdUseCaseTest {
         // Given
         val taskId = "T123"
         val logs = listOf(
-            generateAuditLog(id = "A3", entityId = taskId, entityType = EntityType.TASK)
+            generateAuditLog(id = "A3", entityId = taskId, entityType = AuditLog.EntityType.TASK)
         )
         every { auditRepository.getAuditLogsByTaskId(taskId) } returns logs
 

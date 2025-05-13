@@ -6,9 +6,9 @@ fun generateAuditLog(
     id: String = "A1",
     timestamp: Long = System.currentTimeMillis(),
     createdBy: String = "u1",
-    action: AuditAction = AuditAction.CREATE,
+    action: AuditLog.AuditAction = AuditLog.AuditAction.CREATE,
     changesDescription: String? = "Created something",
-    entityType: EntityType = EntityType.TASK,
+    entityType: AuditLog.EntityType = AuditLog.EntityType.TASK,
     entityId: String = "G2"
 ): AuditLog {
     return AuditLog(

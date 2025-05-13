@@ -27,9 +27,9 @@ class AuditByProjectUITest {
             id = "A1",
             timestamp = 1234567890L,
             createdByUserId = "U1",
-            auditAction = AuditAction.CREATE,
+            auditAction = AuditLog.AuditAction.CREATE,
             changesDescription = "Initial creation",
-            entityType = EntityType.PROJECT,
+            entityType = AuditLog.EntityType.PROJECT,
             entityId = "P1"
         )
     )
@@ -90,9 +90,9 @@ class AuditByProjectUITest {
                 id = "A2",
                 timestamp = 1234567891L,
                 createdByUserId = "U2",
-                auditAction = AuditAction.UPDATE,
+                auditAction = AuditLog.AuditAction.UPDATE,
                 changesDescription = null,
-                entityType = EntityType.PROJECT,
+                entityType = AuditLog.EntityType.PROJECT,
                 entityId = "P1"
             )
         )
