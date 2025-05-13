@@ -14,7 +14,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class GetTasksByProjectIdUI(
-    private val getTasks: GetTasksByProjectUseCase,
+    private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase,
     private val viewer: Viewer,
@@ -36,7 +36,7 @@ class GetTasksByProjectIdUI(
                 reader = reader
             )
 
-            val tasks = getTasks(project.id)
+            val tasks = getTasksByProjectUseCase(project.id)
             showSwimLaneFor(project.id, tasks)
 
 

@@ -12,7 +12,6 @@ class GetUserByIDUseCase(
             throw InvalidUserIdException("User ID can't be empty or just digits")
         return repository.getUserById(id)
     }
-
     private fun isIDValid(id: String): Boolean =
         id.isNotBlank() && !id.all { it.isDigit() }
 }

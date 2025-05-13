@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
@@ -46,7 +47,7 @@ class GetAuditLogsByProjectIdUseCaseTest {
     @ValueSource(strings = ["", "   ", "123"])
     fun `should throw exception when project Id is invalid`(invalidId: String) {
         //when&then
-        assertThrows<IllegalArgumentException> {
+        assertThrows<InvalidProjectIdException> {
             getAuditLogsByProjectIdUseCase(invalidId)
         }
     }

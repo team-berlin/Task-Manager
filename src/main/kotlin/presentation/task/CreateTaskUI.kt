@@ -18,7 +18,7 @@ import com.berlin.presentation.io.Viewer
 import data.UserCache
 
 class CreateTaskUI(
-    private val createTask: CreateTaskUseCase,
+    private val createTaskUseCase: CreateTaskUseCase,
     private val cashedUser: UserCache,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase,
@@ -39,11 +39,11 @@ class CreateTaskUI(
             val assignee = selectUser()
             val (title, desc) = askTitleAndDescription()
 
-            val task = createTask(project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id)
+            val task = createTaskUseCase(project.id, title, desc, state.id, cashedUser.currentUser.id, assignee.id)
             viewer.show("Task created: id=${task.id}")
 
         } catch (ex: InputCancelledException) {
-            viewer.show(ex.message ?: "Cancelled.")
+            viewer.show("Cancelled.")
         } catch (ex: InvalidSelectionException) {
             viewer.show(ex.message!!)
         } catch (ex: InvalidTaskTitle) {

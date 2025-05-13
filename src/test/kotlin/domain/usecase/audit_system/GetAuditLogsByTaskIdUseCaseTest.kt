@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
+import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
@@ -43,7 +44,7 @@ class GetAuditLogsByTaskIdUseCaseTest {
     @ValueSource(strings = ["", "   ","123"])
     fun `should throw Exception when task id is invalid`(invalidId: String) {
         //when&then
-        assertThrows<IllegalArgumentException> {
+        assertThrows<InvalidTaskIdException> {
             getAuditLogsByTaskIdUseCase(invalidId)
         }
     }

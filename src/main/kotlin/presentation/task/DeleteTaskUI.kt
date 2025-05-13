@@ -12,8 +12,8 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class DeleteTaskUI(
-    private val deleteTask: DeleteTaskUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -27,7 +27,7 @@ class DeleteTaskUI(
         try {
             val task = choose(
                 title = "Tasks",
-                elements = getAllTasks(),
+                elements = getAllTasksUseCase(),
                 labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
@@ -36,7 +36,7 @@ class DeleteTaskUI(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            val result = deleteTask(task.id)
+            val result = deleteTaskUseCase(task.id)
             viewer.show(result)
 
         } catch (ex: InputCancelledException) {

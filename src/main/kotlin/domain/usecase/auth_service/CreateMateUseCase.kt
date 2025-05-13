@@ -1,17 +1,17 @@
 package com.berlin.domain.usecase.authService
+
 import com.berlin.domain.exception.InvalidCredentialsException
-import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
-import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.model.user.User
 import com.berlin.domain.model.user.UserCreation
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
+import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 
 class CreateMateUseCase(
     private val repository: AuthenticationRepository,
     private val idGenerator: IdGenerator,
     private val hashingString: HashingString
 ) {
-
 
     operator fun invoke(userName: String, password: String): User {
         if (userName.isEmpty() || password.isEmpty()) {
@@ -29,7 +29,8 @@ class CreateMateUseCase(
         )
         return repository.createMate(newUser)
     }
-     private companion object{
-       const val MAIN_PASSWORD_LENGTH = 8
+
+    private companion object {
+        const val MAIN_PASSWORD_LENGTH = 8
     }
 }

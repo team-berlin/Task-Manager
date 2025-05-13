@@ -20,7 +20,6 @@ class AuditByTaskUI(
     private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase,
     private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase
-
 ) : PermissionedUiRunner {
 
     override val id = 2

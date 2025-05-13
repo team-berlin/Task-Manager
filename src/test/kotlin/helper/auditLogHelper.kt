@@ -7,7 +7,7 @@ fun generateAuditLog(
     timestamp: Long = System.currentTimeMillis(),
     createdBy: String = "u1",
     action: AuditLog.AuditAction = AuditLog.AuditAction.CREATE,
-    changesDescription: String? = "Created something",
+    changesDescription: String? = null,
     entityType: AuditLog.EntityType = AuditLog.EntityType.TASK,
     entityId: String = "G2"
 ): AuditLog {
