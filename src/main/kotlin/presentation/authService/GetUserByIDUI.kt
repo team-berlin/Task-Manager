@@ -1,5 +1,6 @@
 package com.berlin.presentation.authService
 
+import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.exception.UserNotFoundException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.user.User
@@ -27,6 +28,8 @@ class GetUserByIDUI(
             showUserInfo(user)
         }catch (_: UserNotFoundException){
             viewer.show("User not found")
+        }catch (_: InvalidUserIdException){
+            viewer.show("invalid user id")
         }
 
     }
