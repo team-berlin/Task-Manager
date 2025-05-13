@@ -1,4 +1,4 @@
-package com.berlin.data.repository
+package com.berlin.data.audit
 
 import com.berlin.data.BaseDataSource
 import com.berlin.domain.exception.InvalidAuditLogException
