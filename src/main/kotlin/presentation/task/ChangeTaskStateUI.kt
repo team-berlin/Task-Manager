@@ -5,7 +5,7 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.PermissionedUiRunner
@@ -16,7 +16,7 @@ import com.berlin.presentation.io.Viewer
 class ChangeTaskStateUI(
     private val changeTaskStateUseCase: ChangeTaskStateUseCase,
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val getAllStatesUseCase: GetAllStatesUseCase,
+    private val getAllStatesUseCase: GetAllTaskStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
