@@ -2,11 +2,13 @@ package com.berlin.presentation.audit
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.AuditLog
+import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -73,6 +75,26 @@ class AuditByProjectUITest {
     }
 
     @Test
+    fun `isAllowed returns true when getAuditByProject is true`() {
+        val permission = mockk<Permission>(relaxed = true)
+        every { permission.getAuditByProject } returns true
+
+        val result = ui.isAllowed(permission)
+
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `isAllowed returns false when getAuditByProject is false`() {
+        val permission = mockk<Permission>(relaxed = true)
+        every { permission.getAuditByProject } returns false
+
+        val result = ui.isAllowed(permission)
+
+        assertThat(result).isFalse()
+    }
+
+    @Test
     fun `displays cancelled message when input is x`() {
         every { reader.read() } returns "x"
         every { getAllProjectsUseCase() } returns listOf(sampleProject)
@@ -82,6 +104,7 @@ class AuditByProjectUITest {
             viewer.show("Cancelled.")
         }
     }
+
     @Test
     fun `displays null when changesDescription is null`() {
         every { reader.read() } returns "1"
@@ -116,5 +139,6 @@ class AuditByProjectUITest {
             viewer.show("Invalid selection")
         }
     }
+
 }
 

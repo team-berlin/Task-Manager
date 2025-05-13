@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.audit_system
 
+import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.AuditRepository
 
@@ -10,7 +11,7 @@ class GetAuditLogsByProjectIdUseCase(
     operator fun invoke(projectId: String): List<AuditLog> {
 
         if (!validateProjectId(projectId))
-            throw IllegalArgumentException("Project ID must not be empty, blank, or purely numeric")
+            throw InvalidProjectIdException("Project ID must not be empty, blank, or purely numeric")
 
         return auditRepository.getAuditLogsByProjectId(projectId)
     }
