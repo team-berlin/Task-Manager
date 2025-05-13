@@ -16,7 +16,6 @@ class AuthenticateUserUseCase(
             throw InvalidCredentialsException("No user found")
         }
 
-        val cachedUser = userCache.currentUser
 
         val hashedPassword = hashingString.hashPassword(password)
         val user = repository.login(userName, hashedPassword)
