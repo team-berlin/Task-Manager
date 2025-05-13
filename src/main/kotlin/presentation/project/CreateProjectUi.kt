@@ -24,7 +24,10 @@ class CreateProjectUi(
 
         val projectDescription = getProjectDescription()
 
-        createProject(projectName, projectDescription)
+        try {
+            createProject(projectName, projectDescription)
+        }catch (_:Exception){viewer.show("invalid project details")}
+
     }
 
     private fun displayHeader() {

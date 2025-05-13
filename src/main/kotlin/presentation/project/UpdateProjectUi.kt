@@ -1,5 +1,6 @@
 package com.berlin.presentation.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
@@ -173,9 +174,14 @@ class UpdateProjectUi(
     private fun submitProjectUpdate(project: Project) {
         viewer.show("Updating project...\n")
 
-        val updateMessage = updateProjectUseCase.updateProject(project)
-        if (updateMessage.isNotEmpty()) {
-            viewer.show("Project updated successfully!\n")
+        try {
+            val updateMessage = updateProjectUseCase.updateProject(project)
+            if (updateMessage.isNotEmpty()) {
+                viewer.show("Project updated successfully!\n")
+            }
+        }catch (_: InvalidProjectException){
+            viewer.show("invalid project details")
         }
+
     }
 }
