@@ -7,8 +7,7 @@ import com.berlin.data.repository.TaskRepositoryImpl
 import com.berlin.domain.exception.InvalidTaskException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -136,8 +135,8 @@ class TaskRepositoryImplTest {
         assertThat(result).isEqualTo(listOf(task))
     }
 
-    private val alice = User("U1", "alice", UserRole.MATE)
-    private val bob = User("U2", "bob", UserRole.MATE)
+    private val alice = User("U1", "alice", User.UserRole.MATE)
+    private val bob = User("U2", "bob", User.UserRole.MATE)
 
     private fun task(
         id: String,
