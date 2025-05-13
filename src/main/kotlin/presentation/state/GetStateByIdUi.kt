@@ -1,5 +1,6 @@
 package com.berlin.presentation.state
 
+import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.state.GetStateByIdUseCase
@@ -20,9 +21,14 @@ class GetStateByIdUi(
 
     override fun run() {
         viewer.show("Enter state ID: ")
-        val stateId = reader.read()?.trim().orEmpty()
-        val state = getStateById.getStateById(stateId)
-        showState(state)
+        try {
+            val stateId = reader.read()?.trim().orEmpty()
+            val state = getStateById.getStateById(stateId)
+            showState(state)
+        }catch (_: InvalidStateIdException){
+            viewer.show("invalid id")
+        }
+
     }
 
     private fun showState(state: TaskState) {

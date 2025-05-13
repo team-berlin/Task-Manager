@@ -1,6 +1,7 @@
 package com.berlin.presentation.state
 
 import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
@@ -30,7 +31,8 @@ class CreateStateUI(
             addStateName(project)
         } catch (_: InputCancelledException) {
             viewer.show("Cancelled!")
-        }
+        }catch (_: InvalidSelectionException)
+        {viewer.show("invalid selection")}
 
 
     }
