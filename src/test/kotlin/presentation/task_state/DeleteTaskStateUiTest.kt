@@ -1,10 +1,10 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.data.DummyData
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.usecase.state.DeleteTaskStateUseCase
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.task_state.DeleteTaskStateUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -22,10 +22,10 @@ class DeleteTaskStateUiTest {
     }
     private val reader: Reader = mockk()
     private val deleteTaskStateUseCase: DeleteTaskStateUseCase = mockk()
-    private val getAllTaskStatesUseCase: GetAllStatesUseCase = mockk()
+    private val getAllTaskStatesUseCase: GetAllTaskStatesUseCase = mockk()
 
     private lateinit var state: TaskState
-    private lateinit var ui: DeleteStateUi
+    private lateinit var ui: DeleteTaskStateUi
 
     @BeforeEach
     fun setUp() {
@@ -35,7 +35,7 @@ class DeleteTaskStateUiTest {
         state = TaskState("S1", "TODO", "P1")
         DummyData.states += state
 
-        ui = DeleteStateUi(deleteTaskStateUseCase, getAllTaskStatesUseCase, viewer, reader)
+        ui = DeleteTaskStateUi(deleteTaskStateUseCase, getAllTaskStatesUseCase, viewer, reader)
     }
 
     @Test

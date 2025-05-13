@@ -1,19 +1,19 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.state.DeleteTaskStateUseCase
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.task_state.DeleteTaskStateUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class DeleteStateUi(
+class DeleteTaskStateUi(
     private val deleteTaskStateUseCase: DeleteTaskStateUseCase,
-    private val getAllStates: GetAllStatesUseCase,
+    private val getAllStates: GetAllTaskStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : PermissionedUiRunner {
@@ -38,7 +38,7 @@ class DeleteStateUi(
             if (!reader.read().equals("y", true)) throw InputCancelledException("Cancelled.")
 
             val deleteStateResult = deleteTaskStateUseCase(state.id)
-                    viewer.show("$deleteStateResult is Deleted.")
+            viewer.show("$deleteStateResult is Deleted.")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

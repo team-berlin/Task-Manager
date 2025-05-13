@@ -1,18 +1,18 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 
-class GetStateByIdUseCase(
-    private val stateRepository: StateRepository
+class GetTaskStateByIdUseCase(
+    private val taskStateRepository: TaskStateRepository
 ) {
 
     operator fun invoke(stateId: String): TaskState {
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State id must not be empty, blank, or purely numeric")
 
-        return stateRepository.getStateById(stateId)
+        return taskStateRepository.getStateById(stateId)
     }
 
     private fun validateStateId(stateId: String): Boolean =

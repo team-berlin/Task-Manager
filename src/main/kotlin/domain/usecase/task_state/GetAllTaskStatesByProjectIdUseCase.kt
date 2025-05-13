@@ -1,13 +1,13 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.ProjectRepository
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 
-class GetAllStatesByProjectIdUseCase(
-    private val stateRepository: StateRepository,
+class GetAllTaskStatesByProjectIdUseCase(
+    private val taskStateRepository: TaskStateRepository,
     private val projectRepository: ProjectRepository
 ) {
 
@@ -17,7 +17,7 @@ class GetAllStatesByProjectIdUseCase(
             throw InvalidProjectIdException("Project ID must not be empty or blank")
 
         } else {
-            stateRepository.getStatesByProjectId(projectId)
+            taskStateRepository.getStatesByProjectId(projectId)
 
         }
     }

@@ -1,10 +1,10 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.data.DummyData
 import com.berlin.domain.model.Project
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -12,16 +12,16 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetAllStatesByProjectIdUITest {
+class GetAllTaskStatesByProjectIdUITest {
 
     private val printed = mutableListOf<String>()
     private val viewer: Viewer = mockk(relaxed = true) {
         every { show(capture(printed)) } just Runs
     }
     private val reader: Reader = mockk()
-    private lateinit var getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase
+    private lateinit var getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
-    private lateinit var getAllStatesByProjectIdUI: GetAllStatesByProjectIdUI
+    private lateinit var getAllTaskStatesByProjectIdUI: GetAllTaskStatesByProjectIdUI
 
     @BeforeEach
     fun setUp() {
@@ -35,20 +35,20 @@ class GetAllStatesByProjectIdUITest {
         DummyData.projects += projectP1
         DummyData.states += listOf(stateTodo, stateDone)
 
-        getAllStatesByProjectIdUseCase = mockk()
-        getAllStatesByProjectIdUI = GetAllStatesByProjectIdUI(getAllStatesByProjectIdUseCase, getAllProjectsUseCase, viewer, reader)
+        getAllTaskStatesByProjectIdUseCase = mockk()
+        getAllTaskStatesByProjectIdUI = GetAllTaskStatesByProjectIdUI(getAllTaskStatesByProjectIdUseCase, getAllProjectsUseCase, viewer, reader)
     }
 
     @Test
     fun `shows swimlane with states`() {
         every { reader.read() } returns "1"
-        every { getAllStatesByProjectIdUseCase(projectIdWithNoStates) } returns
+        every { getAllTaskStatesByProjectIdUseCase(projectIdWithNoStates) } returns
                 listOf(
                     stateTodo,
                     stateDone
                 )
 
-        getAllStatesByProjectIdUI.run()
+        getAllTaskStatesByProjectIdUI.run()
         assertThat(printed).contains("\n=== States for project P1 ===")
         assertThat(printed).contains("- S1: TODO")
         assertThat(printed).contains("- S2: DONE")
@@ -57,25 +57,25 @@ class GetAllStatesByProjectIdUITest {
     @Test
     fun `shows (no states) when project has no states`() {
         every { reader.read() } returns "1"
-        every { getAllStatesByProjectIdUseCase(projectIdWithNoStates) } returns emptyList()
-        getAllStatesByProjectIdUI.run()
+        every { getAllTaskStatesByProjectIdUseCase(projectIdWithNoStates) } returns emptyList()
+        getAllTaskStatesByProjectIdUI.run()
         assertThat(printed).contains("  (no states)")
     }
 
     @Test
     fun `cancelling input shows Cancelled`() {
         every { reader.read() } returns "X"
-        getAllStatesByProjectIdUI.run()
+        getAllTaskStatesByProjectIdUI.run()
         assertThat(printed.last()).contains("Cancelled.")
-        verify(exactly = 0) { getAllStatesByProjectIdUseCase(any()) }
+        verify(exactly = 0) { getAllTaskStatesByProjectIdUseCase(any()) }
     }
 
     @Test
     fun `invalid selection shows error`() {
         every { reader.read() } returns "99"
-        getAllStatesByProjectIdUI.run()
+        getAllTaskStatesByProjectIdUI.run()
         assertThat(printed.last()).contains("Invalid selection")
-        verify(exactly = 0) { getAllStatesByProjectIdUseCase(any()) }
+        verify(exactly = 0) { getAllTaskStatesByProjectIdUseCase(any()) }
     }
 
 

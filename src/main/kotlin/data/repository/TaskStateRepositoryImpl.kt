@@ -9,14 +9,14 @@ import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 
 class TaskStateRepositoryImpl(
     private val stateDataSource: BaseDataSource<TaskStateDto>,
     private val taskDataSource: BaseDataSource<TaskDto>,
     private val taskStateMapper: TaskStateMapper,
     private val taskMapper: TaskMapper
-) : StateRepository {
+) : TaskStateRepository {
 
     override fun addState(state: TaskState): String {
         val stateDto = taskStateMapper.mapToDataModel(state)

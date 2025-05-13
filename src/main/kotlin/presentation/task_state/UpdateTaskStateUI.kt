@@ -1,19 +1,19 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
-import com.berlin.domain.usecase.state.UpdateStateUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
+import com.berlin.domain.usecase.task_state.UpdateTaskStateUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class UpdateStateUI(
-    private val updateState: UpdateStateUseCase,
-    private val getAllStates: GetAllStatesUseCase,
+class UpdateTaskStateUI(
+    private val updateState: UpdateTaskStateUseCase,
+    private val getAllStates: GetAllTaskStatesUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -45,11 +45,11 @@ class UpdateStateUI(
 
         } catch (ex: InvalidStateNameException) {
             viewer.show("State Name must not be empty or blank")
-        }  catch (_: InputCancelledException) {
-        viewer.show("Cancelled!")
-    }catch (_: InvalidSelectionException){
+        } catch (_: InputCancelledException) {
+            viewer.show("Cancelled!")
+        } catch (_: InvalidSelectionException) {
             viewer.show("invalid selection")
-    }
+        }
 
     }
 }

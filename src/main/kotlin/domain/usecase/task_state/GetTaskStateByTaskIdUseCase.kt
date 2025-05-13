@@ -1,13 +1,12 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.exception.InvalidTaskIdException
-import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 import com.berlin.domain.repository.TaskRepository
 
-class GetStateByTaskIdUseCase(
-    private val stateRepository: StateRepository,
+class GetTaskStateByTaskIdUseCase(
+    private val taskStateRepository: TaskStateRepository,
     private val taskRepository: TaskRepository
 ) {
 
@@ -16,7 +15,7 @@ class GetStateByTaskIdUseCase(
             throw InvalidTaskIdException("Task ID must not be empty or blank")
 
         } else {
-            return stateRepository.getStateByTaskId(taskId)
+            return taskStateRepository.getStateByTaskId(taskId)
         }
     }
 

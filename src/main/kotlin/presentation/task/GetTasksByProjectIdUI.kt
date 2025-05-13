@@ -6,8 +6,8 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -16,7 +16,7 @@ import com.berlin.presentation.io.Viewer
 class GetTasksByProjectIdUI(
     private val getTasks: GetTasksByProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
+    private val getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -50,7 +50,7 @@ class GetTasksByProjectIdUI(
     }
 
     private fun showSwimLaneFor(projectId: String, tasks: List<Task>) {
-        val states = getAllStatesByProjectIdUseCase(projectId)
+        val states = getAllTaskStatesByProjectIdUseCase(projectId)
         if (states.isEmpty()) {
             viewer.show("No states found for that project.")
             return

@@ -1,15 +1,15 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.usecase.state.GetStateByIdUseCase
+import com.berlin.domain.usecase.task_state.GetTaskStateByIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class GetStateByIdUi(
-    private val getStateById: GetStateByIdUseCase,
+class GetTaskStateByIdUi(
+    private val getStateById: GetTaskStateByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -25,7 +25,7 @@ class GetStateByIdUi(
             val stateId = reader.read()?.trim().orEmpty()
             val state = getStateById(stateId)
             showState(state)
-        }catch (_: InvalidStateIdException){
+        } catch (_: InvalidStateIdException) {
             viewer.show("invalid id")
         }
 

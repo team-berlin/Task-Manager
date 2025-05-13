@@ -1,8 +1,8 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.usecase.state.GetStateByIdUseCase
+import com.berlin.domain.usecase.task_state.GetTaskStateByIdUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.*
@@ -13,8 +13,8 @@ class GetTaskStateByIdUiTest {
 
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
-    private lateinit var getStateByIdUseCase: GetStateByIdUseCase
-    private lateinit var getStateByIdUi: GetStateByIdUi
+    private lateinit var getTaskStateByIdUseCase: GetTaskStateByIdUseCase
+    private lateinit var getTaskStateByIdUi: GetTaskStateByIdUi
     private val printed = mutableListOf<String>()
 
     @BeforeEach
@@ -23,8 +23,8 @@ class GetTaskStateByIdUiTest {
             every { show(capture(printed)) } just Runs
         }
         reader = mockk()
-        getStateByIdUseCase = mockk()
-        getStateByIdUi = GetStateByIdUi(getStateByIdUseCase, viewer, reader)
+        getTaskStateByIdUseCase = mockk()
+        getTaskStateByIdUi = GetTaskStateByIdUi(getTaskStateByIdUseCase, viewer, reader)
         printed.clear()
     }
 
@@ -37,10 +37,10 @@ class GetTaskStateByIdUiTest {
     @Test
     fun `getStateById should return state when its id exists`() {
         //given
-        every { getStateByIdUseCase("Q1") } returns stateExists
+        every { getTaskStateByIdUseCase("Q1") } returns stateExists
         every { reader.read() } returns "Q1"
         //when
-        getStateByIdUi.run()
+        getTaskStateByIdUi.run()
         //Then
         verify { viewer.show("Enter state ID: ") }
 

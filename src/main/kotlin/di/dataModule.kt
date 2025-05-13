@@ -103,7 +103,7 @@ val dataModule = module {
     single<ProjectRepository> { ProjectRepositoryImpl(get(named("ProjectDataSource")), get<ProjectMapper>()) }
     single<TaskRepository> { TaskRepositoryImpl(get(named("TaskDataSource")), get<TaskMapper>()) }
     single<AuditRepository> { AuditRepositoryImpl(get(named("AuditDataSource")), get<AuditLogMapper>()) }
-    single<StateRepository> {
+    single<TaskStateRepository> {
         TaskStateRepositoryImpl(
             get(named("StateDataSource")),
             get(),

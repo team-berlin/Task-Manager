@@ -13,7 +13,7 @@ import com.berlin.presentation.io.ConsoleViewer
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.*
-import com.berlin.presentation.state.*
+import com.berlin.presentation.task_state.*
 import com.berlin.presentation.task.*
 import data.UserCache
 import org.koin.core.qualifier.named
@@ -36,11 +36,11 @@ val uiModule = module {
     single { GetProjectByIdUi(get(), get(), get()) }
     single { UpdateProjectUi(get(), get(), get(), get(), get()) }
 
-    single { CreateStateUI(get(), get(), get(), get()) }
-    single { DeleteStateUi(get(), get(), get(), get()) }
-    single { GetAllStatesByProjectIdUI(get(), get(), get(), get()) }
-    single { GetStateByIdUi(get(), get(), get()) }
-    single { UpdateStateUI(get(), get(), get(), get()) }
+    single { CreateTaskStateUI(get(), get(), get(), get()) }
+    single { DeleteTaskStateUi(get(), get(), get(), get()) }
+    single { GetAllTaskStatesByProjectIdUI(get(), get(), get(), get()) }
+    single { GetTaskStateByIdUi(get(), get(), get()) }
+    single { UpdateTaskStateUI(get(), get(), get(), get()) }
 
     single { AuditByProjectUI(get(), get(), get(), get()) }
     single { AuditByTaskUI(get(), get(), get(), get(), get()) }
@@ -82,11 +82,11 @@ val uiModule = module {
     single<UiRunner>(named("statesCategory")) {
         CategoryUI(
             id = 3, label = "States", children = listOf(
-                get<CreateStateUI>(),
-                get<DeleteStateUi>(),
-                get<GetAllStatesByProjectIdUI>(),
-                get<GetStateByIdUi>(),
-                get<UpdateStateUI>()
+                get<CreateTaskStateUI>(),
+                get<DeleteTaskStateUi>(),
+                get<GetAllTaskStatesByProjectIdUI>(),
+                get<GetTaskStateByIdUi>(),
+                get<UpdateTaskStateUI>()
             ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }

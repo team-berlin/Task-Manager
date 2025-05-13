@@ -1,18 +1,18 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.CreateStateUseCase
+import com.berlin.domain.usecase.task_state.CreateTaskStateUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class CreateStateUI(
-    private val createStateUseCase: CreateStateUseCase,
+class CreateTaskStateUI(
+    private val createTaskStateUseCase: CreateTaskStateUseCase,
     private val getAllProjectUseCase: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader
@@ -52,7 +52,7 @@ class CreateStateUI(
 
             else -> {
                 try {
-                   val createStateResult  =  createStateUseCase(stateName, project.id)
+                   val createStateResult  =  createTaskStateUseCase(stateName, project.id)
                  viewer.show(createStateResult)
 
 

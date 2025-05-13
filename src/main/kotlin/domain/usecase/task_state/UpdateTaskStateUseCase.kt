@@ -1,11 +1,11 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 
-class UpdateStateUseCase(
-    private val stateRepository: StateRepository,
+class UpdateTaskStateUseCase(
+    private val taskStateRepository: TaskStateRepository,
 ) {
     operator fun invoke(stateId: String, newStateName: String, projectId: String): String {
         if (!validateStateName(newStateName))
@@ -15,7 +15,7 @@ class UpdateStateUseCase(
             name = newStateName,
             projectId = projectId
         )
-        return stateRepository.updateState(updatedState)
+        return taskStateRepository.updateState(updatedState)
     }
 
 

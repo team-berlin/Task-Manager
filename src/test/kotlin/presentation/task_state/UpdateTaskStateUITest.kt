@@ -1,9 +1,9 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
-import com.berlin.domain.usecase.state.UpdateStateUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
+import com.berlin.domain.usecase.task_state.UpdateTaskStateUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import io.mockk.every
@@ -13,17 +13,17 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
 class UpdateTaskStateUITest {
-    private lateinit var updateStateUseCase: UpdateStateUseCase
-    private lateinit var getAllStatesUseCase: GetAllStatesUseCase
-    private lateinit var updateStateUI: UpdateStateUI
+    private lateinit var updateTaskStateUseCase: UpdateTaskStateUseCase
+    private lateinit var getAllTaskStatesUseCase: GetAllTaskStatesUseCase
+    private lateinit var updateTaskStateUI: UpdateTaskStateUI
     private var viewer: Viewer = mockk(relaxed = true)
     private var reader: Reader = mockk()
 
     @BeforeEach
     fun setup() {
-        updateStateUseCase = mockk()
-        getAllStatesUseCase = mockk()
-        updateStateUI = UpdateStateUI(updateStateUseCase, getAllStatesUseCase, viewer, reader)
+        updateTaskStateUseCase = mockk()
+        getAllTaskStatesUseCase = mockk()
+        updateTaskStateUI = UpdateTaskStateUI(updateTaskStateUseCase, getAllTaskStatesUseCase, viewer, reader)
     }
 
 
@@ -31,14 +31,14 @@ class UpdateTaskStateUITest {
     @Test
     fun `run should throw InvalidStateNameException when State Name is empty or blank`() {
         //Given
-        every { getAllStatesUseCase() } returns listOf(TaskState("Q1", "Menna", "P5"))
+        every { getAllTaskStatesUseCase() } returns listOf(TaskState("Q1", "Menna", "P5"))
         every { reader.read() } returnsMany listOf("1", " ")
         every {
-            updateStateUseCase(any(), emptyStateName, any())
+            updateTaskStateUseCase(any(), emptyStateName, any())
         } throws InvalidStateNameException("State Name must not be empty or blank")
 
         //When
-        updateStateUI.run()
+        updateTaskStateUI.run()
 
         //Then
         verify { viewer.show("State Name must not be empty or blank") }

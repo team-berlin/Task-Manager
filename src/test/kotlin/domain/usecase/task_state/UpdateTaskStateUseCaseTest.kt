@@ -1,7 +1,7 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.model.TaskState
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -13,22 +13,22 @@ import kotlin.test.Test
 
 class UpdateTaskStateUseCaseTest {
 
-    private lateinit var updateStateUseCase: UpdateStateUseCase
-    private val stateRepository: StateRepository = mockk(relaxed = true)
+    private lateinit var updateTaskStateUseCase: UpdateTaskStateUseCase
+    private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        updateStateUseCase = UpdateStateUseCase(stateRepository)
+        updateTaskStateUseCase = UpdateTaskStateUseCase(taskStateRepository)
     }
 
     @Test
     fun `should return success when state update succeeds`() {
         // Given
         val state = TaskState(id = "S1", name = "Active", projectId = "P1")
-        every { stateRepository.updateState(state) } returns "Updated Successfully"
+        every { taskStateRepository.updateState(state) } returns "Updated Successfully"
 
         // When
-        val result = updateStateUseCase(state.id,state.name,state.projectId)
+        val result = updateTaskStateUseCase(state.id, state.name, state.projectId)
 
         // Then
         assertThat(result).isEqualTo("Updated Successfully")
@@ -38,14 +38,14 @@ class UpdateTaskStateUseCaseTest {
     fun `should return exception when state update fails`() {
         // Given
         val state = TaskState(id = "S2", name = "Inactive", projectId = "P2")
-        every { stateRepository.updateState(state) } throws Exception()
+        every { taskStateRepository.updateState(state) } throws Exception()
 
         // When & Then
-        assertThrows<Exception> { updateStateUseCase(state.id, state.name, state.projectId) }
+        assertThrows<Exception> { updateTaskStateUseCase(state.id, state.name, state.projectId) }
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["", " ","123"])
+    @ValueSource(strings = ["", " ", "123"])
     fun `should throw exception when state ID is invalid`(stateName: String) {
         // Given
         val input = TaskState(
@@ -56,7 +56,7 @@ class UpdateTaskStateUseCaseTest {
 
         // When && Then
         assertThrows<Exception> {
-            updateStateUseCase(input.id,input.name,input.projectId)
+            updateTaskStateUseCase(input.id, input.name, input.projectId)
         }
     }
 

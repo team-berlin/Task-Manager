@@ -9,8 +9,8 @@ import com.berlin.domain.model.Project
 import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
@@ -22,7 +22,7 @@ class CreateTaskUI(
     private val cashedUser: UserCache,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase,
-    private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
+    private val getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -59,7 +59,7 @@ class CreateTaskUI(
 
     private fun selectState(project: Project) = choose(
         title = "States for ${project.title}",
-        elements = getAllStatesByProjectIdUseCase(project.id),
+        elements = getAllTaskStatesByProjectIdUseCase(project.id),
         labelOf = { it.name },
         viewer = viewer,
         reader = reader

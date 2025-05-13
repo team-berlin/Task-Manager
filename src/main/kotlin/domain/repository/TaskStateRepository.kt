@@ -3,7 +3,7 @@ package com.berlin.domain.repository
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.Task
 
-interface StateRepository {
+interface TaskStateRepository {
     fun addState(state: TaskState): String
     fun getStatesByProjectId(projectId: String): List<TaskState>
     fun getTasksByStateId(stateId: String):List<Task>?

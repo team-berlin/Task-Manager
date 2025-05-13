@@ -1,7 +1,7 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.model.Task
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -13,8 +13,8 @@ import kotlin.test.Test
 
 class GetTasksByTaskStateIdUseCaseTest {
 
-    private lateinit var getTasksByStateIdUseCase: GetTasksByStateIdUseCase
-    private val stateRepository: StateRepository = mockk(relaxed = true)
+    private lateinit var getTasksByTaskStateIdUseCase: GetTasksByTaskStateIdUseCase
+    private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
 
     private val task = Task(
         id = "T1",
@@ -28,18 +28,18 @@ class GetTasksByTaskStateIdUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        getTasksByStateIdUseCase = GetTasksByStateIdUseCase(stateRepository)
+        getTasksByTaskStateIdUseCase = GetTasksByTaskStateIdUseCase(taskStateRepository)
     }
 
     @Test
     fun `should return tasks when tasks are found for the state`() {
         // Given
         val expectedTasks = listOf(task)
-        every { stateRepository.getTasksByStateId("S1") } returns expectedTasks
-        every { stateRepository.getStateById("S1") } returns mockk()
+        every { taskStateRepository.getTasksByStateId("S1") } returns expectedTasks
+        every { taskStateRepository.getStateById("S1") } returns mockk()
 
         // When
-        val result = getTasksByStateIdUseCase("S1")
+        val result = getTasksByTaskStateIdUseCase("S1")
 
         // Then
         assertThat(result).isEqualTo(expectedTasks)
@@ -48,11 +48,11 @@ class GetTasksByTaskStateIdUseCaseTest {
     @Test
     fun `should throw exception when no tasks are found for the state`() {
         // Given
-        every { stateRepository.getTasksByStateId("S2") } returns null
-        every { stateRepository.getStateById("S2") } returns mockk()
+        every { taskStateRepository.getTasksByStateId("S2") } returns null
+        every { taskStateRepository.getStateById("S2") } returns mockk()
 
         // When & Then
-        val exception = assertThrows<Exception> { getTasksByStateIdUseCase("S2") }
+        val exception = assertThrows<Exception> { getTasksByTaskStateIdUseCase("S2") }
         assertThat(exception.message).isEqualTo("No tasks found for state ID S2")
     }
 
@@ -62,7 +62,7 @@ class GetTasksByTaskStateIdUseCaseTest {
     fun `should throw exception when state id is invalid`(stateId: String) {
         // When && Then
         assertThrows<Exception> {
-            getTasksByStateIdUseCase(stateId)
+            getTasksByTaskStateIdUseCase(stateId)
         }
     }
 

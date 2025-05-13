@@ -1,4 +1,4 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidProjectIdException
@@ -6,14 +6,14 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.presentation.PermissionedUiRunner
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
-class GetAllStatesByProjectIdUI(
-    private val getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase,
+class GetAllTaskStatesByProjectIdUI(
+    private val getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
@@ -34,8 +34,8 @@ class GetAllStatesByProjectIdUI(
                 reader = reader
             )
 
-            val getAllStates = getAllStatesByProjectIdUseCase(project.id)
-               showSwimLaneFor(project.id, getAllStates)
+            val getAllStates = getAllTaskStatesByProjectIdUseCase(project.id)
+            showSwimLaneFor(project.id, getAllStates)
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

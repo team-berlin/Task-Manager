@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class TaskTaskStateSchemaTest {
+class TaskStateSchemaTest {
 
  private lateinit var taskStateSchema: TaskStateSchema
 

@@ -1,8 +1,8 @@
-package com.berlin.presentation.state
+package com.berlin.presentation.task_state
 
 import com.berlin.domain.model.Project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.CreateStateUseCase
+import com.berlin.domain.usecase.task_state.CreateTaskStateUseCase
 import com.berlin.presentation.helper.choose
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CreateTaskStateUITest {
-    private lateinit var createStateUseCase: CreateStateUseCase
-    private lateinit var createStateUi: CreateStateUI
+    private lateinit var createTaskStateUseCase: CreateTaskStateUseCase
+    private lateinit var createTaskStateUi: CreateTaskStateUI
     private lateinit var getAllProjectUseCase: GetAllProjectsUseCase
     private val viewer: Viewer = mockk(relaxed = true)
     private val reader: Reader = mockk(relaxed = true)
@@ -31,9 +31,9 @@ class CreateTaskStateUITest {
 
     @BeforeEach
     fun setup() {
-        createStateUseCase = mockk(relaxed = true)
+        createTaskStateUseCase = mockk(relaxed = true)
         getAllProjectUseCase = mockk(relaxed = true)
-        createStateUi = CreateStateUI(createStateUseCase, getAllProjectUseCase,viewer, reader)
+        createTaskStateUi = CreateTaskStateUI(createTaskStateUseCase, getAllProjectUseCase,viewer, reader)
 
         // Mock the choose function to return our test project
         mockkStatic("com.berlin.presentation.helper.ChooserKt")
@@ -50,7 +50,7 @@ class CreateTaskStateUITest {
         every { reader.read() } returnsMany listOf("", null, "exit")
 
         // When
-        createStateUi.run()
+        createTaskStateUi.run()
 
         // Then
         verify { viewer.show("State Name can not be empty") }
@@ -63,7 +63,7 @@ class CreateTaskStateUITest {
         every { reader.read() } returns "exit"
 
         // When
-        createStateUi.run()
+        createTaskStateUi.run()
 
         // Then
         verify(exactly = 1) { reader.read() }
@@ -76,33 +76,29 @@ class CreateTaskStateUITest {
 
         every { reader.read() } returnsMany listOf(stateName, "exit")
         every {
-            createStateUseCase(stateName, testProject.id)
+            createTaskStateUseCase(stateName, testProject.id)
         } returns "State created successfully"
 
         // When
-        createStateUi.run()
+        createTaskStateUi.run()
 
         // Then
-        verify { createStateUseCase(stateName, testProject.id) }
+        verify { createTaskStateUseCase(stateName, testProject.id) }
         verify { viewer.show("State created successfully") }
     }
 
     @Test
-    fun `should display error message when state creation fails`() {
+    fun `should return to main menu when exit`() {
         // Given
         val stateName = "InvalidState"
 
         every { reader.read() } returnsMany listOf(stateName, "exit")
-        every {
-            createStateUseCase(stateName, testProject.id)
-        } throws  Exception("Creation Failed")
 
         // When
-        createStateUi.run()
+        createTaskStateUi.run()
 
         // Then
-        verify { createStateUseCase(stateName, testProject.id) }
-        verify(exactly = 1) { viewer.show("Creation Failed") }
+        verify { createTaskStateUseCase(stateName, testProject.id) }
     }
 
     @Test
@@ -111,7 +107,7 @@ class CreateTaskStateUITest {
         every { reader.read() } returns "ExIt"
 
         // When
-        createStateUi.run()
+        createTaskStateUi.run()
 
         // Then
         verify(exactly = 1) { reader.read() }

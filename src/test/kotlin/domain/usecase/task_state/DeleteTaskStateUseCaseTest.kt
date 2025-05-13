@@ -1,8 +1,8 @@
-package com.berlin.domain.usecase.state
+package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.InvalidStateIdException
-import com.berlin.domain.repository.StateRepository
+import com.berlin.domain.repository.TaskStateRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -12,18 +12,18 @@ import kotlin.test.Test
 
 class DeleteTaskStateUseCaseTest {
     private lateinit var deleteTaskStateUseCase: DeleteTaskStateUseCase
-    private val stateRepository: StateRepository = mockk(relaxed = true)
+    private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        deleteTaskStateUseCase = DeleteTaskStateUseCase(stateRepository)
+        deleteTaskStateUseCase = DeleteTaskStateUseCase(taskStateRepository)
     }
 
     @Test
     fun `should return success when state is deleted successfully`() {
         // Given
-        every { stateRepository.deleteState(any()) } returns "Deleted Successfully"
-        every { stateRepository.getStateById(any()) } returns mockk()
+        every { taskStateRepository.deleteState(any()) } returns "Deleted Successfully"
+        every { taskStateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = deleteTaskStateUseCase("state_1")
@@ -35,8 +35,8 @@ class DeleteTaskStateUseCaseTest {
     @Test
     fun `should return failure when state deletion fails`() {
         // Given
-        every { stateRepository.deleteState(any()) } returns "Deletion Failed"
-        every { stateRepository.getStateById(any()) } returns mockk()
+        every { taskStateRepository.deleteState(any()) } returns "Deletion Failed"
+        every { taskStateRepository.getStateById(any()) } returns mockk()
 
         // When
         val result = deleteTaskStateUseCase("state_2")
@@ -50,17 +50,17 @@ class DeleteTaskStateUseCaseTest {
     fun `should throw exception when state does not exist`() {
         // Given
         val stateId = "q2"
-        every { stateRepository.deleteState(any()) } throws InvalidStateException(stateId)
+        every { taskStateRepository.deleteState(any()) } throws InvalidStateException(stateId)
 
         // When & Then
-        assertThrows<InvalidStateException> {  deleteTaskStateUseCase(stateId)}
+        assertThrows<InvalidStateException> { deleteTaskStateUseCase(stateId) }
 
     }
 
     @Test
     fun `should throw InvalidStateException when state does not exist`() {
         val stateId = "q2"
-        every { stateRepository.deleteState(stateId) } throws InvalidStateException(stateId)
+        every { taskStateRepository.deleteState(stateId) } throws InvalidStateException(stateId)
 
         assertThrows<InvalidStateException> {
             deleteTaskStateUseCase(stateId)
