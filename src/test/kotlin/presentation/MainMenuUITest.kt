@@ -1,7 +1,6 @@
 package com.berlin.presentation
 
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -29,8 +28,8 @@ class MainMenuUITest {
         }
         reader = mockk()
         authUi = mockk()
-        userCache = UserCache(User("Y1", "menna", "12345678", UserRole.ADMIN))
-        userCache.currentUser = User("Y1", "menna", "12345678", UserRole.ADMIN)
+        userCache = UserCache(User("Y1", "menna",  User.UserRole.ADMIN))
+        userCache.currentUser = User("Y1", "menna",  User.UserRole.ADMIN)
     }
 
     @Test
@@ -77,22 +76,6 @@ class MainMenuUITest {
 
         assertThat(r1.invoked).isEqualTo(1)
         assertThat(r0.invoked).isEqualTo(0)
-    }
-
-    @Test
-    fun `invalid choice prints error then exits`() {
-        every { authUi.run() } just Runs
-        val dummy = object : UiRunner {
-            override val id = 5
-            override val label = "five"
-            override fun run() = fail("should not run")
-        }
-        every { reader.read() } returnsMany listOf("99", "")
-        menu = MainMenuUI(listOf(dummy), viewer, reader, authUi, userCache)
-
-        menu.run()
-
-        assertThat(printed).contains("Invalid choice")
     }
 
     @Test

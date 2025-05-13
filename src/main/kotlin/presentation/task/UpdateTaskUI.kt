@@ -14,11 +14,11 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class UpdateTaskUI(
-    private val updateTask: UpdateTaskUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
+    private val reader: Reader,
 ) : PermissionedUiRunner {
 
     override val id: Int = 5
@@ -29,11 +29,11 @@ class UpdateTaskUI(
     override fun run() {
         try {
             val task = choose(
-                title    = "Tasks to update",
-                elements = getAllTasks(),
-                labelOf  = { "${it.id} – ${it.title}" },
-                viewer   = viewer,
-                reader   = reader
+                title = "Tasks to update",
+                elements = getAllTasksUseCase(),
+                labelOf = { "${it.id} – ${it.title}" },
+                viewer = viewer,
+                reader = reader
             )
 
             viewer.show("Enter new title (blank to keep “${task.title}”):")
@@ -47,25 +47,19 @@ class UpdateTaskUI(
             viewer.show("Select new assignee (or X to keep ${task.assignedToUserId}):")
             val newAssigneeId = try {
                 val user = choose(
-                    title    = "Users",
-                    elements =  getAllUsersUseCase.getAllUsers().getOrNull() ?: emptyList(),
-                    labelOf  = { it.userName },
-                    viewer   = viewer,
-                    reader   = reader
+                    title = "Users",
+                    elements = getAllUsersUseCase(),
+                    labelOf = { it.userName },
+                    viewer = viewer,
+                    reader = reader
                 )
                 user.id
             } catch (ex: InputCancelledException) {
                 null
             }
 
-            updateTask(
-                task.id,
-                title            = newTitle,
-                description      = newDesc,
-                assignedToUserId = newAssigneeId
-            )
-                .onSuccess { viewer.show("Task updated: ${it.id}") }
-                .onFailure { viewer.show(it.message ?: "Update failed") }
+            val updatedTasks = updateTaskUseCase(task.id, title = newTitle, description = newDesc, assignedToUserId = newAssigneeId)
+            viewer.show("Task updated: ${updatedTasks.id}")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

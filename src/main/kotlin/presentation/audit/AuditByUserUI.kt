@@ -4,7 +4,7 @@ import com.berlin.domain.exception.InputCancelledException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Permission
-import com.berlin.domain.model.User
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByUserIdUseCase
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.presentation.PermissionedUiRunner
@@ -27,9 +27,10 @@ class AuditByUserUI(
     override fun run() {
         try {
             val selectedUser = selectUser()
-            val logs = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(selectedUser.id)
-
-            showUserLogs(selectedUser, logs)
+            selectedUser.forEach { user ->
+                val logs = getAuditLogsByUserIdUseCase(user.id)
+                showUserLogs(user, logs)
+            }
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
@@ -38,14 +39,15 @@ class AuditByUserUI(
         }
     }
 
-    private fun selectUser(): User {
-        return choose(
+    private fun selectUser(): List<User> {
+        val user =  choose(
             title = "Choose a user",
-            elements = fetchAllUsers.getAllUsers().getOrNull()?: emptyList(),
+            elements = fetchAllUsers(),
             labelOf = { user -> user.userName },
             viewer = viewer,
             reader = reader
         )
+        return listOf(user)
     }
 
     private fun showUserLogs(user: User, logs: List<AuditLog>) {

@@ -10,15 +10,15 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetTaskByIdUITest {
 
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
-    private lateinit var getTaskById: GetTaskByIdUseCase
-    private lateinit var ui: GetTaskByIdUI
+    private lateinit var getTaskByIdUseCase: GetTaskByIdUseCase
+    private lateinit var getTaskByIdUI: GetTaskByIdUI
 
-    // capture every call to viewer.show(...)
     private val printed = mutableListOf<String>()
 
     @BeforeEach
@@ -27,8 +27,8 @@ class GetTaskByIdUITest {
             every { show(capture(printed)) } just Runs
         }
         reader = mockk()
-        getTaskById = mockk()
-        ui = GetTaskByIdUI(getTaskById, viewer, reader)
+        getTaskByIdUseCase = mockk()
+        getTaskByIdUI = GetTaskByIdUI(getTaskByIdUseCase, viewer, reader)
         printed.clear()
     }
 
@@ -44,9 +44,9 @@ class GetTaskByIdUITest {
             assignedToUserId = "U2",
             createByUserId = "U1"
         )
-        every { getTaskById.invoke("T1") } returns Result.success(task)
+        every { getTaskByIdUseCase.invoke("T1") } returns task
 
-        ui.run()
+        getTaskByIdUI.run()
 
         assertThat(printed).containsExactly(
             "Enter task ID:",
@@ -60,7 +60,7 @@ class GetTaskByIdUITest {
     }
 
     @Test
-    fun `success prints (none) when description is null`() {
+    fun `success prints '(none)' when description is null`() {
         every { reader.read() } returns "T2"
         val task = Task(
             id = "T2",
@@ -71,61 +71,46 @@ class GetTaskByIdUITest {
             assignedToUserId = "U3",
             createByUserId = "U4"
         )
-        every { getTaskById.invoke("T2") } returns Result.success(task)
+        every { getTaskByIdUseCase.invoke("T2") } returns task
 
-        ui.run()
+        getTaskByIdUI.run()
 
-        // We only care that the description line uses "(none)"
         assertThat(printed).contains("Description: (none)")
     }
 
     @Test
-    fun `not found prints friendly message`() {
+    fun `not found throws TaskNotFoundException`() {
         every { reader.read() } returns "X42"
-        every { getTaskById.invoke("X42") } returns Result.failure(TaskNotFoundException("X42"))
+        every { getTaskByIdUseCase.invoke("X42") } throws TaskNotFoundException("X42")
 
-        ui.run()
-
-        assertThat(printed.last()).isEqualTo("No task found with ID “X42”")
+        assertThrows<TaskNotFoundException> { getTaskByIdUI.run() }
     }
 
     @Test
-    fun `other failure prints exception message`() {
+    fun `other failure propagates exception`() {
         every { reader.read() } returns "T3"
-        every { getTaskById.invoke("T3") } returns Result.failure(IllegalStateException("boom"))
+        every { getTaskByIdUseCase.invoke("T3") } throws IllegalStateException("boom")
 
-        ui.run()
-
-        assertThat(printed.last()).isEqualTo("boom")
+        assertThrows<IllegalStateException> { getTaskByIdUI.run() }
     }
 
     @Test
-    fun `fallback prints Lookup failed when message is null`() {
-        every { reader.read() } returns "T4"
-        every { getTaskById.invoke("T4") } returns Result.failure(IllegalStateException("Lookup failed"))
-
-        ui.run()
-
-        assertThat(printed.last()).isEqualTo("Lookup failed")
-    }
-
-    @Test
-    fun `empty raw id throws InvalidTaskIdException and prints invalid task id`() {
+    fun `empty raw id throws and prints invalid task id`() {
         every { reader.read() } returns ""
-        every { getTaskById.invoke("") } throws InvalidTaskIdException("must not be empty")
+        every { getTaskByIdUseCase.invoke("") } throws InvalidTaskIdException("must not be empty")
 
-        ui.run()
+        getTaskByIdUI.run()
 
         assertThat(printed).contains("Invalid task id")
-        verify(exactly = 1) { getTaskById.invoke("") }
+        verify(exactly = 1) { getTaskByIdUseCase.invoke("") }
     }
 
     @Test
-    fun `numeric-only raw id throws InvalidTaskIdException and prints invalid task id`() {
+    fun `numeric-only raw id throws and prints invalid task id`() {
         every { reader.read() } returns "1234"
-        every { getTaskById.invoke("1234") } throws InvalidTaskIdException("numeric-only")
+        every { getTaskByIdUseCase.invoke("1234") } throws InvalidTaskIdException("numeric-only")
 
-        ui.run()
+        getTaskByIdUI.run()
 
         assertThat(printed).contains("Invalid task id")
     }

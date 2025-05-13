@@ -14,7 +14,7 @@ import org.junit.jupiter.api.assertThrows
 class GetTaskByIdUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
-    private lateinit var useCase: GetTaskByIdUseCase
+    private lateinit var getTaskByIdUseCase: GetTaskByIdUseCase
 
     private val validId = "T1"
     private val stored = Task(
@@ -30,42 +30,42 @@ class GetTaskByIdUseCaseTest {
     @BeforeEach
     fun setUp() {
         taskRepository = mockk()
-        useCase = GetTaskByIdUseCase(taskRepository)
+        getTaskByIdUseCase = GetTaskByIdUseCase(taskRepository)
     }
 
     @Test
-    fun `result is success when repository returns a task`() {
-        every { taskRepository.getTaskById(validId) } returns Result.success(stored)
+    fun `returns task when repository returns a task`() {
+        // stub repo to return directly
+        every { taskRepository.getTaskById(validId) } returns stored
 
-        val result = useCase(validId)
+        val result = getTaskByIdUseCase(validId)
 
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrThrow()).isEqualTo(stored)
+        assertThat(result).isEqualTo(stored)
     }
 
     @Test
-    fun `result is failure when repository returns failure`() {
+    fun `throws repository exception when repo fails`() {
         val ex = IllegalStateException("boom")
-        every { taskRepository.getTaskById(validId) } returns Result.failure(ex)
+        every { taskRepository.getTaskById(validId) } throws ex
 
-        val result = useCase(validId)
-
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(IllegalStateException::class.java)
+        assertThrows<IllegalStateException> {
+            getTaskByIdUseCase(validId)
+        }
     }
 
     @Test
     fun `throws InvalidTaskIdException when id is blank`() {
         assertThrows<InvalidTaskIdException> {
-            useCase("   ")
+            getTaskByIdUseCase("   ")
         }
+        // ensure we never hit the repo
         verify(exactly = 0) { taskRepository.getTaskById(any()) }
     }
 
     @Test
     fun `throws InvalidTaskIdException when id is numeric-only`() {
         assertThrows<InvalidTaskIdException> {
-            useCase("1234")
+            getTaskByIdUseCase("1234")
         }
         verify(exactly = 0) { taskRepository.getTaskById(any()) }
     }

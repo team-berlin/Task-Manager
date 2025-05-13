@@ -1,8 +1,9 @@
-package com.berlin.domain.usecase.project;
+package com.berlin.domain.usecase.project
 
-import com.berlin.helper.projectHelper
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.every
@@ -23,41 +24,39 @@ class UpdateProjectUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        updateProjectUseCase = UpdateProjectUseCase(projectRepository,
-            addAuditLogUseCase, cashedUser)
+        updateProjectUseCase = UpdateProjectUseCase(
+            projectRepository, addAuditLogUseCase, cashedUser
+        )
     }
 
     @Test
-    fun `should return success when project update succeeds`() {
+    fun `should return Updated Successfully when project update succeeds`() {
         // Given
         val project = projectHelper()
-        every { projectRepository.updateProject(project) } returns Result.success("Updated Successfully")
+        every { projectRepository.updateProject(project) } returns "Updated Successfully"
         every { cashedUser.currentUser.id } returns "user_123"
 
         // When
-        val result = updateProjectUseCase.updateProject(project)
+        val result = updateProjectUseCase(project)
 
         // Then
-        assertThat(result).isEqualTo(Result.success("Updated Successfully"))
+        assertThat(result).isEqualTo("Updated Successfully")
         verify(exactly = 1) {
-            addAuditLogUseCase.addAuditLog(
+            addAuditLogUseCase(
                 createdByUserId = "user_123", auditAction = any(), entityType = any(), entityId = any()
             )
         }
     }
 
     @Test
-    fun `should return failure when project update fails`() {
+    fun `should return throw InvalidProjectException when project update fails`() {
         // Given
         val project = projectHelper()
-        every { projectRepository.updateProject(project) } returns Result.failure(Exception())
+        every { projectRepository.updateProject(project) } throws InvalidProjectException("")
 
-        // When
-        val result = updateProjectUseCase.updateProject(project)
-
-        // Then
-        result.onFailure { exception ->
-            assertThat(exception.message).isEqualTo("Update Failed")
+        // When // Then
+        assertThrows<InvalidProjectException> {
+            updateProjectUseCase(project)
         }
     }
 
@@ -68,7 +67,7 @@ class UpdateProjectUseCaseTest {
     ) {
         // When && Then
         assertThrows<Exception> {
-            updateProjectUseCase.updateProject(
+            updateProjectUseCase(
                 projectHelper(
                     name = invalidName
                 )

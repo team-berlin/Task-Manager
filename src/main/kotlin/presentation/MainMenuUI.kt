@@ -29,7 +29,7 @@ class MainMenuUI(
         while (true) {
             showMenu(runners)
             when (val input = reader.read()?.trim()?.uppercase(Locale.getDefault())) {
-                null, "", "X" -> return
+                null,"X" -> return
                 else -> runners.firstOrNull { it.id == input.toIntOrNull() }?.run()
                     ?: viewer.show("Invalid choice")
             }

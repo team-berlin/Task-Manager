@@ -8,7 +8,7 @@ class GetTaskByIdUseCase(
     private val taskRepository: TaskRepository,
 ) {
 
-    operator fun invoke(taskId: String): Result<Task> {
+    operator fun invoke(taskId: String): Task {
 
         if (!validateTaskId(taskId)) {
             throw InvalidTaskIdException("Task id must not be empty, blank, or purely numeric")

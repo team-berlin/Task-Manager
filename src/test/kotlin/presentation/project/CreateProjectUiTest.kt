@@ -1,9 +1,13 @@
 package com.berlin.presentation.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.usecase.project.CreateProjectUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
@@ -29,8 +33,11 @@ class CreateProjectUiTest {
         val description = "Test Description"
 
         every { reader.read() } returns name andThen "yes" andThen description
-        every { createProjectUseCase.createNewProject(name, description,
-            null, null) }returns Result.success("Creation Successfully")
+        every {
+            createProjectUseCase(
+                name, description, null, null
+            )
+        } returns "Creation Successfully"
 
         // When
         ui.run()
@@ -40,13 +47,13 @@ class CreateProjectUiTest {
     }
 
     @Test
-    fun `run should show failure message when project creation fails`() {
+    fun `run should show invalid project details when project creation fails`() {
         // Given
         val name = "ValidProject"
         val description = "Test Description"
 
         every { reader.read() } returns name andThen "yes" andThen description
-        every { createProjectUseCase.createNewProject(name, description, null, null) }returns Result.failure(Exception("Creation Failed"))
+        every { createProjectUseCase(name, description, null, null) } throws InvalidProjectException("")
 
         // When
         ui.run()
@@ -63,17 +70,18 @@ class CreateProjectUiTest {
             viewer.show("Enter project description:")
             reader.read()
             viewer.show("Creating project...\n")
-            createProjectUseCase.createNewProject(name, description,
-                null, null)
-            viewer.show("Error: Creation Failed\n")
+            createProjectUseCase(
+                name, description, null, null
+            )
+            viewer.show("invalid project details")
         }
     }
 
     @Test
-    fun `run should view to user again when input null project name`(){
+    fun `run should view to user again when input null project name`() {
         //given
         every { reader.read() } returns null andThen "ggg" andThen "sfd"
-        every { createProjectUseCase.createNewProject(any(),any(),any(),any()) }returns Result.success("j")
+        every { createProjectUseCase(any(), any(), any(), any()) } returns "Creation Successfully"
         //when
         ui.run()
         //then
@@ -81,10 +89,10 @@ class CreateProjectUiTest {
     }
 
     @Test
-    fun `run should view to user again when input blank project name`(){
+    fun `run should view to user again when input blank project name`() {
         //given
         every { reader.read() } returns "" andThen "ggg" andThen "sfd"
-        every { createProjectUseCase.createNewProject(any(),any(),any(),any()) }returns Result.success("j")
+        every { createProjectUseCase(any(), any(), any(), any()) } returns "Creation Successfully"
         //when
         ui.run()
         //then
@@ -97,8 +105,11 @@ class CreateProjectUiTest {
         val name = "MyProject"
 
         every { reader.read() } returns name andThen "no"
-        every { createProjectUseCase.createNewProject(name, null,
-            null, null) }returns Result.success("Creation Successfully")
+        every {
+            createProjectUseCase(
+                name, null, null, null
+            )
+        } returns "Creation Successfully"
 
         // When
         ui.run()

@@ -1,6 +1,7 @@
 package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.exception.InvalidProjectIdException
+import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
@@ -29,12 +30,12 @@ class GetAuditLogsByProjectIdUseCaseTest {
         // Given
         val projectId = "D123"
         val logs = listOf(
-            generateAuditLog(id = "A2", entityId = projectId, entityType = EntityType.PROJECT)
+            generateAuditLog(id = "A2", entityId = projectId, entityType = AuditLog.EntityType.PROJECT)
         )
         every { auditRepository.getAuditLogsByProjectId(projectId) } returns logs
 
         //When
-        val result = getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(projectId)
+        val result = getAuditLogsByProjectIdUseCase(projectId)
 
         //That
         assertThat(result).isEqualTo(logs)
@@ -46,8 +47,8 @@ class GetAuditLogsByProjectIdUseCaseTest {
     @ValueSource(strings = ["", "   ", "123"])
     fun `should throw exception when project Id is invalid`(invalidId: String) {
         //when&then
-        assertThrows<IllegalArgumentException> {
-            getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(invalidId)
+        assertThrows<InvalidProjectIdException> {
+            getAuditLogsByProjectIdUseCase(invalidId)
         }
     }
 

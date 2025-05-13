@@ -27,7 +27,7 @@ class AuditByProjectUI(
     override fun run() {
         try {
             val project = selectProject()
-            val logs = getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(project.id)
+            val logs = getAuditLogsByProjectIdUseCase(project.id)
 
             showProjectLogs(project, logs)
 
@@ -40,10 +40,10 @@ class AuditByProjectUI(
 
     private fun showProjectLogs(project: Project, logs: List<AuditLog>) {
         if (logs.isEmpty()) {
-            viewer.show("No audit logs found for project ${project.name}.")
+            viewer.show("No audit logs found for project ${project.title}.")
             return
         }
-        viewer.show("=== Audit Logs for ${project.name} ===")
+        viewer.show("=== Audit Logs for ${project.title} ===")
         logs.forEach { log ->
             viewer.show(
                 """
@@ -60,8 +60,8 @@ class AuditByProjectUI(
     private fun selectProject(): Project {
         return choose(
             title = "Choose a project",
-            elements = getAllProjectsUseCase.getAllProjects(),
-            labelOf = { project -> project.name },
+            elements = getAllProjectsUseCase(),
+            labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader
         )

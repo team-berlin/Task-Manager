@@ -5,7 +5,7 @@ import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidTaskStateException
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Permission
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.PermissionedUiRunner
@@ -14,11 +14,11 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class ChangeTaskStateUI(
-    private val changeState: ChangeTaskStateUseCase,
-    private val getAllTasks: GetAllTasksUseCase,
-    private val getAllStates: GetAllStatesUseCase,
+    private val changeTaskStateUseCase: ChangeTaskStateUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
+    private val getAllStatesUseCase: GetAllTaskStatesUseCase,
     private val viewer: Viewer,
-    private val reader: Reader
+    private val reader: Reader,
 ) : PermissionedUiRunner {
 
     override val id: Int = 6
@@ -26,32 +26,31 @@ class ChangeTaskStateUI(
 
     override fun isAllowed(permission: Permission) = permission.changeTaskState
 
-     override fun run() {
+    override fun run() {
         try {
             val task = choose(
-                title    = "Tasks",
-                elements = getAllTasks(),
-                labelOf  = { "${it.id} – ${it.title} [${it.stateId}]" },
-                viewer   = viewer,
-                reader   = reader
+                title = "Tasks",
+                elements = getAllTasksUseCase(),
+                labelOf = { "${it.id} – ${it.title} [${it.stateId}]" },
+                viewer = viewer,
+                reader = reader
             )
 
-            val possible = getAllStates().filter { it.projectId == task.projectId }
+            val possible = getAllStatesUseCase().filter { it.projectId == task.projectId }
             if (possible.isEmpty()) {
                 viewer.show("No states defined for project ${task.projectId}")
                 return
             }
             val state = choose(
-                title    = "States for project ${task.projectId}",
+                title = "States for project ${task.projectId}",
                 elements = possible,
-                labelOf  = { (it ).name },
-                viewer   = viewer,
-                reader   = reader
+                labelOf = { (it).name },
+                viewer = viewer,
+                reader = reader
             )
 
-            changeState(task.id, state.id)
-                .onSuccess { viewer.show("Task ${task.id} moved to ${state.name}") }
-                .onFailure { viewer.show(it.message ?: "Failed to change state") }
+            val updatedTask = changeTaskStateUseCase(task.id, state.id)
+            viewer.show("Task ${updatedTask.id} moved to ${state.name}")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")

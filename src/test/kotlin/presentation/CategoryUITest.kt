@@ -1,7 +1,6 @@
 package com.berlin.presentation
 
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.berlin.domain.permission.assignPermissions
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -26,7 +25,7 @@ class CategoryUITest {
             every { show(capture(printed)) } just Runs
         }
         reader = mockk()
-        userCache = UserCache(User("U1", "alice", "pw", UserRole.ADMIN))
+        userCache = UserCache(User("U1", "alice", User.UserRole.ADMIN))
         userCache.currentUser = userCache.currentUser
         userCache.currentPermission = assignPermissions(userCache.currentUser.role)
     }
@@ -132,34 +131,6 @@ class CategoryUITest {
         // The menu is printed once (header + child + back), then we exit
         assertThat(printed).containsExactly(
             "=== NullTest ===", "4 – Four", "X – Back"
-        ).inOrder()
-        verify(exactly = 0) { child.run() }
-    }
-
-    @Test
-    fun `exit immediately on blank input`() {
-        val child = mockk<PermissionedUiRunner> {
-            every { id } returns 6
-            every { label } returns "Six"
-            every { isAllowed(any()) } returns true
-            every { run() } just Runs
-        }
-        every { reader.read() } returns ""
-
-        categoryUI = CategoryUI(
-            id = 11,
-            label = "BlankTest",
-            children = listOf(child),
-            viewer = viewer,
-            reader = reader,
-            userCache = userCache
-        )
-
-        categoryUI.run()
-
-        // Same behavior: header + child + back, then exit on blank
-        assertThat(printed).containsExactly(
-            "=== BlankTest ===", "6 – Six", "X – Back"
         ).inOrder()
         verify(exactly = 0) { child.run() }
     }

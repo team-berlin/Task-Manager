@@ -6,8 +6,7 @@ import com.berlin.domain.model.Project
 class GetAllProjectsUseCase(
     private val projectRepository: ProjectRepository
 ) {
-    fun getAllProjects(): List<Project> {
+    operator fun invoke(): List<Project> {
         return projectRepository.getAllProjects()
-            ?: throw Exception("No projects found")
     }
 }

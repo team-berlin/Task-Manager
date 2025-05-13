@@ -1,0 +1,71 @@
+package com.berlin.presentation.task_state
+
+import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidSelectionException
+import com.berlin.domain.model.Permission
+import com.berlin.domain.model.Project
+import com.berlin.domain.usecase.project.GetAllProjectsUseCase
+import com.berlin.domain.usecase.task_state.CreateTaskStateUseCase
+import com.berlin.presentation.PermissionedUiRunner
+import com.berlin.presentation.helper.choose
+import com.berlin.presentation.io.Reader
+import com.berlin.presentation.io.Viewer
+
+class CreateTaskStateUI(
+    private val createTaskStateUseCase: CreateTaskStateUseCase,
+    private val getAllProjectUseCase: GetAllProjectsUseCase,
+    private val viewer: Viewer,
+    private val reader: Reader
+) : PermissionedUiRunner {
+
+    override val id: Int = 1
+    override val label: String = "Create New State"
+
+    override fun isAllowed(permission: Permission) = permission.createState
+
+    override fun run() {
+
+        try {
+            val project = selectProject()
+            viewer.show("-- Enter a state in project ${project.title} --")
+            addStateName(project)
+        } catch (_: InputCancelledException) {
+            viewer.show("Cancelled!")
+        }catch (_: InvalidSelectionException)
+        {viewer.show("invalid selection")}
+
+
+    }
+
+    private fun addStateName(project: Project) {
+
+        viewer.show("Enter a state name (or type 'exit' to finish):")
+        viewer.show("State Name: ")
+        val stateName: String? = reader.read()?.trim()
+        when {
+
+            (stateName?.lowercase().equals("exit")) -> return
+
+            (stateName.isNullOrEmpty()) -> {
+                viewer.show("State Name can not be empty")
+            }
+
+            else -> {
+                try {
+                   val createStateResult  =  createTaskStateUseCase(stateName, project.id)
+                 viewer.show(createStateResult)
+
+
+                } catch (_: Exception) {
+                    viewer.show("Invalid State Name, Try Again")
+                }
+            }
+        }
+        addStateName(project)
+    }
+
+    private fun selectProject() = choose(
+        title = "Projects", elements = getAllProjectUseCase(), labelOf = { it.title }, viewer = viewer, reader = reader
+    )
+
+}
