@@ -33,7 +33,7 @@ class AuthenticateUserUI(
             viewer.show("Welcome ${user.userName}")
             return
         } catch (ex: InvalidCredentialsException) {
-            viewer.show("Try again")
+            viewer.show("user name or password can't be empty")
             if (failedAttempts < maxAttempts) {
                 authenticateLoop(failedAttempts + 1, maxAttempts)
             }
