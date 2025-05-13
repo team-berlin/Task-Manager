@@ -9,12 +9,12 @@
 //import com.berlin.domain.model.UserRole
 //import com.berlin.domain.repository.TaskRepository
 //import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
-//import com.google.common.truth.Truth.assertThat
 //import data.UserCache
 //import io.mockk.*
 //import org.junit.jupiter.api.BeforeEach
 //import org.junit.jupiter.api.Test
 //import org.junit.jupiter.api.assertThrows
+//import com.google.common.truth.Truth.assertThat
 //
 //class AssignTaskUseCaseTest {
 //
@@ -23,11 +23,11 @@
 //    private lateinit var userCache: UserCache
 //    private lateinit var useCase: AssignTaskUseCase
 //
-//    private val creator = User("U0", "alice", "pw", UserRole.ADMIN)
-//    private val oldAssignee = User("U1", "john", "pw", UserRole.MATE)
-//    private val anotherAssignee = User("U2", "bob", "pw", UserRole.MATE)
+//    private val creator = User("U0", "alice",  UserRole.ADMIN)
+//    private val oldAssignee = User("U1", "john", UserRole.MATE)
+//    private val anotherAssignee = User("U2", "bob", UserRole.MATE)
 //
-//    private val stored = Task(
+//    private val storedTask = Task(
 //        id = "1",
 //        projectId = "P1",
 //        title = "Demo",
@@ -39,8 +39,8 @@
 //
 //    @BeforeEach
 //    fun setUp() {
-//        taskRepository = mockk()
-//        addAuditLogUseCase = mockk()
+//        taskRepository = mockk(relaxed = true)
+//        addAuditLogUseCase = mockk(relaxUnitFun = true)
 //        userCache = mockk()
 //        every { userCache.currentUser } returns creator
 //
@@ -48,17 +48,56 @@
 //    }
 //
 //    @Test
-//    fun `result is success when assignee changes`() {
-//        stubHappyPath()
+//    fun `successful reassignment of task`() {
+//        stubSuccessfulUpdate()
+//
 //        val result = useCase("1", anotherAssignee.id)
-//        assertThat(result.isSuccess).isTrue()
-//        verifyAudit("1")
+//
+//        assertThat(result).isEqualTo(storedTask.copy(assignedToUserId = anotherAssignee.id))
+//        verifyUpdateCall()
+//        verifyAuditLog()
 //    }
 //
 //    @Test
-//    fun `repository update is called with new assignee`() {
-//        stubHappyPath()
-//        useCase("1", anotherAssignee.id)
+//    fun `throws TaskNotFoundException when task is missing`() {
+//        every { taskRepository.getTaskById("1") } returns TaskNotFoundException("1")
+//
+//        assertThrows<TaskNotFoundException> { useCase("1", anotherAssignee.id) }
+//
+//        verify(exactly = 0) { taskRepository.updateTask(any()) }
+//    }
+//
+//    @Test
+//    fun `throws InvalidAssigneeException when assignee id is blank`() {
+//        every { taskRepository.getTaskById("1") } returns Result.success(storedTask)
+//
+//        assertThrows<InvalidAssigneeException> { useCase("1", "   ") }
+//
+//        verify(exactly = 0) { taskRepository.updateTask(any()) }
+//    }
+//
+//    @Test
+//    fun `handles repository failure on update`() {
+//        every { taskRepository.getTaskById("1") } returns Result.success(storedTask)
+//        every { taskRepository.updateTask(any()) } throws IllegalStateException("Database error")
+//
+//        assertThrows<IllegalStateException> { useCase("1", anotherAssignee.id) }
+//    }
+//
+//    private fun stubSuccessfulUpdate() {
+//        every { taskRepository.getTaskById("1") } returns Result.success(storedTask)
+//        every { taskRepository.updateTask(any()) } answers { Result.success(firstArg()) }
+//        every {
+//            addAuditLogUseCase.addAuditLog(
+//                createdByUserId = creator.id,
+//                auditAction = AuditAction.UPDATE,
+//                entityType = EntityType.TASK,
+//                entityId = "1"
+//            )
+//        } returns Result.success("audit-id-1")
+//    }
+//
+//    private fun verifyUpdateCall() {
 //        verify {
 //            taskRepository.updateTask(
 //                match { it.id == "1" && it.assignedToUserId == anotherAssignee.id }
@@ -66,59 +105,13 @@
 //        }
 //    }
 //
-//    @Test
-//    fun `result is failure when task is not found`() {
-//        every { taskRepository.getTaskById("1") } returns Result.failure(TaskNotFoundException("1"))
-//
-//        val result = useCase("1", anotherAssignee.id)
-//
-//        assertThat(result.isFailure).isTrue()
-//        verify(exactly = 0) { taskRepository.updateTask(any()) }
-//    }
-//
-//    @Test
-//    fun `result is failure when repository update returns unexpected error`() {
-//        every { taskRepository.getTaskById("1") } returns Result.success(stored)
-//        every { taskRepository.updateTask(any()) } returns Result.failure(IllegalStateException("boom"))
-//
-//        val result = useCase("1", anotherAssignee.id)
-//
-//        assertThat(result.isFailure).isTrue()
-//    }
-//
-//    @Test
-//    fun `throws InvalidAssigneeException when assignee id is blank`() {
-//        every { taskRepository.getTaskById("1") } returns Result.success(stored)
-//
-//        assertThrows<InvalidAssigneeException> {
-//            useCase("1", "   ")
-//        }
-//
-//        verify(exactly = 0) { taskRepository.updateTask(any()) }
-//    }
-//
-//    private fun stubHappyPath() {
-//        every { taskRepository.getTaskById("1") } returns Result.success(stored)
-//        every { taskRepository.updateTask(any()) } answers { Result.success(firstArg()) }
-//        every {
-//            addAuditLogUseCase.addAuditLog(
-//                createdByUserId = creator.id,
-//                auditAction = AuditAction.UPDATE,
-//                changesDescription = null,
-//                entityType = EntityType.TASK,
-//                entityId = "1"
-//            )
-//        } returns Result.success("audit-id-1")
-//    }
-//
-//    private fun verifyAudit(taskId: String) {
+//    private fun verifyAuditLog() {
 //        verify {
 //            addAuditLogUseCase.addAuditLog(
 //                createdByUserId = creator.id,
 //                auditAction = AuditAction.UPDATE,
-//                changesDescription = null,
 //                entityType = EntityType.TASK,
-//                entityId = taskId
+//                entityId = "1"
 //            )
 //        }
 //    }

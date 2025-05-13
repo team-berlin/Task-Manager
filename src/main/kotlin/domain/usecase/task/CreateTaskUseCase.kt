@@ -55,6 +55,11 @@ class CreateTaskUseCase(
     }
 
     private fun validateUniqueTask(taskId: String): Boolean {
-        return (taskRepository.getAllTasks().none { it.id == taskId })
+        return try {
+            taskRepository.getTaskById(taskId)
+            true
+        } catch (_: Exception){
+            false
+        }
     }
 }

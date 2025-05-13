@@ -15,7 +15,7 @@ class AddAuditLogUseCase(
         changesDescription: String? = null,
         entityType: AuditLog.EntityType,
         entityId: String,
-    ): String {
+    ) {
         val auditLog = AuditLog(
             id = idGenerator.generateId("AUDIT"),
             timestamp = System.currentTimeMillis(),
@@ -25,8 +25,6 @@ class AddAuditLogUseCase(
             entityType = entityType,
             entityId = entityId
         )
-
         auditRepository.addAuditLog(auditLog)
-        return "Audit log added successfully"
     }
 }

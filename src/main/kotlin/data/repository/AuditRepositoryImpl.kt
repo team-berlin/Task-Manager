@@ -12,11 +12,9 @@ class AuditRepositoryImpl(
     private val auditLogMapper: AuditLogMapper
 ) : AuditRepository {
 
-    override fun addAuditLog(auditLog: AuditLog): String {
+    override fun addAuditLog(auditLog: AuditLog) {
         val auditLogDto = auditLogMapper.mapToDataModel(auditLog)
-         if (auditLogDataSource.write(auditLogDto)) {
-            return auditLog.id
-        } else {
+         if (!auditLogDataSource.write(auditLogDto)) {
             throw InvalidAuditLogException("fail to add audit log")
         }
     }
