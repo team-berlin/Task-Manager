@@ -15,10 +15,10 @@ import kotlin.test.Test
 
 class GetProjectByIdUiTest {
 
-    private lateinit var useCase: GetProjectByIdUseCase
+    private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
-    private lateinit var ui: GetProjectByIdUi
+    private lateinit var getProjectByIdUi: GetProjectByIdUi
 
     private val project = Project(
         id = "proj-1",
@@ -62,20 +62,20 @@ class GetProjectByIdUiTest {
 
     @BeforeEach
     fun setup() {
-        useCase = mockk()
+        getProjectByIdUseCase = mockk()
         viewer = mockk(relaxed = true)
         reader = mockk()
-        ui = GetProjectByIdUi(useCase, viewer, reader)
+        getProjectByIdUi = GetProjectByIdUi(getProjectByIdUseCase, viewer, reader)
     }
 
     @Test
     fun `run shows project details with states and tasks`() {
         //Given
         every { reader.read() } returns project.id
-        every { useCase.getProjectById(project.id) } returns project
+        every { getProjectByIdUseCase(project.id) } returns project
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verifySequence {
@@ -98,10 +98,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns project2.id
-        every { useCase.getProjectById(project2.id) } returns project2
+        every { getProjectByIdUseCase(project2.id) } returns project2
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify {
@@ -115,10 +115,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns "no-id"
-        every { useCase.getProjectById("no-id") } throws InvalidProjectIdException("Invalid project ID")
+        every { getProjectByIdUseCase("no-id") } throws InvalidProjectIdException("Invalid project ID")
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("Invalid project ID") }
@@ -129,10 +129,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns "proj-999"
-        every { useCase.getProjectById("proj-999") } throws ProjectNotFoundException("No project found with ID")
+        every { getProjectByIdUseCase("proj-999") } throws ProjectNotFoundException("No project found with ID")
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("No project found with ID") }
@@ -143,10 +143,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns "proj-x"
-        every { useCase.getProjectById("proj-x") } throws Exception("Something went wrong")
+        every { getProjectByIdUseCase("proj-x") } throws Exception("Something went wrong")
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("Something went wrong") }
@@ -157,10 +157,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns "proj-null"
-        every { useCase.getProjectById("proj-null") } throws Exception()
+        every { getProjectByIdUseCase("proj-null") } throws Exception()
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("Lookup failed") }
@@ -171,10 +171,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns null
-        every { useCase.getProjectById("") } throws InvalidProjectIdException("Invalid project ID")
+        every { getProjectByIdUseCase("") } throws InvalidProjectIdException("Invalid project ID")
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("Invalid project ID") }
@@ -185,13 +185,13 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns "   proj-1  "
-        every { useCase.getProjectById("proj-1") } returns project
+        every { getProjectByIdUseCase("proj-1") } returns project
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
-        verify { useCase.getProjectById("proj-1") }
+        verify { getProjectByIdUseCase("proj-1") }
     }
 
     @Test
@@ -199,10 +199,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns project3.id
-        every { useCase.getProjectById(project3.id) } returns project3
+        every { getProjectByIdUseCase(project3.id) } returns project3
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("Description: (none)") }
@@ -213,10 +213,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns project5.id
-        every { useCase.getProjectById(project5.id) } returns project5
+        every { getProjectByIdUseCase(project5.id) } returns project5
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("No states defined for this project.") }
@@ -227,10 +227,10 @@ class GetProjectByIdUiTest {
 
         //Given
         every { reader.read() } returns project4.id
-        every { useCase.getProjectById(project4.id) } returns project4
+        every { getProjectByIdUseCase(project4.id) } returns project4
 
         //When
-        ui.run()
+        getProjectByIdUi.run()
 
         //Then
         verify { viewer.show("\nNo tasks defined for this project.") }

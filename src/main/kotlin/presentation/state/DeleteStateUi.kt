@@ -37,7 +37,7 @@ class DeleteStateUi(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("Cancelled.")
 
-            val deleteStateResult = deleteStateUseCase.deleteState(state.id)
+            val deleteStateResult = deleteStateUseCase(state.id)
                     viewer.show("$deleteStateResult is Deleted.")
 
         } catch (ex: InputCancelledException) {

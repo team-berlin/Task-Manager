@@ -28,13 +28,13 @@ class GetAllStatesByProjectIdUI(
         try {
             val project = choose(
                 title = "Projects",
-                elements = getAllProjectsUseCase.getAllProjects(),
+                elements = getAllProjectsUseCase(),
                 labelOf = { it.title },
                 viewer = viewer,
                 reader = reader
             )
 
-            val getAllStates = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id)
+            val getAllStates = getAllStatesByProjectIdUseCase(project.id)
                showSwimLaneFor(project.id, getAllStates)
 
         } catch (ex: InputCancelledException) {
@@ -47,7 +47,7 @@ class GetAllStatesByProjectIdUI(
     }
 
     private fun showSwimLaneFor(projectId: String, states: List<TaskState>) {
-        val projects = getAllProjectsUseCase.getAllProjects().filter { it.id == projectId }
+        val projects = getAllProjectsUseCase().filter { it.id == projectId }
         if (projects.isEmpty()) {
             viewer.show("No projects found")
             return

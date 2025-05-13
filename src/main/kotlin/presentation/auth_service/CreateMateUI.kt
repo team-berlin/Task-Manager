@@ -27,7 +27,7 @@ class CreateMateUI(
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter user password: ")
         val userPassword = reader.read()?.trim().orEmpty()
-        val user = createMateUseCase.createMate(userName, userPassword)
+        val user = createMateUseCase(userName, userPassword)
         return user
     }
     private fun handleMateCreation(attempt: Int = 0, maxAttempts: Int = 3) {

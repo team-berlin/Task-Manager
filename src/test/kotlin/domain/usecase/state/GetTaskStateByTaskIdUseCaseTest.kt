@@ -31,7 +31,7 @@ class GetTaskStateByTaskIdUseCaseTest {
         every { stateRepository.getStateByTaskId("T1") } returns expectedState
 
         // When
-        val result = getStateByTaskIdUseCase.getStateByTaskId("T1")
+        val result = getStateByTaskIdUseCase("T1")
 
         // Then
         assertThat(result).isEqualTo(expectedState)
@@ -42,7 +42,7 @@ class GetTaskStateByTaskIdUseCaseTest {
     fun `should throw exception when state id is invalid`(taskId: String) {
         // When && Then
         assertThrows<Exception> {
-            getStateByTaskIdUseCase.getStateByTaskId(taskId)
+            getStateByTaskIdUseCase(taskId)
         }
     }
 

@@ -7,7 +7,7 @@ class GetAuditLogsByUserIdUseCase(
     private val auditRepository: AuditRepository
 ) {
 
-    fun getAuditLogsByUserId(userId:String): List<AuditLog>{
+    operator fun invoke(userId:String): List<AuditLog>{
 
         if (!validateUserId(userId))
             throw IllegalArgumentException("User ID must not be empty, blank, or purely numeric")

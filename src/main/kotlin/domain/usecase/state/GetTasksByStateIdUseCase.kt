@@ -9,19 +9,13 @@ class GetTasksByStateIdUseCase (
     private val stateRepository: StateRepository
 ) {
 
-    fun getAllTasksByStateId(stateId: String): List<Task> {
-        if (!validateStateId(stateId)) throw InvalidStateIdException("State ID must not be empty or blank")
-
-        if (checkStateExists(stateId)) {
+    operator fun invoke(stateId: String): List<Task> {
+        if (!validateStateId(stateId)) {
             return stateRepository.getTasksByStateId(stateId)
                 ?: throw TaskNotFoundException("No tasks found for state ID $stateId")
         } else {
-            throw InvalidStateIdException("State with ID $stateId does not exist")
-        }
+            throw InvalidStateIdException("State ID must not be empty or blank")        }
     }
-
-
-    private fun checkStateExists(stateId: String): Boolean = stateRepository.getStateById(stateId) != null
 
     private fun validateStateId(stateId: String): Boolean = stateId.isNotBlank() && !(stateId.all { it.isDigit() })
 }

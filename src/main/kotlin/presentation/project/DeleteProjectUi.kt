@@ -26,7 +26,7 @@ class DeleteProjectUi(
         try {
             val project = choose(
                 title = "Projects",
-                elements = getAllProjects.getAllProjects(),
+                elements = getAllProjects(),
                 labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
@@ -35,7 +35,7 @@ class DeleteProjectUi(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            val projectName = deleteProject.deleteProject(project.id)
+            val projectName = deleteProject(project.id)
                     viewer.show("$projectName is Deleted.")
 
         } catch (ex: InputCancelledException) {

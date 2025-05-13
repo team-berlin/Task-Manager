@@ -9,7 +9,7 @@ class AddAuditLogUseCase(
     private val idGenerator: IdGenerator,
 ) {
 
-    fun addAuditLog(
+    operator fun invoke(
         createdByUserId: String,
         auditAction: AuditLog.AuditAction,
         changesDescription: String? = null,

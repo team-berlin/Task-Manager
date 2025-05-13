@@ -27,7 +27,7 @@ class UpdateProjectUi(
         displayAvailableProjects()
 
         val projectId = getValidProjectId()
-        var project = getProjectByIdUseCase.getProjectById(projectId)
+        var project = getProjectByIdUseCase(projectId)
 
         displayCurrentProjectDetails(project)
 
@@ -43,7 +43,7 @@ class UpdateProjectUi(
 
     private fun displayAvailableProjects() {
         viewer.show("Available Projects:\n")
-        getAllProjectsUseCase.getAllProjects().forEach { project ->
+        getAllProjectsUseCase().forEach { project ->
             viewer.show("Project ID: ${project.id}, Title: ${project.title}")
         }
     }
@@ -69,7 +69,7 @@ class UpdateProjectUi(
 
     private fun isProjectIdValid(projectId: String): Boolean {
         return try {
-            getProjectByIdUseCase.getProjectById(projectId)
+            getProjectByIdUseCase(projectId)
             true
         } catch (e: Exception) {
             false
@@ -175,7 +175,7 @@ class UpdateProjectUi(
         viewer.show("Updating project...\n")
 
         try {
-            val updateMessage = updateProjectUseCase.updateProject(project)
+            val updateMessage = updateProjectUseCase(project)
             if (updateMessage.isNotEmpty()) {
                 viewer.show("Project updated successfully!\n")
             }

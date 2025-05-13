@@ -54,19 +54,19 @@ class CreateTaskUI(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = getAllProjectsUseCase.getAllProjects(), labelOf = { it.title }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectsUseCase(), labelOf = { it.title }, viewer = viewer, reader = reader
     )
 
     private fun selectState(project: Project) = choose(
         title = "States for ${project.title}",
-        elements = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(project.id),
+        elements = getAllStatesByProjectIdUseCase(project.id),
         labelOf = { it.name },
         viewer = viewer,
         reader = reader
     )
 
     private fun selectUser(): User = choose(
-        title = "Users", elements = getAllUsersUseCase.getAllUsers(), labelOf = { it.userName }, viewer = viewer, reader = reader
+        title = "Users", elements = getAllUsersUseCase(), labelOf = { it.userName }, viewer = viewer, reader = reader
     )
 
     private fun askTitleAndDescription(): Pair<String, String?> {

@@ -7,7 +7,7 @@ class DeleteStateUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun deleteState(stateId: String): String {
+    operator fun invoke(stateId: String): String {
 
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State ID must not be empty or blank")

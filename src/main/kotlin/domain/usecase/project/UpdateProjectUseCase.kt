@@ -12,12 +12,12 @@ class UpdateProjectUseCase(
     private val addAuditLogUseCase: AddAuditLogUseCase,
     private val cashedUser: UserCache,
 ) {
-    fun updateProject(project: Project): String {
+    operator fun invoke(project: Project): String {
         if (!validateProjectName(project.title)) throw InvalidProjectException("Project Name must not be empty or blank")
 
         val updatedProject = projectRepository.updateProject(project)
 
-        addAuditLogUseCase.addAuditLog(
+        addAuditLogUseCase(
             createdByUserId = cashedUser.currentUser.id,
             auditAction = AuditLog.AuditAction.UPDATE,
             entityType = AuditLog.EntityType.PROJECT,

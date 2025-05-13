@@ -52,7 +52,7 @@ class CreateStateUI(
 
             else -> {
                 try {
-                   val createStateResult  =  createStateUseCase.createNewState(stateName, project.id)
+                   val createStateResult  =  createStateUseCase(stateName, project.id)
                  viewer.show(createStateResult)
 
 
@@ -65,7 +65,7 @@ class CreateStateUI(
     }
 
     private fun selectProject() = choose(
-        title = "Projects", elements = getAllProjectUseCase.getAllProjects(), labelOf = { it.title }, viewer = viewer, reader = reader
+        title = "Projects", elements = getAllProjectUseCase(), labelOf = { it.title }, viewer = viewer, reader = reader
     )
 
 }

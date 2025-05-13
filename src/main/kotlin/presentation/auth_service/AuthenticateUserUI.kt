@@ -5,10 +5,10 @@ import com.berlin.domain.model.user.User
 import com.berlin.presentation.UiRunner
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
-import domain.usecase.authService.AuthenticateUserUseCase
+import domain.usecase.auth_service.LoginUserUseCase
 
 class AuthenticateUserUI(
-    private val authenticateUser: AuthenticateUserUseCase,
+    private val authenticateUser: LoginUserUseCase,
     private val viewer: Viewer,
     private val reader: Reader
 ) : UiRunner {
@@ -24,7 +24,7 @@ class AuthenticateUserUI(
         val userName = reader.read()?.trim().orEmpty()
         viewer.show("Enter your password: ")
         val password = reader.read()?.trim().orEmpty()
-        return authenticateUser.login(userName, password)
+        return authenticateUser(userName, password)
     }
 
     private fun authenticateLoop(failedAttempts: Int = 0, maxAttempts: Int = 3) {

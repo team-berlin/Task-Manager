@@ -23,7 +23,7 @@ class GetProjectByIdUi(
         try {
             viewer.show("Enter project ID:")
             val projectId = reader.read()?.trim().orEmpty()
-            val project = getProjectByIdUseCase.getProjectById(projectId)
+            val project = getProjectByIdUseCase(projectId)
 
             showProject(project)
 

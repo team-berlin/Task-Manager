@@ -36,7 +36,7 @@ class UpdateStateUI(
 
             viewer.show("Enter new state name ((or X to keep ${state.name}): ")
             val newName = reader.read()?.trim().orEmpty()
-            updateState.updateState(
+            updateState(
                 state.id,
                 newName,
                 state.projectId

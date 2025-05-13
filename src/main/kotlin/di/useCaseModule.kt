@@ -19,7 +19,7 @@ import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
 import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.usecase.task.*
 import data.UserCache
-import domain.usecase.authService.AuthenticateUserUseCase
+import domain.usecase.auth_service.LoginUserUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -46,7 +46,7 @@ val useCaseModule = module {
     single { GetUserByIDUseCase(get()) }
     single { GetUserLoggedInUseCase(get()) }
     single { GetAllUsersUseCase(get()) }
-    single { AuthenticateUserUseCase(get(),get(), get()) }
+    single { LoginUserUseCase(get(),get(), get()) }
     single { CreateMateUseCase(get(), get(), get()) }
 
     single { CreateStateUseCase(get(),get())}

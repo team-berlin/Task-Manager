@@ -16,7 +16,7 @@ class DeleteTaskUseCase(
         }
         taskRepository.deleteTask(taskId)
 
-        addAuditLogUseCase.addAuditLog(
+        addAuditLogUseCase(
             createdByUserId = cashedUser.currentUser.id,
             auditAction = AuditLog.AuditAction.DELETE,
             entityType = AuditLog.EntityType.TASK,

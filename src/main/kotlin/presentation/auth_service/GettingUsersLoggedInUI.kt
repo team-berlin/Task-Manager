@@ -17,7 +17,7 @@ class GettingUsersLoggedInUI(
     override fun isAllowed(permission: Permission) = permission.getLoggedInUsers
 
     override fun run() {
-        val user = getUserLoggedIn.getCurrentUser()
+        val user = getUserLoggedIn()
           showUserInfo(user)
     }
 

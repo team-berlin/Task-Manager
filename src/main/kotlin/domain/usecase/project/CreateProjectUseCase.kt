@@ -13,7 +13,7 @@ class CreateProjectUseCase(
     private val addAuditLogUseCase: AddAuditLogUseCase,
     private val cashedUser: UserCache,
 ) {
-    fun createNewProject(
+    operator fun invoke(
         projectName: String,
         description: String?,
         stateId: List<String>?,
@@ -30,7 +30,7 @@ class CreateProjectUseCase(
 
             val createdProject = projectRepository.createProject(newProject)
 
-            addAuditLogUseCase.addAuditLog(
+            addAuditLogUseCase(
                 createdByUserId = cashedUser.currentUser.id,
                 auditAction = AuditLog.AuditAction.CREATE,
                 entityType = AuditLog.EntityType.PROJECT,

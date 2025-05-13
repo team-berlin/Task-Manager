@@ -32,7 +32,7 @@ class GetAuditLogsByTaskIdUseCaseTest {
         every { auditRepository.getAuditLogsByTaskId(taskId) } returns logs
 
         //When
-        val result = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(taskId)
+        val result = getAuditLogsByTaskIdUseCase(taskId)
 
         //That
         assertThat(result).isEqualTo(logs)
@@ -44,7 +44,7 @@ class GetAuditLogsByTaskIdUseCaseTest {
     fun `should throw Exception when task id is invalid`(invalidId: String) {
         //when&then
         assertThrows<IllegalArgumentException> {
-            getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(invalidId)
+            getAuditLogsByTaskIdUseCase(invalidId)
         }
     }
 

@@ -48,7 +48,7 @@ class UpdateTaskUI(
             val newAssigneeId = try {
                 val user = choose(
                     title = "Users",
-                    elements = getAllUsersUseCase.getAllUsers(),
+                    elements = getAllUsersUseCase(),
                     labelOf = { it.userName },
                     viewer = viewer,
                     reader = reader

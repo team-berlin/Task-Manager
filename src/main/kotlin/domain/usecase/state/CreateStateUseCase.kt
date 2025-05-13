@@ -10,7 +10,7 @@ class CreateStateUseCase(
     private val stateRepository: StateRepository,
     private val idGenerator: IdGeneratorImplementation,
 ) {
-    fun createNewState(stateName: String, projectId: String): String {
+    operator fun invoke(stateName: String, projectId: String): String {
         if (validateStateName(stateName)) {
             val newState = TaskState(
                 id = idGenerator.generateId(stateName),

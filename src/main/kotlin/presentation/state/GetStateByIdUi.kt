@@ -23,7 +23,7 @@ class GetStateByIdUi(
         viewer.show("Enter state ID: ")
         try {
             val stateId = reader.read()?.trim().orEmpty()
-            val state = getStateById.getStateById(stateId)
+            val state = getStateById(stateId)
             showState(state)
         }catch (_: InvalidStateIdException){
             viewer.show("invalid id")

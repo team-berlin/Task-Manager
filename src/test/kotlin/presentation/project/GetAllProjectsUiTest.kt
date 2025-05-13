@@ -25,7 +25,7 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should display all projects list`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns listOf(
+        every { getAllProjectsUseCase() } returns listOf(
             projectHelper(),
             projectHelper(),
             projectHelper()
@@ -41,7 +41,7 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should return projects list however there is only one project available`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns listOf(projectHelper())
+        every { getAllProjectsUseCase() } returns listOf(projectHelper())
 
         // When
         getAllProjectsUi.run()
@@ -53,7 +53,7 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should return failed message when there no available projects`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns emptyList()
+        every { getAllProjectsUseCase() } returns emptyList()
 
         // When
         getAllProjectsUi.run()

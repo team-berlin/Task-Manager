@@ -29,7 +29,7 @@ class AssignTaskUI(
         try {
             val task = selectTask()
             val assignee = choose(
-                title = "Users", elements = getAllUsersUseCase.getAllUsers(), labelOf = { it.userName }, viewer = viewer, reader = reader
+                title = "Users", elements = getAllUsersUseCase(), labelOf = { it.userName }, viewer = viewer, reader = reader
             )
 
             assignTask(task.id, assignee.id)

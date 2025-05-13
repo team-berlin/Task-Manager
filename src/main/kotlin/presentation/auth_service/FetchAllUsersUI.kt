@@ -17,7 +17,7 @@ class FetchAllUsersUI(
     override fun isAllowed(permission: Permission) = permission.fetchAllUsers
 
     override fun run() {
-        val users = fetchAllUsers.getAllUsers()
+        val users = fetchAllUsers()
         users.forEach { user ->
             showUserInfo(user)
         }

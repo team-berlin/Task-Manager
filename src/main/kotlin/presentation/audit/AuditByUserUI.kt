@@ -28,7 +28,7 @@ class AuditByUserUI(
         try {
             val selectedUser = selectUser()
             selectedUser.forEach { user ->
-                val logs = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(user.id)
+                val logs = getAuditLogsByUserIdUseCase(user.id)
                 showUserLogs(user, logs)
             }
 
@@ -42,7 +42,7 @@ class AuditByUserUI(
     private fun selectUser(): List<User> {
         val user =  choose(
             title = "Choose a user",
-            elements = fetchAllUsers.getAllUsers(),
+            elements = fetchAllUsers(),
             labelOf = { user -> user.userName },
             viewer = viewer,
             reader = reader

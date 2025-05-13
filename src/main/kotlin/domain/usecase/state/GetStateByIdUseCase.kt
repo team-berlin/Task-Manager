@@ -8,7 +8,7 @@ class GetStateByIdUseCase(
     private val stateRepository: StateRepository
 ) {
 
-    fun getStateById(stateId: String): TaskState {
+    operator fun invoke(stateId: String): TaskState {
         if(!validateStateId(stateId))
             throw InvalidStateIdException("State id must not be empty, blank, or purely numeric")
 

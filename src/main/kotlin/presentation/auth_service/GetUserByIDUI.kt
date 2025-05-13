@@ -24,7 +24,7 @@ class GetUserByIDUI(
         viewer.show("Enter the user id: ")
         val id = reader.read()?.trim().orEmpty()
         try {
-            val user =  getUserByIDUseCase.getUserById(id)
+            val user =  getUserByIDUseCase(id)
             showUserInfo(user)
         }catch (_: UserNotFoundException){
             viewer.show("User not found")

@@ -37,7 +37,7 @@ class CreateTaskUseCase(
 
             val createdTask = taskRepository.createTask(newTask)
 
-            addAuditLogUseCase.addAuditLog(
+            addAuditLogUseCase(
                 createdByUserId = createByUserId,
                 auditAction = AuditLog.AuditAction.CREATE,
                 entityType = AuditLog.EntityType.TASK,

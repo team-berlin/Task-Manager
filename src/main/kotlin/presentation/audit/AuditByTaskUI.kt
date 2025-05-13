@@ -34,7 +34,7 @@ class AuditByTaskUI(
 
             val selectedTask = selectTask(selectedProject)
             selectedTask.forEach { task ->
-                val logs = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(task.id)
+                val logs = getAuditLogsByTaskIdUseCase(task.id)
                 showAuditLogs(logs)
             }
 
@@ -72,7 +72,7 @@ class AuditByTaskUI(
     private fun selectProject () : Project{
         return choose(
             title = "Choose a project",
-            elements = getAllProjectsUseCase.getAllProjects(),
+            elements = getAllProjectsUseCase(),
             labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader

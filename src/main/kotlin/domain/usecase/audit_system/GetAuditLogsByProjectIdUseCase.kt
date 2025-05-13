@@ -7,7 +7,7 @@ class GetAuditLogsByProjectIdUseCase(
     private val auditRepository: AuditRepository
 ) {
 
-    fun getAuditLogsByProjectId(projectId: String): List<AuditLog> {
+    operator fun invoke(projectId: String): List<AuditLog> {
 
         if (!validateProjectId(projectId))
             throw IllegalArgumentException("Project ID must not be empty, blank, or purely numeric")

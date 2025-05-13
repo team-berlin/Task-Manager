@@ -30,7 +30,7 @@ class GetTasksByProjectIdUI(
         try {
             val project = choose(
                 title = "Projects",
-                elements = getAllProjectsUseCase.getAllProjects(),
+                elements = getAllProjectsUseCase(),
                 labelOf = { it.title },
                 viewer = viewer,
                 reader = reader
@@ -50,7 +50,7 @@ class GetTasksByProjectIdUI(
     }
 
     private fun showSwimLaneFor(projectId: String, tasks: List<Task>) {
-        val states = getAllStatesByProjectIdUseCase.getAllStatesByProjectId(projectId)
+        val states = getAllStatesByProjectIdUseCase(projectId)
         if (states.isEmpty()) {
             viewer.show("No states found for that project.")
             return

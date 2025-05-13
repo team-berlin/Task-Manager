@@ -63,7 +63,7 @@ class CreateProjectUi(
     private fun createProject(projectName: String, projectDescription: String?) {
         viewer.show("Creating project...\n")
 
-        val creationResult = createProjectUseCase.createNewProject(
+        val creationResult = createProjectUseCase(
             projectName,
             projectDescription,
             null,

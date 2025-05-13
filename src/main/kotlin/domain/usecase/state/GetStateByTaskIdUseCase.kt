@@ -11,18 +11,13 @@ class GetStateByTaskIdUseCase(
     private val taskRepository: TaskRepository
 ) {
 
-    fun getStateByTaskId(taskId: String): TaskState? {
-        if (!validateTaskId(taskId)) throw InvalidTaskIdException("Task ID must not be empty or blank")
-
-        if (checkTaskExists(taskId)) {
+    operator fun invoke(taskId: String): TaskState? {
+        if (!validateTaskId(taskId)) {
             return stateRepository.getStateByTaskId(taskId)
         } else {
-            throw InvalidTaskStateException("Task with ID $taskId does not exist")
+            throw InvalidTaskIdException("Task ID must not be empty or blank")
         }
     }
-
-
-    private fun checkTaskExists(taskId: String): Boolean = taskRepository.getTaskById(taskId) != null
 
     private fun validateTaskId(taskId: String): Boolean = taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 

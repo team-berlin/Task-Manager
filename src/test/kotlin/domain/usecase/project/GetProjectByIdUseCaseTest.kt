@@ -29,7 +29,7 @@ class GetProjectByIdUseCaseTest {
         every { projectRepository.getProjectById("P1") } returns expectedProject
 
         // When
-        val result = getProjectByIdUseCase.getProjectById("P1")
+        val result = getProjectByIdUseCase("P1")
 
         // Then
         assertThat(result).isEqualTo(expectedProject)
@@ -42,7 +42,7 @@ class GetProjectByIdUseCaseTest {
         //every { projectRepository.getProjectById(any()) } returns null
 
         // When
-        val exception = assertThrows<Exception> { getProjectByIdUseCase.getProjectById("P2") }
+        val exception = assertThrows<Exception> { getProjectByIdUseCase("P2") }
 
         // Then
         assertThat(exception.message).isEqualTo("Project with ID $input does not exist")
@@ -53,7 +53,7 @@ class GetProjectByIdUseCaseTest {
     fun `should throw exception when project id is invalid`(projectId: String) {
         // When && Then
         assertThrows<Exception> {
-            getProjectByIdUseCase.getProjectById(projectId)
+            getProjectByIdUseCase(projectId)
         }
     }
 }

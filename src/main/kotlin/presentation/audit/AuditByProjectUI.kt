@@ -27,7 +27,7 @@ class AuditByProjectUI(
     override fun run() {
         try {
             val project = selectProject()
-            val logs = getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(project.id)
+            val logs = getAuditLogsByProjectIdUseCase(project.id)
 
             showProjectLogs(project, logs)
 
@@ -60,7 +60,7 @@ class AuditByProjectUI(
     private fun selectProject(): Project {
         return choose(
             title = "Choose a project",
-            elements = getAllProjectsUseCase.getAllProjects(),
+            elements = getAllProjectsUseCase(),
             labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader

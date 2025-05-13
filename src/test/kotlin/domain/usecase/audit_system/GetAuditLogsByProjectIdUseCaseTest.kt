@@ -34,7 +34,7 @@ class GetAuditLogsByProjectIdUseCaseTest {
         every { auditRepository.getAuditLogsByProjectId(projectId) } returns logs
 
         //When
-        val result = getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(projectId)
+        val result = getAuditLogsByProjectIdUseCase(projectId)
 
         //That
         assertThat(result).isEqualTo(logs)
@@ -47,7 +47,7 @@ class GetAuditLogsByProjectIdUseCaseTest {
     fun `should throw exception when project Id is invalid`(invalidId: String) {
         //when&then
         assertThrows<IllegalArgumentException> {
-            getAuditLogsByProjectIdUseCase.getAuditLogsByProjectId(invalidId)
+            getAuditLogsByProjectIdUseCase(invalidId)
         }
     }
 

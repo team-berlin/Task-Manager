@@ -11,20 +11,14 @@ class GetAllStatesByProjectIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
 
-    fun getAllStatesByProjectId(projectId: String): List<TaskState> {
+    operator fun invoke(projectId: String): List<TaskState> {
 
-        if (!validateProjectId(projectId))
-            throw InvalidProjectIdException("Project ID must not be empty or blank")
-
-        return if (checkProjectExists(projectId)) {
+        return if (!validateProjectId(projectId)) {
             stateRepository.getStatesByProjectId(projectId)
         } else {
-            throw Exception("Project with ID $projectId does not exist")
+            throw InvalidProjectIdException("Project ID must not be empty or blank")
         }
     }
-
-    private fun checkProjectExists(projectId: String): Boolean =
-        projectRepository.getProjectById(projectId) != null
 
     private fun validateProjectId(projectId: String): Boolean =
         projectId.isNotBlank() && !(projectId.all { it.isDigit() })

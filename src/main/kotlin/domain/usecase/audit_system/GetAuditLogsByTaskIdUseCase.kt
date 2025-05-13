@@ -7,7 +7,7 @@ class GetAuditLogsByTaskIdUseCase(
     private val auditRepository: AuditRepository,
 ) {
 
-    fun getAuditLogsByTaskId(taskId: String): List<AuditLog> {
+    operator fun invoke(taskId: String): List<AuditLog> {
 
         if (!validateTaskId(taskId)) throw IllegalArgumentException("Task ID must not be empty, blank, or purely numeric")
 

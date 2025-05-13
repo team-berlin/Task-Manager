@@ -12,7 +12,7 @@ class DeleteProjectUseCase(
     private val addAuditLogUseCase: AddAuditLogUseCase,
     private val cashedUser: UserCache,
 ) {
-    fun deleteProject(projectId: String): String {
+    operator fun invoke(projectId: String): String {
 
         if (!validateProjectId(projectId)) {
             throw InvalidProjectIdException("Project ID must not be empty or blank")
@@ -24,7 +24,7 @@ class DeleteProjectUseCase(
 
         val deletedProject = projectRepository.deleteProject(projectId)
 
-        addAuditLogUseCase.addAuditLog(
+        addAuditLogUseCase(
             createdByUserId = cashedUser.currentUser.id,
             auditAction = AuditLog.AuditAction.DELETE,
             entityType = AuditLog.EntityType.PROJECT,

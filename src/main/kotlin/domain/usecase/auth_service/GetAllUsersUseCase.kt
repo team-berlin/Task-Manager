@@ -1,11 +1,11 @@
 package com.berlin.domain.usecase.authService
 import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.AuthenticationRepository
-class GetUserLoggedInUseCase(
+
+class GetAllUsersUseCase(
     private val repository: AuthenticationRepository
 ) {
-    fun getCurrentUser(): User {
-
-        return repository.getCurrentUser()
+    operator fun invoke(): List<User> {
+        return repository.getAllUsers()
     }
 }

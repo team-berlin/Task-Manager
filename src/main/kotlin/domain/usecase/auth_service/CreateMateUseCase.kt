@@ -13,7 +13,7 @@ class CreateMateUseCase(
 ) {
 
 
-    fun createMate(userName: String, password: String): User {
+    operator fun invoke(userName: String, password: String): User {
         if (userName.isEmpty() || password.isEmpty()) {
             throw InvalidCredentialsException("Username and password must not be empty")
         }

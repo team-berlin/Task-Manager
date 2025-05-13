@@ -32,7 +32,7 @@ class UpdateTaskUseCase(
 
         val updatedTask = taskRepository.createTask(updated)
 
-        addAuditLogUseCase.addAuditLog(
+        addAuditLogUseCase(
             createdByUserId = cashedUser.currentUser.id,
             auditAction = AuditLog.AuditAction.UPDATE,
             entityType = AuditLog.EntityType.TASK,

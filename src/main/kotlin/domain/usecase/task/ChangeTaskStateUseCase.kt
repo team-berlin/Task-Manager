@@ -24,7 +24,7 @@ class ChangeTaskStateUseCase(
         val updated = original.copy(stateId = newStateId)
         val updatedTask = taskRepository.updateTask(updated)
 
-        addAuditLogUseCase.addAuditLog(
+        addAuditLogUseCase(
             createdByUserId = cashedUser.currentUser.id,
             auditAction = AuditLog.AuditAction.UPDATE,
             entityType = AuditLog.EntityType.TASK,
