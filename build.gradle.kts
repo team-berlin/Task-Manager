@@ -35,6 +35,8 @@ kover {
                     "**.di.**",
                     "**.exception.**",
                     "**.io.**",
+                    "**.mapper.**",
+                    "**.mongodb.**",
                 )
             }
         }

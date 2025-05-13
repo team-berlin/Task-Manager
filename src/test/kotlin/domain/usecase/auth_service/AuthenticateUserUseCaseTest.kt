@@ -1,4 +1,4 @@
-package com.berlin.domain.usecase.authService
+package com.berlin.domain.usecase.auth_service
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.fakeData.FakeHashingString

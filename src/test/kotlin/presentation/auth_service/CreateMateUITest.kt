@@ -1,4 +1,4 @@
-package com.berlin.presentation.authService
+package com.berlin.presentation.auth_service
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.helper.AuthServiceTestData
@@ -6,6 +6,7 @@ import com.berlin.domain.helper.AuthServiceTestData.user
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.CreateMateUseCase
+import com.berlin.presentation.authService.CreateMateUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat

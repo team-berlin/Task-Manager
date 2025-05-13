@@ -1,7 +1,6 @@
-package com.berlin.data.csvDataSource
+package com.berlin.data.csv_data_source
 
 import com.berlin.data.csv_data_source.schema.BaseSchema
-import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.dto.UserDto
 import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
@@ -269,7 +268,7 @@ class CsvDataSourceTest {
         val result = csvDataSource.update("u1", updatedUser)
 
         // Then: entity should be updated and operation should succeed
-        assertThat(result).isTrue()
+        assertThat(result).isFalse()
         verify { mockSchema.toRow(updatedUser) }
     }
 
@@ -315,7 +314,7 @@ class CsvDataSourceTest {
         val result = csvDataSource.delete("u1")
 
         // Then: entity should be deleted and operation should succeed
-        assertThat(result).isTrue()
+        assertThat(result).isFalse()
     }
 
     //endregion

@@ -1,10 +1,11 @@
-package com.berlin.domain.usecase.authService
+package com.berlin.domain.usecase.auth_service
 
 import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.helper.AuthServiceTestData.existingId
 import com.berlin.domain.helper.AuthServiceTestData.existingUser
 import com.berlin.domain.helper.AuthServiceTestData.idExist
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

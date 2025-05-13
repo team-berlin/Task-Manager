@@ -1,4 +1,4 @@
-package com.berlin.domain.usecase.authService
+package com.berlin.domain.usecase.auth_service
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.helper.AuthServiceTestData.fakeId
@@ -11,6 +11,7 @@ import com.berlin.domain.helper.AuthServiceTestData.userPassword
 import com.berlin.domain.helper.AuthServiceTestData.userPasswordIsEmpty
 import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.authService.CreateMateUseCase
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.google.common.truth.Truth.assertThat

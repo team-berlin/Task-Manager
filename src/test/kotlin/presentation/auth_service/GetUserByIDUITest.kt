@@ -1,4 +1,4 @@
-package com.berlin.presentation.authService
+package com.berlin.presentation.auth_service
 
 import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.domain.exception.UserNotFoundException
@@ -6,6 +6,7 @@ import com.berlin.domain.helper.AuthServiceTestData
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
+import com.berlin.presentation.authService.GetUserByIDUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -17,7 +18,6 @@ import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
-
 
 class GetUserByIDUITest {
     private lateinit var viewer: Viewer

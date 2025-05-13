@@ -1,4 +1,4 @@
-package com.berlin.presentation.authService
+package com.berlin.presentation.auth_service
 
 import com.berlin.domain.exception.InvalidCredentialsException
 import com.berlin.domain.fakeData.FakeHashingString
@@ -8,6 +8,7 @@ import com.berlin.domain.helper.EMPTY_USER
 import com.berlin.domain.usecase.utils.hash_algorithm.HashingString
 import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.presentation.authService.AuthenticateUserUI
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.google.common.truth.Truth.assertThat
@@ -19,7 +20,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

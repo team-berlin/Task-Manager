@@ -1,7 +1,8 @@
-package com.berlin.domain.usecase.authService
+package com.berlin.domain.usecase.auth_service
 
 import com.berlin.domain.helper.AuthServiceTestData.adminIsFirstUser
 import com.berlin.domain.repository.AuthenticationRepository
+import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
