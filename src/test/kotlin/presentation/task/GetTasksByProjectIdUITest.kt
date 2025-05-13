@@ -5,7 +5,7 @@ import com.berlin.domain.model.Project
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.GetTasksByProjectUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -21,7 +21,7 @@ class GetTasksByProjectIdUITest {
     private lateinit var reader: Reader
     private lateinit var getTasksByProjectUseCase: GetTasksByProjectUseCase
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
-    private lateinit var getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase
+    private lateinit var getAllStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase
     private lateinit var getTasksByProjectIdUI: GetTasksByProjectIdUI
 
     private val printed = mutableListOf<String>()
@@ -56,7 +56,7 @@ class GetTasksByProjectIdUITest {
         getTasksByProjectIdUI = GetTasksByProjectIdUI(
             getTasksByProjectUseCase = getTasksByProjectUseCase,
             getAllProjectsUseCase = getAllProjectsUseCase,
-            getAllStatesByProjectIdUseCase = getAllStatesByProjectIdUseCase,
+            getAllTaskStatesByProjectIdUseCase = getAllStatesByProjectIdUseCase,
             viewer = viewer,
             reader = reader
         )

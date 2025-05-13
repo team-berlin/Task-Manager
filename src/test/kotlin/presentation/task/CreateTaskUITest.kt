@@ -8,7 +8,7 @@ import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
 import com.berlin.domain.usecase.task.CreateTaskUseCase
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
@@ -28,7 +28,7 @@ class CreateTaskUITest {
 
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var getAllUsersUseCase: GetAllUsersUseCase
-    private lateinit var getAllStatesByProjectIdUseCase: GetAllStatesByProjectIdUseCase
+    private lateinit var getAllStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase
     private val reader: Reader = mockk()
     private val createTaskUseCase: CreateTaskUseCase = mockk()
     private val userCache: UserCache = mockk()
@@ -63,7 +63,7 @@ class CreateTaskUITest {
             cashedUser = userCache,
             getAllProjectsUseCase = getAllProjectsUseCase,
             getAllUsersUseCase = getAllUsersUseCase,
-            getAllStatesByProjectIdUseCase = getAllStatesByProjectIdUseCase,
+            getAllTaskStatesByProjectIdUseCase = getAllStatesByProjectIdUseCase,
             viewer = viewer,
             reader = reader
         )

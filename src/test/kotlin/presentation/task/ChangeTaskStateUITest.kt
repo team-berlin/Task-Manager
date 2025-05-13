@@ -5,7 +5,7 @@ import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.model.user.User
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
 import com.berlin.domain.usecase.task.ChangeTaskStateUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.presentation.io.Reader
@@ -22,7 +22,7 @@ class ChangeTaskStateUITest {
     private lateinit var reader: Reader
     private lateinit var changeTaskStateUseCase: ChangeTaskStateUseCase
     private lateinit var getAllTasksUseCase: GetAllTasksUseCase
-    private lateinit var getAllStatesUseCase: GetAllStatesUseCase
+    private lateinit var getAllStatesUseCase: GetAllTaskStatesUseCase
     private lateinit var changeTaskStateUI: ChangeTaskStateUI
 
     private val printed = mutableListOf<String>()
