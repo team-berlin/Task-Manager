@@ -31,7 +31,7 @@ class CategoryUI(
             viewer.show("X – Back")
 
             when (val input = reader.read()?.trim()?.uppercase(Locale.getDefault())) {
-                null, "", "X" -> return
+                null,"X" -> return
                 else -> allowed
                     .firstOrNull { it.id == input.toIntOrNull() }
                     ?.run()

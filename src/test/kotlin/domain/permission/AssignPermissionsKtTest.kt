@@ -1,6 +1,6 @@
 package com.berlin.domain.permission
 
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test
 
@@ -8,7 +8,7 @@ class AssignPermissionsKtTest {
 
     @Test
     fun `assignPermissions should return correct permissions for MATE role`() {
-        val permissions = assignPermissions(UserRole.MATE)
+        val permissions = assignPermissions(User.UserRole.MATE)
 
         assertThat(permissions.createTask).isTrue()
         assertThat(permissions.updateTask).isTrue()
@@ -22,7 +22,7 @@ class AssignPermissionsKtTest {
 
     @Test
     fun `assignPermissions should return correct permissions for ADMIN role`() {
-        val permissions = assignPermissions(UserRole.ADMIN)
+        val permissions = assignPermissions(User.UserRole.ADMIN)
 
         assertThat(permissions.createProject).isTrue()
         assertThat(permissions.updateProject).isTrue()

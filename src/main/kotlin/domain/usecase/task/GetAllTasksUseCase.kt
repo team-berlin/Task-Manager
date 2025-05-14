@@ -8,7 +8,6 @@ class GetAllTasksUseCase(
 ) {
 
     operator fun invoke(): List<Task> {
-
         return taskRepository.getAllTasks()
     }
 }

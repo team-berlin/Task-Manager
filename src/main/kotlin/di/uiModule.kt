@@ -13,7 +13,7 @@ import com.berlin.presentation.io.ConsoleViewer
 import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 import com.berlin.presentation.project.*
-import com.berlin.presentation.state.*
+import com.berlin.presentation.task_state.*
 import com.berlin.presentation.task.*
 import data.UserCache
 import org.koin.core.qualifier.named
@@ -36,11 +36,11 @@ val uiModule = module {
     single { GetProjectByIdUi(get(), get(), get()) }
     single { UpdateProjectUi(get(), get(), get(), get(), get()) }
 
-    single { CreateStateUI(get(), get(), get(), get()) }
-    single { DeleteStateUi(get(), get(), get(), get()) }
-    single { GetAllStatesByProjectIdUI(get(), get(), get(), get()) }
-    single { GetStateByIdUi(get(), get(), get()) }
-    single { UpdateStateUI(get(), get(), get(), get()) }
+    single { CreateTaskStateUI(get(), get(), get(), get()) }
+    single { DeleteTaskStateUi(get(), get(), get(), get()) }
+    single { GetAllTaskStatesByProjectIdUI(get(), get(), get(), get()) }
+    single { GetTaskStateByIdUi(get(), get(), get()) }
+    single { UpdateTaskStateUI(get(), get(), get(), get()) }
 
     single { AuditByProjectUI(get(), get(), get(), get()) }
     single { AuditByTaskUI(get(), get(), get(), get(), get()) }
@@ -63,7 +63,7 @@ val uiModule = module {
                 get<UpdateTaskUI>(),
                 get<ChangeTaskStateUI>(),
                 get<GetTaskByIdUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -75,19 +75,19 @@ val uiModule = module {
                 get<GetAllProjectsUi>(),
                 get<GetProjectByIdUi>(),
                 get<UpdateProjectUi>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
     single<UiRunner>(named("statesCategory")) {
         CategoryUI(
             id = 3, label = "States", children = listOf(
-                get<CreateStateUI>(),
-                get<DeleteStateUi>(),
-                get<GetAllStatesByProjectIdUI>(),
-                get<GetStateByIdUi>(),
-                get<UpdateStateUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+                get<CreateTaskStateUI>(),
+                get<DeleteTaskStateUi>(),
+                get<GetAllTaskStatesByProjectIdUI>(),
+                get<GetTaskStateByIdUi>(),
+                get<UpdateTaskStateUI>()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -95,7 +95,7 @@ val uiModule = module {
         CategoryUI(
             id = 4, label = "Audit Logs", children = listOf(
                 get<AuditByProjectUI>(), get<AuditByTaskUI>(), get<AuditByUserUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -103,7 +103,7 @@ val uiModule = module {
         CategoryUI(
             id = 5, label = "Users", children = listOf(
                 get<CreateMateUI>(), get<FetchAllUsersUI>(), get<GettingUsersLoggedInUI>(), get<GetUserByIDUI>()
-            ), viewer = get(), reader = get(), userCache = get()
+            ),viewer = get<Viewer>(), reader = get<Reader>(), userCache = get()
         )
     }
 
@@ -115,7 +115,7 @@ val uiModule = module {
                 get(named("statesCategory")),
                 get(named("auditCategory")),
                 get(named("usersCategory"))
-            ), viewer = get(), reader = get(), authUi = get<AuthenticateUserUI>(), userCache = get<UserCache>()
+            ), viewer = get<Viewer>(), reader = get<Reader>(), authUi = get<AuthenticateUserUI>(), userCache = get<UserCache>()
         )
     }
 }

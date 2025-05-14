@@ -1,7 +1,6 @@
 package com.berlin.presentation.task
 
 import com.berlin.domain.exception.InvalidTaskIdException
-import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.Task
 import com.berlin.domain.usecase.task.GetTaskByIdUseCase
@@ -10,7 +9,7 @@ import com.berlin.presentation.io.Reader
 import com.berlin.presentation.io.Viewer
 
 class GetTaskByIdUI(
-    private val getTaskById: GetTaskByIdUseCase,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
     private val viewer: Viewer,
     private val reader: Reader,
 ) : PermissionedUiRunner {
@@ -24,17 +23,8 @@ class GetTaskByIdUI(
         try {
             viewer.show("Enter task ID:")
             val raw = reader.read()?.trim().orEmpty()
-            getTaskById(raw)
-                .onSuccess { showTask(it) }
-                .onFailure { ex ->
-                    when (ex) {
-                        is TaskNotFoundException ->
-                            viewer.show("No task found with ID “$raw”")
-                        else ->
-                            viewer.show(ex.message ?: "Lookup failed")
-                    }
-                }
-
+            val task = getTaskByIdUseCase(raw)
+            showTask(task)
         } catch (ex: InvalidTaskIdException) {
             viewer.show("Invalid task id")
         }

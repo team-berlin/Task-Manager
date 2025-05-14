@@ -3,7 +3,6 @@ package com.berlin.presentation.project
 import com.berlin.domain.usecase.project.GetAllProjectsUseCase
 import com.berlin.helper.projectHelper
 import com.berlin.presentation.io.Viewer
-import com.berlin.presentation.project.GetAllProjectsUi
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,10 +24,8 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should display all projects list`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns listOf(
-            projectHelper(),
-            projectHelper(),
-            projectHelper()
+        every { getAllProjectsUseCase() } returns listOf(
+            projectHelper(), projectHelper(), projectHelper()
         )
 
         // When
@@ -41,7 +38,7 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should return projects list however there is only one project available`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns listOf(projectHelper())
+        every { getAllProjectsUseCase() } returns listOf(projectHelper())
 
         // When
         getAllProjectsUi.run()
@@ -53,7 +50,7 @@ class GetAllProjectsUiTest {
     @Test
     fun `Should return failed message when there no available projects`() {
         // Given
-        every { getAllProjectsUseCase.getAllProjects() } returns emptyList()
+        every { getAllProjectsUseCase() } returns emptyList()
 
         // When
         getAllProjectsUi.run()

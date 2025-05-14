@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.auditSystem
 
+import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByUserIdUseCase
@@ -32,7 +33,7 @@ class GetAuditLogsByUserIdUseCaseTest {
         every { auditRepository.getAuditLogsByUserId(userId) } returns logs
 
         //When
-        val result = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(userId)
+        val result = getAuditLogsByUserIdUseCase(userId)
 
         //That
         assertThat(result).isEqualTo(logs)
@@ -47,7 +48,7 @@ class GetAuditLogsByUserIdUseCaseTest {
         every { auditRepository.getAuditLogsByUserId(userId) } returns emptyList()
 
         //When
-        val result = getAuditLogsByUserIdUseCase.getAuditLogsByUserId(userId)
+        val result = getAuditLogsByUserIdUseCase(userId)
 
         //That
         assertThat(result).isEmpty()
@@ -58,8 +59,8 @@ class GetAuditLogsByUserIdUseCaseTest {
     @ValueSource(strings = ["", "   ","123"])
     fun `should throw exception when user id is invalid`(invalidId: String) {
        //when&then
-        assertThrows<IllegalArgumentException> {
-            getAuditLogsByUserIdUseCase.getAuditLogsByUserId(invalidId)
+        assertThrows<InvalidUserIdException> {
+            getAuditLogsByUserIdUseCase(invalidId)
         }
     }
 
