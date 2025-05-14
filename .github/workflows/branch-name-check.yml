@@ -11,14 +11,13 @@ jobs:
       - name: Check Branch Name
         uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branchName = context.payload.pull_request.head.ref;
-            const regex = /^(bugfix|feature|test|refactor|chore| experimental)\/[\w-]+$/;
+            const regex = /^(bugfix|feature|test|refactor|chore|experimental)\/[\w-]+$/;
 
             if (!regex.test(branchName)) {
-              core.setFailed('Branch name does not match the required format: JIRA-<NUMBER>-(bugfix|experimental|feature|test|refactor|chore)/<branch-name>');
+              core.setFailed('Branch name does not match the required format: <type>/<branch-name>. Allowed types: bugfix, feature, test, refactor, chore, experimental');
             } else {
               console.log('Branch name matches the required format');
             }
-
