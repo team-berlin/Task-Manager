@@ -21,15 +21,15 @@ import com.berlin.domain.usecase.utils.id_generator.IdGenerator
 import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
 import data.AdminUserProvider
 import data.UserCache
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 
 val dataModule = module {
-    single<IdGenerator> { IdGeneratorImplementation() }
-    single<IdGeneratorImplementation> { IdGeneratorImplementation() }
-    single<HashingString> { MD5Hasher() }
+    singleOf(::IdGeneratorImplementation) bind IdGenerator::class
+    singleOf(::MD5Hasher) bind HashingString::class
 
     single { AdminUserProvider(get(named("UserDtoDataSource")), get()) }
     single { UserCache(get<AdminUserProvider>().load()) }
