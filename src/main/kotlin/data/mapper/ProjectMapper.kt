@@ -4,23 +4,23 @@ import com.berlin.data.dto.ProjectDto
 import com.berlin.domain.model.Project
 
 class ProjectMapper : EntityMapper<ProjectDto, Project> {
-    override fun mapToDomainModel(projectDto: ProjectDto): Project {
+    override fun mapToDomainModel(from: ProjectDto): Project {
         return Project(
-            id = projectDto.id,
-            title = projectDto.title,
-            statesId = projectDto.statesId,
-            description = projectDto.description,
-            tasksId = projectDto.tasksId
+            id = from.id,
+            title = from.title,
+            statesId = from.statesId,
+            description = from.description,
+            tasksId = from.tasksId
         )
     }
 
-    override fun mapToDataModel(project: Project): ProjectDto {
+    override fun mapToDataModel(from: Project): ProjectDto {
         return ProjectDto(
-            id = project.id,
-            title = project.title,
-            statesId = project.statesId,
-            description = project.description,
-            tasksId = project.tasksId
+            id = from.id,
+            title = from.title,
+            statesId = from.statesId,
+            description = from.description,
+            tasksId = from.tasksId
         )
     }
 }

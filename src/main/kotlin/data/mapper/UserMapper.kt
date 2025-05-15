@@ -9,21 +9,21 @@ class UserMapper(
     private val userDataSource: BaseDataSource<UserDto>,
 ) : EntityMapper<UserDto, User> {
 
-    override fun mapToDomainModel(userDto: UserDto): User {
+    override fun mapToDomainModel(from: UserDto): User {
         return User(
-            id = userDto.id,
-            userName = userDto.userName,
-            role = userDto.role
+            id = from.id,
+            userName = from.userName,
+            role = from.role
         )
     }
 
-    override fun mapToDataModel(user: User): UserDto {
-        val userDto = userDataSource.getById(user.id)
+    override fun mapToDataModel(from: User): UserDto {
+        val userDto = userDataSource.getById(from.id)
             ?: throw UserNotFoundException("user not found")
         return UserDto(
-            id = user.id,
-            userName = user.userName,
-            role = user.role,
+            id = from.id,
+            userName = from.userName,
+            role = from.role,
             password = userDto.password
         )
     }
