@@ -1,5 +1,7 @@
 package com.berlin.presentation.task_state
 
+import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
@@ -26,13 +28,11 @@ class UpdateTaskStateUITest {
         updateTaskStateUI = UpdateTaskStateUI(updateTaskStateUseCase, getAllTaskStatesUseCase, viewer, reader)
     }
 
-
-
     @Test
-    fun `run should throw InvalidStateNameException when State Name is empty or blank`() {
+    fun `run should throw InvalidStateNameException when State Name is null, empty, or blank`() {
         //Given
-        every { getAllTaskStatesUseCase() } returns listOf(TaskState("Q1", "Menna", "P5"))
-        every { reader.read() } returnsMany listOf("1", " ")
+        every { getAllTaskStatesUseCase() } returns states
+        every { reader.read() } returnsMany listOf("1", null)
         every {
             updateTaskStateUseCase(any(), emptyStateName, any())
         } throws InvalidStateNameException("State Name must not be empty or blank")
@@ -44,10 +44,60 @@ class UpdateTaskStateUITest {
         verify { viewer.show("State Name must not be empty or blank") }
     }
 
+    @Test
+    fun `updateState should cancel the update when user enters x`() {
+        //Given
+        every { getAllTaskStatesUseCase() } returns states
+        every { reader.read() } returnsMany listOf("1", "x")
+        every {
+            updateTaskStateUseCase(any(), "x", any())
+        } throws InputCancelledException("Cancelled!")
+
+        //When
+        updateTaskStateUI.run()
+
+        //Then
+        verify { viewer.show("Cancelled!") }
+    }
+
+
+    @Test
+    fun `updateState should trow invalid selection exception when the user choose invalid selection`() {
+        //Given
+        every { getAllTaskStatesUseCase() } returns states
+        every { reader.read() } returnsMany listOf("00", newValidStateName)
+        every {
+            updateTaskStateUseCase(any(), newValidStateName, any())
+        } throws InvalidSelectionException("invalid selection")
+
+        //When
+        updateTaskStateUI.run()
+
+        //Then
+        verify { viewer.show("invalid selection") }
+    }
+
+    @Test
+    fun `updateState should return success when the new state name is valid`() {
+        //Given
+        every { getAllTaskStatesUseCase() } returns states
+        every { reader.read() } returnsMany listOf("1", newValidStateName)
+        every {
+            updateTaskStateUseCase(any(), newValidStateName, any())
+        } returns "$newValidStateName is updated Successfully"
+
+        //When
+        updateTaskStateUI.run()
+
+        //Then
+        verify { viewer.show("$newValidStateName is updated Successfully") }
+    }
+
+
     private companion object {
         private val state = TaskState("Q1", "Menna", "P5")
         private val states = listOf(state)
-        private const val successfullyStateNewName = "done"
+        private const val newValidStateName = "new state"
         private const val emptyStateName = ""
     }
 

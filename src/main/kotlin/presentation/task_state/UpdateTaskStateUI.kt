@@ -41,9 +41,9 @@ class UpdateTaskStateUI(
                 newName,
                 state.projectId
             )
-            viewer.show(" $newName is updated Successfully")
+            viewer.show("$newName is updated Successfully")
 
-        } catch (ex: InvalidStateNameException) {
+        } catch (_: InvalidStateNameException) {
             viewer.show("State Name must not be empty or blank")
         } catch (_: InputCancelledException) {
             viewer.show("Cancelled!")
