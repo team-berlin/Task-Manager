@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task_state
 import com.berlin.domain.exception.StateNotFoundException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -16,17 +17,19 @@ class GetTaskStateByIdUseCaseTest {
 
     private lateinit var getTaskStateByIdUseCase: GetTaskStateByIdUseCase
     private lateinit var taskStateRepository: TaskStateRepository
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         taskStateRepository = mockk()
-        getTaskStateByIdUseCase = GetTaskStateByIdUseCase(taskStateRepository)
+        getTaskStateByIdUseCase = GetTaskStateByIdUseCase(taskStateRepository,validator)
     }
 
     @Test
     fun `should return state when valid state id exists`() {
         // Given
         val expectedState = TaskState(id = "S1", name = "Active", projectId = "P1")
+        every { validator.isValid("S1") }returns true
         every { taskStateRepository.getStateById("S1") } returns expectedState
 
         // When
@@ -40,6 +43,7 @@ class GetTaskStateByIdUseCaseTest {
     fun `should throw exception when state id does not exist`() {
         // Given
         val input = "S2"
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.getStateById(any()) } throws StateNotFoundException(input)
 
         // When & Then

@@ -1,10 +1,10 @@
-package com.berlin.domain.usecase.auditSystem
+package com.berlin.domain.usecase.audit_system
 
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
-import com.berlin.domain.usecase.audit_system.GetAuditLogsByProjectIdUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -18,11 +18,12 @@ import org.junit.jupiter.params.provider.ValueSource
 class GetAuditLogsByProjectIdUseCaseTest {
 
     private val auditRepository: AuditRepository = mockk(relaxed = true)
+    private val validator:Validator= mockk(relaxed = true)
     private lateinit var getAuditLogsByProjectIdUseCase: GetAuditLogsByProjectIdUseCase
 
     @BeforeEach
     fun setup() {
-        getAuditLogsByProjectIdUseCase = GetAuditLogsByProjectIdUseCase(auditRepository)
+        getAuditLogsByProjectIdUseCase = GetAuditLogsByProjectIdUseCase(auditRepository, validator )
     }
 
     @Test
@@ -32,6 +33,7 @@ class GetAuditLogsByProjectIdUseCaseTest {
         val logs = listOf(
             generateAuditLog(id = "A2", entityId = projectId, entityType = AuditLog.EntityType.PROJECT)
         )
+        every { validator.isValid(projectId) } returns true
         every { auditRepository.getAuditLogsByProjectId(projectId) } returns logs
 
         //When

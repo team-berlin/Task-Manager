@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task_state
 import com.berlin.domain.exception.InvalidStateException
 import com.berlin.domain.exception.InvalidStateIdException
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -13,15 +14,17 @@ import kotlin.test.Test
 class DeleteTaskStateUseCaseTest {
     private lateinit var deleteTaskStateUseCase: DeleteTaskStateUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        deleteTaskStateUseCase = DeleteTaskStateUseCase(taskStateRepository)
+        deleteTaskStateUseCase = DeleteTaskStateUseCase(taskStateRepository,validator)
     }
 
     @Test
     fun `should return success when state is deleted successfully`() {
         // Given
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.deleteState(any()) } returns "Deleted Successfully"
         every { taskStateRepository.getStateById(any()) } returns mockk()
 
@@ -35,6 +38,7 @@ class DeleteTaskStateUseCaseTest {
     @Test
     fun `should return failure when state deletion fails`() {
         // Given
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.deleteState(any()) } returns "Deletion Failed"
         every { taskStateRepository.getStateById(any()) } returns mockk()
 
@@ -50,6 +54,7 @@ class DeleteTaskStateUseCaseTest {
     fun `should throw exception when state does not exist`() {
         // Given
         val stateId = "q2"
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.deleteState(any()) } throws InvalidStateException(stateId)
 
         // When & Then
@@ -60,6 +65,7 @@ class DeleteTaskStateUseCaseTest {
     @Test
     fun `should throw InvalidStateException when state does not exist`() {
         val stateId = "q2"
+        every { validator.isValid(stateId) }returns true
         every { taskStateRepository.deleteState(stateId) } throws InvalidStateException(stateId)
 
         assertThrows<InvalidStateException> {

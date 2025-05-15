@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.project
 import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
@@ -21,11 +22,12 @@ class UpdateProjectUseCaseTest {
     private val projectRepository: ProjectRepository = mockk(relaxed = true)
     private val addAuditLogUseCase: AddAuditLogUseCase = mockk(relaxed = true)
     private val cashedUser: UserCache = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         updateProjectUseCase = UpdateProjectUseCase(
-            projectRepository, addAuditLogUseCase, cashedUser
+            projectRepository, addAuditLogUseCase, cashedUser,validator
         )
     }
 
@@ -33,6 +35,7 @@ class UpdateProjectUseCaseTest {
     fun `should return Updated Successfully when project update succeeds`() {
         // Given
         val project = projectHelper()
+        every { validator.isValid(any()) }returns true
         every { projectRepository.updateProject(project) } returns "Updated Successfully"
         every { cashedUser.currentUser.id } returns "user_123"
 

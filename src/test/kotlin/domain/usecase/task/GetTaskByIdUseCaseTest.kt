@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -15,6 +16,7 @@ class GetTaskByIdUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
     private lateinit var getTaskByIdUseCase: GetTaskByIdUseCase
+    private lateinit var validator: Validator
 
     private val validId = "T1"
     private val stored = Task(
@@ -30,12 +32,14 @@ class GetTaskByIdUseCaseTest {
     @BeforeEach
     fun setUp() {
         taskRepository = mockk()
-        getTaskByIdUseCase = GetTaskByIdUseCase(taskRepository)
+        validator= mockk(relaxed = true)
+        getTaskByIdUseCase = GetTaskByIdUseCase(taskRepository,validator)
     }
 
     @Test
     fun `returns task when repository returns a task`() {
         // stub repo to return directly
+        every { validator.isValid(validId) }returns true
         every { taskRepository.getTaskById(validId) } returns stored
 
         val result = getTaskByIdUseCase(validId)
@@ -46,6 +50,7 @@ class GetTaskByIdUseCaseTest {
     @Test
     fun `throws repository exception when repo fails`() {
         val ex = IllegalStateException("boom")
+        every { validator.isValid(validId) }returns true
         every { taskRepository.getTaskById(validId) } throws ex
 
         assertThrows<IllegalStateException> {

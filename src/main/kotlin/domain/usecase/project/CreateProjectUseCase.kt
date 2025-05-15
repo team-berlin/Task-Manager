@@ -5,6 +5,7 @@ import com.berlin.domain.model.Project
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
+import com.berlin.domain.usecase.utils.validation.Validator
 import data.UserCache
 
 class CreateProjectUseCase(
@@ -12,6 +13,7 @@ class CreateProjectUseCase(
     private val idGenerator: IdGenerator,
     private val addAuditLogUseCase: AddAuditLogUseCase,
     private val cashedUser: UserCache,
+    private val validator: Validator
 ) {
     operator fun invoke(
         projectName: String,
@@ -19,7 +21,7 @@ class CreateProjectUseCase(
         stateId: List<String>?,
         taskId: List<String>?,
     ): String {
-        if (validateProjectName(projectName)) {
+        if (validator.isValid(projectName)) {
             val newProject = Project(
                 id = idGenerator.generateId(projectName),
                 title = projectName,
@@ -42,7 +44,4 @@ class CreateProjectUseCase(
             throw Exception("Project Name must not be empty or blank")
         }
     }
-
-    private fun validateProjectName(projectName: String): Boolean =
-        projectName.isNotBlank() && !(projectName.all { it.isDigit() })
 }

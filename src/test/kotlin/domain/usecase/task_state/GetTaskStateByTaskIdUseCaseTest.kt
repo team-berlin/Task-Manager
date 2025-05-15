@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task_state
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -17,16 +18,19 @@ class GetTaskStateByTaskIdUseCaseTest {
     private lateinit var getTaskStateByTaskIdUseCase: GetTaskStateByTaskIdUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
     private val taskRepository: TaskRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
+
 
     @BeforeEach
     fun setup() {
-        getTaskStateByTaskIdUseCase = GetTaskStateByTaskIdUseCase(taskStateRepository, taskRepository)
+        getTaskStateByTaskIdUseCase = GetTaskStateByTaskIdUseCase(taskStateRepository, taskRepository,validator)
     }
 
     @Test
     fun `should return state when task id exists`() {
         // Given
         val expectedState = TaskState(id = "S1", name = "Active", projectId = "P1")
+        every { validator.isValid("T1") }returns true
         every { taskRepository.getTaskById("T1") } returns mockk()
         every { taskStateRepository.getStateByTaskId("T1") } returns expectedState
 

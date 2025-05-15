@@ -4,6 +4,7 @@ import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.*
@@ -17,6 +18,7 @@ class DeleteTaskUseCaseTest {
     private lateinit var addAuditLogUseCase: AddAuditLogUseCase
     private lateinit var userCache: UserCache
     private lateinit var deleteTaskUseCase: DeleteTaskUseCase
+    private lateinit var validator: Validator
 
     private lateinit var currentUser: User
 
@@ -25,6 +27,7 @@ class DeleteTaskUseCaseTest {
         taskRepository = mockk()
         addAuditLogUseCase = mockk(relaxUnitFun = true)
         userCache = mockk()
+        validator= mockk()
 
         currentUser = mockk(relaxed = true)
         every { currentUser.id } returns "U1"
@@ -39,11 +42,12 @@ class DeleteTaskUseCaseTest {
             )
         } just Runs
 
-        deleteTaskUseCase = DeleteTaskUseCase(taskRepository, addAuditLogUseCase, userCache)
+        deleteTaskUseCase = DeleteTaskUseCase(taskRepository, addAuditLogUseCase, userCache,validator)
     }
 
     @Test
     fun `returns Deleted when repository deletes task`() {
+        every { validator.isValid("T1") }returns true
         every { taskRepository.deleteTask("T1") } just Runs
 
         val result = deleteTaskUseCase("T1")
@@ -62,6 +66,7 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `throws IllegalStateException when repository delete throws`() {
+        every { validator.isValid("T1") }returns true
         every { taskRepository.deleteTask("T1") } throws IllegalStateException("boom")
 
         assertThrows<IllegalStateException> {
