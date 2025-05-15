@@ -1,9 +1,8 @@
 package com.berlin.data.mongodb.datasource
 
+import com.berlin.data.dto.AuditLogDto
 import com.berlin.data.mongodb.config.MongoConfig
-import com.berlin.domain.model.AuditAction
 import com.berlin.domain.model.AuditLog
-import com.berlin.domain.model.EntityType
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
@@ -22,32 +21,32 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 @TestInstance(Lifecycle.PER_CLASS)
 class MongoDBAuditLogDataSourceTest {
 
-    private lateinit var dataSource: MongoDBauditLogDataSource
+    private lateinit var dataSource: MongoDBAuditLogDataSource
     private val mockMongoConfig = mockk<MongoConfig>()
-    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<AuditLog>>()
+    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<AuditLogDto>>()
     private val mockMongoClient = mockk<com.mongodb.kotlin.client.coroutine.MongoClient>()
     private val mockMongoDatabase = mockk<com.mongodb.kotlin.client.coroutine.MongoDatabase>()
-    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<AuditLog>>()
+    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<AuditLogDto>>()
 
-    private val mockAuditLog = AuditLog(
+    private val mockAuditLog = AuditLogDto(
         id = "log1",
         timestamp = 1717027200,
         createdByUserId = "user1",
-        auditAction = AuditAction.CREATE,
+        auditAction = AuditLog.AuditAction.CREATE,
         changesDescription = "Initial creation",
-        entityType = EntityType.TASK,
+        entityType = AuditLog.EntityType.TASK,
         entityId = "task1"
     )
 
     private val mockAuditLogs = listOf(
         mockAuditLog,
-        AuditLog(
+        AuditLogDto(
             id = "log2",
             timestamp = 1717027300,
             createdByUserId = "user2",
-            auditAction = AuditAction.UPDATE,
+            auditAction = AuditLog.AuditAction.UPDATE,
             changesDescription = "Status changed",
-            entityType = EntityType.TASK,
+            entityType = AuditLog.EntityType.TASK,
             entityId = "task1"
         )
     )
@@ -56,14 +55,14 @@ class MongoDBAuditLogDataSourceTest {
     fun setUp() {
         every { mockMongoConfig.createMongoClient() } returns mockMongoClient
         every { mockMongoConfig.getDatabase(mockMongoClient) } returns mockMongoDatabase
-        every { mockMongoConfig.getCollection<AuditLog>(mockMongoDatabase, "audit_logs") } returns mockCollection
+        every { mockMongoConfig.getCollection<AuditLogDto>(mockMongoDatabase, "audit_logs") } returns mockCollection
 
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<AuditLog>>(0)
+            val collector = arg<FlowCollector<AuditLogDto>>(0)
             collector.emit(mockAuditLog)
         }
 
-        dataSource = MongoDBauditLogDataSource(mockMongoConfig)
+        dataSource = MongoDBAuditLogDataSource(mockMongoConfig)
     }
 
     @Test
@@ -71,7 +70,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         coEvery { mockCollection.find() } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<AuditLog>>(0)
+            val collector = arg<FlowCollector<AuditLogDto>>(0)
             mockAuditLogs.forEach { collector.emit(it) }
         }
 
@@ -87,7 +86,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         coEvery { mockCollection.find(any<Bson>()) } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<AuditLog>>(0)
+            val collector = arg<FlowCollector<AuditLogDto>>(0)
             collector.emit(mockAuditLog)
         }
 
@@ -120,7 +119,7 @@ class MongoDBAuditLogDataSourceTest {
         coEvery {
             mockCollection.replaceOne(
                 any<Bson>(),
-                any<AuditLog>(),
+                any<AuditLogDto>(),
                 any()
             )
         } returns mockUpdateResult
@@ -137,7 +136,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         val mockUpdateResult = mockk<UpdateResult>()
         every { mockUpdateResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.replaceOne(any<Bson>(), any<AuditLog>(), any()) } returns mockUpdateResult
+        coEvery { mockCollection.replaceOne(any<Bson>(), any<AuditLogDto>(), any()) } returns mockUpdateResult
 
         // When
         val result = dataSource.update("log1", mockAuditLog)
@@ -179,7 +178,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertOne(any<AuditLog>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<AuditLogDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockAuditLog)
@@ -193,7 +192,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertOne(any<AuditLog>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<AuditLogDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockAuditLog)
@@ -207,7 +206,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertMany(any<List<AuditLog>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<AuditLogDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockAuditLogs)
@@ -221,7 +220,7 @@ class MongoDBAuditLogDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertMany(any<List<AuditLog>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<AuditLogDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockAuditLogs)

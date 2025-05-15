@@ -29,7 +29,7 @@ class MongoDBProjectDataSourceTest {
 
     private val mockProject = Project(
         id = "project1",
-        name = "Task Manager",
+        title = "Task Manager",
         description = "Manage tasks efficiently",
         statesId = listOf("state1", "state2"),
         tasksId = listOf("task1", "task2")
@@ -39,7 +39,7 @@ class MongoDBProjectDataSourceTest {
         mockProject,
         Project(
             id = "project2",
-            name = "Marketing Campaign",
+            title = "Marketing Campaign",
             description = null,
             statesId = emptyList(),
             tasksId = null

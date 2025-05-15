@@ -1,7 +1,6 @@
 package com.berlin.di
 
 import com.berlin.data.BaseDataSource
-import com.berlin.data.csv_data_source.CsvDataSource
 import com.berlin.data.csv_data_source.schema.*
 import com.berlin.data.mongodb.datasource.*
 import com.berlin.data.dto.*
@@ -60,38 +59,32 @@ val dataModule = module {
 
     single { MongoConfig() }
 
-    single<BaseDataSource<Task>>(named("mongoDbTaskDataSource")) { MongoDBTaskDataSource(get()) }
-    single<BaseDataSource<TaskState>>(named("mongoDbStateDataSource")) { MongoDBStateDataSource(get()) }
-    single<BaseDataSource<Project>>(named("mongoDbProjectDataSource")) { MongoDBProjectDataSource(get()) }
-    single<BaseDataSource<AuditLog>>(named("mongoDbAuditLogDataSource")) { MongoDBauditLogDataSource(get()) }
-    single<BaseDataSource<User>>(named("mongoDbUserDataSource")) { MongoDBUserDataSource(get()) }
-
-    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
-
-    single<BaseDataSource<Task>> { CsvDataSource("csv_files", get(named("TaskSchema"))) }
+    single<BaseDataSource<Task>>(named("mongoDbTaskDataSource")) { MongoDBTaskDataSource(get<MongoConfig>()) }
     single<BaseDataSource<TaskState>>(named("mongoDbStateDataSource")) { MongoDBStateDataSource(get<MongoConfig>()) }
     single<BaseDataSource<Project>>(named("mongoDbProjectDataSource")) { MongoDBProjectDataSource(get<MongoConfig>()) }
-    single<BaseDataSource<AuditLog>>(named("mongoDbAuditLogDataSource")) { MongoDBauditLogDataSource(get<MongoConfig>()) }
-    single<BaseDataSource<User>>(named("mongoDbUserDataSource")) { MongoDBUserDataSource(get<MongoConfig>()) }
+    single<BaseDataSource<AuditLogDto>>(named("mongoDbAuditLogDataSource")) { MongoDBAuditLogDataSource(get<MongoConfig>()) }
+    single<BaseDataSource<UserDto>>(named("mongoDbUserDataSource")) { MongoDBUserDataSource(get<MongoConfig>()) }
 
-    single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
-
-    single<BaseDataSource<User>>(named("UserDataSource")) { CsvDataSource("csv_files", get(named("UserSchema"))) }
-    single<BaseDataSource<Project>>(named("ProjectDataSource")) {
-        CsvDataSource(
-            "csv_files", get(named("ProjectSchema"))
-        )
-    }
-    single<BaseDataSource<UserDto>>(named("UserDtoDataSource")) {
-        CsvDataSource("csv_files", get(named("UserSchema")))
-    }
-    single<BaseDataSource<Task>>(named("TaskDataSource")) { CsvDataSource("csv_files", get(named("TaskSchema"))) }
-    single<BaseDataSource<TaskState>>(named("StateDataSource")) {
-        CsvDataSource(
-            "csv_files", get(named("StateSchema"))
-        )
-    }
-    single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
+//    single<BaseDataSource<AuditLog>>(named("AuditDataSource")){ CsvDataSource("csv_files", get(named("AuditSchema"))) }
+//
+//    single<BaseDataSource<Task>> { CsvDataSource("csv_files", get(named("TaskSchema"))) }
+//
+//    single<BaseDataSource<User>>(named("UserDataSource")) { CsvDataSource("csv_files", get(named("UserSchema"))) }
+//    single<BaseDataSource<Project>>(named("ProjectDataSource")) {
+//        CsvDataSource(
+//            "csv_files", get(named("ProjectSchema"))
+//        )
+//    }
+//    single<BaseDataSource<UserDto>>(named("UserDtoDataSource")) {
+//        CsvDataSource("csv_files", get(named("UserSchema")))
+//    }
+//    single<BaseDataSource<Task>>(named("TaskDataSource")) { CsvDataSource("csv_files", get(named("TaskSchema"))) }
+//    single<BaseDataSource<TaskState>>(named("StateDataSource")) {
+//        CsvDataSource(
+//            "csv_files", get(named("StateSchema"))
+//        )
+//    }
+//    single<BaseDataSource<AuditLog>>(named("AuditDataSource")) { CsvDataSource("csv_files", get(named("AuditSchema"))) }
 
     single { TaskMapper() }.bind<EntityMapper<TaskDto, Task>>()
     single { ProjectMapper() }.bind<EntityMapper<ProjectDto, Project>>()

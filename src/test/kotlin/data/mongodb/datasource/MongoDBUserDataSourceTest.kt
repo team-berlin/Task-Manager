@@ -1,8 +1,8 @@
 package com.berlin.data.mongodb.datasource
 
+import com.berlin.data.dto.UserDto
 import com.berlin.data.mongodb.config.MongoConfig
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
@@ -23,25 +23,25 @@ class MongoDBUserDataSourceTest {
 
     private lateinit var dataSource: MongoDBUserDataSource
     private val mockMongoConfig = mockk<MongoConfig>()
-    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<User>>()
+    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<UserDto>>()
     private val mockMongoClient = mockk<com.mongodb.kotlin.client.coroutine.MongoClient>()
     private val mockMongoDatabase = mockk<com.mongodb.kotlin.client.coroutine.MongoDatabase>()
-    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<User>>()
+    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<UserDto>>()
 
-    private val mockUser = User(
+    private val mockUser = UserDto(
         id = "user1",
         userName = "admin",
         password = "secure123",
-        role = UserRole.ADMIN
+        role = User.UserRole.ADMIN
     )
 
     private val mockUsers = listOf(
         mockUser,
-        User(
+        UserDto(
             id = "user2",
             userName = "mate",
             password = "pass456",
-            role = UserRole.MATE
+            role = User.UserRole.MATE
         )
     )
 
@@ -49,10 +49,10 @@ class MongoDBUserDataSourceTest {
     fun setUp() {
         every { mockMongoConfig.createMongoClient() } returns mockMongoClient
         every { mockMongoConfig.getDatabase(mockMongoClient) } returns mockMongoDatabase
-        every { mockMongoConfig.getCollection<User>(mockMongoDatabase, "users") } returns mockCollection
+        every { mockMongoConfig.getCollection<UserDto>(mockMongoDatabase, "users") } returns mockCollection
 
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<User>>(0)
+            val collector = arg<FlowCollector<UserDto>>(0)
             collector.emit(mockUser)
         }
 
@@ -64,7 +64,7 @@ class MongoDBUserDataSourceTest {
         // Given
         coEvery { mockCollection.find() } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<User>>(0)
+            val collector = arg<FlowCollector<UserDto>>(0)
             mockUsers.forEach { collector.emit(it) }
         }
 
@@ -80,7 +80,7 @@ class MongoDBUserDataSourceTest {
         // Given
         coEvery { mockCollection.find(any<Bson>()) } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<User>>(0)
+            val collector = arg<FlowCollector<UserDto>>(0)
             collector.emit(mockUser)
         }
 
@@ -113,7 +113,7 @@ class MongoDBUserDataSourceTest {
         coEvery {
             mockCollection.replaceOne(
                 any<Bson>(),
-                any<User>(),
+                any<UserDto>(),
                 any()
             )
         } returns mockUpdateResult
@@ -130,7 +130,7 @@ class MongoDBUserDataSourceTest {
         // Given
         val mockUpdateResult = mockk<UpdateResult>()
         every { mockUpdateResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.replaceOne(any<Bson>(), any<User>(), any()) } returns mockUpdateResult
+        coEvery { mockCollection.replaceOne(any<Bson>(), any<UserDto>(), any()) } returns mockUpdateResult
 
         // When
         val result = dataSource.update("user1", mockUser)
@@ -172,7 +172,7 @@ class MongoDBUserDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertOne(any<User>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<UserDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockUser)
@@ -186,7 +186,7 @@ class MongoDBUserDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertOne(any<User>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<UserDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockUser)
@@ -200,7 +200,7 @@ class MongoDBUserDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertMany(any<List<User>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<UserDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockUsers)
@@ -214,7 +214,7 @@ class MongoDBUserDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertMany(any<List<User>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<UserDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockUsers)
