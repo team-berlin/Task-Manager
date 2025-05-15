@@ -5,6 +5,7 @@ import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.isIDValid
 
 class GetAllTaskStatesByProjectIdUseCase(
     private val taskStateRepository: TaskStateRepository,
@@ -13,7 +14,7 @@ class GetAllTaskStatesByProjectIdUseCase(
 
     operator fun invoke(projectId: String): List<TaskState> {
 
-        return if (!validateProjectId(projectId)) {
+        return if (isIDValid(projectId).not()) {
             throw InvalidProjectIdException("Project ID must not be empty or blank")
 
         } else {
@@ -22,7 +23,6 @@ class GetAllTaskStatesByProjectIdUseCase(
         }
     }
 
-    private fun validateProjectId(projectId: String): Boolean =
-        projectId.isNotBlank() && !(projectId.all { it.isDigit() })
+
 
 }

@@ -53,7 +53,7 @@ val useCaseModule = module {
     single { DeleteTaskStateUseCase(get()) }
     single { GetAllTaskStatesByProjectIdUseCase(get(), get()) }
     single { GetTaskStateByIdUseCase(get()) }
-    single { GetTaskStateByTaskIdUseCase(get(), get()) }
+    single { GetTaskStateByTaskIdUseCase(get()) }
     single { GetTasksByTaskStateIdUseCase(get()) }
     single { UpdateTaskStateUseCase(get()) }
     single { GetAllTaskStatesUseCase(get()) }

@@ -3,15 +3,14 @@ package com.berlin.domain.usecase.task_state
 import com.berlin.domain.exception.InvalidTaskIdException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.TaskStateRepository
-import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.utils.isIDValid
 
 class GetTaskStateByTaskIdUseCase(
     private val taskStateRepository: TaskStateRepository,
-    private val taskRepository: TaskRepository
 ) {
 
     operator fun invoke(taskId: String): TaskState? {
-        if (!validateTaskId(taskId)) {
+        if (isIDValid(taskId).not()) {
             throw InvalidTaskIdException("Task ID must not be empty or blank")
 
         } else {
@@ -19,6 +18,5 @@ class GetTaskStateByTaskIdUseCase(
         }
     }
 
-    private fun validateTaskId(taskId: String): Boolean = taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 
 }

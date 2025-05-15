@@ -20,7 +20,7 @@ class GetTaskStateByTaskIdUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        getTaskStateByTaskIdUseCase = GetTaskStateByTaskIdUseCase(taskStateRepository, taskRepository)
+        getTaskStateByTaskIdUseCase = GetTaskStateByTaskIdUseCase(taskStateRepository)
     }
 
     @Test

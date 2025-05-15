@@ -5,6 +5,7 @@ import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.isIDValid
 import data.UserCache
 
 class ChangeTaskStateUseCase(
@@ -17,7 +18,7 @@ class ChangeTaskStateUseCase(
 
         val original = taskRepository.getTaskById(taskId)
 
-        if (!validateStateId(newStateId)) {
+        if (isIDValid(newStateId).not()) {
             throw InvalidTaskStateException("State id must not be empty, blank, or purely numeric")
         }
 
@@ -34,6 +35,5 @@ class ChangeTaskStateUseCase(
         return updatedTask
     }
 
-    private fun validateStateId(stateId: String): Boolean =
-        stateId.isNotBlank() && !stateId.all { it.isDigit() }
+
 }

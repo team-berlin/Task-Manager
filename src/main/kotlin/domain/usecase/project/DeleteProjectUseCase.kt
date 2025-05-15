@@ -1,10 +1,10 @@
 package com.berlin.domain.usecase.project
 
 import com.berlin.domain.exception.InvalidProjectIdException
-import com.berlin.domain.exception.ProjectNotFoundException
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.isIDValid
 import data.UserCache
 
 class DeleteProjectUseCase(
@@ -14,7 +14,7 @@ class DeleteProjectUseCase(
 ) {
     operator fun invoke(projectId: String): String {
 
-        if (!validateProjectId(projectId)) {
+        if (isIDValid(projectId).not()) {
             throw InvalidProjectIdException("Project ID must not be empty or blank")
         }
 
@@ -30,7 +30,6 @@ class DeleteProjectUseCase(
         return deletedProject
     }
 
-    private fun validateProjectId(projectId: String): Boolean =
-        projectId.isNotBlank() && !(projectId.all { it.isDigit() })
+
 
 }
