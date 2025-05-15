@@ -22,8 +22,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val uiModule = module {
+
     singleOf(::ConsoleViewer) bind Viewer::class
     singleOf(::ConsoleReader) bind Reader::class
+
     singleOf(::CreateTaskUI)
     singleOf(::AssignTaskUI)
     singleOf(::DeleteTaskUI)
