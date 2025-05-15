@@ -10,7 +10,7 @@ import com.berlin.domain.repository.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val repoModule = module {
+val repositoryModule = module {
 
     single<ProjectRepository> {
         ProjectRepositoryImpl(
