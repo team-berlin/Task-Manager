@@ -22,42 +22,43 @@ import com.berlin.domain.usecase.utils.validation.NonBlankNonNumericValidator
 import com.berlin.domain.usecase.utils.validation.Validator
 import data.UserCache
 import domain.usecase.auth_service.LoginUserUseCase
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
     single <Validator> { NonBlankNonNumericValidator() }
-    single { CreateTaskUseCase(get(), get(), get(),get<Validator>()) }
-    single { AssignTaskUseCase(get(), get(), get<UserCache>()) }
-    single { DeleteTaskUseCase(get(), get(), get<UserCache>(),get<Validator>()) }
-    single { GetTasksByProjectUseCase(get(),get<Validator>()) }
-    single { UpdateTaskUseCase(get(), get(), get<UserCache>()) }
-    single { ChangeTaskStateUseCase(get(), get(), get<UserCache>(),get<Validator>()) }
-    single { GetTaskByIdUseCase(get(),get<Validator>()) }
-    single { GetAllTasksUseCase(get()) }
+    singleOf(::CreateTaskUseCase)
+    singleOf(::AssignTaskUseCase)
+    singleOf(::DeleteTaskUseCase)
+    singleOf(::GetTasksByProjectUseCase)
+    singleOf(::UpdateTaskUseCase)
+    singleOf(::ChangeTaskStateUseCase)
+    singleOf(::GetTaskByIdUseCase)
+    singleOf(::GetAllTasksUseCase)
 
-    single { CreateProjectUseCase(get(), get(), get(), get<UserCache>(),get<Validator>()) }
-    single { GetAllProjectsUseCase(get()) }
-    single { DeleteProjectUseCase(get(), get(), get<UserCache>(),get<Validator>()) }
-    single { GetProjectByIdUseCase(get(),get<Validator>()) }
-    single { UpdateProjectUseCase(get(), get(), get<UserCache>(),get<Validator>() ) }
+    singleOf(::CreateProjectUseCase)
+    singleOf(::GetAllProjectsUseCase)
+    singleOf(::DeleteProjectUseCase)
+    singleOf(::GetProjectByIdUseCase)
+    singleOf(::UpdateProjectUseCase)
 
-    single { AddAuditLogUseCase(get(), get()) }
-    single { GetAuditLogsByProjectIdUseCase(get(),get<Validator>()) }
-    single { GetAuditLogsByTaskIdUseCase(get(),get<Validator>())}
-    single { GetAuditLogsByUserIdUseCase(get(),get<Validator>())}
+    singleOf(::AddAuditLogUseCase)
+    singleOf(::GetAuditLogsByProjectIdUseCase)
+    singleOf(::GetAuditLogsByTaskIdUseCase)
+    singleOf(::GetAuditLogsByUserIdUseCase)
 
-    single { GetUserByIDUseCase(get()) }
-    single { GetUserLoggedInUseCase(get()) }
-    single { GetAllUsersUseCase(get()) }
-    single { LoginUserUseCase(get(),get(), get()) }
-    single { CreateMateUseCase(get(), get(), get()) }
+    singleOf(::GetUserByIDUseCase)
+    singleOf(::GetUserLoggedInUseCase)
+    singleOf(::GetAllUsersUseCase)
+    singleOf(::LoginUserUseCase)
+    singleOf(::CreateMateUseCase)
 
-    single { CreateTaskStateUseCase(get(), get(),get<Validator>()) }
-    single { DeleteTaskStateUseCase(get(),get<Validator>()) }
-    single { GetAllTaskStatesByProjectIdUseCase(get(), get(),get<Validator>()) }
-    single { GetTaskStateByIdUseCase(get(),get<Validator>()) }
-    single { GetTaskStateByTaskIdUseCase(get(), get(),get<Validator>()) }
-    single { GetTasksByTaskStateIdUseCase(get(),get<Validator>()) }
-    single { UpdateTaskStateUseCase(get(),get<Validator>()) }
-    single { GetAllTaskStatesUseCase(get()) }
+    singleOf(::CreateTaskStateUseCase)
+    singleOf(::DeleteTaskStateUseCase)
+    singleOf(::GetAllTaskStatesByProjectIdUseCase)
+    singleOf(::GetTaskStateByIdUseCase)
+    singleOf(::GetTaskStateByTaskIdUseCase)
+    singleOf(::GetTasksByTaskStateIdUseCase)
+    singleOf(::UpdateTaskStateUseCase)
+    singleOf(::GetAllTaskStatesUseCase)
 }
