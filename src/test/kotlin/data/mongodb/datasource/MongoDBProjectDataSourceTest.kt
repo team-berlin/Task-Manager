@@ -1,5 +1,6 @@
 package com.berlin.data.mongodb.datasource
 
+import com.berlin.data.dto.ProjectDto
 import com.berlin.data.mongodb.config.MongoConfig
 import com.berlin.domain.model.Project
 import com.google.common.truth.Truth.assertThat
@@ -22,12 +23,12 @@ class MongoDBProjectDataSourceTest {
 
     private lateinit var dataSource: MongoDBProjectDataSource
     private val mockMongoConfig = mockk<MongoConfig>()
-    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<Project>>()
+    private val mockCollection = mockk<com.mongodb.kotlin.client.coroutine.MongoCollection<ProjectDto>>()
     private val mockMongoClient = mockk<com.mongodb.kotlin.client.coroutine.MongoClient>()
     private val mockMongoDatabase = mockk<com.mongodb.kotlin.client.coroutine.MongoDatabase>()
-    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<Project>>()
+    private val mockFindPublisher = mockk<com.mongodb.kotlin.client.coroutine.FindFlow<ProjectDto>>()
 
-    private val mockProject = Project(
+    private val mockProject = ProjectDto(
         id = "project1",
         title = "Task Manager",
         description = "Manage tasks efficiently",
@@ -37,7 +38,7 @@ class MongoDBProjectDataSourceTest {
 
     private val mockProjects = listOf(
         mockProject,
-        Project(
+        ProjectDto(
             id = "project2",
             title = "Marketing Campaign",
             description = null,
@@ -50,10 +51,10 @@ class MongoDBProjectDataSourceTest {
     fun setUp() {
         every { mockMongoConfig.createMongoClient() } returns mockMongoClient
         every { mockMongoConfig.getDatabase(mockMongoClient) } returns mockMongoDatabase
-        every { mockMongoConfig.getCollection<Project>(mockMongoDatabase, "projects") } returns mockCollection
+        every { mockMongoConfig.getCollection<ProjectDto>(mockMongoDatabase, "projects") } returns mockCollection
 
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<Project>>(0)
+            val collector = arg<FlowCollector<ProjectDto>>(0)
             collector.emit(mockProject)
         }
 
@@ -65,7 +66,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         coEvery { mockCollection.find() } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<Project>>(0)
+            val collector = arg<FlowCollector<ProjectDto>>(0)
             mockProjects.forEach { collector.emit(it) }
         }
 
@@ -81,7 +82,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         coEvery { mockCollection.find(any<Bson>()) } returns mockFindPublisher
         coEvery { mockFindPublisher.collect(any()) } coAnswers {
-            val collector = arg<FlowCollector<Project>>(0)
+            val collector = arg<FlowCollector<ProjectDto>>(0)
             collector.emit(mockProject)
         }
 
@@ -114,7 +115,7 @@ class MongoDBProjectDataSourceTest {
         coEvery {
             mockCollection.replaceOne(
                 any<Bson>(),
-                any<Project>(),
+                any<ProjectDto>(),
                 any()
             )
         } returns mockUpdateResult
@@ -131,7 +132,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         val mockUpdateResult = mockk<UpdateResult>()
         every { mockUpdateResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.replaceOne(any<Bson>(), any<Project>(), any()) } returns mockUpdateResult
+        coEvery { mockCollection.replaceOne(any<Bson>(), any<ProjectDto>(), any()) } returns mockUpdateResult
 
         // When
         val result = dataSource.update("project1", mockProject)
@@ -173,7 +174,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertOne(any<Project>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<ProjectDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockProject)
@@ -187,7 +188,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         val mockInsertOneResult = mockk<InsertOneResult>()
         every { mockInsertOneResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertOne(any<Project>(), any()) } returns mockInsertOneResult
+        coEvery { mockCollection.insertOne(any<ProjectDto>(), any()) } returns mockInsertOneResult
 
         // When
         val result = dataSource.write(mockProject)
@@ -201,7 +202,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns true
-        coEvery { mockCollection.insertMany(any<List<Project>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<ProjectDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockProjects)
@@ -215,7 +216,7 @@ class MongoDBProjectDataSourceTest {
         // Given
         val mockInsertManyResult = mockk<InsertManyResult>()
         every { mockInsertManyResult.wasAcknowledged() } returns false
-        coEvery { mockCollection.insertMany(any<List<Project>>(), any()) } returns mockInsertManyResult
+        coEvery { mockCollection.insertMany(any<List<ProjectDto>>(), any()) } returns mockInsertManyResult
 
         // When
         val result = dataSource.writeAll(mockProjects)

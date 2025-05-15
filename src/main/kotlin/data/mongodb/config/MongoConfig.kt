@@ -2,8 +2,6 @@ package com.berlin.data.mongodb.config
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
-import com.mongodb.ServerApi
-import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import org.bson.codecs.configuration.CodecRegistries

@@ -3,7 +3,6 @@ package com.berlin.data.mongodb.datasource
 import com.berlin.data.BaseDataSource
 import com.berlin.data.dto.UserDto
 import com.berlin.data.mongodb.config.MongoConfig
-import com.berlin.domain.model.user.User
 import com.mongodb.client.model.Filters
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
