@@ -4,27 +4,27 @@ import com.berlin.data.dto.TaskDto
 import com.berlin.domain.model.Task
 
 class TaskMapper : EntityMapper<TaskDto, Task> {
-    override fun mapToDomainModel(taskDto: TaskDto): Task {
+    override fun mapToDomainModel(from: TaskDto): Task {
         return Task(
-            id = taskDto.id,
-            title = taskDto.title,
-            projectId = taskDto.projectId,
-            description = taskDto.description,
-            stateId = taskDto.stateId,
-            assignedToUserId = taskDto.assignedToUserId,
-            createByUserId = taskDto.createByUserId
+            id = from.id,
+            title = from.title,
+            projectId = from.projectId,
+            description = from.description,
+            stateId = from.stateId,
+            assignedToUserId = from.assignedToUserId,
+            createByUserId = from.createByUserId
         )
     }
 
-    override fun mapToDataModel(task: Task): TaskDto {
+    override fun mapToDataModel(from: Task): TaskDto {
         return TaskDto(
-            id = task.id,
-            title = task.title,
-            projectId = task.projectId,
-            description = task.description,
-            stateId = task.stateId,
-            assignedToUserId = task.assignedToUserId,
-            createByUserId = task.createByUserId
+            id = from.id,
+            title = from.title,
+            projectId = from.projectId,
+            description = from.description,
+            stateId = from.stateId,
+            assignedToUserId = from.assignedToUserId,
+            createByUserId = from.createByUserId
         )
     }
 }
