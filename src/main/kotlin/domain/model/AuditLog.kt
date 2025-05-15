@@ -11,4 +11,12 @@ data class AuditLog(
     @BsonProperty("changes_description") val changesDescription: String?,
     @BsonProperty("entity_type") val entityType: EntityType,
     @BsonProperty("entity_id") val entityId: String
-)
+) {
+    enum class AuditAction {
+        CREATE, UPDATE, DELETE
+    }
+
+    enum class EntityType {
+        PROJECT,TASK
+    }
+}

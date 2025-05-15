@@ -1,6 +1,7 @@
 package com.berlin.domain.usecase.auditSystem
 
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.exception.InvalidTaskIdException
+import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByTaskIdUseCase
@@ -27,12 +28,12 @@ class GetAuditLogsByTaskIdUseCaseTest {
         // Given
         val taskId = "T123"
         val logs = listOf(
-            generateAuditLog(id = "A3", entityId = taskId, entityType = EntityType.TASK)
+            generateAuditLog(id = "A3", entityId = taskId, entityType = AuditLog.EntityType.TASK)
         )
         every { auditRepository.getAuditLogsByTaskId(taskId) } returns logs
 
         //When
-        val result = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(taskId)
+        val result = getAuditLogsByTaskIdUseCase(taskId)
 
         //That
         assertThat(result).isEqualTo(logs)
@@ -43,8 +44,8 @@ class GetAuditLogsByTaskIdUseCaseTest {
     @ValueSource(strings = ["", "   ","123"])
     fun `should throw Exception when task id is invalid`(invalidId: String) {
         //when&then
-        assertThrows<IllegalArgumentException> {
-            getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(invalidId)
+        assertThrows<InvalidTaskIdException> {
+            getAuditLogsByTaskIdUseCase(invalidId)
         }
     }
 

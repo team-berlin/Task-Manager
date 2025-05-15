@@ -3,8 +3,7 @@ package com.berlin.presentation.task
 import com.berlin.domain.exception.InvalidTaskTitle
 import com.berlin.domain.exception.TaskNotFoundException
 import com.berlin.domain.model.Task
-import com.berlin.domain.model.User
-import com.berlin.domain.model.UserRole
+import com.berlin.domain.model.user.User
 import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.task.GetAllTasksUseCase
 import com.berlin.domain.usecase.task.UpdateTaskUseCase
@@ -14,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class UpdateTaskUITest {
 
@@ -24,7 +24,7 @@ class UpdateTaskUITest {
     private lateinit var fetchUsers: GetAllUsersUseCase
     private lateinit var ui: UpdateTaskUI
 
-    // Capture every call to viewer.show(...)
+    // capture all viewer.show calls
     private val printed = mutableListOf<String>()
 
     private val existing = Task(
@@ -37,8 +37,8 @@ class UpdateTaskUITest {
         createByUserId = "U1"
     )
 
-    private val user1 = User(id = "U1", userName = "alice", password = "pw", role = UserRole.MATE)
-    private val user2 = User(id = "U2", userName = "bob", password = "pw", role = UserRole.MATE)
+    private val user1 = User(id = "U1", userName = "alice", role = User.UserRole.MATE)
+    private val user2 = User(id = "U2", userName = "bob", role = User.UserRole.MATE)
 
     @BeforeEach
     fun setUp() {
@@ -50,14 +50,13 @@ class UpdateTaskUITest {
         getAllTasks = mockk()
         fetchUsers = mockk()
 
-        // always return exactly our one task
-        every { getAllTasks.invoke() } returns listOf(existing)
-        // two users available
-        every { fetchUsers.getAllUsers() } returns Result.success(listOf(user1, user2))
+        // stub the two lists
+        every { getAllTasks() } returns listOf(existing)
+        every { fetchUsers() } returns listOf(user1, user2)
 
         ui = UpdateTaskUI(
-            updateTask = updateUC,
-            getAllTasks = getAllTasks,
+            updateTaskUseCase = updateUC,
+            getAllTasksUseCase = getAllTasks,
             getAllUsersUseCase = fetchUsers,
             viewer = viewer,
             reader = reader
@@ -66,7 +65,7 @@ class UpdateTaskUITest {
         printed.clear()
     }
 
-    /** Helper to drive the 4 reads: taskIndex, newTitle, newDesc, assigneeIndex/X  */
+    /** Helper to drive the successive reads */
     private fun stubReads(vararg inputs: String) {
         every { reader.read() } returnsMany inputs.toList()
     }
@@ -76,11 +75,13 @@ class UpdateTaskUITest {
         stubReads("1", "NewTitle", "", "X")
         every {
             updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
-        } returns Result.success(existing.copy(title = "NewTitle"))
+        } returns existing.copy(title = "NewTitle")
 
         ui.run()
 
-        verify { updateUC.invoke("T1", "NewTitle", null, null) }
+        verify {
+            updateUC.invoke("T1", title = "NewTitle", description = null, assignedToUserId = null)
+        }
         assertThat(printed).contains("Task updated: T1")
     }
 
@@ -89,11 +90,13 @@ class UpdateTaskUITest {
         stubReads("1", "", "NewDesc", "X")
         every {
             updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
-        } returns Result.success(existing.copy(description = "NewDesc"))
+        } returns existing.copy(description = "NewDesc")
 
         ui.run()
 
-        verify { updateUC.invoke("T1", null, "NewDesc", null) }
+        verify {
+            updateUC.invoke("T1", title = null, description = "NewDesc", assignedToUserId = null)
+        }
         assertThat(printed).contains("Task updated: T1")
     }
 
@@ -102,11 +105,13 @@ class UpdateTaskUITest {
         stubReads("1", "", "", "2")
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
-        } returns Result.success(existing.copy(assignedToUserId = "U2"))
+        } returns existing.copy(assignedToUserId = "U2")
 
         ui.run()
 
-        verify { updateUC.invoke("T1", null, null, "U2") }
+        verify {
+            updateUC.invoke("T1", title = null, description = null, assignedToUserId = "U2")
+        }
         assertThat(printed).contains("Task updated: T1")
     }
 
@@ -115,41 +120,18 @@ class UpdateTaskUITest {
         stubReads("1", "", "", "X")
         every {
             updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
-        } returns Result.success(existing)
+        } returns existing
 
         ui.run()
 
-        verify { updateUC.invoke("T1", null, null, null) }
+        verify {
+            updateUC.invoke("T1", title = null, description = null, assignedToUserId = null)
+        }
         assertThat(printed).contains("Task updated: T1")
     }
 
     @Test
-    fun `use-case failure prints its message`() {
-        stubReads("1", "", "", "X")
-        every {
-            updateUC.invoke(any(), any(), any(), any())
-        } returns Result.failure(IllegalStateException("boom"))
-
-        ui.run()
-
-        assertThat(printed.last()).contains("boom")
-    }
-
-    @Test
-    fun `use-case failure without message shows default`() {
-        stubReads("1", "", "", "X")
-        every {
-            updateUC.invoke(any(), any(), any(), any())
-        } returns Result.failure(IllegalStateException("Update failed"))
-
-        ui.run()
-
-        assertThat(printed.last()).isEqualTo("Update failed")
-    }
-
-    @Test
     fun `cancel at task chooser prints Cancelled`() {
-        // first reader.read() -> "X" => choose() throws InputCancelledException
         every { reader.read() } returns "X"
 
         ui.run()
@@ -179,11 +161,17 @@ class UpdateTaskUITest {
     }
 
     @Test
+    fun `throws IllegalStateException when use case fails unexpectedly`() {
+        stubReads("1", "", "", "X")
+        every { updateUC.invoke(any(), any(), any(), any()) } throws IllegalStateException("boom")
+
+        assertThrows<IllegalStateException> { ui.run() }
+    }
+
+    @Test
     fun `throws InvalidTaskTitle prints Invalid task title`() {
         stubReads("1", "Bad!", "", "X")
-        every {
-            updateUC.invoke(any(), any(), any(), any())
-        } throws InvalidTaskTitle("no digits")
+        every { updateUC.invoke(any(), any(), any(), any()) } throws InvalidTaskTitle("no digits")
 
         ui.run()
 
@@ -193,9 +181,7 @@ class UpdateTaskUITest {
     @Test
     fun `throws TaskNotFoundException prints Task not founc`() {
         stubReads("1", "", "", "X")
-        every {
-            updateUC.invoke(any(), any(), any(), any())
-        } throws TaskNotFoundException("gone")
+        every { updateUC.invoke(any(), any(), any(), any()) } throws TaskNotFoundException("gone")
 
         ui.run()
 

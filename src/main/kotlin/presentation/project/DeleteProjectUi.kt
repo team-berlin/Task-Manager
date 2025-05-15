@@ -1,6 +1,7 @@
 package com.berlin.presentation.project
 
 import com.berlin.domain.exception.InputCancelledException
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.exception.InvalidSelectionException
 import com.berlin.domain.model.Permission
@@ -26,8 +27,8 @@ class DeleteProjectUi(
         try {
             val project = choose(
                 title = "Projects",
-                elements = getAllProjects.getAllProjects(),
-                labelOf = { "${it.id} – ${it.name}" },
+                elements = getAllProjects(),
+                labelOf = { "${it.id} – ${it.title}" },
                 viewer = viewer,
                 reader = reader
             )
@@ -35,13 +36,8 @@ class DeleteProjectUi(
             viewer.show("Type Y to confirm deletion:")
             if (!reader.read().equals("y", true)) throw InputCancelledException("")
 
-            deleteProject.deleteProject(project.id)
-                .onSuccess {
-                    viewer.show("Deleted.")
-                }
-                .onFailure {
-                    viewer.show(it.message ?: "Deletion failed")
-                }
+            val projectName = deleteProject(project.id)
+                    viewer.show("${project.title} is Deleted.")
 
         } catch (ex: InputCancelledException) {
             viewer.show("Cancelled.")
@@ -49,6 +45,9 @@ class DeleteProjectUi(
             viewer.show("Invalid selection")
         } catch (ex: InvalidProjectIdException) {
             viewer.show("invalid project id")
+        }
+        catch (_: InvalidProjectException){
+            viewer.show("delete is failed")
         }
     }
 }

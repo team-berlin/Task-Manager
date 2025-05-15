@@ -1,5 +1,6 @@
 package com.berlin.domain.usecase.project
 
+import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
@@ -32,34 +33,35 @@ class CreateProjectUseCaseTest {
     fun `createNewProject should log audit when project is created successfully`() {
         // Given
         val validProject = projectHelper()
-        every { projectRepository.createProject(any()) } returns Result.success("Creation Successfully")
+        every { projectRepository.createProject(any()) } returns "Creation Successfully"
         every { cashedUser.currentUser.id } returns "user_123"
 
         // When
-        val result = createProjectUseCase.createNewProject(
-            validProject.name, validProject.description, validProject.statesId, validProject.tasksId
+        val result = createProjectUseCase(
+            validProject.title, validProject.description, validProject.statesId, validProject.tasksId
         )
 
         // Then
-        assertThat(result).isEqualTo(Result.success("Creation Successfully"))
+        assertThat(result).isEqualTo("Creation Successfully")
         verify(exactly = 1) {
-            addAuditLogUseCase.addAuditLog(
+            addAuditLogUseCase(
                 createdByUserId = "user_123", auditAction = any(), entityType = any(), entityId = any()
             )
         }
     }
 
     @Test
-    fun `createNewProject should return failure when project creation fails`() {
+    fun `createNewProject should throw exception when project creation fails`() {
         // Given
         val validProject = projectHelper()
-        every { projectRepository.createProject(any()) } returns Result.failure(Exception())
-        // When
-        val result = createProjectUseCase.createNewProject(
-            validProject.name, validProject.description, validProject.statesId, validProject.tasksId
-        )
-        // Then
-        result.onFailure { exception -> assertThat(exception.message).isEqualTo("Creation Failed") }
+        every { projectRepository.createProject(any()) } throws InvalidProjectException("")
+        // When // Then
+        assertThrows<Exception> {
+            createProjectUseCase(
+                validProject.title, validProject.description, validProject.statesId, validProject.tasksId
+            )
+        }
+
     }
 
 
@@ -68,7 +70,7 @@ class CreateProjectUseCaseTest {
     fun `validateProjectName should throw exception when project name is invalid`(invalidName: String) {
         // When & Then
         val exception = assertThrows<Exception> {
-            createProjectUseCase.createNewProject(invalidName, null, null, null)
+            createProjectUseCase(invalidName, null, null, null)
         }
         assertThat(exception.message).isEqualTo("Project Name must not be empty or blank")
 

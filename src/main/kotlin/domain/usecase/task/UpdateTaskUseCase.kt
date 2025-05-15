@@ -1,8 +1,7 @@
 package com.berlin.domain.usecase.task
 
 import com.berlin.domain.exception.InvalidTaskTitle
-import com.berlin.domain.model.AuditAction
-import com.berlin.domain.model.EntityType
+import com.berlin.domain.model.AuditLog
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
@@ -11,7 +10,7 @@ import data.UserCache
 class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,
     private val addAuditLogUseCase: AddAuditLogUseCase,
-    private val cashedUser: UserCache
+    private val cashedUser: UserCache,
 ) {
 
     operator fun invoke(
@@ -19,11 +18,9 @@ class UpdateTaskUseCase(
         title: String? = null,
         description: String? = null,
         assignedToUserId: String? = null,
-    ): Result<Task> {
+    ): Task {
 
-        val originalResult = taskRepository.getTaskById(taskId)
-        if (originalResult.isFailure) return originalResult
-        val original = originalResult.getOrThrow()
+        val original = taskRepository.getTaskById(taskId)
 
         val updated = original.copy(
             title = title ?: original.title,
@@ -31,19 +28,16 @@ class UpdateTaskUseCase(
             assignedToUserId = assignedToUserId ?: original.assignedToUserId
         )
 
-        if (!validateTaskTitle(updated.title.trim()))
-            throw InvalidTaskTitle("task title must be not empty or plank")
+        if (!validateTaskTitle(updated.title.trim())) throw InvalidTaskTitle("task title must be not empty or plank")
 
         val updatedTask = taskRepository.createTask(updated)
 
-        if (updatedTask.isSuccess) {
-            addAuditLogUseCase.addAuditLog(
-                createdByUserId = cashedUser.currentUser.id,
-                auditAction = AuditAction.UPDATE,
-                entityType = EntityType.TASK,
-                entityId = updated.id,
-            )
-        }
+        addAuditLogUseCase(
+            createdByUserId = cashedUser.currentUser.id,
+            auditAction = AuditLog.AuditAction.UPDATE,
+            entityType = AuditLog.EntityType.TASK,
+            entityId = updated.id,
+        )
 
         return updatedTask
     }

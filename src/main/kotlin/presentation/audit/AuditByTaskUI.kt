@@ -20,7 +20,6 @@ class AuditByTaskUI(
     private val getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase,
     private val getTasksByProjectUseCase: GetTasksByProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase
-
 ) : PermissionedUiRunner {
 
     override val id = 2
@@ -33,9 +32,11 @@ class AuditByTaskUI(
             val selectedProject = selectProject()
 
             val selectedTask = selectTask(selectedProject)
+            selectedTask.forEach { task ->
+                val logs = getAuditLogsByTaskIdUseCase(task.id)
+                showAuditLogs(logs)
+            }
 
-            val logs = getAuditLogsByTaskIdUseCase.getAuditLogsByTaskId(selectedTask.id)
-            showAuditLogs(logs)
         } catch (e: InputCancelledException) {
             viewer.show("Cancelled.")
         } catch (e: InvalidSelectionException) {
@@ -70,21 +71,22 @@ class AuditByTaskUI(
     private fun selectProject () : Project{
         return choose(
             title = "Choose a project",
-            elements = getAllProjectsUseCase.getAllProjects(),
-            labelOf = { project -> project.name },
+            elements = getAllProjectsUseCase(),
+            labelOf = { project -> project.title },
             viewer = viewer,
             reader = reader
         )
     }
 
-    private fun selectTask (selectedProject : Project) : Task {
-        return choose(
+    private fun selectTask (selectedProject : Project) : List<Task> {
+       val tasks =  choose(
             title = "Choose a task",
-            elements = getTasksByProjectUseCase( selectedProject.id).getOrNull() ?: emptyList() ,
+            elements = getTasksByProjectUseCase( selectedProject.id),
             labelOf = { task -> task.title },
             viewer = viewer,
             reader = reader
         )
+        return listOf(tasks)
     }
 }
 

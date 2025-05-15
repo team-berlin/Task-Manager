@@ -23,7 +23,7 @@ class GetProjectByIdUi(
         try {
             viewer.show("Enter project ID:")
             val projectId = reader.read()?.trim().orEmpty()
-            val project = getProjectByIdUseCase.getProjectById(projectId)
+            val project = getProjectByIdUseCase(projectId)
 
             showProject(project)
 
@@ -38,7 +38,7 @@ class GetProjectByIdUi(
 
     private fun showProject(p: Project) {
         viewer.show("ID: ${p.id}")
-        viewer.show("Title: ${p.name}")
+        viewer.show("Title: ${p.title}")
         viewer.show("Description: ${p.description ?: "(none)"}")
         showStates(p)
         showTasks(p)

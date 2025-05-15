@@ -5,7 +5,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty
 
 data class Project(
     @BsonId val id: String,
-    val name: String,
+    val title: String,
     val description: String?,
     @BsonProperty("states_id") val statesId: List<String>?,
     @BsonProperty("tasks_id") val tasksId: List<String>?

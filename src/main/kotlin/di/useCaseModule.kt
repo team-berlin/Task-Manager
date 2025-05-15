@@ -9,52 +9,52 @@ import com.berlin.domain.usecase.authService.GetAllUsersUseCase
 import com.berlin.domain.usecase.authService.GetUserByIDUseCase
 import com.berlin.domain.usecase.authService.GetUserLoggedInUseCase
 import com.berlin.domain.usecase.project.*
-import com.berlin.domain.usecase.state.CreateStateUseCase
-import com.berlin.domain.usecase.state.DeleteStateUseCase
-import com.berlin.domain.usecase.state.GetAllStatesByProjectIdUseCase
-import com.berlin.domain.usecase.state.GetAllStatesUseCase
-import com.berlin.domain.usecase.state.GetStateByIdUseCase
-import com.berlin.domain.usecase.state.GetStateByTaskIdUseCase
-import com.berlin.domain.usecase.state.GetTasksByStateIdUseCase
-import com.berlin.domain.usecase.state.UpdateStateUseCase
 import com.berlin.domain.usecase.task.*
-import data.UserCache
-import domain.usecase.authService.AuthenticateUserUseCase
+import com.berlin.domain.usecase.task_state.CreateTaskStateUseCase
+import com.berlin.domain.usecase.task_state.DeleteTaskStateUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesByProjectIdUseCase
+import com.berlin.domain.usecase.task_state.GetAllTaskStatesUseCase
+import com.berlin.domain.usecase.task_state.GetTaskStateByIdUseCase
+import com.berlin.domain.usecase.task_state.GetTaskStateByTaskIdUseCase
+import com.berlin.domain.usecase.task_state.GetTasksByTaskStateIdUseCase
+import com.berlin.domain.usecase.task_state.UpdateTaskStateUseCase
+import domain.usecase.auth_service.LoginUserUseCase
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    single { CreateTaskUseCase(get(), get(), get()) }
-    single { AssignTaskUseCase(get(), get(), get<UserCache>()) }
-    single { DeleteTaskUseCase(get(), get(), get<UserCache>()) }
-    single { GetTasksByProjectUseCase(get()) }
-    single { UpdateTaskUseCase(get(), get(), get<UserCache>()) }
-    single { ChangeTaskStateUseCase(get(), get(), get<UserCache>()) }
-    single { GetTaskByIdUseCase(get()) }
-    single { GetAllTasksUseCase(get()) }
+    singleOf(::CreateTaskUseCase)
+    singleOf(::AssignTaskUseCase)
+    singleOf(::DeleteTaskUseCase)
+    singleOf(::GetTasksByProjectUseCase)
+    singleOf(::UpdateTaskUseCase)
+    singleOf(::ChangeTaskStateUseCase)
+    singleOf(::GetTaskByIdUseCase)
+    singleOf(::GetAllTasksUseCase)
 
-    single { CreateProjectUseCase(get(), get(), get(), get<UserCache>()) }
-    single { GetAllProjectsUseCase(get()) }
-    single { DeleteProjectUseCase(get(), get(), get<UserCache>()) }
-    single { GetProjectByIdUseCase(get()) }
-    single { UpdateProjectUseCase(get(), get(), get<UserCache>() ) }
+    singleOf(::CreateProjectUseCase)
+    singleOf(::GetAllProjectsUseCase)
+    singleOf(::DeleteProjectUseCase)
+    singleOf(::GetProjectByIdUseCase)
+    singleOf(::UpdateProjectUseCase)
 
-    single { AddAuditLogUseCase(get(), get()) }
-    single { GetAuditLogsByProjectIdUseCase(get()) }
-    single { GetAuditLogsByTaskIdUseCase(get()) }
-    single { GetAuditLogsByUserIdUseCase(get()) }
+    singleOf(::AddAuditLogUseCase)
+    singleOf(::GetAuditLogsByProjectIdUseCase)
+    singleOf(::GetAuditLogsByTaskIdUseCase)
+    singleOf(::GetAuditLogsByUserIdUseCase)
 
-    single { GetUserByIDUseCase(get()) }
-    single { GetUserLoggedInUseCase(get()) }
-    single { GetAllUsersUseCase(get()) }
-    single { AuthenticateUserUseCase(get(),get(), get()) }
-    single { CreateMateUseCase(get(), get(), get()) }
+    singleOf(::GetUserByIDUseCase)
+    singleOf(::GetUserLoggedInUseCase)
+    singleOf(::GetAllUsersUseCase)
+    singleOf(::LoginUserUseCase)
+    singleOf(::CreateMateUseCase)
 
-    single { CreateStateUseCase(get(),get())}
-    single { DeleteStateUseCase(get()) }
-    single { GetAllStatesByProjectIdUseCase(get(),get()) }
-    single { GetStateByIdUseCase(get()) }
-    single { GetStateByTaskIdUseCase(get(),get()) }
-    single { GetTasksByStateIdUseCase(get()) }
-    single { UpdateStateUseCase(get()) }
-    single { GetAllStatesUseCase(get()) }
+    singleOf(::CreateTaskStateUseCase)
+    singleOf(::DeleteTaskStateUseCase)
+    singleOf(::GetAllTaskStatesByProjectIdUseCase)
+    singleOf(::GetTaskStateByIdUseCase)
+    singleOf(::GetTaskStateByTaskIdUseCase)
+    singleOf(::GetTasksByTaskStateIdUseCase)
+    singleOf(::UpdateTaskStateUseCase)
+    singleOf(::GetAllTaskStatesUseCase)
 }

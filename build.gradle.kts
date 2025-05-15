@@ -16,12 +16,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("com.opencsv:opencsv:5.7.1")
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("io.mockk:mockk:1.14.0")
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
-
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
     implementation("org.mongodb:bson-kotlin:4.10.1")
 
@@ -36,6 +35,8 @@ kover {
                     "**.di.**",
                     "**.exception.**",
                     "**.io.**",
+                    "**.mapper.**",
+                    "**.mongodb.**",
                 )
             }
         }
