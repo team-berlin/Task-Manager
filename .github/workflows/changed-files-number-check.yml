@@ -1,0 +1,33 @@
+name: Check changed files number
+
+on:
+  pull_request:
+    branches-ignore: []
+
+jobs:
+  count_changed_files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check changed files number
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          echo "Base: $BASE"
+          echo "Head: $HEAD"
+          
+          changed_files=$(git diff --name-only "$BASE" "$HEAD")
+          echo "$changed_files"
+          
+          changed_files_number=$(echo "$changed_files" | wc -l)
+          echo "Number of changed files: $changed_files_number"
+          
+          max=30
+          if [ "$changed_files_number" -gt "$max" ]; then
+            echo "This PR has too many changed files"
+            exit 1
+          else
+            echo "Number of changed files is acceptable"
+          fi
