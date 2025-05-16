@@ -69,7 +69,10 @@ We are migrating the data source from local CSV files to **MongoDB** for cloud-b
   - UI interactions
 
 ---
+## 🎥 Demo Video
 
+[Click here to watch the demo](https://drive.google.com/file/d/1lcma_BLuRiCR-yAugwBVV9GdSYL8YQoW/view?usp=drive_link) 
+---
 ## ▶️ How to Run
 
 > Make sure you have Kotlin and MongoDB installed.
