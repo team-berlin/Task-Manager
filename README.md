@@ -58,15 +58,6 @@ The app was built using **Test-Driven Development (TDD)** and follows **SOLID** 
 ## MongoDB Migration Update
 
 We are migrating the data source from local CSV files to **MongoDB** for cloud-based shared access.
-
-- This is a **system-level change**, not UI or domain — your UI code shouldn't be affected.
-- You **may need to use coroutines** for async data access → functions may become `suspend`.
-- It’s okay to make functions suspendable.  
-  But if you had to change core logic to adapt to Mongo, this might be a **sign of incorrect abstraction** — don’t worry, just learn from it.
-- **Peer Reviews** are mandatory and will affect task evaluation.
-- Not all squad members are expected to work on Mongo; focus on **cleaning and improving** other areas if not involved.
-- Use **exceptions only** for error handling (no `Result` or `Either`).
-
 ---
 
 ## Testing
