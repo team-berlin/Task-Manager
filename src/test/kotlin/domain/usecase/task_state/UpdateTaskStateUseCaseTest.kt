@@ -2,6 +2,7 @@ package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -15,16 +16,18 @@ class UpdateTaskStateUseCaseTest {
 
     private lateinit var updateTaskStateUseCase: UpdateTaskStateUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        updateTaskStateUseCase = UpdateTaskStateUseCase(taskStateRepository)
+        updateTaskStateUseCase = UpdateTaskStateUseCase(taskStateRepository,validator)
     }
 
     @Test
     fun `should return success when state update succeeds`() {
         // Given
         val state = TaskState(id = "S1", name = "Active", projectId = "P1")
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.updateState(state) } returns "Updated Successfully"
 
         // When
@@ -38,6 +41,7 @@ class UpdateTaskStateUseCaseTest {
     fun `should return exception when state update fails`() {
         // Given
         val state = TaskState(id = "S2", name = "Inactive", projectId = "P2")
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.updateState(state) } throws Exception()
 
         // When & Then

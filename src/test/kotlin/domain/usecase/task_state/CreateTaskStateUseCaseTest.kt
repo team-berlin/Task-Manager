@@ -5,6 +5,7 @@ import com.berlin.domain.exception.InvalidStateNameException
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.TaskStateRepository
 import com.berlin.domain.usecase.utils.id_generator.IdGeneratorImplementation
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -18,13 +19,14 @@ class CreateTaskStateUseCaseTest {
 
     private lateinit var createTaskStateUseCase: CreateTaskStateUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         val idGenerator: IdGeneratorImplementation = mockk(relaxed = true)
         createTaskStateUseCase = CreateTaskStateUseCase(
             taskStateRepository,
-            idGenerator
+            idGenerator,validator
         )
     }
 
@@ -32,6 +34,7 @@ class CreateTaskStateUseCaseTest {
     fun `createNewState should return success when state created successfully`() {
         // Given
         val validState = TaskState(id = "S1", name = "TODO", projectId = "P1")
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.addState(any()) } returns "State created successfully"
         every { taskStateRepository.getStateById(any()) } returns mockk()
 
@@ -51,6 +54,7 @@ class CreateTaskStateUseCaseTest {
     fun `createNewState should throw exception when state creation fails`() {
         // Given
         val validState = TaskState(id = "S1", name = "S1", projectId = "1")
+        every { validator.isValid(any()) }returns true
         every { taskStateRepository.addState(any()) } throws InvalidStateException("can not add state")
         every { taskStateRepository.getStateById(any()) } returns mockk()
 

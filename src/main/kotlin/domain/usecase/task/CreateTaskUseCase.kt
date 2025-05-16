@@ -7,11 +7,13 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
+import com.berlin.domain.usecase.utils.validation.Validator
 
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
     private val defaultIdGenerator: IdGenerator,
-    private val addAuditLogUseCase: AddAuditLogUseCase
+    private val addAuditLogUseCase: AddAuditLogUseCase,
+    private val validator: Validator
 ) {
     operator fun invoke(
         projectId: String,
@@ -21,7 +23,7 @@ class CreateTaskUseCase(
         createByUserId: String,
         assignedToUserId: String,
     ): Task {
-        if (validateTaskTitle(title.trim())) {
+        if (validator.isValid(title.trim())) {
             val newTask = Task(
                 id = defaultIdGenerator.generateId(title.trim()),
                 projectId = projectId,
@@ -48,10 +50,6 @@ class CreateTaskUseCase(
         } else {
             throw InvalidTaskTitle("task title must be not empty or plank")
         }
-    }
-
-    private fun validateTaskTitle(title: String): Boolean {
-        return title.isNotBlank() && !title.any { it.isDigit() }
     }
 
     private fun validateUniqueTask(taskId: String): Boolean {

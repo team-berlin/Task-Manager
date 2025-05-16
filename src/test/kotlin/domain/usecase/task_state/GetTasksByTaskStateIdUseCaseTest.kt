@@ -2,6 +2,7 @@ package com.berlin.domain.usecase.task_state
 
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -15,6 +16,7 @@ class GetTasksByTaskStateIdUseCaseTest {
 
     private lateinit var getTasksByTaskStateIdUseCase: GetTasksByTaskStateIdUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     private val task = Task(
         id = "T1",
@@ -28,13 +30,14 @@ class GetTasksByTaskStateIdUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        getTasksByTaskStateIdUseCase = GetTasksByTaskStateIdUseCase(taskStateRepository)
+        getTasksByTaskStateIdUseCase = GetTasksByTaskStateIdUseCase(taskStateRepository,validator)
     }
 
     @Test
     fun `should return tasks when tasks are found for the state`() {
         // Given
         val expectedTasks = listOf(task)
+        every { validator.isValid("S1") }returns true
         every { taskStateRepository.getTasksByStateId("S1") } returns expectedTasks
         every { taskStateRepository.getStateById("S1") } returns mockk()
 
@@ -48,6 +51,7 @@ class GetTasksByTaskStateIdUseCaseTest {
     @Test
     fun `should throw exception when no tasks are found for the state`() {
         // Given
+        every { validator.isValid("S2") }returns true
         every { taskStateRepository.getTasksByStateId("S2") } returns null
         every { taskStateRepository.getStateById("S2") } returns mockk()
 

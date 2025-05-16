@@ -18,11 +18,16 @@ import com.berlin.domain.usecase.task_state.GetTaskStateByIdUseCase
 import com.berlin.domain.usecase.task_state.GetTaskStateByTaskIdUseCase
 import com.berlin.domain.usecase.task_state.GetTasksByTaskStateIdUseCase
 import com.berlin.domain.usecase.task_state.UpdateTaskStateUseCase
+import com.berlin.domain.usecase.utils.validation.NonBlankNonNumericValidator
+import com.berlin.domain.usecase.utils.validation.Validator
 import domain.usecase.auth_service.LoginUserUseCase
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val useCaseModule = module {
+    singleOf(::NonBlankNonNumericValidator) bind Validator::class
+
     singleOf(::CreateTaskUseCase)
     singleOf(::AssignTaskUseCase)
     singleOf(::DeleteTaskUseCase)

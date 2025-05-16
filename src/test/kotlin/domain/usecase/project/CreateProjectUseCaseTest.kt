@@ -4,6 +4,7 @@ import com.berlin.domain.exception.InvalidProjectException
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.berlin.helper.projectHelper
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
@@ -22,17 +23,19 @@ class CreateProjectUseCaseTest {
     private val projectRepository: ProjectRepository = mockk(relaxed = true)
     private val addAuditLogUseCase: AddAuditLogUseCase = mockk(relaxed = true)
     private val cashedUser: UserCache = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         val idGenerator: IdGenerator = mockk(relaxed = true)
-        createProjectUseCase = CreateProjectUseCase(projectRepository, idGenerator, addAuditLogUseCase, cashedUser)
+        createProjectUseCase = CreateProjectUseCase(projectRepository, idGenerator, addAuditLogUseCase, cashedUser,validator)
     }
 
     @Test
     fun `createNewProject should log audit when project is created successfully`() {
         // Given
         val validProject = projectHelper()
+        every { validator.isValid(any()) } returns true
         every { projectRepository.createProject(any()) } returns "Creation Successfully"
         every { cashedUser.currentUser.id } returns "user_123"
 
