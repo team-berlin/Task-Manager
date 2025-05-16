@@ -26,7 +26,7 @@ jobs:
           changed_files_number=$(echo "$changed_files" | wc -l)
           echo "Number of changed files: $changed_files_number"
           
-          max=30
+          max=20
           if [ "$changed_files_number" -gt "$max" ]; then
             echo "This PR has too many changed files"
             exit 1
