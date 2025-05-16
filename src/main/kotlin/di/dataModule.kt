@@ -20,6 +20,7 @@ import org.koin.dsl.module
 
 
 val dataModule = module {
+
     single { MongoConfig() }
 
     singleOf(::IdGeneratorImplementation) bind IdGenerator::class
@@ -37,7 +38,7 @@ val dataModule = module {
     single { TaskMapper() }.bind<EntityMapper<TaskDto, Task>>()
     single { ProjectMapper() }.bind<EntityMapper<ProjectDto, Project>>()
     single { TaskStateMapper() }.bind<EntityMapper<TaskStateDto, TaskState>>()
-    single { UserMapper(get()) }.bind<EntityMapper<UserDto, User>>()
+    single <UserMapper>{ UserMapper(get(named(DatasourceQualifier.USER_DATASOURCE)))}.bind<EntityMapper<UserDto, User>>()
     single { AuditLogMapper() }.bind<EntityMapper<AuditLogDto, AuditLog>>()
 
 }

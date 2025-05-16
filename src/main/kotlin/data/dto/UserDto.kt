@@ -6,7 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty
 
 data class UserDto(
     @BsonId val id: String,
-    @BsonProperty("user_name") val userName: String,
+    @BsonProperty("username") val userName: String,
     @BsonProperty("password") val password: String,
     @BsonProperty("role") val role: User.UserRole
 )
