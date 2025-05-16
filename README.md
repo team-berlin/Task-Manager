@@ -1,0 +1,91 @@
+# 🧭 PlanMate - Task Management CLI App
+
+**PlanMate** is a command-line task management application built in **Kotlin**.  
+It helps teams manage their projects, tasks, and workflows efficiently using a role-based access system and an audit trail.
+
+The app was built using **Test-Driven Development (TDD)** and follows **SOLID** principles, ensuring high-quality, maintainable code.
+
+---
+
+## Key Features
+
+### User Roles
+- **Admin**
+  - Can manage users, projects, and workflow states.
+  - Can view audit logs.
+- **Mate**
+  - Can create, edit, delete, and view tasks within assigned projects.
+
+### Authentication
+- Users log in with a username and password.
+- Passwords are stored securely using **MD5 hashing**.
+
+### Projects & Tasks
+- Projects can be created and customized by Admins.
+- Tasks belong to projects and can be managed by both Admins and Mates.
+- Task states (TODO, In Progress, Done) are fully customizable by Admins.
+
+### Task Display (Swimlanes UI)
+- Tasks are grouped and displayed by state in a clear swimlanes format in the terminal.
+
+### Audit Logging
+- Every change to a project or task is logged with:
+  - The user who made the change.
+  - What was changed.
+  - When the change happened.
+- Users can view logs filtered by **project ID** or **task ID**.
+
+---
+
+## Architecture
+
+- **Layered Architecture**:
+  - `UI Layer`: Command-line interface.
+  - `Domain Layer`: Core business logic (clean and testable).
+  - `Data Layer`: Persistence (originally CSV, now MongoDB).
+
+- **Uni-directional Dependencies**:
+  - Data → Domain
+  - UI → Domain
+
+> Domain layer is independent from data and UI for better testability and maintainability.
+
+- **Dependency Injection**:
+  - Uses **Koin** for clean dependency management.
+
+---
+
+## MongoDB Migration Update
+
+We are migrating the data source from local CSV files to **MongoDB** for cloud-based shared access.
+
+- This is a **system-level change**, not UI or domain — your UI code shouldn't be affected.
+- You **may need to use coroutines** for async data access → functions may become `suspend`.
+- It’s okay to make functions suspendable.  
+  But if you had to change core logic to adapt to Mongo, this might be a **sign of incorrect abstraction** — don’t worry, just learn from it.
+- **Peer Reviews** are mandatory and will affect task evaluation.
+- Not all squad members are expected to work on Mongo; focus on **cleaning and improving** other areas if not involved.
+- Use **exceptions only** for error handling (no `Result` or `Either`).
+
+---
+
+## Testing
+
+- Developed using **Test-Driven Development (TDD)**.
+- Maintains **80%+ test coverage** across:
+  - Business rules
+  - Data repositories
+  - UI interactions
+
+---
+
+## ▶️ How to Run
+
+> Make sure you have Kotlin and MongoDB installed.
+
+```bash
+# Compile the project
+./gradlew build
+
+# Run the CLI app
+./gradlew run
