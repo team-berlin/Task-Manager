@@ -5,6 +5,7 @@ import com.berlin.domain.model.AuditLog
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
 import com.berlin.domain.usecase.audit_system.GetAuditLogsByTaskIdUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -16,11 +17,12 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class GetAuditLogsByTaskIdUseCaseTest {
     private val auditRepository: AuditRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
     private lateinit var getAuditLogsByTaskIdUseCase: GetAuditLogsByTaskIdUseCase
 
     @BeforeEach
     fun setup() {
-        getAuditLogsByTaskIdUseCase = GetAuditLogsByTaskIdUseCase(auditRepository)
+        getAuditLogsByTaskIdUseCase = GetAuditLogsByTaskIdUseCase(auditRepository,validator)
     }
 
     @Test
@@ -30,6 +32,7 @@ class GetAuditLogsByTaskIdUseCaseTest {
         val logs = listOf(
             generateAuditLog(id = "A3", entityId = taskId, entityType = AuditLog.EntityType.TASK)
         )
+        every { validator.isValid(taskId) } returns true
         every { auditRepository.getAuditLogsByTaskId(taskId) } returns logs
 
         //When

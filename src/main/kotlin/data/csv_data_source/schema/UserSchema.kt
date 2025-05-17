@@ -5,8 +5,7 @@ import com.berlin.data.dto.UserDto
 import com.berlin.domain.model.user.User
 
 class UserSchema(
-    override val fileName: String,
-    override val header: List<String>
+    override val fileName: String, override val header: List<String>
 ) : BaseSchema<UserDto> {
 
     init {
@@ -14,55 +13,61 @@ class UserSchema(
     }
 
     override fun toRow(entity: UserDto): List<String> {
-        return if (checkUserIsNotValid(entity)) emptyList()
-        else userToStringsList(entity)
+        return if (checkUserDtoIsNotValid(entity).not()) {
+            mapUserDtoToList(entity)
+        } else {
+            emptyList()
+        }
     }
 
     override fun fromRow(row: List<String>): UserDto? {
-        return if (checkRowIsNotValidUser(row)) null
-        else stringsListToUser(row)
+        return if (checkRowIsNotValidUserDto(row).not()) {
+            mapListToUserDto(row)
+        } else {
+            null
+        }
     }
 
     override fun getId(entity: UserDto): String? {
         return entity.id.ifEmpty { null }
     }
 
-    private fun userToStringsList(user: UserDto): List<String> {
+    private fun mapUserDtoToList(user: UserDto): List<String> {
         return listOf(
-            user.id,
-            user.userName,
-            user.password,
-            user.role.toString()
+            user.id, user.userName, user.password, user.role.toString()
         )
     }
 
-    private fun stringsListToUser(row: List<String>): UserDto{
+    private fun mapListToUserDto(row: List<String>): UserDto {
         return UserDto(
             id = row[UserIndex.ID],
             userName = row[UserIndex.USER_NAME],
             password = row[UserIndex.PASSWORD],
-            role = stringToUserRole(row[UserIndex.ROLE])
+            role = mapStringToUserRole(row[UserIndex.ROLE])
         )
     }
 
-    private fun checkRowIsNotValidUser(row: List<String>): Boolean {
-        return (row[UserIndex.ID].isEmpty() ||
-                row[UserIndex.USER_NAME].isEmpty() ||
-                row[UserIndex.PASSWORD].isEmpty() ||
-                row[UserIndex.ROLE] !in enumValues<User.UserRole>().map { it.name })
+    private fun checkRowIsNotValidUserDto(row: List<String>): Boolean {
+        return (row[UserIndex.ID].isEmpty() || row[UserIndex.USER_NAME].isEmpty() || row[UserIndex.PASSWORD].isEmpty() || row[UserIndex.ROLE] !in enumValues<User.UserRole>().map { it.name })
     }
 
-    private fun checkUserIsNotValid(user: UserDto): Boolean {
-        return (user.id.isEmpty() ||
-                user.userName.isEmpty() ||
-                user.password.isEmpty())
+    private fun checkUserDtoIsNotValid(user: UserDto): Boolean {
+        return (user.id.isEmpty() || user.userName.isEmpty() || user.password.isEmpty())
     }
 
-    private fun stringToUserRole(roleString: String): User.UserRole {
+    private fun mapStringToUserRole(roleString: String): User.UserRole {
         return when (roleString) {
-            User.UserRole.ADMIN.toString() -> User.UserRole.ADMIN
-            User.UserRole.MATE.toString() -> User.UserRole.MATE
-            else -> User.UserRole.MATE
+            User.UserRole.ADMIN.toString() -> {
+                User.UserRole.ADMIN
+            }
+
+            User.UserRole.MATE.toString() -> {
+                User.UserRole.MATE
+            }
+
+            else -> {
+                User.UserRole.MATE
+            }
         }
     }
 

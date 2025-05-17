@@ -1,9 +1,9 @@
-package com.berlin.domain.usecase.auditSystem
+package com.berlin.domain.usecase.audit_system
 
 import com.berlin.domain.exception.InvalidUserIdException
 import com.berlin.helper.generateAuditLog
 import com.berlin.domain.repository.AuditRepository
-import com.berlin.domain.usecase.audit_system.GetAuditLogsByUserIdUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -16,11 +16,12 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class GetAuditLogsByUserIdUseCaseTest {
     private val auditRepository: AuditRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
     private lateinit var getAuditLogsByUserIdUseCase: GetAuditLogsByUserIdUseCase
 
     @BeforeEach
     fun setup() {
-        getAuditLogsByUserIdUseCase = GetAuditLogsByUserIdUseCase(auditRepository)
+        getAuditLogsByUserIdUseCase = GetAuditLogsByUserIdUseCase(auditRepository,validator)
     }
 
     @Test
@@ -30,6 +31,7 @@ class GetAuditLogsByUserIdUseCaseTest {
         val logs = listOf(
             generateAuditLog(createdBy = generateAuditLog().createdByUserId)
         )
+        every { validator.isValid(userId) } returns true
         every { auditRepository.getAuditLogsByUserId(userId) } returns logs
 
         //When
@@ -45,6 +47,7 @@ class GetAuditLogsByUserIdUseCaseTest {
     fun `should return empty list when no audit logs found for user ID`() {
         // Given
         val userId = "invalid"
+        every { validator.isValid(userId) } returns true
         every { auditRepository.getAuditLogsByUserId(userId) } returns emptyList()
 
         //When
