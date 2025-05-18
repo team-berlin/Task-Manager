@@ -6,7 +6,6 @@ import com.berlin.data.mapper.UserMapper
 import com.berlin.domain.model.Permission
 import com.berlin.domain.model.user.User
 import com.berlin.domain.permission.assignPermissions
-import com.berlin.domain.repository.AuthenticationRepository
 
 class UserCache(
     user: User,

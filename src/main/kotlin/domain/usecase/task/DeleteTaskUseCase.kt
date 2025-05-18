@@ -3,15 +3,17 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.model.AuditLog
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import data.UserCache
 
 class DeleteTaskUseCase(
     private val taskRepository: TaskRepository,
     private val addAuditLogUseCase: AddAuditLogUseCase,
     private val cashedUser: UserCache,
+    private val validator: Validator
 ) {
     operator fun invoke(taskId: String) : String {
-        if (!validateTaskId(taskId)) {
+        if (!validator.isValid(taskId)) {
             throw Exception("Project ID must not be empty or blank")
         }
         taskRepository.deleteTask(taskId)
@@ -25,6 +27,4 @@ class DeleteTaskUseCase(
 
         return "Deleted."
     }
-
-    private fun validateTaskId(taskId: String): Boolean = taskId.isNotBlank() && !(taskId.all { it.isDigit() })
 }

@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task
 import com.berlin.domain.exception.InvalidProjectIdException
 import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -15,6 +16,7 @@ class GetTasksByProjectUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
     private lateinit var getTasksByProjectUseCase: GetTasksByProjectUseCase
+    private lateinit var validator: Validator
 
     private val task = Task(
         id = "1",
@@ -29,11 +31,13 @@ class GetTasksByProjectUseCaseTest {
     @BeforeEach
     fun setUp() {
         taskRepository = mockk()
-        getTasksByProjectUseCase = GetTasksByProjectUseCase(taskRepository)
+        validator= mockk(relaxed = true)
+        getTasksByProjectUseCase = GetTasksByProjectUseCase(taskRepository,validator)
     }
 
     @Test
     fun `returns tasks when repository returns non-empty list`() {
+        every { validator.isValid("P1") }returns true
         every { taskRepository.getTasksByProjectId("P1") } returns listOf(task)
 
         val result = getTasksByProjectUseCase("P1")
@@ -43,6 +47,7 @@ class GetTasksByProjectUseCaseTest {
 
     @Test
     fun `returns empty list when repository returns empty list`() {
+        every { validator.isValid("P1") }returns true
         every { taskRepository.getTasksByProjectId("P1") } returns emptyList()
 
         val result = getTasksByProjectUseCase("P1")
@@ -52,6 +57,7 @@ class GetTasksByProjectUseCaseTest {
 
     @Test
     fun `throws IllegalStateException when repository throws`() {
+        every { validator.isValid("P1") }returns true
         every { taskRepository.getTasksByProjectId("P1") } throws IllegalStateException("boom")
 
         assertThrows<IllegalStateException> {

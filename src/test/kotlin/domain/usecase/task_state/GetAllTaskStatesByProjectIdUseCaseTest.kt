@@ -3,6 +3,7 @@ package com.berlin.domain.usecase.task_state
 import com.berlin.domain.model.TaskState
 import com.berlin.domain.repository.ProjectRepository
 import com.berlin.domain.repository.TaskStateRepository
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -17,12 +18,13 @@ class GetAllTaskStatesByProjectIdUseCaseTest {
     private lateinit var getAllTaskStatesByProjectIdUseCase: GetAllTaskStatesByProjectIdUseCase
     private val taskStateRepository: TaskStateRepository = mockk(relaxed = true)
     private val projectRepository: ProjectRepository = mockk(relaxed = true)
+    private val validator: Validator = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
         getAllTaskStatesByProjectIdUseCase = GetAllTaskStatesByProjectIdUseCase(
             taskStateRepository,
-            projectRepository
+            projectRepository,validator
         )
     }
 
@@ -33,6 +35,7 @@ class GetAllTaskStatesByProjectIdUseCaseTest {
             TaskState(id = "S1", name = "Active", projectId = "P1"),
             TaskState(id = "S2", name = "Inactive", projectId = "P1")
         )
+        every { validator.isValid("P1") }returns true
         every { projectRepository.getProjectById("P1") } returns mockk()
         every { taskStateRepository.getStatesByProjectId("P1") } returns expectedStates
 
@@ -46,6 +49,7 @@ class GetAllTaskStatesByProjectIdUseCaseTest {
     @Test
     fun `should return empty when no states are found for the project`() {
         // Given
+        every { validator.isValid("P3") }returns true
         every { taskStateRepository.getStatesByProjectId("P3") } returns emptyList()
         // When
         val result = getAllTaskStatesByProjectIdUseCase("P3")

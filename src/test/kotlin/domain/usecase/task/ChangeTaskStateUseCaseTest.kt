@@ -7,6 +7,7 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.model.user.User
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import data.UserCache
 import io.mockk.*
@@ -20,6 +21,7 @@ class ChangeTaskStateUseCaseTest {
     private lateinit var addAuditLogUseCase: AddAuditLogUseCase
     private lateinit var userCache: UserCache
     private lateinit var changeTaskStateUseCase: ChangeTaskStateUseCase
+    private lateinit var validator: Validator
 
     private val creator = mockk<User>(relaxed = true)
 
@@ -38,6 +40,7 @@ class ChangeTaskStateUseCaseTest {
         taskRepository = mockk()
         addAuditLogUseCase = mockk(relaxUnitFun = true)
         userCache = mockk()
+        validator= mockk( relaxed = true)
 
         every { creator.id } returns "U1"
         every { userCache.currentUser } returns creator
@@ -52,7 +55,7 @@ class ChangeTaskStateUseCaseTest {
             )
         } just Runs
 
-        changeTaskStateUseCase = ChangeTaskStateUseCase(taskRepository, addAuditLogUseCase, userCache)
+        changeTaskStateUseCase = ChangeTaskStateUseCase(taskRepository, addAuditLogUseCase, userCache,validator)
     }
 
     private fun verifyAudit(taskId: String) {
@@ -68,6 +71,7 @@ class ChangeTaskStateUseCaseTest {
 
     @Test
     fun `result is success when state changes`() {
+        every { validator.isValid(any()) }returns true
         every { taskRepository.getTaskById("1") } returns existingTask
         every { taskRepository.updateTask(any()) } answers { firstArg() }
 
@@ -92,6 +96,7 @@ class ChangeTaskStateUseCaseTest {
 
     @Test
     fun `throws IllegalStateException when repository update fails`() {
+        every { validator.isValid(any()) }returns true
         every { taskRepository.getTaskById("1") } returns existingTask
         every { taskRepository.updateTask(any()) } throws IllegalStateException("boom")
 

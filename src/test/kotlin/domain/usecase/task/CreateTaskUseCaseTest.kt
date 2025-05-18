@@ -7,6 +7,7 @@ import com.berlin.domain.model.Task
 import com.berlin.domain.repository.TaskRepository
 import com.berlin.domain.usecase.audit_system.AddAuditLogUseCase
 import com.berlin.domain.usecase.utils.id_generator.IdGenerator
+import com.berlin.domain.usecase.utils.validation.Validator
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -21,6 +22,7 @@ class CreateTaskUseCaseTest {
     private lateinit var idGenerator: IdGenerator
     private lateinit var addAuditLogUseCase: AddAuditLogUseCase
     private lateinit var createTaskUseCase: CreateTaskUseCase
+    private lateinit var validator: Validator
 
     private val projectId = "P1"
     private val createByUserId = "U1"
@@ -31,7 +33,8 @@ class CreateTaskUseCaseTest {
         taskRepository = mockk(relaxed = true)
         idGenerator = mockk(relaxed = true)
         addAuditLogUseCase = mockk(relaxUnitFun = true)
-        createTaskUseCase = CreateTaskUseCase(taskRepository, idGenerator, addAuditLogUseCase)
+        validator= mockk(relaxed = true)
+        createTaskUseCase = CreateTaskUseCase(taskRepository, idGenerator, addAuditLogUseCase,validator)
     }
 
     @Test
@@ -48,7 +51,7 @@ class CreateTaskUseCaseTest {
             assignedToUserId = assignedToUserId,
             createByUserId = createByUserId
         )
-
+        every { validator.isValid(any()) }returns true
         every { idGenerator.generateId(trimmed, any(), any()) } returns generatedId
         every { taskRepository.getTaskById(generatedId) } returns newTask
         every { taskRepository.createTask(any()) } returns newTask
@@ -86,6 +89,7 @@ class CreateTaskUseCaseTest {
         val trimmed = rawTitle.trim()
         val existingId = "T999"
 
+        every { validator.isValid(any()) }returns true
         every { idGenerator.generateId(trimmed, any(), any()) } returns existingId
         every { taskRepository.getTaskById(existingId) } throws NoSuchElementException()
 
@@ -120,6 +124,7 @@ class CreateTaskUseCaseTest {
         val trimmed = rawTitle.trim()
         val generatedId = "T500"
 
+        every { validator.isValid(any()) }returns true
         every { idGenerator.generateId(trimmed, any(), any()) } returns generatedId
         every { taskRepository.getTaskById(generatedId) } returns Task(
             generatedId, projectId, trimmed, null, "TODO", assignedToUserId, createByUserId
