@@ -14,31 +14,34 @@ val repositoryModule = module {
 
     single<ProjectRepository> {
         ProjectRepositoryImpl(
-            get(named("ProjectDataSource")), get<ProjectMapper>()
+            get(named(DatasourceQualifier.PROJECT_DATASOURCE)), get<ProjectMapper>()
         )
     }
 
     single<TaskRepository> {
         TaskRepositoryImpl(
-            get(named("TaskDataSource")), get<TaskMapper>()
+            get(named(DatasourceQualifier.TASK_DATASOURCE)), get<TaskMapper>()
         )
     }
 
     single<AuditRepository> {
         AuditRepositoryImpl(
-            get(named("AuditDataSource")), get<AuditLogMapper>()
+            get(named(DatasourceQualifier.AUDIT_LOG_DATASOURCE)), get<AuditLogMapper>()
         )
     }
 
     single<TaskStateRepository> {
         TaskStateRepositoryImpl(
-            get(named("StateDataSource")), get(), get<TaskStateMapper>(), get<TaskMapper>()
+            get(named(DatasourceQualifier.TASK_STATE_DATASOURCE)),
+            get(named(DatasourceQualifier.TASK_DATASOURCE)),
+            get<TaskStateMapper>(),
+            get<TaskMapper>()
         )
     }
 
     single<AuthenticationRepository> {
         AuthenticationRepositoryImpl(
-            get(), get(named("UserDataSource")), get<UserMapper>()
+            get(), get(named(DatasourceQualifier.USER_DATASOURCE)), get<UserMapper>()
         )
     }
 }
